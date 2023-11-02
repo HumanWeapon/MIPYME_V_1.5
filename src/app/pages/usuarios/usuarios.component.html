@@ -1,0 +1,63 @@
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header">
+                  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarUsuario">
+                    <i class="fas fa-user-plus"></i> Agregar Usuario</button>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover">
+                        <thead>
+                          <tr>
+                            <th>Usuario</th>
+                            <th>Nombre</th>
+                            <th>Correo</th>
+                            <th>Rol</th>
+                            <th>Estado</th>
+                            <th>Creado</th>
+                            <th>Ultima Vez</th>
+                            <th>Vence</th>
+                            <th>Aciones</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let user of usuariosAllRoles; let i = index">
+                            <td>{{ user.usuario }}</td>
+                            <td>{{ user.nombre_usuario }}</td>
+                            <td>{{ user.correo_electronico }}</td>
+                            <td>{{ user.roles.rol }}</td>
+                            <td>
+                                <ng-container *ngIf="user.estado_usuario === 1">Activo</ng-container>
+                                <ng-container *ngIf="user.estado_usuario === 2">Inactivo</ng-container>
+                                <ng-container *ngIf="user.estado_usuario === 3">Vencido</ng-container>
+                                <ng-container *ngIf="user.estado_usuario === 3">Bloqueado</ng-container>
+                              </td>
+                            <td>{{ user.creado_por}}</td>
+                            <td>{{ user.fecha_ultima_conexion }}</td>
+                            <td>{{ user.fecha_vencimiento}}</td>
+                            <td class="text-center">
+                              <div class="btn-group">
+                                  <button type="button" data-toggle="modal" data-target="#abrirModalEditar"data-toggle="modal" data-target="#abrirModalEditar" class="btn btn-warning" ><i class="fas fa-solid fa-pen"></i></button>
+                                  <button type="button" class="btn btn-danger"><i class="fas fa-solid fa-user-lock"></i></button>
+                                  <button type="button" class="btn btn-primary"><i class="fas fa-solid fa-lock-open"></i></button>
+                                </div>
+                            </td>
+                          </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.card-body -->
+              </div>
+              <!-- /.card -->
+            </div>
+            <!-- /.col -->
+          </div>
+          <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+    </section>
+      <!-- /.content -->
