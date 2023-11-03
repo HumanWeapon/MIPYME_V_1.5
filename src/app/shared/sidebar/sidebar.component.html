@@ -1,0 +1,95 @@
+<aside class="main-sidebar main-sidebar-custom sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="../../index3.html" class="brand-link">
+        <img src="../../../assets/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+        <span class="brand-text font-weight-light">MIPYME</span>
+      </a>
+  
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <!-- Sidebar user (optional) -->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+          <div class="info">
+            <a title="Ver Perfil" routerLink="perfil" class="d-block ml-2"> Sesión Iniciada: {{ userName }} </a>
+          </div>
+        </div>
+  
+        <!-- SidebarSearch Form -->
+        <div class="form-inline">
+          <div class="input-group" data-widget="sidebar-search">
+            <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
+            <div class="input-group-append">
+              <button class="btn btn-sidebar">
+                <i class="fas fa-search fa-fw"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+          <ul class="nav nav-pills nav-sidebar flex-column">
+            <li class="nav-item">
+              <a routerLink="dashboard" class="nav-link">
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <p class="ml-2"> Dashboard
+                  <span class="badge badge-warning"></span>
+                </p>
+              </a>
+            </li>
+          </ul>
+        </nav>
+  
+        <nav>
+          <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="true">
+            <li class="nav-item" *ngFor="let item of menuItems">
+              <a  [routerLink]='item.url' class="nav-link" style="cursor: pointer;">
+                <i class="{{item.icono}}"></i>
+                <p class="ml-2">
+                  {{item.titulo}}
+                  <i class="right fas fa-angle-left"></i>
+                  <span class="badge badge-warning ml-2">{{item.submenu.length}}</span>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item" *ngFor="let subMenu of item.submenu">
+                  <a [routerLink]='subMenu.url' class="nav-link" style="cursor: pointer;">
+                    <i class="{{subMenu.icono}}"></i>
+                    <p class="ml-2">{{subMenu.titulo}} </p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+        
+        <hr class="hr"/>
+        <nav class="mt-2">
+          <ul class="nav nav-pills nav-sidebar flex-column">
+            <li class="nav-item">
+              <a class="nav-link" (click)="logout()">
+                <i class="nav-icon fas fa-th"></i>
+                <p class="ml-2" >Cerrar Sesión
+                  <span class="badge badge-warning"></span>
+                </p>
+              </a>
+            </li>
+          </ul>
+        </nav>
+        
+      </div>
+    <!-- /.sidebar -->
+
+    <div class="sidebar-custom">
+      <a href="#" class="btn btn-link"><i class="fas fa-cogs"></i></a>
+      <a href="#" class="btn btn-secondary hide-on-collapse pos-right">Help</a>
+    </div>
+    <!-- /.sidebar-custom -->
+</aside>
+
+  <!-- Control Sidebar -->
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Control sidebar content goes here -->
+  </aside>
+  <!-- /.control-sidebar -->

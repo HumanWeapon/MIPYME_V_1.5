@@ -10,8 +10,6 @@ import { UsuariosService } from 'src/app/services/usuarios.service';
   styleUrls: ['./usuarios.component.css']
 })
 export class UsuariosComponent {
-
-
   nuevoUsuario: Usuario = {
     id_usuario: 0,
     creado_por: '',
@@ -34,9 +32,6 @@ export class UsuariosComponent {
   dtOptions: DataTables.Settings = {};
   listUsuarios: Usuario[] = [];
   data: any; 
-
-  // We use this trigger because fetching the list of persons can be quite long,
-  // thus we ensure the data is fetched before rendering
   dtTrigger: Subject<any> = new Subject<any>();
 
   usuariosAllRoles: any[] = []
@@ -44,7 +39,7 @@ export class UsuariosComponent {
 
   constructor(
     private _userService: UsuariosService,
-    private router: Router,
+    private _router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -58,7 +53,7 @@ export class UsuariosComponent {
   getAllUsuarios(){
     this.dtOptions = {
       pagingType: 'full_numbers',
-      pageLength: 6,
+      pageLength: 8,
       language: { url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json' },
       responsive: true,
     },

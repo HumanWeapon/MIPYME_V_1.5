@@ -7,6 +7,7 @@ import { PagesModule } from './pages/pages.module';
 import { AddTokenInterceptor } from './utils/add-token.interceptor';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { ToastrModule } from 'ngx-toastr';
+import { DataTablesModule } from 'angular-datatables';
 
 @NgModule({
   declarations: [
