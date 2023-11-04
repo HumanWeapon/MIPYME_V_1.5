@@ -1,0 +1,51 @@
+<body class="hold-transition login-page">
+    <div class="login-box">
+      <!-- /.login-logo -->
+      <div class="card card-outline card-primary">
+        <div class="card-header text-center">
+          <a class="h1"></a>
+        </div>
+        <div class="card-body">
+          <p class="login-box-msg">Inicia sesión</p>
+    
+          <form  method="post">
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" [(ngModel)]="usuario" name="usuario" (input)="eliminarEspaciosBlanco()" placeholder="Usuario" maxlength="50" autocomplete="false">
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-user"></span>
+                </div>
+              </div>
+            </div>
+            <div class="input-group mb-3">
+              <input type="password"  [(ngModel)]="contrasena" name="contrasena" (input)="eliminarEspaciosBlanco()" autocomplete="false" class="form-control" id="contraseña" placeholder="Contraseña">
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-lock"></span>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-8">
+                <div class="icheck-primary">
+                  <input type="checkbox" id="remember">
+                  <label for="remember">
+                    No cerrar sesión
+                  </label>
+                </div>
+              </div>
+              <!-- /.col -->
+              <div class="col-4">
+                <button type="submit" (click)="login()" class="btn btn-primary btn-block">Iniciar</button>
+              </div>
+              <!-- /.col -->
+            </div>
+          </form>
+            <button type="submit" (click)="navegateToMetodo()" id="btnRestablecer" class="btn btn-link">Restablecer contraseña</button>
+        </div>
+        <!-- /.card-body -->
+      </div>
+      <!-- /.card -->
+    </div>
+    <!-- /.login-box -->
+</body>

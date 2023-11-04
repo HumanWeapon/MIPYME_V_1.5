@@ -6,13 +6,10 @@ import { PermisosComponent } from './seguridad/permisos/permisos.component';
 import { RolesComponent } from './seguridad/roles/roles.component';
 import { ParametrosComponent } from './seguridad/parametros/parametros.component';
 import { BitacoraComponent } from './administracion/bitacora/bitacora.component';
-import { BackupRestoreComponent } from './administracion/backup-restore/backup-restore.component';
 import { PaisesComponent } from './mantenimiento/paises/paises.component';
 import { TipoDireccionComponent } from './mantenimiento/tipo-direccion/tipo-direccion.component';
 import { TipoContactoComponent } from './mantenimiento/tipo-contacto/tipo-contacto.component';
 import { TipoRequisitosComponent } from './mantenimiento/tipo-requisitos/tipo-requisitos.component';
-import { RequisitosComponent } from './mantenimiento/requisitos/requisitos.component';
-import { TipoEmpresasComponent } from './mantenimiento/tipo-empresas/tipo-empresas.component';
 import { CiudadesComponent } from './mantenimiento/ciudades/ciudades.component';
 import { CategoriaProductosComponent } from './mantenimiento/categoria-productos/categoria-productos.component';
 import { ProductosComponent } from './mantenimiento/productos/productos.component';
@@ -33,6 +30,8 @@ import { RouterModule } from '@angular/router';
 import { SharedModule } from '../shared/shared.module';
 import { FormsModule } from '@angular/forms';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { RestoreComponent } from './administracion/restore/restore.component';
+import { BackupComponent } from './administracion/backup/backup.component';
 
 
 
@@ -44,13 +43,10 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     RolesComponent,
     ParametrosComponent,
     BitacoraComponent,
-    BackupRestoreComponent,
     PaisesComponent,
     TipoDireccionComponent,
     TipoContactoComponent,
     TipoRequisitosComponent,
-    RequisitosComponent,
-    TipoEmpresasComponent,
     CiudadesComponent,
     CategoriaProductosComponent,
     ProductosComponent,
@@ -66,7 +62,9 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     PagesComponent,
     ObjetosComponent,
     PreguntasComponent,
-    DashboardComponent
+    DashboardComponent,
+    RestoreComponent,
+    BackupComponent
   ],
   imports: [
     CommonModule,
