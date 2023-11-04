@@ -26,6 +26,26 @@
           </div>
         </div>
   
+
+      <!-- SidebarSearch Form -->
+      <div class="form-inline">
+        <!-- Sidebar Menu -->
+        <nav class="mt-4 mb-2">
+          <ul class="nav nav-pills nav-sidebar flex-column">
+            <li class="nav-item">
+              <a routerLink="search" class="nav-link">
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <p class="ml-2"> Buscar productos
+                  <span class="badge badge-warning"></span>
+                </p>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+
+
         <!-- Sidebar Menu -->
         <nav class="mt-2">
           <ul class="nav nav-pills nav-sidebar flex-column">
@@ -33,6 +53,20 @@
               <a routerLink="dashboard" class="nav-link">
                 <i class="nav-icon fas fa-tachometer-alt"></i>
                 <p class="ml-2"> Dashboard
+                  <span class="badge badge-warning"></span>
+                </p>
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <!-- Sidebar Menu -->
+        <nav>
+          <ul class="nav nav-pills nav-sidebar flex-column">
+            <li class="nav-item">
+              <a routerLink="pymes" class="nav-link">
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <p class="ml-2"> PYMES
                   <span class="badge badge-warning"></span>
                 </p>
               </a>
@@ -82,8 +116,7 @@
     <!-- /.sidebar -->
 
     <div class="sidebar-custom">
-      <a href="#" class="btn btn-link"><i class="fas fa-cogs"></i></a>
-      <a href="#" class="btn btn-secondary hide-on-collapse pos-right">Help</a>
+      <a (click)="logout()" class="btn btn-link"><i class="fas fa-cogs mr-2 ml-4"></i> Cerrar Sesión</a>
     </div>
     <!-- /.sidebar-custom -->
 </aside>
