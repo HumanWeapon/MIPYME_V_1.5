@@ -72,3 +72,19 @@ export class PreguntasService {
     return this.http.post<Preguntas>(`${this.myAppUrl}${this.myApiUrl}/updatePregunta`, preguntas, { headers: headers })
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*                                          FRANKLIN ALEXANDER MURILLO CRUZ
+                                                CUENTA: 20151021932
+ */

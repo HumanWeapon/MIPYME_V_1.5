@@ -1,1 +1,153 @@
-<p>parametros works!</p>
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header">
+                  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarParametro">
+                    <i class="fas fa-user-plus"></i> Agregar Parametro</button>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover">
+                        <thead>
+                          <tr>
+                            <th>Codigo</th>
+                            <th>Parámetro</th>
+                            <th>Estado</th>
+                            <th>Valor</th>
+                            <th>Fecha Creación</th>
+                            <th>Fecha Modificación</th>
+                            <th>Aciones</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let parametro of listParametros; let i = index">
+                            <td>{{ parametro.id_parametro }}</td>
+                            <td>{{ parametro.parametro }}</td>
+                            <td>
+                              <ng-container *ngIf="parametro.estado_parametro === 1">Activo</ng-container>
+                              <ng-container *ngIf="parametro.estado_parametro === 2">Inactivo</ng-container>
+                            </td>
+                            <td>{{ parametro.valor }}</td>
+                            <td>{{ parametro.fecha_creacion }}</td>
+                            <td>{{ parametro.fecha_modificacion }}</td>
+                            <td class="text-center">
+                              <div class="btn-group">
+                                  <button type="button" (click)="obtenerIdParametro(parametro, i)" data-toggle="modal" data-target="#abrirModalEditarParametro"data-toggle="modal" data-target="#abrirModalEditarParametro" class="btn btn-warning" ><i class="fas fa-solid fa-pen"></i></button>
+                                  <button type="button" (click)="inactivarParametro(parametro, i)" class="btn btn-danger"><i class="fas fa-solid fa-user-lock"></i></button>
+                                  <button type="button" (click)="activarParametro(parametro, i)" class="btn btn-primary"><i class="fas fa-solid fa-lock-open"></i></button>
+                                </div>
+                            </td>
+                          </tr>
+                        </tbody>
+                    </table>
+    
+                </div>
+                <!-- /.card-body -->
+              </div>
+              <!-- /.card -->
+            </div>
+            <!-- /.col -->
+          </div>
+          <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+    </section>
+      <!-- /.content -->
+
+
+
+
+
+   
+<!-- Agregar Parametro  Form -->
+<div class="modal fade" id="agregarParametro">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title">Agregar Parametro</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <form (submit)="agregarNuevoParametro()">
+                  <div class="form-group">
+                      <label for="nuevoParametro">Parametro:</label>
+                      <input type="text" [(ngModel)]="nuevoParametro.parametro"name="nuevoParametro.parametro" (input)="onInputChange($event, 'parametro')" class="form-control" id="nuevoParametro" placeholder="Parametro">
+                  </div>
+                  <div class="form-group">
+                      <label for="nuevoParametro">Valor:</label>
+                      <input type="number" [(ngModel)]="nuevoParametro.valor" name="nuevoParametro.valor" class="form-control" id="nuevoParametro" placeholder="Valor">
+                  </div>
+                
+              </form>
+          </div>
+          <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+              <button type="button" (click)="agregarNuevoParametro()" class="btn btn-success" data-dismiss="modal">Guardar</button>
+          </div>
+      </div>
+  </div>
+</div>
+<!-- /Agregar Parametro  Form -->
+
+
+<!-- Actualizar Parametro  Form -->
+<div class="modal fade" id="abrirModalEditarParametro">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title">Editar Parametro</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <form>
+                <div class="form-group">
+                    <label for="parametroEditando">Parametro:</label>
+                    <input type="text" [(ngModel)]="parametroEditando.parametro" name="parametroEditando.parametro" (input)="onInputChange($event, 'parametro')" class="form-control" id="editarParametro" placeholder="Parametro">
+                </div>
+                <div class="form-group">
+                    <label for="parametroEditando">Valor:</label>
+                    <input type="text" [(ngModel)]="parametroEditando.valor" name="parametroEditando.valor" class="form-control" id="editarValor" placeholder="Valor">
+                </div>
+              </form>
+          </div>
+          <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+              <button type="button" (click)="editarParametro()" class="btn btn-success" data-dismiss="modal">Guardar</button>
+          </div>
+      </div>
+  </div>
+</div>
+<!-- /Actualizar Parametro Form -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <!-- 
+                                                 FRANKLIN ALEXANDER MURILLO CRUZ
+                                                    CUENTA: 20151021932
+-->

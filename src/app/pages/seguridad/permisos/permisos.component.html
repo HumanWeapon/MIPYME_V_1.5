@@ -1,1 +1,198 @@
-<p>permisos works!</p>
+<div class="table-container">
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarPermiso">
+                  <i class="fas fa-user-plus"></i> Agregar Permiso</button>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                  <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover">
+                      <thead>
+                        <tr>
+                          <th>Id Permiso</th>
+                          <th>Rol</th>
+                          <th>Objeto</th>
+                          <th>Insertar</th> 
+                          <th>Eliminar</th>
+                          <th>Consultar</th>
+                          <th>Actualizar</th>
+                          <th>Estado</th>
+                          <th>Creado por</th>
+                          <th>Creación</th>
+                          <th>Modificación</th>
+                          <th>Acciones</th>                          
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let perm of listPermisos; let i = index">                          
+                          <td>{{ perm.id_permisos }}</td>
+                          <td>{{ getRolNombre(perm.id_rol) }}</td>                          
+                          <td>{{ getObjetoNombre(perm.id_objeto) }}</td>                          
+                          <td style="text-align: center;">                          
+                            <ng-container *ngIf="perm.permiso_insercion; else noCheckbox">{{ '✓' }}</ng-container>
+                            <ng-template #noCheckbox>{{ 'X' }}</ng-template>
+                          </td>
+                          <td style="text-align: center;">
+                            <ng-container *ngIf="perm.permiso_eliminacion; else noCheckbox">{{ '✓' }}</ng-container>
+                            <ng-template #noCheckbox>{{ 'X' }}</ng-template>
+                          </td>
+                          <td style="text-align: center;">
+                            <ng-container *ngIf="perm.permiso_consultar; else noCheckbox">{{ '✓' }}</ng-container>
+                            <ng-template #noCheckbox>{{ 'X' }}</ng-template>
+                          </td>
+                          <td style="text-align: center;">
+                            <ng-container *ngIf="perm.permiso_actualizacion; else noCheckbox">{{ '✓' }}</ng-container>
+                            <ng-template #noCheckbox>{{ 'X' }}</ng-template>
+                          </td>   
+                          <td>
+                            <ng-container *ngIf="perm.estado_permiso === 1">Activo</ng-container>
+                            <ng-container *ngIf="perm.estado_permiso === 2">Inactivo</ng-container>
+                          </td>                         
+                          <td>{{ perm.creado_por}}</td>
+                          <td>{{ perm.fecha_creacion }}</td>
+                          <td>{{ perm.fecha_modificacion}}</td>
+                          <td class="text-center">
+                            <div class="btn-group">
+                                <button type="button" (click)="obtenerIdPermiso(perm, i)" data-toggle="modal" data-target="#abrirModalEditarPermiso" class="btn btn-warning" ><i class="fas fa-solid fa-pen"></i></button>                                
+                                <button type="button" (click)="inactivarPermiso(perm, i)" class="btn btn-danger"><i class="fas fa-solid fa-user-lock"></i></button>
+                                <button type="button" (click)="activarPermiso(perm, i)" class="btn btn-primary"><i class="fas fa-solid fa-lock-open"></i></button>                              
+                              </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                  </table>
+  
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+  </section>
+    <!-- /.content --> 
+  </div>
+<!-- Agregar Permiso Form -->
+<div class="modal fade" id="agregarPermiso">
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">Agregar Permiso</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form (submit)="agregarNuevoPermiso()">                
+                <div class="form-group">
+                  <label for="nuevoPermiso">Rol</label>
+                  <select [(ngModel)]="nuevoPermiso.id_rol" name="nuevoPermiso.id_rol" class="form-control" id="nuevo_rol">
+                      <option *ngFor="let rol of roles" [value]="rol.rol">{{ rol.rol }}</option>
+                  </select>
+              </div>
+              <div class="form-group">
+                  <label for="nuevoPermiso">Objeto:</label>
+                  <select [(ngModel)]="nuevoPermiso.id_objeto" name="nuevoPermiso.id_objeto" class="form-control" id="nuevo_objeto">
+                      <option *ngFor="let objeto of objetos" [value]="objeto.objeto">{{ objeto.objeto }}</option>
+                  </select>
+              </div>               
+            <div class="form-group">
+              <div class="form-check">
+                <input type="checkbox" [(ngModel)]="nuevoPermiso.permiso_insercion" name="nuevoPermiso.permiso_insercion" class="form-check-input" id="NuevoPermisoInsercion">
+                <label for="nuevoPermisoInsercion" class="form-check-label">Insertar</label>
+              </div>
+            </div> 
+            <div class="form-group">
+              <div class="form-check">
+                <input type="checkbox" [(ngModel)]="nuevoPermiso.permiso_eliminacion" name="nuevoPermiso.permiso_eliminacion" class="form-check-input" id="nuevoPermisoEliminacion">
+                <label for="nuevoPermisoEliminacion" class="form-check-label">Eliminar</label>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="form-check">
+                <input type="checkbox" [(ngModel)]="nuevoPermiso.permiso_consultar" name="nuevoPermiso.permiso_consultar" class="form-check-input" id="nuevoPermisoConsultar">
+                <label for="nuevoPermisoConsultar" class="form-check-label">Consultar</label>
+              </div>
+            </div> 
+            <div class="form-group">
+              <div class="form-check">
+                <input type="checkbox" [(ngModel)]="nuevoPermiso.permiso_actualizacion" name="nuevoPermiso.permiso_actualizacion" class="form-check-input" id="nuevoPermisoActualizacion">
+                <label for="nuevoPermisoActualizacion" class="form-check-label">Actualizar</label>
+              </div>
+            </div>                        
+            </form>
+        </div>
+        <div class="modal-footer justify-content-between">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+            <button type="button" (click)="agregarNuevoPermiso()" class="btn btn-success">Guardar</button>
+        </div>
+    </div>
+</div>
+</div>
+
+<!-- Actualizar Permiso Form -->
+<div class="modal fade" id="abrirModalEditarPermiso">
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">Editar Permiso</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form>              
+              <div class="form-group">
+                <label for="permisoEditando">Rol</label>
+                <select [(ngModel)]="permisoeditando.id_rol" name="permisoEditando.id_rol" class="form-control" id="editarid_rol" placeholder="Rol">
+                    <option *ngFor="let rol of roles" [value]="rol.id_rol">{{ rol.rol }}</option>
+                </select>
+            </div>                          
+            <div class="form-group">
+              <label for="permisoEditando">Objeto:</label>
+              <select [(ngModel)]="permisoeditando.id_objeto" name="permisoEditando.id_objeto" class="form-control" id="editarid_objeto">
+                  <option *ngFor="let objeto of objetos" [value]="objeto.id_objeto">{{ objeto.objeto }}</option>
+              </select>
+          </div>
+          <div class="form-group">
+            <div class="form-check">
+              <input type="checkbox" [(ngModel)]="permisoeditando.permiso_insercion" name="permisoEditando.permiso_insercion" class="form-check-input" id="editarPermisoInsercion">
+              <label for="editarPermisoInsercion" class="form-check-label">Insertar</label>
+            </div>
+          </div>          
+          <div class="form-group">
+            <div class="form-check">
+              <input type="checkbox" [(ngModel)]="permisoeditando.permiso_eliminacion" name="permisoEditando.permiso_eliminacion" class="form-check-input" id="editarPermisoEliminacion">
+              <label for="editarPermisoEliminacion" class="form-check-label">Eliminar</label>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="form-check">
+              <input type="checkbox" [(ngModel)]="permisoeditando.permiso_consultar" name="permisoEditando.permiso_consultar" class="form-check-input" id="editarPermisoConsulta">
+              <label for="editarPermisoConsulta" class="form-check-label">Consultar</label>
+            </div>
+          </div>
+            <div class="form-group">
+              <div class="form-check">
+                <input type="checkbox" [(ngModel)]="permisoeditando.permiso_actualizacion" name="permisoEditando.permiso_actualizacion" class="form-check-input" id="editarPermisoActualizacion">
+                  <label for="editarPermisoActualizacion" class="form-check-label">Actualizar</label>
+                </div>
+              </div>            
+            </form>
+        </div>
+        <div class="modal-footer justify-content-between">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+            <button type="button" (click)="editarPermiso()" class="btn btn-success">Guardar</button>
+        </div>
+    </div>
+</div>
+</div>
+<!-- /Actualizar Permiso Form -->
