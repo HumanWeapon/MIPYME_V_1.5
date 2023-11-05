@@ -123,7 +123,7 @@ export class LoginComponent {
         }
         else{
           localStorage.setItem('usuario', this.usuario);
-          this._router.navigate(['/dashboard/dashboard'])
+          this._router.navigate(['dashboard'])
         }
       },
       error: (e: HttpErrorResponse) => {

@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { AuthRoutingModule } from './auth/auth-routing.module';
 
 const routes: Routes = [
-  {path:'' ,redirectTo:'usuarios', pathMatch:'full'},
+  {path:'' ,redirectTo:'login', pathMatch:'full'},
 ];
 
 @NgModule({
