@@ -1,1 +1,56 @@
-<p>metodo works!</p>
+<body class="hold-transition login-page">
+    <div class="login-box">
+      <!-- /.login-logo -->
+      <div class="card card-outline card-primary">
+        <div class="card-header text-center">
+          <a class="h1"><b>MIPYME</b></a>
+        </div>
+        <div class="card-body">
+          <p class="login-box-msg">ingresa tu usuario y selecciona el método para restablecer tu contraseña</p>
+    
+          <form  method="post">
+            <div class="row mb-3">
+
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">@</span>
+                </div>
+                <input type="text" [(ngModel)]="usuario.usuario" name="usuario.usuario" class="form-control" placeholder="Usuario">
+              </div>
+
+
+              <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                  <label class="btn active">
+                  <input type="radio" [(ngModel)]="selectedOption" value="correo" name="options" id="option_a1" autocomplete="off" checked=""> Correo electrónico
+                  </label>
+                  <label class="btn">
+                  <input type="radio" [(ngModel)]="selectedOption" value="preguntas" name="options" id="option_a3" autocomplete="off"> Preguntas seguridad
+                  </label>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-12">
+                <button type="submit" (click)="onSubmit()" class="btn btn-primary btn-block">Siguiente</button>
+              </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <button type="submit" (click)="navigateLogin()" class="btn btn-primary btn-block">Volver</button>
+                </div>
+            </div>
+          </form>
+            <button type="submit" id="btnRestablecer" class="btn btn-link">Restablecer contraseña</button>
+        </div>
+        <!-- /.card-body -->
+      </div>
+      <!-- /.card -->
+    </div>
+    <!-- /.login-box -->
+    
+    <!-- jQuery -->
+    <script src="../../plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="../../dist/js/adminlte.min.js"></script>
+    </body>

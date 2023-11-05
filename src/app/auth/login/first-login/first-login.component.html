@@ -1,1 +1,49 @@
-<p>first-login works!</p>
+<body class="register-page" style="min-height: 542px;">
+    <div class="register-box">
+      <div class="card card-outline card-primary">
+        <div class="card-header text-center">
+          <a href="#" class="h1"><b>MIPYME</b></a>
+        </div>
+        <div class="card-body">
+          <p class="login-box-msg">Responde a las preguntas de seguridad</p>
+            
+          <div class="card card-primary">
+            <!-- /.card-header -->
+            <div class="card-body">
+                <div class="form-group">
+                    <label style="font-size: 15px;">Pregunta #1</label>
+                    <select [(ngModel)]="idPregunta[0]" class="form-control">https://webhint.io/docs/user-guide/hints/hint-no-inline-styles/
+                      <option *ngFor="let pregunta of preguntas" [value]="pregunta.id_pregunta"> {{pregunta.pregunta}} </option>
+                    </select>
+                    <input [(ngModel)]="respuesta[0]" name="respuesta[0]" class="form-control mt-1" type="text" placeholder="Ingresa tu respuesta">
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label style="font-size: 15px;">Pregunta #2</label>
+                    <select [(ngModel)]="idPregunta[1]" class="form-control">
+                      <option *ngFor="let pregunta of preguntas" [value]="pregunta.id_pregunta"> {{pregunta.pregunta}} </option>
+                    </select>
+                    <input [(ngModel)]="respuesta[1]" name="respuesta[1]" class="form-control mt-1" type="text" placeholder="Ingresa tu respuesta">
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label style="font-size: 15px;">Pregunta #3</label>
+                    <select [(ngModel)]="idPregunta[2]" class="form-control">
+                      <option *ngFor="let pregunta of preguntas" [value]="pregunta.id_pregunta"> {{pregunta.pregunta}} </option>
+                    </select>
+                    <input [(ngModel)]="respuesta[2]" name="respuesta[2]" class="form-control mt-1" type="text" placeholder="Ingresa tu respuesta">
+                </div>
+            </div>
+            <div class="col-4">
+                <button type="submit" (click)="PostPreguntaUsuario()" class="btn btn-primary btn-block">Sign In</button>
+              </div>
+            <!-- /.card-body -->
+          </div>
+        </div>
+        <!-- /.form-box -->
+      </div><!-- /.card -->
+    </div>
+    <!-- /.register-box -->
+</body>

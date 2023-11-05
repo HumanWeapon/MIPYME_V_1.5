@@ -1,0 +1,40 @@
+<body>
+
+    <div *ngIf="!loading" class="body">
+        <div class="container-form login" >
+
+            
+            <div class="information">
+                <div class="info-childs">
+                    <h2>Bienvenido Nuevamente</h2>
+                    <p>Para poder obtener la información que buscas, por favor inicia sesión con tus datos.</p>
+    
+                    <input type="button" value="Registrarte" (click)="navigateToRegister()" id="sign-up">
+                </div>
+            </div>
+
+
+            <div class="form-information">
+                <div class="form-information-childs">
+                    <h2>Iniciar Sesión</h2>
+                    <p>Iniciar Sesión con una Cuenta</p>
+                    <form class="form">
+                        <label>
+                            <i class='bx bx-user'></i>
+                            <input type="text" maxlength="10" [(ngModel)]="pyme" name="pyme" (input)="eliminarEspaciosBlanco()" autocomplete="false" class="form-control" placeholder="Ingrese usuario">
+                        </label>
+                        <label>
+                            <i class='bx bx-lock-alt'></i>
+                            <input type="password" maxlength="10" [(ngModel)]="contrasena" name="contrasena" (input)="eliminarEspaciosBlanco()" autocomplete="false" class="form-control" placeholder="Ingrese password">
+                        </label>
+                        <div class="Recordar">
+                            <a href="#" class="gradient-text">¿Has olvidado tu contraseña?</a> 
+                        </div>
+                        <input type="submit"  value="Aceptar">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <app-spinner *ngIf="loading"></app-spinner>
+</body>

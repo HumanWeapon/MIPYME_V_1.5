@@ -1,1 +1,50 @@
-<p>form-preguntas works!</p>
+<body>
+    <div *ngIf="!loading" class="div-principal">
+        <div class="form-principal-preguntas">
+            <div class="form-cabecera">
+                <h2>Configurar Preguntas</h2>
+                <p>Formulario de preguntas de seguridad</p>
+                <hr>
+            </div>
+            <div class="form-preguntas">
+                <form>
+                    <div class="form-group">
+                        <label>Pregunta #1 </label>
+                        <select class="form-control" [(ngModel)]="pregunta[0]" name="pregunta[0]" (change)="selectedPregunta($event)" >
+                            <option [value]="item.id_pregunta" *ngFor="let item of this.preguntasFiltradas">
+                                {{ item.pregunta }}
+                            </option>
+                        </select>
+                        <label>Respuesta</label>
+                        <input type="text" [(ngModel)]="respuesta[0]" name="respuesta[0]" class="form-control"/> 
+
+                        <label>Pregunta #2</label>
+                        <select class="form-control" [(ngModel)]="pregunta[1]" name="pregunta[1]" (change)="selectedPregunta($event)">
+                            <option [value]="item.id_pregunta" *ngFor="let item of this.preguntasFiltradas">
+                                {{ item.pregunta }}
+                            </option>
+                        </select>
+                        <label>Respuesta</label>
+                        <input type="text" [(ngModel)]="respuesta[1]" name="respuesta[1]" class="form-control"/>
+
+                        <label>Pregunta #3</label>
+                        <select class="form-control" [(ngModel)]="pregunta[2]" name="pregunta[2]" (change)="selectedPregunta($event)">
+                            <option [value]="item.id_pregunta" *ngFor="let item of this.preguntasFiltradas">
+                                {{ item.pregunta }}
+                            </option>
+                        </select>
+                        <label>Respuesta</label>
+                        <input type="text" [(ngModel)]="respuesta[2]" name="respuesta[2]" class="form-control"/> <br>
+
+                        <div class="boton-container">
+                            <button type="submit" class="boton" (click)="submitForm()">Guardar</button>
+                            <button type="submit" class="boton" (click)="navigateLogin()">Volver</button>
+                            <br>
+                        </div>
+                    </div>
+                 </form>
+            </div>
+        </div>
+    </div>
+    <app-spinner *ngIf="loading"></app-spinner>
+</body>

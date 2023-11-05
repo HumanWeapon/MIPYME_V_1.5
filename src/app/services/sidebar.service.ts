@@ -53,12 +53,12 @@ export class SidebarService {
       url: ' ',
       icono: 'nav-icon fas fa-solid fa-lock',
       submenu: [
-        {titulo:'Usuarios', url: 'usuarios', icono: 'far fa-circle nav-icon ml-2'},
-        {titulo:'Objetos', url: 'objetos', icono: 'far fa-circle nav-icon ml-2'},
-        {titulo:'Permisos', url: 'permisos', icono: 'far fa-circle nav-icon ml-2'},
-        {titulo:'Roles', url: 'roles', icono: 'far fa-circle nav-icon ml-2'},
-        {titulo:'Preguntas', url: 'preguntas', icono: 'far fa-circle nav-icon ml-2'},
-        {titulo:'Parametros', url: 'parametros', icono: 'far fa-circle nav-icon ml-2'}
+        {titulo:'Usuarios', url: 'usuarios', icono: 'fas fa-solid fa-users ml-2'},
+        {titulo:'Objetos', url: 'objetos', icono: 'fas fa-cubes ml-2'},
+        {titulo:'Permisos', url: 'permisos', icono: 'fas fa-user-shield ml-2'},
+        {titulo:'Roles', url: 'roles', icono: 'fas fa-solid fa-users-gear ml-2'},
+        {titulo:'Preguntas', url: 'preguntas', icono: 'fas fa-solid fa-circle-question ml-2'},
+        {titulo:'Parametros', url: 'parametros', icono: 'fas fa-solid fa-chalkboard-user ml-2'}
       ]
     },
     {
