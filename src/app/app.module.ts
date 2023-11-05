@@ -22,8 +22,8 @@ import { AuthModule } from './auth/auth.module';
     ReactiveFormsModule,
     AppRoutingModule,
     PagesModule,
-    AuthModule,
     BrowserAnimationsModule,
+    AuthModule,
     ToastrModule.forRoot({
       timeOut: 4000,
       positionClass: 'toast-top-right',

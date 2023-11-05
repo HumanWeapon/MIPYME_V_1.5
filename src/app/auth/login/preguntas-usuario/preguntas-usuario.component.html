@@ -1,1 +1,41 @@
-<p>preguntas-usuario works!</p>
+<body class="register-page" style="min-height: 542px;">
+    <div class="register-box">
+      <div class="card card-outline card-primary">
+        <div class="card-header text-center">
+          <a href="../../index2.html" class="h1"><b>MIPYME</b></a>
+        </div>
+        <div class="card-body">
+          <p class="login-box-msg">Responde a las preguntas de seguridad</p>
+  
+          <div class="card card-primary">
+            <!-- /.card-header -->
+            <div class="card-body">
+              <form [formGroup]="securityForm" (submit)="onSubmit()">
+                <div *ngFor="let pregunta of preguntasRespuestas">
+                  <label>{{ pregunta.pregunta.pregunta }}</label>
+                  <input
+                    type="text"
+                    [formControlName]="pregunta.id_pregunta"
+                    class="form-control mb-3"
+                    id="exampleInputBorderWidth2"
+                    placeholder="Respuesta"
+                  />
+                </div>
+                <button type="submit" class="btn btn-block btn-primary mt-4 mb-4">Enviar</button>
+              </form>
+            </div>
+            <!-- /.card-body -->
+          </div>
+        </div>
+        <!-- /.form-box -->
+      </div><!-- /.card -->
+    </div>
+    <!-- /.register-box -->
+    
+    <!-- jQuery -->
+    <script src="../../../../assets/plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap 4 -->
+    <script src="../../../../assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="../../../../assets/dist/js/adminlte.min.js"></script>  
+  </body>

@@ -61,3 +61,101 @@
         <!-- /.container-fluid -->
     </section>
       <!-- /.content -->
+
+
+
+      <!-- Agregar Usuario Form -->
+<div class="modal fade" id="agregarUsuario">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Agregar Usuario</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="agregarNuevoUsuario()">
+          <div class="form-group">
+            <label for="nuevoUsuario">Nombre de usuario:</label>
+            <input type="text" [(ngModel)]="nuevoUsuario.usuario" name="nuevoUsuario.usuario" (input)="onInputChange($event, 'usuario')" class="form-control" id="nuevoUsuario" placeholder="Nombre de usuario">
+          </div>
+          <div class="form-group">
+            <label for="nuevoNombre">Nombre completo:</label>
+            <input type="text" [(ngModel)]="nuevoUsuario.nombre_usuario" name="nuevoUsuario.nombre_usuario" (input)="onInputChange($event, 'nombre_usuario')" class="form-control" id="nuevoNombre" placeholder="Nombre completo">
+          </div>
+          <div class="form-group">
+            <label for="nuevoCorreo">Correo Electrónico:</label>
+            <input type="text" [(ngModel)]="nuevoUsuario.correo_electronico" name="nuevoUsuario.correo_electronico" (input)="onInputChange($event, 'correo_electronico')" class="form-control" id="nuevoCorreo" placeholder="Correo Electrónico">
+          </div>
+          <div class="form-group">
+            <label for="nuevoRol">Rol:</label>
+            <select [(ngModel)]="nuevoUsuario.id_rol" name="nuevoUsuario.id_rol" class="form-control" id="editarRol">
+              <option value="0">Selecciona un rol</option>
+             <!-- <option *ngFor="let rol of rol" [value]="rol.id_rol">{{ rol.rol }}</option> -->
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="nuevoFechaVencimiento">Fecha Vencimiento:</label>
+            <input type="datetime-local" [(ngModel)]="usuarioEditando.fecha_vencimiento" name="fecha_vencimiento" class="form-control" id="editarFechaVencimiento" placeholder="Fecha Vencimiento">
+          </div>
+            
+          <div class="modal-footer justify-content-between">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-success" (click)="agregarNuevoUsuario()" data-dismiss="modal">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /Agregar Usuario Form -->
+
+
+
+<!-- Actualizar Usuario Form -->
+<div class="modal fade" id="abrirModalEditar">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title">Editar Usuario</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <form>
+                <div class="form-group">
+                    <label for="editarUsuario">Nombre de usuario:</label>
+                    <input type="text" [(ngModel)]="usuarioEditando.usuario" name="usuarioEditando" (input)="onInputChange($event, 'usuario')" class="form-control" id="editarUsuario" placeholder="Nombre de usuario">
+                </div>
+                <div class="form-group">
+                    <label for="editarNombre">Nombre completo:</label>
+                    <input type="text" [(ngModel)]="usuarioEditando.nombre_usuario" name="nombre_usuario" (input)="onInputChange($event, 'nombre_usuario')" class="form-control" id="editarNombre" placeholder="Nombre completo">
+                </div>
+                <div class="form-group">
+                    <label for="editarCorreo">Correo Electrónico:</label>
+                    <input type="email" [(ngModel)]="usuarioEditando.correo_electronico" name="correo_electronico" (input)="onInputChange($event, 'correo_electronico')" class="form-control" id="editarCorreo" placeholder="Correo Electrónico">
+                </div>
+                <div class="form-group">
+                  <label for="editarRol">Rol:</label>
+                  <select class="form-control" id="editarRol" [(ngModel)]="usuarioEditando.id_rol" name="usuarioEditando.id_rol" class="form-control" >
+<!--<option *ngFor="let item of rol; let value = index" [value]="item.id_rol">{{ item.rol }}</option>-->
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="editarFechaVencimiento">Fecha Vencimiento:</label>
+                  <input type="datetime-local" [(ngModel)]="usuarioEditando.fecha_vencimiento" name="fecha_vencimiento" class="form-control" id="editarFechaVencimiento" placeholder="Fecha Vencimiento">
+                </div>
+                <div class="modal-footer justify-content-between">
+                  <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                  <!--<button type="submit" class="btn btn-success" (click)="editarUsuario(rol)" data-dismiss="modal">Guardar</button> -->
+              </div>
+              </form>
+          </div>
+
+      </div>
+  </div>
+</div>
+<!-- /Actualizar Usuario Form -->

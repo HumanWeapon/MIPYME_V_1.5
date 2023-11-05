@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/enviroments/enviromet';
-import { Usuario } from '../interfaces/usuario';
+import { Usuario } from '../../interfaces/seguridad/usuario';
 import { Observable, catchError } from 'rxjs';
 
 @Injectable({

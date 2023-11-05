@@ -8,6 +8,9 @@ import { MetodoComponent } from './login/metodo/metodo.component';
 import { RecuperarComponent } from './login/recuperar/recuperar.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PreguntasUsuarioComponent } from './login/preguntas-usuario/preguntas-usuario.component';
+import { SpinnerComponent } from '../shared/spinner/spinner.component';
+import { LoginPymeComponent } from './login-pyme/login-pyme.component';
+import { RegisterPymeComponent } from './register-pyme/register-pyme.component';
 
 
 
@@ -20,7 +23,10 @@ import { PreguntasUsuarioComponent } from './login/preguntas-usuario/preguntas-u
     MetodoComponent,
     PreguntasUsuarioComponent,
     RecuperarComponent,
-    PreguntasUsuarioComponent
+    PreguntasUsuarioComponent,
+    SpinnerComponent,
+    LoginPymeComponent,
+    RegisterPymeComponent
   ],
   imports: [
     CommonModule,
