@@ -1,1 +1,131 @@
-<p>requisitos-exportacion works!</p>
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header">
+                  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarRequisito">
+                    <i class="fas fa-user-plus"></i> Agregar </button>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover">
+                        <thead>
+                          <tr>
+                            <th>Requisito</th>
+                            <th>Descripción</th>
+                            <th>Creado</th>
+                            <th>Fecha Creación</th>
+                            <th>Modificado</th>
+                            <th>Fecha Modificación</th>
+                            <th>Estado</th>
+                            <th>Aciones</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let Trequi of listrequisito; let i = index">
+                            <td>{{ Trequi.tipo_requisito }}</td>
+                            <td>{{ Trequi.descripcion }}</td>
+                            <td>{{ Trequi.creado_por}}</td>
+                            <td>{{ Trequi.fecha_creacion }}</td>
+                            <td>{{ Trequi.modificado_por}}</td>
+                            <td>{{ Trequi.fecha_modificacion}}</td>
+                            <td>
+                              <ng-container *ngIf="Trequi.estado === 1">Activo</ng-container>
+                              <ng-container *ngIf="Trequi.estado === 2">Inactivo</ng-container>
+                              
+                            </td>
+                            <td class="text-center">
+                              <div class="btn-group">
+                                <button type="button" (click)="obtenerIdTipoRequisito(Trequi, i)" data-toggle="modal" data-target="#EditarRequisito" class="btn btn-warning"><i class="fas fa-solid fa-pen"></i></button>                              
+                                  <button type="button" (click)="inactivarRequisito(Trequi, i)" class="btn btn-danger"><i class="fas fa-solid fa-lock "></i></button>
+                                  <button type="button" (click)="activarRequisito(Trequi, i)" class="btn btn-primary"><i class="fas fa-solid fa-lock-open"></i></button>
+                                </div>
+                            </td>
+                          </tr>
+                        </tbody>
+                    </table>
+    
+                </div>
+                <!-- /.card-body -->
+              </div>
+              <!-- /.card -->
+            </div>
+            <!-- /.col -->
+          </div>
+          <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+    </section>
+      <!-- /.content -->
+  
+  
+  
+  
+  
+   
+  <!-- Agregar  Requisito Form -->
+  <div class="modal fade" id="agregarRequisito">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title"> Agregar </h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <form (submit)="agregarRequisito()">
+                  <div class="form-group">
+                      <label for="nuevoRequisito">Requisito:</label>
+                      <input type="text" [(ngModel)]="nuevoRequisito.tipo_requisito" name="nuevoRequisito.tipo_requisito" (input)="onInputChange($event, 'tipo_requisito')"  class="form-control" id="nuevoRequisito" placeholder="Tipo Requisito">
+                  </div>
+                  <div class="form-group">
+                      <label for="nuevoRequisito">Descripción</label>
+                      <input type="text" [(ngModel)]="nuevoRequisito.descripcion" name="nuevoRequisito.descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="nuevoRequisito" placeholder="Descripción">
+                  </div>    
+              </form>
+          </div>
+          <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+              <button type="button" (click)="agregarRequisito()" class="btn btn-success" data-dismiss="modal">Guardar</button>
+          </div>
+      </div>
+  </div>
+  </div>
+  <!-- /Agregar ciudad Form -->
+  
+  
+  <!-- Actualizar Requisito Form -->
+  <div class="modal fade" id="EditarRequisito">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title">Editar</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <form>
+                <div class="form-group">
+                    <label for="RequisitoEditando">Requisito:</label>
+                    <input type="text" [(ngModel)]="RequisitoEditando.tipo_requisito" name="RequisitoEditando.tipo_requisito" class="form-control" id="EditarRequisito" placeholder="tipo_requisito" (input)="onInputChange($event, 'tipo_requisito')" >
+                </div>
+                <div class="form-group">
+                    <label for="RequisitoEditando">Descripción:</label>
+                    <input type="text" [(ngModel)]="RequisitoEditando.descripcion" name="RequisitoEditando.descripcion"  class="form-control" id="EditarRequisito" placeholder="descripción" (input)="onInputChange($event, 'descripcion')" >
+                </div>
+          
+               
+              </form>
+          </div>
+          <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+              <button type="button" (click)="editarRequisito()" class="btn btn-success" data-dismiss="modal">Guardar</button>
+          </div>
+      </div>
+  </div>
+  </div>
+  <!-- /Actualizar requisitos Form -->
