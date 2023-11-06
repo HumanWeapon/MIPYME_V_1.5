@@ -177,6 +177,9 @@ getEstadoText(estado: number): string {
         this._errorService.msjError(e);
       }
     });
+    location.reload();
+    this.ngZone.run(() => {        
+    });
   }
     
 
@@ -241,6 +244,9 @@ getEstadoText(estado: number): string {
     } else {
       console.error('El valor de id_empresa es indefinido o no válido.');
     }
+    location.reload();
+    this.ngZone.run(() => {        
+    });
   }
 
   /*********************************************************************************************/

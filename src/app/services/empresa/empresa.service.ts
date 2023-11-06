@@ -67,7 +67,7 @@ export class EmpresaService {
   deleteEmpresa(id_empresa: number): Observable<any> {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.delete(`${this.myAppUrl}${this.myApiUrl}/deletePyme?id_empresa=${id_empresa}`, { headers: headers });
+    return this.http.delete(`${this.myAppUrl}${this.myApiUrl}/deleteEmpresa`,{ body: { id_empresa: id_empresa } });
   }
 
   editarEmpresa(empresa: Empresa): Observable<any> {
