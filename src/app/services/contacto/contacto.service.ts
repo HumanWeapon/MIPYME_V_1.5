@@ -40,7 +40,9 @@ export class ContactoService {
         fecha_modificacion: contac.fecha_modificacion, 
         estado: contac.estado,
       };
-      return this.http.post<Contacto>(`${this.myAppUrl}${this.myApiUrl}/postContacto`, nuevoContacto)
+      const token = localStorage.getItem('token')
+      const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
+      return this.http.post<Contacto>(`${this.myAppUrl}${this.myApiUrl}/postContacto`, nuevoContacto, { headers: headers })
   }
 
   

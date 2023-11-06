@@ -5,6 +5,11 @@ import { Subject } from 'rxjs';
 import { Contacto } from 'src/app/interfaces/contacto/contacto';
 import { ContactoService } from 'src/app/services/contacto/contacto.service';
 import { NgZone } from '@angular/core';
+import { BitacoraService } from 'src/app/services/administracion/bitacora.service';
+import { Usuario } from 'src/app/interfaces/seguridad/usuario';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ErrorService } from 'src/app/services/error.service';
+import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 
 
 
@@ -62,7 +67,10 @@ export class ContactoComponent implements OnInit{
 
 
   constructor(
-    private _contactoService: ContactoService,     
+    private _contactoService: ContactoService, 
+    private _bitacoraService: BitacoraService,
+    private _errorService: ErrorService,
+    private _userService: UsuariosService,
     private toastr: ToastrService,
     private router: Router, 
     private ngZone: NgZone
@@ -70,6 +78,7 @@ export class ContactoComponent implements OnInit{
 
   
   ngOnInit(): void {
+    this.getUsuario()
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 10,
@@ -143,14 +152,14 @@ onInputChange(event: any, field: string) {
 
     };
   
-    this._contactoService.addContacto(this.nuevoContacto).subscribe(data => {
-      this.toastr.success('contacto agregado con éxito');
-      
-       // Recargar la página
-       location.reload();
-       // Actualizar la vista
-       this.ngZone.run(() => {        
-       });
+    this._contactoService.addContacto(this.nuevoContacto).subscribe({
+      next: (data) => {
+        this.insertBitacora(data);
+        this.toastr.success('Contacto Agregado Exitosamente')
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
     });
   }
 
@@ -197,6 +206,120 @@ onInputChange(event: any, field: string) {
     
     });
   }
+
+    /*************************************************************** Métodos de Bitácora ***************************************************************************/
+
+    getUser: Usuario = {
+      id_usuario: 0,
+      creado_por: '',
+      fecha_creacion: new Date(),
+      modificado_por: '',
+      fecha_modificacion: new Date(),
+      usuario: '',
+      nombre_usuario: '',
+      correo_electronico: '',
+      estado_usuario: 0,
+      contrasena: '',
+      id_rol: 0,
+      fecha_ultima_conexion: new Date(),
+      primer_ingreso: new Date(),
+      fecha_vencimiento: new Date(),
+      intentos_fallidos: 0
+    };
+  
+    getUsuario(){
+      const userlocal = localStorage.getItem('usuario');
+      if(userlocal){
+        this.getUser = {
+          usuario: userlocal,
+          id_usuario: 0,
+          creado_por: '',
+          fecha_creacion: new Date(),
+          modificado_por: '',
+          fecha_modificacion: new Date(),
+          nombre_usuario: '',
+          correo_electronico: '',
+          estado_usuario: 0,
+          contrasena: '',
+          id_rol: 0,
+          fecha_ultima_conexion: new Date(),
+          primer_ingreso: new Date(),
+          fecha_vencimiento: new Date(),
+          intentos_fallidos: 0
+      }
+     }
+  
+     this._userService.getUsuario(this.getUser).subscribe({
+       next: (data) => {
+         this.getUser = data;
+       },
+       error: (e: HttpErrorResponse) => {
+         this._errorService.msjError(e);
+       }
+     });
+   }
+  
+    insertBitacora(dataContacto: Contacto){
+      const bitacora = {
+        fecha: new Date(),
+        id_usuario: this.getUser.id_usuario,
+        id_objeto: 13,
+        accion: 'INSERTAR',
+        descripcion: 'SE INSERTA EL CONTACTO CON EL ID: '+ dataContacto.id_contacto
+      }
+      this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+      })
+    }
+    updateBitacora(dataContacto: Contacto){
+      const bitacora = {
+        fecha: new Date(),
+        id_usuario: this.getUser.id_usuario,
+        id_objeto: 13,
+        accion: 'ACTUALIZAR',
+        descripcion: 'SE ACTUALIZA EL CONTACTO CON EL ID: '+ dataContacto.id_contacto
+      };
+      this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+      })
+    }
+    activarBitacora(dataContacto: Contacto){
+      const bitacora = {
+        fecha: new Date(),
+        id_usuario: this.getUser.id_usuario,
+        id_objeto: 13,
+        accion: 'ACTIVAR',
+        descripcion: 'SE ACTIVA EL CONTACTO CON EL ID: '+ dataContacto.id_contacto
+      }
+      this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+      })
+    }
+    inactivarBitacora(dataContacto: Contacto){
+      const bitacora = {
+        fecha: new Date(),
+        id_usuario: this.getUser.id_usuario,
+        id_objeto: 13,
+        accion: 'INACTIVAR',
+        descripcion: 'SE INACTIVA EL CONTACTO CON EL ID: '+ dataContacto.id_contacto
+      }
+      this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+      })
+    }
+    deleteBitacora(dataContacto: Contacto){
+      const bitacora = {
+        fecha: new Date(),
+        id_usuario: this.getUser.id_usuario,
+        id_objeto: 13,
+        accion: 'ELIMINAR',
+        descripcion: 'SE ELIMINA EL CONTACTO CON EL ID: '+ dataContacto.id_contacto
+      }
+      this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+      })
+    }
+      /*************************************************************** Fin Métodos de Bitácora ***************************************************************************/
+
+
+
+
+
 }
 
 
