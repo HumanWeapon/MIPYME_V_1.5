@@ -24,7 +24,6 @@ export class PymesService {
 
    addPyme(pyme: Pyme): Observable<any> {
     const nuevaPyme = {
-                id_tipo_empresa:pyme.id_tipo_empresa,
                 nombre_pyme: pyme.nombre_pyme,
                 categoria: pyme.categoria,
                 descripcion: pyme.descripcion, 
