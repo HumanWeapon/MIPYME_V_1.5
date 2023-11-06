@@ -1,1 +1,49 @@
-<p>paises works!</p>
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header">
+                  <button type="button" class="btn btn-primary" data-toggle="modal" (click)="addPais()">
+                      <i class="fas fa-solid fa-plus mr-2"></i>Nuevo País</button>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover">
+                        <thead>
+                          <tr>
+                            <th>ID País</th>
+                            <th>Pais</th>
+                            <th>estado</th>
+                            <th>Creador</th>
+                            <th>Fecha</th>
+                            <th>Modificador</th>
+                            <th>Fecha</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let item of listPaises; let i = index">
+                            <td>{{ item.id_pais }}</td>
+                            <td>{{ item.pais }}</td>
+                            <td>{{ item.estado}}</td>
+                            <td>{{ item.creado_por }}</td>
+                            <td>{{ item.fecha_creacion}}</td>
+                            <td>{{ item.modificado_por}}</td>
+                            <td>{{ item.fecha_modificacion}}</td>
+                          </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+        </div>
+        <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</section>
+    <!-- /.content -->

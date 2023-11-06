@@ -34,13 +34,6 @@ export class UsuariosService {
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
     return this.http.post<Usuario>(`${this.myAppUrl}${this.myApiUrl}/getUsuario`, usuario,{ headers: headers })
-    .pipe(
-      catchError((error: any) => {
-        // Manejo de errores, por ejemplo, registrar en la consola o notificar al usuario
-        console.error('Error en la solicitud', error);
-        throw error; // Re-lanza el error para que otros puedan manejarlo
-      })
-    );
   }
 
   getUsuario(usuario: Usuario): Observable<Usuario> {
