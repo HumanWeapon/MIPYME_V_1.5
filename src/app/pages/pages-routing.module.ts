@@ -20,11 +20,10 @@ import { ContactoComponent } from './contactos/contacto/contacto.component';
 import { TelefonosComponent } from './contactos/telefonos/telefonos.component';
 import { BitacoraComponent } from './administracion/bitacora/bitacora.component';
 import { CategoriaProductosComponent } from './mantenimiento/categoria-productos/categoria-productos.component';
-import { PymesComponent } from './pymes/pymes/pymes.component';
 import { PaisesComponent } from './mantenimiento/paises/paises.component';
 import { TipoTelefonoComponent } from './mantenimiento/tipo-telefono/tipo-telefono.component';
 import { EmpresasComponent } from './empresas/empresas/empresas.component';
-import { EmpresasProductosComponent } from './empresas/empresas-productos/empresas-productos.component';
+import { EmpresasProductosComponent } from './empresas/empresas-productos/empresas-productos.component'; 
 import { DireccionesComponent } from './contactos/direcciones/direcciones.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { RequisitosExportacionComponent } from './empresas/requisitos-exportacion/requisitos-exportacion.component';
@@ -60,7 +59,7 @@ const routes: Routes = [
     {path: 'restore', component:RestoreComponent, data:{titulo: 'Restaurar'}},
     
     //ABC grado B.
-    {path: 'pymes', component:PymesComponent, data:{titulo:'Pymes'}},
+    //{path: 'pyme', component:PymeComponent, data:{titulo:'Pyme'}},
     {path: 'empresas', component:EmpresasComponent, data:{titulo:'Empresas'}},
     {path: 'requisitos_exportacion', component:RequisitosExportacionComponent, data:{titulo: 'Requisitos de exportación'}},
     {path: 'empresas_productos', component:EmpresasProductosComponent, data:{titulo: 'Productos de empresas'}},

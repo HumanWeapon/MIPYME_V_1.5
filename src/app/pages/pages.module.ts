@@ -15,7 +15,6 @@ import { CategoriaProductosComponent } from './mantenimiento/categoria-productos
 import { ProductosComponent } from './mantenimiento/productos/productos.component';
 import { TipoTelefonoComponent } from './mantenimiento/tipo-telefono/tipo-telefono.component';
 import { TipoEmpresaComponent } from './mantenimiento/tipo-empresa/tipo-empresa.component';
-import { PymesComponent } from './pymes/pymes/pymes.component';
 import { EmpresasComponent } from './empresas/empresas/empresas.component';
 import { RequisitosExportacionComponent } from './empresas/requisitos-exportacion/requisitos-exportacion.component';
 import { EmpresasProductosComponent } from './empresas/empresas-productos/empresas-productos.component';
@@ -32,6 +31,7 @@ import { FormsModule } from '@angular/forms';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { RestoreComponent } from './administracion/restore/restore.component';
 import { BackupComponent } from './administracion/backup/backup.component';
+import { PymeComponent } from './pyme/pyme.component';
 
 
 
@@ -52,7 +52,6 @@ import { BackupComponent } from './administracion/backup/backup.component';
     ProductosComponent,
     TipoTelefonoComponent,
     TipoEmpresaComponent,
-    PymesComponent,
     EmpresasComponent,
     RequisitosExportacionComponent,
     EmpresasProductosComponent,
@@ -64,7 +63,8 @@ import { BackupComponent } from './administracion/backup/backup.component';
     PreguntasComponent,
     DashboardComponent,
     RestoreComponent,
-    BackupComponent
+    BackupComponent,
+    PymeComponent
   ],
   imports: [
     CommonModule,
