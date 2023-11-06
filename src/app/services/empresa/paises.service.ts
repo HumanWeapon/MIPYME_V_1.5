@@ -23,7 +23,7 @@ export class PaisesService {
   addPais(req: Paises): Observable<any> {
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.post<Paises>(`${this.myAppUrl}${this.myApiUrl}/postTipo_Requisito`, req, { headers: headers })
+    return this.http.post<Paises>(`${this.myAppUrl}${this.myApiUrl}/postPais`, req, { headers: headers })
   }
   
   getAllPaises(): Observable<Paises> {
@@ -40,22 +40,22 @@ export class PaisesService {
   inactivarPais(pais: Paises): Observable<Paises>{
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.post<Paises>(`${this.myAppUrl}${this.myApiUrl}/inactivateTipoRequisito`, pais, { headers: headers })
+    return this.http.post<Paises>(`${this.myAppUrl}${this.myApiUrl}/inactivatePais`, pais, { headers: headers })
   }
   activarPais(pais: Paises): Observable<Paises>{
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.post<Paises>(`${this.myAppUrl}${this.myApiUrl}/activateTipoRequisito`, pais, { headers: headers })
+    return this.http.post<Paises>(`${this.myAppUrl}${this.myApiUrl}/activatePais`, pais, { headers: headers })
   }
 
   editarPais(pais: Paises): Observable<any> {
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.post<Paises>(`${this.myAppUrl}${this.myApiUrl}/updateTipoRequisito`, pais, { headers: headers })
+    return this.http.post<Paises>(`${this.myAppUrl}${this.myApiUrl}/updatePais`, pais, { headers: headers })
   }
   deletePais(pais: Paises): Observable<any> {
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.post<Paises>(`${this.myAppUrl}${this.myApiUrl}/updateTipoRequisito`, pais, { headers: headers })
+    return this.http.post<Paises>(`${this.myAppUrl}${this.myApiUrl}/updatePais`, pais, { headers: headers })
   }
 }

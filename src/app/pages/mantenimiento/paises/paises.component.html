@@ -1,49 +1,126 @@
-    <!-- Main content -->
-    <section class="content">
-        <div class="container-fluid">
-          <div class="row">
-            <div class="col-12">
-              <div class="card">
-                <div class="card-header">
-                  <button type="button" class="btn btn-primary" data-toggle="modal" (click)="addPais()">
-                      <i class="fas fa-solid fa-plus mr-2"></i>Nuevo País</button>
-                </div>
-                <!-- /.card-header -->
-                <div class="card-body">
-                    <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover">
-                        <thead>
-                          <tr>
-                            <th>ID País</th>
-                            <th>Pais</th>
-                            <th>estado</th>
-                            <th>Creador</th>
-                            <th>Fecha</th>
-                            <th>Modificador</th>
-                            <th>Fecha</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr *ngFor="let item of listPaises; let i = index">
-                            <td>{{ item.id_pais }}</td>
-                            <td>{{ item.pais }}</td>
-                            <td>{{ item.estado}}</td>
-                            <td>{{ item.creado_por }}</td>
-                            <td>{{ item.fecha_creacion}}</td>
-                            <td>{{ item.modificado_por}}</td>
-                            <td>{{ item.fecha_modificacion}}</td>
-                          </tr>
-                        </tbody>
-                    </table>
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarPais">
+              <i class="fas fa-user-plus"></i> Agregar Pais</button>
+          </div>
+          <!-- /.card-header -->
+          <div class="card-body">
+              <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover" id="tablaCatProd">
+                  <thead>
+                    <tr>
+                      <th>Pais</th>
+                      <th>Descripción</th>
+                      <th>Creado</th>
+                      <th>Fecha Creación</th>
+                      <th>Modificado</th>
+                      <th>Fecha Modificación</th>
+                      <th>Estado</th>
+                      <th>Aciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let paises of listPaises; let i = index">
+                      <td>{{ paises.pais}}</td>
+                      <td>{{ paises.descripcion }}</td>
+                      <td>{{ paises.creado_por}}</td>
+                      <td>{{ paises.fecha_creacion }}</td>
+                      <td>{{ paises.modificado_por}}</td>
+                      <td></td>
+                      <td>
+                        <ng-container *ngIf="paises.estado === 1">Activo</ng-container>
+                        <ng-container *ngIf="paises.estado === 2">Inactivo</ng-container>
+                        
+                      </td>
+                      <td class="text-center">
+                        <div class="btn-group">
+                            <button type="button" (click)="obtenerIdPais(paises, i)" data-toggle="modal" data-target="#abrirModalEditarCategoriaProducto"data-toggle="modal" data-target="#abrirModalEditarCategoriaProducto" class="btn btn-warning" ><i class="fas fa-solid fa-pen"></i></button>
+                            <button type="button" (click)="inactivarPais(paises, i)" class="btn btn-danger"><i class="fas fa-solid fa-lock "></i></button>
+                            <button type="button" (click)="activarPais(paises, i)" class="btn btn-primary"><i class="fas fa-solid fa-lock-open"></i></button>
+                          </div>
+                      </td>
+                    </tr>
+                  </tbody>
+              </table>
 
-                </div>
-                <!-- /.card-body -->
-            </div>
-            <!-- /.card -->
+          </div>
+          <!-- /.card-body -->
         </div>
-        <!-- /.col -->
-        </div>
-        <!-- /.row -->
+        <!-- /.card -->
+      </div>
+      <!-- /.col -->
     </div>
-    <!-- /.container-fluid -->
+    <!-- /.row -->
+  </div>
+  <!-- /.container-fluid -->
 </section>
-    <!-- /.content -->
+<!-- /.content -->
+
+    <!-- Agregar Pais Form -->
+
+<div class="modal fade" id="agregarPais">
+  <div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">Agregar Pais</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form (submit)="agregarNuevoPais()">
+  
+                <div class="form-group">
+                    <label for="nuevoPais">Nombre del Pais:</label>
+                    <input type="text" [(ngModel)]="nuevoPais.pais" name="nuevoPais.pais" (input)="onInputChange($event, 'pais')" class="form-control" id="nuevoPais" placeholder="Nombre del pais">
+                </div>
+                <div class="form-group">
+                    <label for="nuevaDescripcion">Descripción</label>
+                    <input type="text" [(ngModel)]="nuevoPais.descripcion" name="nuevoPais.descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="nuevadescripcion" placeholder="Descripción">
+                </div>
+                            
+            </form>
+        </div>
+        <div class="modal-footer justify-content-between">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+            <button type="button" (click)="agregarNuevoPais()" class="btn btn-success" data-dismiss="modal">Guardar</button>
+        </div>
+    </div>
+  </div>
+  </div>
+  <!-- /Agregar categoria Form -->
+  
+  
+  <!-- Actualizar categoria Form -->
+  <div class="modal fade" id="abrirModalEditarCategoriaProducto">
+  <div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">Editar Pais</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body"> 
+            <form>
+              <div class="form-group">
+                <label for="paisEditando">Pais</label>
+                <input type="text" [(ngModel)]="paisEditando.pais" name="paisEditando.pais" class="form-control" id="editarPais" placeholder="Pais" (input)="onInputChange($event, 'Pais')" >
+              </div>
+              <div class="form-group">
+                <label for="paisEditando">Descripción:</label>
+                <input type="text" [(ngModel)]="paisEditando.descripcion" name="paisEditando.descripcion"  class="form-control" id="editarDescripcion" placeholder="Descripción" (input)="onInputChange($event, 'Descripcion')" >
+              </div>
+            </form>
+        </div>
+        <div class="modal-footer justify-content-between">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+            <button type="button" (click)="editarPais()" class="btn btn-success" data-dismiss="modal">Guardar</button>
+        </div>
+    </div>
+  </div>
+  </div>
+  <!-- /Actualizar categoria Form -->
