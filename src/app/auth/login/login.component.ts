@@ -162,7 +162,6 @@ export class LoginComponent {
         this.loading = false
       }
     });
-
   }
   updateUltimaConexionUsuario(){
     const updateUsuario = {

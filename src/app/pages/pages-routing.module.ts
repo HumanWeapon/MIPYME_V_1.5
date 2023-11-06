@@ -29,6 +29,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { RequisitosExportacionComponent } from './empresas/requisitos-exportacion/requisitos-exportacion.component';
 import { BackupComponent } from './administracion/backup/backup.component';
 import { RestoreComponent } from './administracion/restore/restore.component';
+import { PymeComponent } from './pyme/pyme.component';
 
 const routes: Routes = [
   {path:'dashboard',component:PagesComponent, 
@@ -59,7 +60,7 @@ const routes: Routes = [
     {path: 'restore', component:RestoreComponent, data:{titulo: 'Restaurar'}},
     
     //ABC grado B.
-    //{path: 'pyme', component:PymeComponent, data:{titulo:'Pyme'}},
+    {path: 'pymes', component:PymeComponent, data:{titulo:'Pyme'}},
     {path: 'empresas', component:EmpresasComponent, data:{titulo:'Empresas'}},
     {path: 'requisitos_exportacion', component:RequisitosExportacionComponent, data:{titulo: 'Requisitos de exportación'}},
     {path: 'empresas_productos', component:EmpresasProductosComponent, data:{titulo: 'Productos de empresas'}},

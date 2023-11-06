@@ -1,11 +1,18 @@
 i{
-    font-size: 12px;
+    font-size: 15px;
 }
 
 /* Cambia el alto de todas las filas a 50px */
 td, th {
-    padding-bottom: 0px;
-    text-align: center;
+    padding: 0px;
     margin: 0px;
-    font-size: 0.95em;
+}
+.btna{
+    margin: 0px;
+    border: none;
+    background-color: rgba(255, 0, 0, 0);
+    color: #1254a1;
+}
+.btna:hover{
+    color: rgb(255, 174, 0)
 }
