@@ -1,1 +1,124 @@
-<p>categoria-productos works!</p>
+<!--Elaborado Por Breydy Flores-->
+<section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarCategoria">
+                <i class="fas fa-user-plus"></i> Agregar Categoria Producto</button>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover" id="tablaCatProd">
+                    <thead>
+                      <tr>
+                        <th>Categoria</th>
+                        <th>Descripción</th>
+                        <th>Creado</th>
+                        <th>Fecha Creación</th>
+                        <th>Modificado</th>
+                        <th>Fecha Modificación</th>
+                        <th>Estado</th>
+                        <th>Aciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let cate of listCate; let i = index">
+                        <td>{{ cate.categoria}}</td>
+                        <td>{{ cate.descripcion }}</td>
+                        <td>{{ cate.creado_por}}</td>
+                        <td>{{ cate.fecha_creacion }}</td>
+                        <td>{{ cate.modificado_por}}</td>
+                        <td></td>
+                        <td>
+                          <ng-container *ngIf="cate.estado === 1">Activo</ng-container>
+                          <ng-container *ngIf="cate.estado === 2">Inactivo</ng-container>
+                          
+                        </td>
+                        <td class="text-center">
+                          <div class="btn-group">
+                              <button type="button" (click)="obtenerIdCategoriaProducto(cate, i)" data-toggle="modal" data-target="#abrirModalEditarCategoriaProducto"data-toggle="modal" data-target="#abrirModalEditarCategoriaProducto" class="btn btn-warning" ><i class="fas fa-solid fa-pen"></i></button>
+                              <button type="button" (click)="inactivarCategoria(cate, i)" class="btn btn-danger"><i class="fas fa-solid fa-lock "></i></button>
+                              <button type="button" (click)="activarCategoria(cate, i)" class="btn btn-primary"><i class="fas fa-solid fa-lock-open"></i></button>
+                            </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                </table>
+
+            </div>
+            <!-- /.card-body -->
+          </div>
+          <!-- /.card -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</section>
+  <!-- /.content -->
+
+<!-- Agregar Categoria Form -->
+<div class="modal fade" id="agregarCategoria">
+<div class="modal-dialog">
+  <div class="modal-content">
+      <div class="modal-header">
+          <h4 class="modal-title">Agregar Categoria Producto</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+          </button>
+      </div>
+      <div class="modal-body">
+          <form (submit)="agregarNuevaCategoriaProducto()">
+              <div class="form-group">
+                  <label for="nuevaCategoriaProducto">Categoria:</label>
+                  <input type="text" [(ngModel)]="nuevaCategoriaProducto.categoria" name="nuevaCategoriaProducto.categoria" (input)="onInputChange($event, 'categoria')"  class="form-control" id="nuevaCategoriaProducto" placeholder="Categoria">
+              </div> 
+              <div class="form-group">
+                  <label for="nuevaCategoriaProducto">Descripción:</label>
+                  <input type="text" [(ngModel)]="nuevaCategoriaProducto.descripcion" name="nuevaCategoriaProducto.descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="nuevaCategoriaProducto" placeholder="descripción">
+              </div>    
+          </form>
+      </div>
+      <div class="modal-footer justify-content-between">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+          <button type="button" (click)="agregarNuevaCategoriaProducto()" class="btn btn-success" data-dismiss="modal">Guardar</button>
+      </div>
+  </div>
+</div>
+</div>
+<!-- /Agregar categoria Form -->
+
+
+<!-- Actualizar categoria Form -->
+<div class="modal fade" id="abrirModalEditarCategoriaProducto">
+<div class="modal-dialog">
+  <div class="modal-content">
+      <div class="modal-header">
+          <h4 class="modal-title">Editar Categoria</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+          </button>
+      </div>
+      <div class="modal-body"> 
+          <form>
+            <div class="form-group">
+              <label for="CategoriaEditando">Categoria</label>
+              <input type="text" [(ngModel)]="CategoriaEditando.categoria" name="CategoriaEditando.Categoria" class="form-control" id="editarCategoria" placeholder="Categoria" (input)="onInputChange($event, 'Categoria')" >
+            </div>
+            <div class="form-group">
+              <label for="CategoriaEditando">Descripción:</label>
+              <input type="text" [(ngModel)]="CategoriaEditando.descripcion" name="CategoriaProductoEditando.descripcion"  class="form-control" id="editarDescripcion" placeholder="Descripción" (input)="onInputChange($event, 'Descripcion')" >
+            </div>
+          </form>
+      </div>
+      <div class="modal-footer justify-content-between">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+          <button type="button" (click)="editarCategoriaProducto()" class="btn btn-success" data-dismiss="modal">Guardar</button>
+      </div>
+  </div>
+</div>
+</div>
+<!-- /Actualizar categoria Form -->

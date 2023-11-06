@@ -1,6 +1,6 @@
-export interface Requisito {
-    id_tipo_requisito: number,
-    tipo_requisito: string,    
+export interface TipoEmpresa {
+    id_tipo_empresa: number,
+    tipo_empresa: string,
     descripcion: string,
     creado_por: string,
     fecha_creacion: Date,

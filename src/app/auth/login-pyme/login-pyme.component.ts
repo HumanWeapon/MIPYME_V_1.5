@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { Pyme } from 'src/app/interfaces/pyme';
+import { Pyme } from 'src/app/interfaces/pyme/pyme';
 
 
 @Component({

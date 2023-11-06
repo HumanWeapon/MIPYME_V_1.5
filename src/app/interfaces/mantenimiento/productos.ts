@@ -1,6 +1,7 @@
-export interface Requisito {
-    id_tipo_requisito: number,
-    tipo_requisito: string,    
+export interface Productos {
+    id_producto: number,
+    id_categoria: number,
+    producto: string,
     descripcion: string,
     creado_por: string,
     fecha_creacion: Date,
