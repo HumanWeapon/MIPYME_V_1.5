@@ -22,22 +22,9 @@ export class UsuariosService {
    }
 
    addUsuario(user: Usuario): Observable<any> {
-    const nuevoUsuario = {
-      creado_por: "SYSTEM",
-      fecha_creacion: user.fecha_creacion,
-      modificado_por: "SYSTEM",
-      fecha_modificacion: "",
-      usuario: user.usuario,
-      nombre_usuario: user.nombre_usuario,
-      correo_electronico: user.correo_electronico,
-      estado_usuario: user.estado_usuario,
-      contrasena: user.contrasena,
-      id_rol: user.id_rol,
-      fecha_ultima_conexion: "",
-      fecha_vencimiento: user.fecha_vencimiento,
-      intentos_fallidos: user.intentos_fallidos
-      };
-      return this.http.post<Usuario>(`${this.myAppUrl}${this.myApiUrl}/postUsuario`, nuevoUsuario)
+    const token = localStorage.getItem('token')
+    const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
+      return this.http.post<Usuario>(`${this.myAppUrl}${this.myApiUrl}/postUsuario`, user,{ headers: headers })
   }
 
   login(usuario: Usuario): Observable<string> {
@@ -46,13 +33,20 @@ export class UsuariosService {
   getOneUsuario(usuario: any): Observable<Usuario> {
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.post<Usuario>(`${this.myAppUrl}${this.myApiUrl}/getUsuario`, usuario)
+    return this.http.post<Usuario>(`${this.myAppUrl}${this.myApiUrl}/getUsuario`, usuario,{ headers: headers })
+    .pipe(
+      catchError((error: any) => {
+        // Manejo de errores, por ejemplo, registrar en la consola o notificar al usuario
+        console.error('Error en la solicitud', error);
+        throw error; // Re-lanza el error para que otros puedan manejarlo
+      })
+    );
   }
 
   getUsuario(usuario: Usuario): Observable<Usuario> {
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.post<Usuario>(`${this.myAppUrl}${this.myApiUrl}/getUsuario`, usuario)
+    return this.http.post<Usuario>(`${this.myAppUrl}${this.myApiUrl}/getUsuario`, usuario,{ headers: headers })
   }
 
   getAllUsuarios(): Observable<Usuario[]> {

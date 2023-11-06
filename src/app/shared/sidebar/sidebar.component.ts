@@ -10,7 +10,6 @@ import { SidebarService } from 'src/app/services/sidebar.service';
 export class SidebarComponent implements OnInit{
   menuItems:any[];
   userName: string = '';
-  //menuItems2:any[];
 
   constructor(private _sideBarService: SidebarService, private router:Router){
     this.menuItems = this._sideBarService.menu;

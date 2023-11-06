@@ -1,5 +1,11 @@
-/* You can add global styles to this file, and also import other style files */
-th, td { text-align: center; font-size: 0.9em; }
 i{
-    font-size: 15px;
+    font-size: 12px;
+}
+
+/* Cambia el alto de todas las filas a 50px */
+td, th {
+    padding-bottom: 0px;
+    text-align: center;
+    margin: 0px;
+    font-size: 0.95em;
 }

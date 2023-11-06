@@ -5,6 +5,11 @@ import { Usuario } from 'src/app/interfaces/seguridad/usuario';
 import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 import { NgZone } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
+import { Roles } from 'src/app/interfaces/seguridad/roles';
+import { RolesService } from 'src/app/services/seguridad/roles.service';
+import { BitacoraService } from 'src/app/services/administracion/bitacora.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ErrorService } from 'src/app/services/error.service';
 
 @Component({
   selector: 'app-usuarios',
@@ -13,73 +18,78 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class UsuariosComponent {
   
-  usuarioEditando: Usuario = {
-    id_usuario: 0,
-    creado_por: '',
-    fecha_creacion: new Date(),
-    modificado_por: '',
-    fecha_modificacion: new Date(),
-    usuario: '',
-    nombre_usuario: '',
-    correo_electronico: '',
-    estado_usuario: 0,
-    contrasena: '',
-    id_rol: 0,
-    fecha_ultima_conexion: new Date(),
-    primer_ingreso: new Date(),
-    fecha_vencimiento: new Date(),
-    intentos_fallidos: 0,
-  };
 
-
-
-  nuevoUsuario: Usuario = {
-    id_usuario: 0,
-    creado_por: '',
-    fecha_creacion: new Date(),
-    modificado_por: '',
-    fecha_modificacion: new Date(),
-    usuario: '',
-    nombre_usuario: '',
-    correo_electronico: '',
-    estado_usuario: 0,
-    contrasena: '',
-    id_rol: 0,
-    fecha_ultima_conexion: new Date(),
-    primer_ingreso: new Date(),
-    fecha_vencimiento: new Date(),
-    intentos_fallidos: 0,
-  };
-  indice: any;
+  listUsuarios: Usuario[] = [];
+  listRol: Roles[] = [];
+  usuariosAllRoles: any[] = []
+  indiceUser: any;
+  indiceRol: any;
+  objectBitacora: any;
 
   dtOptions: DataTables.Settings = {};
-  listUsuarios: Usuario[] = [];
-  data: any; 
   dtTrigger: Subject<any> = new Subject<any>();
 
-  usuariosAllRoles: any[] = []
-  
-  
+  newUser: Usuario = {
+    id_usuario: 0,
+    creado_por: '',
+    fecha_creacion: new Date(),
+    modificado_por: '',
+    fecha_modificacion: new Date(),
+    usuario: '',
+    nombre_usuario: '',
+    correo_electronico: '',
+    estado_usuario: 0,
+    contrasena: '',
+    id_rol: 0,
+    fecha_ultima_conexion: new Date(),
+    primer_ingreso: new Date(),
+    fecha_vencimiento: new Date(),
+    intentos_fallidos: 0
+  }
+
+  editUser: Usuario = {
+    id_usuario: 0,
+    creado_por: '',
+    fecha_creacion: new Date(),
+    modificado_por: '',
+    fecha_modificacion: new Date(),
+    usuario: '',
+    nombre_usuario: '',
+    correo_electronico: '',
+    estado_usuario: 0,
+    contrasena: '',
+    id_rol: 0,
+    fecha_ultima_conexion: new Date(),
+    primer_ingreso: new Date(),
+    fecha_vencimiento: new Date(),
+    intentos_fallidos: 0
+  }
   constructor(
     private _userService: UsuariosService,
     private _router: Router,
-    private ngZone: NgZone,
-    private toastr: ToastrService
+    private _ngZone: NgZone,
+    private _toastr: ToastrService,
+    private _rolService: RolesService,
+    private _bitacoraService: BitacoraService,
+    private _errorService: ErrorService
   ) {}
 
   ngOnInit(): void {
     this.getAllRoles();
+    this.getUsuario();
     this.getAllUsuarios();
   }
 
   getAllRoles(){
-    
+    this._rolService.getAllRoles().subscribe(data => {
+      this.listRol = data;
+    });
 
   }
   getAllUsuarios(){
     this.dtOptions = {
       pagingType: 'full_numbers',
-      pageLength: 5,
+      pageLength: 10,
       language: { url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json' },
       responsive: true,
     },
@@ -97,66 +107,73 @@ export class UsuariosComponent {
     this.dtTrigger.unsubscribe();
   }
 
-  onInputChange(event: any, field: string) {
-    const inputValue = event.target.value;
-    if (field === 'correo_electronico' || field === 'usuario') {
-      // Convierte a mayúsculas y elimina espacios en blanco
-      event.target.value = inputValue.toUpperCase().replace(/\s/g, '')
-    } else if (field === 'nombre_usuario') {
-      // Convierte a mayúsculas sin eliminar espacios en blanco
-      event.target.value = inputValue.toUpperCase();
-    }
+  eliminarEspaciosBlanco() {
+    this.editUser.usuario = this.editUser.usuario.replace(/\s/g, ''); // Elimina espacios en blanco para el cambo usuario
+    this.editUser.usuario = this.editUser.usuario.toUpperCase(); // Convierte el texto a mayúsculas
+    this.editUser.contrasena = this.editUser.contrasena.replace(/\s/g, ''); // Elimina espacios en blanco para el cambo contraseña
   }
   
   inactivarUsuario(usuario: any, i: any) {
-    this._userService.inactivarUsuario(usuario).subscribe(data =>
-      this.toastr.success('El usuario: ' + usuario.usuario + ' ha sido inactivado')
-    );
+    this._userService.inactivarUsuario(usuario).subscribe({
+      next: (data) => {
+        this.inactivarBitacora(data);
+        this._toastr.success('El usuario: ' + usuario.usuario + ' ha sido activado')
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
     this.usuariosAllRoles[i].estado_usuario = 2;
+    
   }
   activarUsuario(usuario: any, i: any) {
-    this._userService.activarUsuario(usuario).subscribe(data =>
-      this.toastr.success('El usuario: ' + usuario.usuario + ' ha sido activado')
-    );
+    this._userService.activarUsuario(usuario).subscribe({
+      next: (data) => {
+        this.activarBitacora(data);
+        this._toastr.success('El usuario: ' + usuario.usuario + ' ha sido activado')
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
     this.usuariosAllRoles[i].estado_usuario = 1;
   }
 
   agregarNuevoUsuario() {
-    this.nuevoUsuario = {
-      id_usuario: 0,
-      creado_por: 'SYSTEM',
-      fecha_creacion: new Date(),
-      modificado_por: 'SYSTEM',
-      fecha_modificacion: new Date(),
-      usuario: this.nuevoUsuario.usuario,
-      nombre_usuario: this.nuevoUsuario.nombre_usuario,
-      correo_electronico: this.nuevoUsuario.correo_electronico,
-      estado_usuario: 1,
-      contrasena: this.nuevoUsuario.usuario,
-      id_rol: this.nuevoUsuario.id_rol,
-      fecha_ultima_conexion: new Date(),
-      primer_ingreso: new Date(),
-      fecha_vencimiento: this.nuevoUsuario.fecha_vencimiento,
-      intentos_fallidos: 0,
-    };
+    const LocalUser = localStorage.getItem('usuario');
+    if (LocalUser){
 
-    this._userService.addUsuario(this.nuevoUsuario).subscribe(data => {
-      this.toastr.success('Usuario agregado con éxito');
-
-
-        // Recargar la página
-        location.reload();
-        // Actualizar la vista
-        this.ngZone.run(() => {        
-        });
-    });
-  }
+      this.newUser = {
+        id_usuario: 0,
+        creado_por: LocalUser,
+        fecha_creacion: new Date(),
+        modificado_por: LocalUser,
+        fecha_modificacion: new Date(),
+        usuario: this.newUser.usuario,
+        nombre_usuario: this.newUser.nombre_usuario,
+        correo_electronico: this.newUser.correo_electronico,
+        estado_usuario: 1,
+        contrasena: this.newUser.usuario,
+        id_rol: this.newUser.id_rol,
+        fecha_ultima_conexion: new Date(),
+        primer_ingreso: new Date(),
+        fecha_vencimiento: this.newUser.fecha_vencimiento,
+        intentos_fallidos: 0,
+      };
   
-
-
+      this._userService.addUsuario(this.newUser).subscribe({
+        next: (data) => {
+          this.insertBitacora(data);
+        },
+        error: (e: HttpErrorResponse) => {
+          this._errorService.msjError(e);
+        }
+      });
+    }
+  }
 
   obtenerIdUsuario(usuario: Usuario, i: any) {
-    this.usuarioEditando = {
+    this.editUser = {
       id_usuario: usuario.id_usuario,
       creado_por: usuario.creado_por,
       fecha_creacion: usuario.fecha_creacion,
@@ -173,50 +190,137 @@ export class UsuariosComponent {
       fecha_vencimiento: usuario.fecha_vencimiento,
       intentos_fallidos: usuario.intentos_fallidos,
     };
-    this.indice = i;
-    
+    this.indiceUser = i;
   }
 
   
   editarUsuario(rol: any) {
-    this._userService.editarUsuario(this.usuarioEditando).subscribe(data => {
-      this.toastr.success('Usuario editado con éxito');
+    this._userService.editarUsuario(this.editUser).subscribe(data => {
+      this._toastr.success('Usuario editado con éxito');
       if(this.usuariosAllRoles == null){
         //no se puede editar el usuario
       }else{
-      this.usuariosAllRoles[this.indice].usuario = this.usuarioEditando.usuario;
-      this.usuariosAllRoles[this.indice].nombre_usuario = this.usuarioEditando.nombre_usuario;
-      this.usuariosAllRoles[this.indice].correo_electronico = this.usuarioEditando.correo_electronico;
-      this.usuariosAllRoles[this.indice].roles.rol = rol.rol;
-      this.usuariosAllRoles[this.indice].fecha_vencimiento = this.usuarioEditando.fecha_vencimiento; 
+      // Recargar la página
+      location.reload();
+      // Actualizar la vista
+      this._ngZone.run(() => {        
+      });
+      /*this.usuariosAllRoles[this.indiceUser].usuario = this.editUser.usuario;
+      this.usuariosAllRoles[this.indiceUser].nombre_usuario = this.editUser.nombre_usuario;
+      this.usuariosAllRoles[this.indiceUser].correo_electronico = this.editUser.correo_electronico;
+      this.usuariosAllRoles[this.indiceUser].roles.rol = this.indiceRol
+      this.usuariosAllRoles[this.indiceUser].fecha_vencimiento = this.editUser.fecha_vencimiento;*/
       }
-
-        // Recargar la página
-        location.reload();
-        // Actualizar la vista
-        this.ngZone.run(() => {        
-        });
-
     });
-    
-    
   }
 
-  insertBitacora(){
-    const userloca = localStorage.getItem('usuario');
-    this._userService.getOneUsuario(userloca).subscribe(data=>{
-      console.log(data);
-    })
+  /*************************************************************** Métodos de Bitácora ***************************************************************************/
 
-    /*const bitacora = {
-      fecha: new Date(),
-      id_usuario: this.usu,
-      id_objeto: string,
-      accion: string,
-      descripcion: string
+  getUser: Usuario = {
+    id_usuario: 0,
+    creado_por: '',
+    fecha_creacion: new Date(),
+    modificado_por: '',
+    fecha_modificacion: new Date(),
+    usuario: '',
+    nombre_usuario: '',
+    correo_electronico: '',
+    estado_usuario: 0,
+    contrasena: '',
+    id_rol: 0,
+    fecha_ultima_conexion: new Date(),
+    primer_ingreso: new Date(),
+    fecha_vencimiento: new Date(),
+    intentos_fallidos: 0
+  };
+
+  getUsuario(){
+    const userlocal = localStorage.getItem('usuario');
+    if(userlocal){
+      this.getUser = {
+        usuario: userlocal,
+        id_usuario: 0,
+        creado_por: '',
+        fecha_creacion: new Date(),
+        modificado_por: '',
+        fecha_modificacion: new Date(),
+        nombre_usuario: '',
+        correo_electronico: '',
+        estado_usuario: 0,
+        contrasena: '',
+        id_rol: 0,
+        fecha_ultima_conexion: new Date(),
+        primer_ingreso: new Date(),
+        fecha_vencimiento: new Date(),
+        intentos_fallidos: 0
     }
-    this._bitacoraService.insertBitacora().subscribe(data =>{
+   }
 
-    })*/
+   this._userService.getUsuario(this.getUser).subscribe({
+     next: (data) => {
+       this.getUser = data;
+     },
+     error: (e: HttpErrorResponse) => {
+       this._errorService.msjError(e);
+     }
+   });
+ }
+
+  insertBitacora(dataUser: Usuario){
+    const bitacora = {
+      fecha: new Date(),
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 2,
+      accion: 'INSERTAR',
+      descripcion: 'SE INSERTA EL REGISTRO CON EL ID: '+ dataUser.id_usuario
+    }
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+    })
   }
+  updateBitacora(dataUser: Usuario){
+    const bitacora = {
+      fecha: new Date(),
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 2,
+      accion: 'INSERTAR',
+      descripcion: 'SE INSERTA EL REGISTRO CON EL ID: '+ dataUser.id_usuario
+    };
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+    })
+  }
+  activarBitacora(dataUser: Usuario){
+    const bitacora = {
+      fecha: new Date(),
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 2,
+      accion: 'ACTIVAR',
+      descripcion: 'SE ACTIVA EL USUARIO CON EL ID: '+ dataUser.id_usuario
+    }
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+    })
+  }
+  inactivarBitacora(dataUser: Usuario){
+    const bitacora = {
+      fecha: new Date(),
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 2,
+      accion: 'INACTIVAR',
+      descripcion: 'SE INACTIVA EL USUARIO CON EL ID: '+ dataUser.id_usuario
+    }
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+    })
+  }
+  deleteBitacora(dataUser: Usuario){
+    const bitacora = {
+      fecha: new Date(),
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 2,
+      accion: 'INSERTAR',
+      descripcion: 'SE INSERTA EL REGISTRO CON EL ID: '+ dataUser.id_usuario
+    }
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+    })
+  }
+    /*************************************************************** Fin Métodos de Bitácora ***************************************************************************/
+    
 }
