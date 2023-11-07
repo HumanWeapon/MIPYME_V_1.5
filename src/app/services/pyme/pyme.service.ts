@@ -62,8 +62,9 @@ export class PymesService {
   deletePyme(id_pyme: number): Observable<any> {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.delete(`${this.myAppUrl}${this.myApiUrl}/deletePyme?id_pyme=${id_pyme}`, { headers: headers });
+    return this.http.delete(`${this.myAppUrl}${this.myApiUrl}/deletePyme`,{ body: { id_pyme: id_pyme } });
   }
+
 
   cambiarContrasena(pyme: Pyme): Observable<Pyme>{
     const token = localStorage.getItem('token')

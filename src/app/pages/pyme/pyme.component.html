@@ -1,1 +1,197 @@
-<p>pyme works!</p>
+<section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarPyme">
+                <i class="fas fa-user-plus"></i> Agregar</button>
+              <button type="button" class="btn btn-primary custom-print-button btn-danger" title="Generar el Reporte" data-toggle="modal" data-target="#PDFPyme">
+                <i class="fas fa-file-pdf"></i>  Generar PDF</button>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"class="table table-bordered table-striped row-border hover">
+                    <thead>
+                      <tr>
+                        <th>Nombre Pyme</th>
+                        <th>Categoria</th>
+                        <th>Descripcion</th>
+                        <th>Creado</th>
+                        <th>Fecha Creación</th>
+                        <th>Fecha Modificación</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let pyme of listPymes; let i = index">
+                        <td>{{ pyme.nombre_pyme }}</td>
+                        <td>{{ pyme.categoria }}</td>
+                        <td>{{ pyme.descripcion }}</td>
+                        <td>{{ pyme.creado_por}}</td>
+                        <td>{{ pyme.fecha_creacion}}</td>
+                        <td>{{ pyme.fecha_modificacion}}</td>
+                        <td>
+                            <ng-container *ngIf="pyme.estado === 1">Activo</ng-container>
+                            <ng-container *ngIf="pyme.estado === 2">Inactivo</ng-container>
+                          </td>
+                        <td class="text-center">
+                          <div class="btn-group">
+                              <button type="button" (click)="obtenerIdPyme(pyme, i)" data-toggle="modal" data-target="#abrirModalEditarPyme"data-toggle="modal" data-target="#abrirModalEditarPyme" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
+                              <button type="button" (click)="toggleFunction(pyme, i)" class="btna " [title]="pyme.estado === 1 ? 'Desactivar Pyme' : 'Activar Pyme'"><i class="fas" [ngClass]="pyme.estado === 1 ? 'fa-solid fa-lock' : 'fa-solid fa-lock-open'"></i> </button>
+                              <button type="button" (click)="deletePyme(pyme.id_pyme)" class="btna" title="Eliminar Empresa"><i class=" fas fa-solid fa-trash"></i></button>
+                            </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                </table>
+
+            </div>
+            <!-- /.card-body -->
+          </div>
+          <!-- /.card -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</section>
+  <!-- /.content -->
+
+<!-- Agregar Empresa Form-->
+<div class="modal fade" id="agregarPyme">
+<div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h4 class="modal-title">Agregar Pyme</h4>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form (ngSubmit)="agregarNuevaPyme()">
+        <table id="example" class="table table-striped" style="width:100%">
+        <!-- Campo: Nombre de la Pyme -->
+        <div class="form-group">
+          <label for="nuevaPyme">Nombre de la Pyme:</label>
+          <input type="text" [(ngModel)]="nuevaPyme.nombre_pyme" name="nombre_pyme" (input)="onInputChange($event, 'nombre_pyme')" class="form-control" id="nuevapyme" placeholder="Nombre de la Pyme">
+        </div>
+        <!-- Campo: Descripción -->
+        <div class="form-group">
+          <label for="nuevaDescripcion">Descripción:</label>
+          <input type="text" [(ngModel)]="nuevaPyme.descripcion" name="descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="descripcion" placeholder="Descripción">
+        </div>
+        <div class="form-group">
+            <label for="nuevaCategoria">Categoria:</label>
+            <input type="text" [(ngModel)]="nuevaPyme.categoria" name="categoria" (input)="onInputChange($event, 'categoria')" class="form-control" id="categoria" placeholder="Categoria">
+          </div>
+        <div class="form-group">
+          <label for="estado">Estado</label>
+          <select [(ngModel)]="nuevaPyme.estado" name="pyme.estado" class="form-control" id="estado">
+            <option value="0">Selecciona un Estado</option>
+            <option value="1">ACTIVO</option>
+            <option value="2">INACTIVO</option>           
+          </select>
+        </div>
+        <!-- Botones -->
+        <div class="modal-footer justify-content-between">
+          <!-- Botón Cancelar -->
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+          <!-- Botón Guardar -->
+          <button type="submit" class="btn btn-success" (click)="agregarNuevaPyme()" data-dismiss="modal">Guardar</button>
+        </div>
+        </table>
+      </form>
+    </div>
+  </div>
+</div>
+</div> 
+<!-- /Agregar Empresa Form -->
+
+
+<!-- Actualizar Empresa Form -->
+<div class="modal fade" id="abrirModalEditarPyme">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Editar Pyme</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                  <div class="form-group">
+                      <label for="pymeEditando">Nombre de Pyme</label>
+                      <input type="text" [(ngModel)]="pymeEditando.nombre_pyme" name="pymeEditando.nombre_pyme" (input)="onInputChange($event, 'nombre_pyme')" class="form-control" id="editarNombre" placeholder="Nombre de la Pyme">
+                  </div>  
+                  <div class="form-group">
+                    <label for="PymeEditando">Categoria</label>
+                    <input type="text" [(ngModel)]="pymeEditando.categoria" name="pymeEditando.descripcion" (input)="onInputChange($event, 'categoria')" class="form-control" id="editarCategoria" placeholder="Categotria">
+                </div>  
+                <div class="form-group">
+                    <label for="PymeEditando">Descripción</label>
+                    <input type="text" [(ngModel)]="pymeEditando.descripcion" name="pymeEditando.descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="editarDescripcion" placeholder="Descripción">
+                </div>      
+              </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                <button type="button" (click)="editarPyme()" class="btn btn-success" data-dismiss="modal">Guardar</button>
+            </div>
+        </div>
+    </div>
+    </div>
+    <!-- /Actualizar Empresa Form -->
+
+<!-- Form Ver PDF-->
+<div class="modal fade" id="PDFPyme">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Cabecera del modal -->
+      <div class="modal-header">
+        <h4 class="modal-title" >Reporte Pymes</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Contenido del modal -->
+      <div class="modal-body">
+        <!-- Aquí puedes colocar tu DataTable o cualquier otro contenido que desees mostrar -->
+        <table class="table table-striped">
+          <thead class="thead-dark">
+            <tr>
+              <th>Nombre Pyme</th>
+              <th>Categoria</th>
+              <th>Descripcion</th>
+              <th>Creado</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let pyme of listPymes">
+              <td>{{ pyme.nombre_pyme }}</td>
+              <td>{{ pyme.categoria}}</td>
+              <td>{{ pyme.descripcion }}</td>
+              <td>{{ pyme.creado_por }}</td>
+              <td>{{ getEstadoText(pyme.estado) }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+      <!-- Pie del modal -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary customn-print-button btn-danger" (click)="generatePDF()">
+          <i class="fas fa-file-pdf"></i>  Generar PDF</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts de Bootstrap y jQuery (asegúrate de incluirlos) -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
