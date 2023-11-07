@@ -230,24 +230,24 @@ getEstadoText(estado: number): string {
 
   deleteEmpresa(id_empresa: number) {
     if (id_empresa !== undefined) {
-      this._empresaService.deleteEmpresa(id_empresa).subscribe(
-        (data) => {
-          // Elimina la pyme de la lista actual en el componente después de la eliminación
-          this.listEmpresa.splice(id_empresa);
-          this.toastr.success('La Empresa ha sido eliminada con éxito');
-        },
-        (error) => {
-          console.error('Error al eliminar la Empresa', error);
-          this.toastr.error('Error al eliminar la Empresa');
-        }
-      );
+        this._empresaService.deleteEmpresa(id_empresa).subscribe(
+            (data) => {
+                // Elimina la empresa de la lista actual en el componente después de la eliminación
+                const index = this.listEmpresa.findIndex(empresa => empresa.id_empresa === id_empresa);
+                if (index !== -1) {
+                    this.listEmpresa.splice(index, 1);
+                }
+                this.toastr.success('La Empresa ha sido eliminada con éxito');
+            },
+            (error) => {
+                console.error('Error al eliminar la Empresa', error);
+                this.toastr.error('Error al eliminar la Empresa');
+            }
+        );
     } else {
-      console.error('El valor de id_empresa es indefinido o no válido.');
+        console.error('El valor de id_empresa es indefinido o no válido.');
     }
-    location.reload();
-    this.ngZone.run(() => {        
-    });
-  }
+}
 
   /*********************************************************************************************/
 
