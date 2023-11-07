@@ -6,7 +6,7 @@ import { Empresa  } from 'src/app/interfaces/empresa/empresas';
 import { EmpresaService } from 'src/app/services/empresa/empresa.service';
 import { ErrorService } from 'src/app/services/error.service';
 import { NgZone } from '@angular/core';
-import * as jsPDF from 'jspdf';
+//import * as jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import { BitacoraService } from 'src/app/services/administracion/bitacora.service';
 import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
