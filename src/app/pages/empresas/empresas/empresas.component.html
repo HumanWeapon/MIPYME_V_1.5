@@ -31,8 +31,8 @@
                         <td>{{ empresa.fecha_creacion}}</td>
                         <td>{{ empresa.fecha_modificacion}}</td>
                         <td>
-                            <ng-container *ngIf="empresa.estado === 1">Activo</ng-container>
-                            <ng-container *ngIf="empresa.estado === 2">Inactivo</ng-container>
+                            <ng-container *ngIf="empresa.estado === 1">ACTIVO</ng-container>
+                            <ng-container *ngIf="empresa.estado === 2">INACTIVO</ng-container>
                           </td>
                         <td class="text-center">
                           <div class="btn-group">
@@ -178,8 +178,3 @@
     </div>
   </div>
 </div>
-
-<!-- Scripts de Bootstrap y jQuery (asegúrate de incluirlos) -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { EMPTY, Observable } from 'rxjs';
-import { observableToBeFn } from 'rxjs/internal/testing/TestScheduler';
+import { Observable } from 'rxjs';
+
 import { Empresa } from '../../interfaces/empresa/empresas';
 import { environment } from 'src/enviroments/enviromet';
 
@@ -23,24 +23,13 @@ export class EmpresaService {
 
 
    addEmpresa(empresa: Empresa): Observable<any> {
-    const nuevaEmpresa = {   
-
-        id_tipo_empresa: empresa.id_tipo_empresa,
-        nombre_empresa: empresa.nombre_empresa,
-        descripcion: empresa.descripcion, 
-        creado_por: "ISMAELM",
-        fecha_creacion: empresa.fecha_creacion,
-        modificado_por: "ISMAELM",
-        fecha_modificacion: empresa.fecha_modificacion,
-        estado: empresa.estado
-      };
       const token = localStorage.getItem('token')
       const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-      return this.http.post<Empresa>(`${this.myAppUrl}${this.myApiUrl}/postEmpresa`, nuevaEmpresa, { headers: headers })
+      return this.http.post<Empresa>(`${this.myAppUrl}${this.myApiUrl}/postEmpresa`, empresa, { headers: headers })
   }
 
 
-   getEmpresa(empresa: Empresa): Observable<Empresa> {
+  getEmpresa(empresa: Empresa): Observable<Empresa> {
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
     return this.http.post<Empresa>(`${this.myAppUrl}${this.myApiUrl}/getEmpresa`, empresa,{ headers: headers })
@@ -51,6 +40,13 @@ export class EmpresaService {
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
     return this.http.get<Empresa[]>(`${this.myAppUrl}${this.myApiUrl}/getAllEmpresas`,  { headers: headers })
   }
+  getEmpresasPymes(id_tipo_empresa: any): Observable<Empresa[]> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const requestBody = { id_tipo_empresa }; // Coloca el id_tipo_empresa en un objeto
+    return this.http.post<Empresa[]>(`${this.myAppUrl}${this.myApiUrl}/getEmpresasPymes`, requestBody, { headers: headers });
+  }
+  
 
   inactivarEmpresa(empresa: Empresa): Observable<Empresa>{
     const token = localStorage.getItem('token')
