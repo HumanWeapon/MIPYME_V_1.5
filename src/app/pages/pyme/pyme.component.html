@@ -26,21 +26,21 @@
                     </thead>
                     <tbody>
                       <tr *ngFor="let pyme of listPymes; let i = index">
-                        <td>{{ pyme.nombre_pyme }}</td>
-                        <td>{{ pyme.categoria }}</td>
+                        <td>{{ pyme.nombre_empresa }}</td>
                         <td>{{ pyme.descripcion }}</td>
                         <td>{{ pyme.creado_por}}</td>
                         <td>{{ pyme.fecha_creacion}}</td>
+                        <td>{{ pyme.modificado_por}}</td>
                         <td>{{ pyme.fecha_modificacion}}</td>
                         <td>
-                            <ng-container *ngIf="pyme.estado === 1">Activo</ng-container>
-                            <ng-container *ngIf="pyme.estado === 2">Inactivo</ng-container>
-                          </td>
+                          <ng-container *ngIf="pyme.estado === 1">ACTIVO</ng-container>
+                          <ng-container *ngIf="pyme.estado === 2">INACTIVO</ng-container>
+                        </td>
                         <td class="text-center">
                           <div class="btn-group">
                               <button type="button" (click)="obtenerIdPyme(pyme, i)" data-toggle="modal" title='Editar Pyme' data-target="#abrirModalEditarPyme"data-toggle="modal" data-target="#abrirModalEditarPyme" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
                               <button type="button" (click)="toggleFunction(pyme, i)" class="btna " [title]="pyme.estado === 1 ? 'Desactivar Pyme' : 'Activar Pyme'"><i class="fas" [ngClass]="pyme.estado === 1 ? 'fa-solid fa-lock' : 'fa-solid fa-lock-open'"></i> </button>
-                              <button type="button" (click)="deletePyme(pyme.id_pyme)" class="btna" title="Eliminar Pyme"><i class=" fas fa-solid fa-trash"></i></button>
+                              <button type="button" (click)="deletePyme(pyme.id_empresa)" class="btna" title="Eliminar Pyme"><i class=" fas fa-solid fa-trash"></i></button>
                             </div>
                         </td>
                       </tr>
@@ -76,20 +76,16 @@
         <!-- Campo: Nombre de la Pyme -->
         <div class="form-group">
           <label for="nuevaPyme">Nombre de la Pyme:</label>
-          <input type="text" [(ngModel)]="nuevaPyme.nombre_pyme" name="nombre_pyme" (input)="onInputChange($event, 'nombre_pyme')" class="form-control" id="nuevapyme" placeholder="Nombre de la Pyme">
+          <input type="text" [(ngModel)]="newEmpresa.nombre_empresa" name="newEmpresa.nombre_empresa" (input)="onInputChange($event, 'nombre_pyme')" class="form-control" id="nuevapyme" placeholder="Nombre de la Pyme">
         </div>
         <!-- Campo: Descripción -->
         <div class="form-group">
           <label for="nuevaDescripcion">Descripción:</label>
-          <input type="text" [(ngModel)]="nuevaPyme.descripcion" name="descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="descripcion" placeholder="Descripción">
+          <input type="text" [(ngModel)]="newEmpresa.descripcion" name="newEmpresa.descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="descripcion" placeholder="Descripción">
         </div>
         <div class="form-group">
-            <label for="nuevaCategoria">Categoria:</label>
-            <input type="text" [(ngModel)]="nuevaPyme.categoria" name="categoria" (input)="onInputChange($event, 'categoria')" class="form-control" id="categoria" placeholder="Categoria">
-          </div>
-        <div class="form-group">
           <label for="estado">Estado</label>
-          <select [(ngModel)]="nuevaPyme.estado" name="pyme.estado" class="form-control" id="estado">
+          <select [(ngModel)]="newEmpresa.estado" name="newEmpresa.estado" class="form-control" id="estado">
             <option value="0">Selecciona un Estado</option>
             <option value="1">ACTIVO</option>
             <option value="2">INACTIVO</option>           
@@ -125,15 +121,11 @@
                 <form>
                   <div class="form-group">
                       <label for="pymeEditando">Nombre de Pyme</label>
-                      <input type="text" [(ngModel)]="pymeEditando.nombre_pyme" name="pymeEditando.nombre_pyme" (input)="onInputChange($event, 'nombre_pyme')" class="form-control" id="editarNombre" placeholder="Nombre de la Pyme">
-                  </div>  
-                  <div class="form-group">
-                    <label for="PymeEditando">Categoria</label>
-                    <input type="text" [(ngModel)]="pymeEditando.categoria" name="pymeEditando.descripcion" (input)="onInputChange($event, 'categoria')" class="form-control" id="editarCategoria" placeholder="Categotria">
-                </div>  
+                      <input type="text" [(ngModel)]="editEmpresa.nombre_empresa" name="pymeEditando.nombre_pyme" (input)="onInputChange($event, 'nombre_pyme')" class="form-control" id="editarNombre" placeholder="Nombre de la Pyme">
+                  </div>   
                 <div class="form-group">
                     <label for="PymeEditando">Descripción</label>
-                    <input type="text" [(ngModel)]="pymeEditando.descripcion" name="pymeEditando.descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="editarDescripcion" placeholder="Descripción">
+                    <input type="text" [(ngModel)]="editEmpresa.descripcion" name="pymeEditando.descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="editarDescripcion" placeholder="Descripción">
                 </div>      
               </form>
             </div>
@@ -148,7 +140,7 @@
 
 <!-- Form Ver PDF-->
 <div class="modal fade" id="PDFPyme">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-xl">
     <div class="modal-content">
 
       <!-- Cabecera del modal -->
@@ -164,19 +156,26 @@
           <thead class="thead-dark">
             <tr>
               <th>Nombre Pyme</th>
-              <th>Categoria</th>
               <th>Descripcion</th>
-              <th>Creado</th>
+              <th>Creador</th>
+              <th>Fecha</th>
+              <th>Modificado por</th>
+              <th>Fecha</th>
               <th>Estado</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let pyme of listPymes">
-              <td>{{ pyme.nombre_pyme }}</td>
-              <td>{{ pyme.categoria}}</td>
+              <td>{{ pyme.nombre_empresa }}</td>
               <td>{{ pyme.descripcion }}</td>
-              <td>{{ pyme.creado_por }}</td>
-              <td>{{ getEstadoText(pyme.estado) }}</td>
+              <td>{{ pyme.creado_por}}</td>
+              <td>{{ pyme.fecha_creacion}}</td>
+              <td>{{ pyme.modificado_por}}</td>
+              <td>{{ pyme.fecha_modificacion}}</td>
+              <td>
+                <ng-container *ngIf="pyme.estado === 1">ACTIVO</ng-container>
+                <ng-container *ngIf="pyme.estado === 2">INACTIVO</ng-container>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -190,8 +189,3 @@
     </div>
   </div>
 </div>
-
-<!-- Scripts de Bootstrap y jQuery (asegúrate de incluirlos) -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
