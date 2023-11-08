@@ -94,7 +94,64 @@ onInputChange(event: any, field: string) {
   }
 }
 
+/*****************************************************************************************************/
 
+generatePDF() {
+
+  const {jsPDF} = require ("jspdf");
+ 
+  const doc = new jsPDF();
+  const data: any[][] =[]
+  const headers = ['Nombre Pyme', 'Descripcion', 'Creado', 'Estado'];
+
+  // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
+  this.listrequisito.forEach((Trequi, index) => {
+    const row = [
+      Trequi.tipo_requisito,
+      Trequi.descripcion,
+      Trequi.creado_por,
+      Trequi.fecha_creacion,
+      Trequi.modificado_por,
+      Trequi.fecha_modificacion,
+      this.getEstadoText(Trequi.estado) // Función para obtener el texto del estado
+    ];
+    data.push(row);
+  });
+
+  doc.autoTable({
+    head: [headers],
+    body: data,
+  });
+
+  doc.output('dataurlnewwindow', null, 'Pymes.pdf');
+}
+
+getEstadoText(estado: number): string {
+  switch (estado) {
+    case 1:
+      return 'Activo';
+    case 2:
+      return 'Inactivo';
+    case 3:
+      return 'Vencido';
+    case 4:
+      return 'Bloqueado';
+    default:
+      return 'Desconocido';
+  }
+}
+
+
+/**************************************************************/
+toggleFunction(Trequi: any, i: number) {
+
+  // Ejecuta una función u otra según el estado
+  if (Trequi.estado === 1 ) {
+    this.inactivarRequisito(Trequi, i); // Ejecuta la primera función
+  } else {
+    this.activarRequisito(Trequi, i); // Ejecuta la segunda función
+  }
+}
   inactivarRequisito(requisito: Requisito, i: any){
     this._requisitoService.inactivarRequisito(requisito).subscribe(data => this.toastr.success('El requisito: '+ requisito.tipo_requisito + ' ha sido inactivado'));
     this.listrequisito[i].estado = 2; 

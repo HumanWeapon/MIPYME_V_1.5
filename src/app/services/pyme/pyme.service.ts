@@ -33,7 +33,9 @@ export class PymesService {
                 fecha_modificacion: pyme.fecha_modificacion,
                 estado: pyme.estado
       };
-      return this.http.post<Pyme>(`${this.myAppUrl}${this.myApiUrl}/postPyme`, nuevaPyme)
+      const token = localStorage.getItem('token')
+      const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
+      return this.http.post<Pyme>(`${this.myAppUrl}${this.myApiUrl}/postPyme`, nuevaPyme, { headers: headers })
   }
 
 

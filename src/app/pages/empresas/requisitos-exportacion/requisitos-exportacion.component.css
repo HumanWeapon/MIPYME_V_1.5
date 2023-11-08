@@ -1,0 +1,5 @@
+.custom-print-button {
+    position: absolute; /* Establece la posición absoluta */
+    right: 25px; /* Ajusta la distancia desde el borde derecho */
+    top: 10px; /* Ajusta la distancia desde el borde superior */
+  }
