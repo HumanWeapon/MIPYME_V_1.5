@@ -30,7 +30,6 @@ export class PymeComponent {
     estado: 0
   };
 
-
   nuevaPyme: Pyme = {
     id_pyme: 0,
     nombre_pyme: '',
