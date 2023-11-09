@@ -1,10 +1,13 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { Subject } from 'rxjs';
 import { Paises } from 'src/app/interfaces/empresa/paises';
+import { Usuario } from 'src/app/interfaces/seguridad/usuario';
+import { BitacoraService } from 'src/app/services/administracion/bitacora.service';
 import { PaisesService } from 'src/app/services/empresa/paises.service';
 import { ErrorService } from 'src/app/services/error.service';
+import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 
 @Component({
   selector: 'app-paises',
@@ -52,14 +55,18 @@ export class PaisesComponent implements OnInit{
   constructor(
     private _objService: PaisesService, 
     private toastr: ToastrService,
-    ) { }
+    private ngZone: NgZone,
+    private _bitacoraService: BitacoraService,
+    private _errorService: ErrorService,
+    private _userService: UsuariosService
+    ) {}
 
   
   ngOnInit(): void {
-
+    this.getUsuario()
     this.dtOptions = {
       pagingType: 'full_numbers',
-      pageLength: 5,
+      pageLength: 10,
       language: {url:'//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'},
       responsive: true
     };
@@ -81,22 +88,82 @@ export class PaisesComponent implements OnInit{
     if (field === 'paises') {
       // Convierte a mayúsculas y elimina espacios en blanco
       event.target.value = inputValue.toUpperCase().replace(/\s/g, '')
-    } else if (field === 'paises' || field === 'descripcion'){
+    } else if (field === 'paises'){
       // Convierte a mayúsculas sin eliminar espacios en blanco
       event.target.value = inputValue.toUpperCase();
     }
   }
   
+  // Variable de estado para alternar funciones
+
+toggleFunction(paises: any, i: number) {
+
+  // Ejecuta una función u otra según el estado
+  if (paises.estado === 1 ) {
+    this.inactivarPais(paises, i); // Ejecuta la primera función
+  } else {
+    this.activarPais(paises, i); // Ejecuta la segunda función
+  }
+}
  
-  
   inactivarPais(paises: Paises, i: any){
-    this._objService.inactivarPais(paises).subscribe(data => this.toastr.success('El pais: '+ paises.pais+ ' ha sido inactivado'));
+    this._objService.inactivarPais(paises).subscribe(data => 
+    this.toastr.success('El pais: '+ paises.pais+ ' ha sido inactivado')
+    );
     this.listPaises[i].estado = 2;
   }
   activarPais(paises: Paises, i: any){
-    this._objService.activarPais(paises).subscribe(data => this.toastr.success('El pais: '+ paises.pais+ ' ha sido activado'));
+    this._objService.activarPais(paises).subscribe(data => 
+    this.toastr.success('El pais: '+ paises.pais+ ' ha sido activado')
+    );
     this.listPaises[i].estado = 1;
   }
+
+  /*****************************************************************************************************/
+
+generatePDF() {
+
+  const {jsPDF} = require ("jspdf");
+ 
+  const doc = new jsPDF();
+  const data: any[][] =[]
+  const headers = ['Nombre Pais', 'Descripcion', 'Creador', 'Fecha', 'Modificado por', 'Fecha', 'Estado'];
+
+  // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
+  this.listPaises.forEach((paises, index) => {
+    const row = [
+      paises.pais,
+      paises.descripcion,
+      paises.creado_por,
+      paises.fecha_creacion,
+      paises.modificado_por,
+      paises.fecha_modificacion,
+      this.getEstadoText(paises.estado) // Función para obtener el texto del estado
+    ];
+    data.push(row);
+  });
+
+  doc.autoTable({
+    head: [headers],
+    body: data,
+  });
+
+  doc.output('dataurlnewwindow', null, 'Pymes.pdf');
+}
+
+getEstadoText(estado: number): string {
+  switch (estado) {
+    case 1:
+      return 'ACTIVO';
+    case 2:
+      return 'INACTIVO';
+    default:
+      return 'Desconocido';
+  }
+}
+
+
+/**************************************************************/
 
   agregarNuevoPais() {
 
@@ -114,9 +181,17 @@ export class PaisesComponent implements OnInit{
 
       };
       console.log(this.nuevoPais);
-      this._objService.addPais(this.nuevoPais).subscribe(data => {
-        this.toastr.success('Pais agregado con éxito');
-         location.reload();
+      this._objService.addPais(this.nuevoPais).subscribe({
+        next: (data) => {
+          this.insertBitacora(data);
+          this.toastr.success('Pais agregado con éxito')
+        },
+        error: (e: HttpErrorResponse) => {
+          this._errorService.msjError(e);
+        }
+      });
+      location.reload();
+      this.ngZone.run(() => {        
       });
     }
   }
@@ -151,4 +226,115 @@ export class PaisesComponent implements OnInit{
         });
     
     };
+
+/*************************************************************** Métodos de Bitácora ***************************************************************************/
+
+getUser: Usuario = {
+  id_usuario: 0,
+  creado_por: '',
+  fecha_creacion: new Date(),
+  modificado_por: '',
+  fecha_modificacion: new Date(),
+  usuario: '',
+  nombre_usuario: '',
+  correo_electronico: '',
+  estado_usuario: 0,
+  contrasena: '',
+  id_rol: 0,
+  fecha_ultima_conexion: new Date(),
+  primer_ingreso: new Date(),
+  fecha_vencimiento: new Date(),
+  intentos_fallidos: 0
+};
+
+getUsuario(){
+  const userlocal = localStorage.getItem('usuario');
+  if(userlocal){
+    this.getUser = {
+      usuario: userlocal,
+      id_usuario: 0,
+      creado_por: '',
+      fecha_creacion: new Date(),
+      modificado_por: '',
+      fecha_modificacion: new Date(),
+      nombre_usuario: '',
+      correo_electronico: '',
+      estado_usuario: 0,
+      contrasena: '',
+      id_rol: 0,
+      fecha_ultima_conexion: new Date(),
+      primer_ingreso: new Date(),
+      fecha_vencimiento: new Date(),
+      intentos_fallidos: 0
   }
+ }
+
+ this._userService.getUsuario(this.getUser).subscribe({
+   next: (data) => {
+     this.getUser = data;
+   },
+   error: (e: HttpErrorResponse) => {
+     this._errorService.msjError(e);
+   }
+ });
+}
+
+insertBitacora(dataPais: Paises){
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 1,
+    accion: 'INSERTAR',
+    descripcion: 'SE INSERTA EL PAIS CON EL ID: '+ dataPais.id_pais
+  }
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+  })
+}
+updateBitacora(dataPais: Paises){
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.usuario,
+    id_objeto: 1,
+    accion: 'ACTUALIZAR',
+    descripcion: 'SE ACTUALIZA EL PAIS CON EL ID: '+ dataPais.id_pais
+  };
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+  })
+}
+activarBitacora(dataPais: Paises){
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.usuario,
+    id_objeto: 1,
+    accion: 'ACTIVAR',
+    descripcion: 'SE ACTIVA EL PAIS CON EL ID: '+ dataPais.id_pais
+  }
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+  })
+}
+inactivarBitacora(dataPais: Paises){
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.usuario,
+    id_objeto: 1,
+    accion: 'INACTIVAR',
+    descripcion: 'SE INACTIVA EL PAIS CON EL ID: '+ dataPais.id_pais
+  }
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+  })
+}
+deleteBitacora(dataPais: Paises){
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.usuario,
+    id_objeto: 1,
+    accion: 'ELIMINAR',
+    descripcion: 'SE ELIMINA EL PAIS CON EL ID: '+ dataPais.id_pais
+  }
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+  })
+}
+  /*************************************************************** Fin Métodos de Bitácora ***************************************************************************/
+
+
+}

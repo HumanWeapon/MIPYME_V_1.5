@@ -117,7 +117,7 @@ generatePDF() {
  
   const doc = new jsPDF();
   const data: any[][] =[]
-  const headers = ['Nombre Empresa', 'Descripcion', 'Creado', 'Estado'];
+  const headers = ['Nombre Empresa', 'Descripcion', 'Creador', 'Fecha', 'Modificado por', 'Fecha', 'Estado'];
 
   // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
   this.listEmpresa.forEach((empresa, index) => {
@@ -125,6 +125,9 @@ generatePDF() {
       empresa.nombre_empresa,
       empresa.descripcion,
       empresa.creado_por,
+      empresa.fecha_creacion,
+      empresa.modificado_por,
+      empresa.fecha_modificacion,
       this.getEstadoText(empresa.estado) // Función para obtener el texto del estado
     ];
     data.push(row);
@@ -141,13 +144,9 @@ generatePDF() {
 getEstadoText(estado: number): string {
   switch (estado) {
     case 1:
-      return 'Activo';
+      return 'ACTIVO';
     case 2:
-      return 'Inactivo';
-    case 3:
-      return 'Vencido';
-    case 4:
-      return 'Bloqueado';
+      return 'INACTIVO';
     default:
       return 'Desconocido';
   }
@@ -156,14 +155,17 @@ getEstadoText(estado: number): string {
 
 /**************************************************************/
   agregarNuevaEmpresa() {
+
+    const userLocal = localStorage.getItem('usuario');
+    if (userLocal){
     this.nuevaEmpresa={
       id_empresa: 0,
-      id_tipo_empresa:2,
+      id_tipo_empresa:this.nuevaEmpresa.id_tipo_empresa,
       nombre_empresa: this.nuevaEmpresa.nombre_empresa,
       descripcion: this.nuevaEmpresa.descripcion,
-      creado_por: 'ISMAELM',
+      creado_por: userLocal,
       fecha_creacion: new Date(),
-      modificado_por: 'ISMAELM',
+      modificado_por: userLocal,
       fecha_modificacion: new Date(),
       estado: 1
     };
@@ -181,7 +183,7 @@ getEstadoText(estado: number): string {
     this.ngZone.run(() => {        
     });
   }
-    
+}
 
 
 /*******************************************************************************/
@@ -336,7 +338,7 @@ getEstadoText(estado: number): string {
       id_usuario: this.getUser.usuario,
       id_objeto: 10,
       accion: 'ACTUALIZAR',
-      descripcion: 'SE ACTUALIZA EL PAIS CON EL ID: '+ dataEmpresa.id_empresa
+      descripcion: 'SE ACTUALIZA LA EMPRESA CON EL ID: '+ dataEmpresa.id_empresa
     };
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
@@ -347,7 +349,7 @@ getEstadoText(estado: number): string {
       id_usuario: this.getUser.usuario,
       id_objeto: 10,
       accion: 'ACTIVAR',
-      descripcion: 'SE ACTIVA EL CONTACTO CON EL ID: '+ dataEmpresa.id_empresa
+      descripcion: 'SE ACTIVA LA EMPRESA CON EL ID: '+ dataEmpresa.id_empresa
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
@@ -358,7 +360,7 @@ getEstadoText(estado: number): string {
       id_usuario: this.getUser.usuario,
       id_objeto: 10,
       accion: 'INACTIVAR',
-      descripcion: 'SE INACTIVA EL CONTACTO CON EL ID: '+ dataEmpresa.id_empresa
+      descripcion: 'SE INACTIVA LA EMPRESA CON EL ID: '+ dataEmpresa.id_empresa
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
@@ -369,38 +371,12 @@ getEstadoText(estado: number): string {
       id_usuario: this.getUser.usuario,
       id_objeto: 10,
       accion: 'ELIMINAR',
-      descripcion: 'SE ELIMINA EL CONTACTO CON EL ID: '+ dataEmpresa.id_empresa
+      descripcion: 'SE ELIMINA LA EMPRESA CON EL ID: '+ dataEmpresa.id_empresa
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
   }
     /*************************************************************** Fin Métodos de Bitácora ***************************************************************************/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }
 

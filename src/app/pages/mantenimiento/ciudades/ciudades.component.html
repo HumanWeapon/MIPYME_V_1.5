@@ -6,7 +6,9 @@
               <div class="card">
                 <div class="card-header">
                   <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarCiudad">
-                    <i class="fas fa-user-plus"></i> Agregar Ciudad</button>
+                    <i class="fas fa-plus"></i> Nuevo</button>
+                    <button type="button" class="btn btn-primary custom-print-button btn-danger" title="Generar el Reporte" data-toggle="modal" data-target="#PDFCiudad">
+                      <i class="fas fa-file-pdf mr-2"></i>PDF</button>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
@@ -32,15 +34,14 @@
                             <td>{{ ciu.modificado_por}}</td>
                             <td>{{ ciu.fecha_modificacion}}</td>
                             <td>
-                              <ng-container *ngIf="ciu.estado === 1">Activo</ng-container>
-                              <ng-container *ngIf="ciu.estado === 2">Inactivo</ng-container>
+                              <ng-container *ngIf="ciu.estado === 1">ACTIVO</ng-container>
+                              <ng-container *ngIf="ciu.estado === 2">INACTIVO</ng-container>
                               
                             </td>
                             <td class="text-center">
                               <div class="btn-group">
-                                  <button type="button" (click)="obtenerIdCiudad(ciu, i)" data-toggle="modal" data-target="#abrirModalEditarCiudad"data-toggle="modal" data-target="#abrirModalEditarCiudad" class="btn btn-warning" ><i class="fas fa-solid fa-pen"></i></button>
-                                  <button type="button" (click)="inactivarCiudad(ciu, i)" class="btn btn-danger"><i class="fas fa-solid fa-lock "></i></button>
-                                  <button type="button" (click)="activarCiudad(ciu, i)" class="btn btn-primary"><i class="fas fa-solid fa-lock-open"></i></button>
+                                  <button type="button" (click)="obtenerIdCiudad(ciu, i)" title="Editar Ciudad" data-toggle="modal" data-target="#abrirModalEditarCiudad"data-toggle="modal" data-target="#abrirModalEditarCiudad" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
+                                  <button type="button" (click)="toggleFunction(ciu, i)" class="btna " [title]="ciu.estado === 1 ? 'Desactivar Ciudad' : 'Activar Ciudad'"><i class="fas" [ngClass]="ciu.estado === 1 ? 'fa-solid fa-lock' : 'fa-solid fa-lock-open'"></i> </button>
                                 </div>
                             </td>
                           </tr>
@@ -130,6 +131,55 @@
   </div>
   <!-- /Actualizar ciudad Form -->
 
+
+  <!-- Form Ver PDF-->
+<div class="modal fade" id="PDFCiudad">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+
+      <!-- Cabecera del modal -->
+      <div class="modal-header">
+        <h4 class="modal-title" >Reporte Ciudades</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Contenido del modal -->
+      <div class="modal-body">
+        <!-- Aquí puedes colocar tu DataTable o cualquier otro contenido que desees mostrar -->
+        <table class="table table-striped">
+          <thead class="thead-dark">
+            <tr>
+              <th>Ciudad</th>
+              <th>Descripción</th>
+              <th>Creado</th>
+              <th>Fecha Creación</th>
+              <th>Modificado</th>
+              <th>Fecha Modificación</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let ciu of listCiudades; let i = index">
+              <td>{{ ciu.ciudad }}</td>
+              <td>{{ ciu.descripcion }}</td>
+              <td>{{ ciu.creado_por}}</td>
+              <td>{{ ciu.fecha_creacion }}</td>
+              <td>{{ ciu.modificado_por}}</td>
+              <td>{{ ciu.fecha_modificacion}}</td>
+              <td>{{ getEstadoText(ciu.estado) }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+      <!-- Pie del modal -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary customn-print-button btn-danger" (click)="generatePDF()">
+          <i class="fas fa-file-pdf"></i>  Generar PDF</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 

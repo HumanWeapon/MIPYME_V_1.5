@@ -3,10 +3,13 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Subject } from 'rxjs';
-import { TipoContacto } from 'src/app/interfaces/mantenimiento/tipoContacto';
 import { RequisitoService } from 'src/app/services/empresa/requisitos.service';
 import { NgZone } from '@angular/core';
 import { Requisito } from 'src/app/interfaces/empresa/requisitos';
+import { BitacoraService } from 'src/app/services/administracion/bitacora.service';
+import { ErrorService } from 'src/app/services/error.service';
+import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
+import { Usuario } from 'src/app/interfaces/seguridad/usuario';
 
 
 @Component({
@@ -31,9 +34,9 @@ export class RequisitosExportacionComponent implements OnInit{
     id_tipo_requisito: 0, 
     tipo_requisito: '', 
     descripcion:'',
-    creado_por: 'SYSTEM', 
+    creado_por: '', 
     fecha_creacion: new Date(), 
-    modificado_por: 'SYSTEM', 
+    modificado_por: '', 
     fecha_modificacion: new Date(),
     estado: 0,
 
@@ -53,14 +56,18 @@ export class RequisitosExportacionComponent implements OnInit{
   constructor(
     private _requisitoService: RequisitoService,   
     private toastr: ToastrService,
+    private _bitacoraService: BitacoraService,
+    private _errorService: ErrorService,
+    private _userService: UsuariosService,
     private ngZone: NgZone
     ) { }
 
   
   ngOnInit(): void {
+    this.getUsuario()
     this.dtOptions = {
       pagingType: 'full_numbers',
-      pageLength: 8,
+      pageLength: 10,
       language: {url:'//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'},
       responsive: true
     };
@@ -76,15 +83,6 @@ export class RequisitosExportacionComponent implements OnInit{
     this.dtTrigger.unsubscribe();
   }
 
-
- /* eliminarEspaciosBlanco() {
-    this.ciudadEditando.ciudad = this.ciudadEditando.ciudad.toUpperCase(); // Convierte el texto a mayúsculas
-    this.ciudadEditando.descripcion = this.ciudadEditando.descripcion.toUpperCase(); // Convierte el texto a mayúsculas
-    this.nuevoCiudad.descripcion = this.nuevoCiudad.descripcion.toUpperCase(); // Convierte el texto a mayúsculas
-    this.nuevoCiudad.ciudad = this.nuevoCiudad.ciudad.toUpperCase(); // Convierte el texto a mayúsculas
-  }
-
-*/
 
 onInputChange(event: any, field: string) {
   if (field === 'tipo_requisito' || field === 'descripcion') {
@@ -102,7 +100,7 @@ generatePDF() {
  
   const doc = new jsPDF();
   const data: any[][] =[]
-  const headers = ['Nombre Pyme', 'Descripcion', 'Creado', 'Estado'];
+  const headers = ['Nombre Requisito', 'Descripcion', 'Creador', 'Fecha', 'Modificado por', 'Fecha', 'Estado'];
 
   // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
   this.listrequisito.forEach((Trequi, index) => {
@@ -129,13 +127,9 @@ generatePDF() {
 getEstadoText(estado: number): string {
   switch (estado) {
     case 1:
-      return 'Activo';
+      return 'ACTIVO';
     case 2:
-      return 'Inactivo';
-    case 3:
-      return 'Vencido';
-    case 4:
-      return 'Bloqueado';
+      return 'INACTIVO';;
     default:
       return 'Desconocido';
   }
@@ -152,36 +146,52 @@ toggleFunction(Trequi: any, i: number) {
     this.activarRequisito(Trequi, i); // Ejecuta la segunda función
   }
 }
-  inactivarRequisito(requisito: Requisito, i: any){
-    this._requisitoService.inactivarRequisito(requisito).subscribe(data => this.toastr.success('El requisito: '+ requisito.tipo_requisito + ' ha sido inactivado'));
-    this.listrequisito[i].estado = 2; 
-  }
-  activarRequisito(requisito: Requisito, i: any){
-    this._requisitoService.activarRequisito(requisito).subscribe(data => this.toastr.success('El requisito: '+ requisito.id_tipo_requisito + ' ha sido activado'));
-    this.listrequisito[i].estado = 1;
-  }
+
+activarRequisito(tipo_requisito: any, i: number) {
+  this._requisitoService.activarRequisito(tipo_requisito).subscribe(data =>
+    this.toastr.success('El Requisito: ' + tipo_requisito.tipo_requisito + ' ha sido activado')
+  );
+  this.listrequisito[i].estado = 1;
+}
+
+inactivarRequisito(tipo_requisito: any, i: number) {
+  this._requisitoService.inactivarRequisito(tipo_requisito).subscribe(data =>
+    this.toastr.success('El Requisito: ' + tipo_requisito.tipo_requisito + ' ha sido Inactivado')
+  );
+  this.listrequisito[i].estado = 2;
+}
 
   agregarRequisito() {
 
+    const userLocal = localStorage.getItem('usuario');
+    if (userLocal){
     this.nuevoRequisito = {
       id_tipo_requisito: 0, 
       tipo_requisito: this.nuevoRequisito.tipo_requisito, 
       descripcion:this.nuevoRequisito.descripcion,
-      creado_por: 'SYSTEM', 
+      creado_por: userLocal, 
       fecha_creacion: new Date(), 
-      modificado_por: 'SYSTEM', 
+      modificado_por: userLocal, 
       fecha_modificacion: new Date(),
       estado: 1,
 
     };
 
-    this._requisitoService.addRequisito(this.nuevoRequisito).subscribe(data => {
+    this._requisitoService.addRequisito(this.nuevoRequisito).subscribe({
+    next: (data) => {
+      this.insertBitacora(data);
       this.toastr.success('requisito agregado con éxito');
-      
-       // Recargar la página
-       location.reload();
-    });
-  }
+    },
+    error: (e: HttpErrorResponse) => {
+      this._errorService.msjError(e);
+    }
+  });
+  location.reload();
+  this.ngZone.run(() => {        
+  });
+ }
+}
+
 
 
   obtenerIdTipoRequisito(tipoR: Requisito, i: any){
@@ -202,15 +212,6 @@ toggleFunction(Trequi: any, i: number) {
   }
 
 
-  /*editarRequisito2(){
-    this._requisitoService.editarRequisito(this.RequisitoEditando).subscribe(data => {
-      this.toastr.success('requisito editado con éxito');
-      this.listrequisito[this.indice].tipo_requisito = this.RequisitoEditando.tipo_requisito;
-      this.listrequisito[this.indice].descripcion = this.RequisitoEditando.descripcion;      
-        // Recargar la página
-        location.reload();
-    });
-  }*/
   editarRequisito(){
     this._requisitoService.editarRequisito(this.RequisitoEditando).subscribe(data => {
       this.toastr.success('Requisito editado con éxito');
@@ -220,6 +221,116 @@ toggleFunction(Trequi: any, i: number) {
       this.toastr.error('Hubo un error al editar el requisito');
     });
   }
-  
+
+/*************************************************************** Métodos de Bitácora ***************************************************************************/
+
+getUser: Usuario = {
+  id_usuario: 0,
+  creado_por: '',
+  fecha_creacion: new Date(),
+  modificado_por: '',
+  fecha_modificacion: new Date(),
+  usuario: '',
+  nombre_usuario: '',
+  correo_electronico: '',
+  estado_usuario: 0,
+  contrasena: '',
+  id_rol: 0,
+  fecha_ultima_conexion: new Date(),
+  primer_ingreso: new Date(),
+  fecha_vencimiento: new Date(),
+  intentos_fallidos: 0
+};
+
+getUsuario(){
+  const userlocal = localStorage.getItem('usuario');
+  if(userlocal){
+    this.getUser = {
+      usuario: userlocal,
+      id_usuario: 0,
+      creado_por: '',
+      fecha_creacion: new Date(),
+      modificado_por: '',
+      fecha_modificacion: new Date(),
+      nombre_usuario: '',
+      correo_electronico: '',
+      estado_usuario: 0,
+      contrasena: '',
+      id_rol: 0,
+      fecha_ultima_conexion: new Date(),
+      primer_ingreso: new Date(),
+      fecha_vencimiento: new Date(),
+      intentos_fallidos: 0
+  }
+ }
+
+ this._userService.getUsuario(this.getUser).subscribe({
+   next: (data) => {
+     this.getUser = data;
+   },
+   error: (e: HttpErrorResponse) => {
+     this._errorService.msjError(e);
+   }
+ });
+}
+
+insertBitacora(dataRExportacion: Requisito){
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 11,
+    accion: 'INSERTAR',
+    descripcion: 'SE INSERTA EL REQUISITO CON EL ID: '+ dataRExportacion.id_tipo_requisito
+  }
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+  })
+}
+updateBitacora(dataRExportacion: Requisito){
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.usuario,
+    id_objeto: 11,
+    accion: 'ACTUALIZAR',
+    descripcion: 'SE ACTUALIZA EL REQUISITO CON EL ID: '+ dataRExportacion.id_tipo_requisito
+  };
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+  })
+}
+activarBitacora(dataRExportacion: Requisito){
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.usuario,
+    id_objeto: 11,
+    accion: 'ACTIVAR',
+    descripcion: 'SE ACTIVA EL REQUISITO CON EL ID: '+ dataRExportacion.id_tipo_requisito
+  }
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+  })
+}
+inactivarBitacora(dataRExportacion: Requisito){
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.usuario,
+    id_objeto: 11,
+    accion: 'INACTIVAR',
+    descripcion: 'SE INACTIVA EL REQUISITO CON EL ID: '+ dataRExportacion.id_tipo_requisito
+  }
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+  })
+}
+deleteBitacora(dataRExportacion: Requisito){
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.usuario,
+    id_objeto: 11,
+    accion: 'ELIMINAR',
+    descripcion: 'SE ELIMINA EL REQUISITO CON EL ID: '+ dataRExportacion.id_tipo_requisito
+  }
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+  })
+}
+  /*************************************************************** Fin Métodos de Bitácora ***************************************************************************/
+
 
 }
+

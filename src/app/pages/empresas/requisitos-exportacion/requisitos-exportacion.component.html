@@ -6,7 +6,7 @@
               <div class="card">
                 <div class="card-header">
                   <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarRequisito">
-                    <i class="fas fa-user-plus"></i> Agregar </button>
+                    <i class="fas fa-plus"></i> Agregar </button>
                     <button type="button" class="btn btn-primary custom-print-button btn-danger" title="Generar el Reporte" data-toggle="modal" data-target="#PDFTREQ">
                       <i class="fas fa-file-pdf mr-2"></i>PDF</button>
                 </div>
@@ -34,8 +34,8 @@
                             <td>{{ Trequi.modificado_por}}</td>
                             <td>{{ Trequi.fecha_modificacion}}</td>
                             <td>
-                              <ng-container *ngIf="Trequi.estado === 1">Activo</ng-container>
-                              <ng-container *ngIf="Trequi.estado === 2">Inactivo</ng-container>
+                              <ng-container *ngIf="Trequi.estado === 1">ACTIVO</ng-container>
+                              <ng-container *ngIf="Trequi.estado === 2">INACTIVO</ng-container>
                               
                             </td>
                             <td class="text-center">
@@ -133,7 +133,7 @@
 
   <!-- Form Ver PDF-->
 <div class="modal fade" id="PDFTREQ">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-xl">
     <div class="modal-content">
 
       <!-- Cabecera del modal -->

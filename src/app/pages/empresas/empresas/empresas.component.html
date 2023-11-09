@@ -5,9 +5,9 @@
           <div class="card">
             <div class="card-header">
               <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarEmpresa">
-                <i class="fas fa-user-plus"></i> Agregar</button>
+                <i class="fas fa-plus"></i> Nuevo</button>
               <button type="button" class="btn btn-primary custom-print-button btn-danger" title="Generar el Reporte" data-toggle="modal" data-target="#PDFEmpresa">
-                <i class="fas fa-file-pdf"></i>  Generar PDF</button>
+                <i class="fas fa-file-pdf mr-2"></i>PDF</button>
             </div>
             <!-- /.card-header -->
             <div class="card-body">
@@ -36,9 +36,9 @@
                           </td>
                         <td class="text-center">
                           <div class="btn-group">
-                              <button type="button" (click)="obtenerIdEmpresa(empresa, i)" title='Editar Empresa' data-toggle="modal" data-target="#abrirModalEditarEmpresa" data-toggle="modal" data-target="#abrirModalEditarEmpresa" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
+                              <button type="button" (click)="obtenerIdEmpresa(empresa, i)" title="Editar Empresa" data-toggle="modal" data-target="#abrirModalEditarEmpresa" data-toggle="modal" data-target="#abrirModalEditarEmpresa" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
                               <button type="button" (click)="toggleFunction(empresa, i)" class="btna " [title]="empresa.estado === 1 ? 'Desactivar Empresa' : 'Activar Empresa'"><i class="fas" [ngClass]="empresa.estado === 1 ? 'fa-solid fa-lock' : 'fa-solid fa-lock-open'"></i> </button>
-                              <button type="button" (click)="deleteEmpresa(empresa.id_empresa)" class="btna" title="Eliminar Pyme"><i class=" fas fa-solid fa-trash"></i></button>
+                              <button type="button" (click)="deleteEmpresa(empresa.id_empresa)" class="btna" title="Eliminar Empresa"><i class=" fas fa-solid fa-trash" style="color: #E74C3C;"></i></button>
                             </div>
                         </td>
                       </tr>
@@ -138,7 +138,7 @@
 
 <!-- Form Ver PDF-->
 <div class="modal fade" id="PDFEmpresa">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-xl">
     <div class="modal-content">
 
       <!-- Cabecera del modal -->
@@ -155,7 +155,10 @@
             <tr>
               <th>Nombre Empresa</th>
               <th>Descripcion</th>
-              <th>Creado</th>
+              <th>Creador</th>
+              <th>Fecha</th>
+              <th>Modificado por</th>
+              <th>Fecha</th>
               <th>Estado</th>
             </tr>
           </thead>
@@ -164,6 +167,9 @@
               <td>{{ empresa.nombre_empresa }}</td>
               <td>{{ empresa.descripcion }}</td>
               <td>{{ empresa.creado_por }}</td>
+              <td>{{ empresa.fecha_creacion}}</td>
+              <td>{{ empresa.modificado_por}}</td>
+              <td>{{ empresa.fecha_modificacion}}</td>
               <td>{{ getEstadoText(empresa.estado) }}</td>
             </tr>
           </tbody>

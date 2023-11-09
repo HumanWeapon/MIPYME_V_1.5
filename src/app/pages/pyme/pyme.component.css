@@ -15,3 +15,15 @@
   padding: 10px; /* Agrega relleno a las celdas según tus necesidades */
   border: 1px solid #ddd; /* Establece un borde para las celdas */
 }
+
+.fa-lock{
+  color: #5D6D7E;
+}
+
+.fa-lock-open{
+  color: #2ECC71;
+}
+
+.fa-pen{
+  color: rgb(255, 174, 0)
+}

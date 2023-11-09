@@ -6,7 +6,9 @@
           <div class="card">
             <div class="card-header">
               <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarCategoria">
-                <i class="fas fa-user-plus"></i> Agregar Categoria Producto</button>
+                <i class="fas fa-plus"></i> Nuevo</button>
+              <button type="button" class="btn btn-primary custom-print-button btn-danger" title="Generar el Reporte" data-toggle="modal" data-target="#PDFProducto">
+                <i class="fas fa-file-pdf mr-2"></i>PDF</button>
             </div>
             <!-- /.card-header -->
             <div class="card-body">
@@ -17,10 +19,9 @@
                         <th>Descripción</th>
                         <th>Creado</th>
                         <th>Fecha Creación</th>
-                        <th>Modificado</th>
                         <th>Fecha Modificación</th>
                         <th>Estado</th>
-                        <th>Aciones</th>
+                        <th>Acciones</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -29,18 +30,16 @@
                         <td>{{ cate.descripcion }}</td>
                         <td>{{ cate.creado_por}}</td>
                         <td>{{ cate.fecha_creacion }}</td>
-                        <td>{{ cate.modificado_por}}</td>
-                        <td></td>
+                        <td>{{ cate.fecha_modificacion}}</td>
                         <td>
-                          <ng-container *ngIf="cate.estado === 1">Activo</ng-container>
-                          <ng-container *ngIf="cate.estado === 2">Inactivo</ng-container>
+                          <ng-container *ngIf="cate.estado === 1">ACTIVO</ng-container>
+                          <ng-container *ngIf="cate.estado === 2">INACTIVO</ng-container>
                           
                         </td>
                         <td class="text-center">
                           <div class="btn-group">
-                              <button type="button" (click)="obtenerIdCategoriaProducto(cate, i)" data-toggle="modal" data-target="#abrirModalEditarCategoriaProducto"data-toggle="modal" data-target="#abrirModalEditarCategoriaProducto" class="btn btn-warning" ><i class="fas fa-solid fa-pen"></i></button>
-                              <button type="button" (click)="inactivarCategoria(cate, i)" class="btn btn-danger"><i class="fas fa-solid fa-lock "></i></button>
-                              <button type="button" (click)="activarCategoria(cate, i)" class="btn btn-primary"><i class="fas fa-solid fa-lock-open"></i></button>
+                              <button type="button" (click)="obtenerIdCategoriaProducto(cate, i)" data-toggle="modal" title='Editar Categoria' data-target="#abrirModalEditarCategoriaProducto"data-toggle="modal" data-target="#abrirModalEditarCategoriaProducto" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
+                              <button type="button" (click)="toggleFunction(cate, i)" class="btna " [title]="cate.estado === 1 ? 'Desactivar Categoria' : 'Activar Categoria'"><i class="fas" [ngClass]="cate.estado === 1 ? 'fa-solid fa-lock' : 'fa-solid fa-lock-open'"></i> </button>
                             </div>
                         </td>
                       </tr>
@@ -122,3 +121,52 @@
 </div>
 </div>
 <!-- /Actualizar categoria Form -->
+
+<!-- Form Ver PDF-->
+<div class="modal fade" id="PDFProducto">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+
+      <!-- Cabecera del modal -->
+      <div class="modal-header">
+        <h4 class="modal-title" >Reporte Categorias de Productos</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Contenido del modal -->
+      <div class="modal-body">
+        <!-- Aquí puedes colocar tu DataTable o cualquier otro contenido que desees mostrar -->
+        <table class="table table-striped">
+          <thead class="thead-dark">
+            <tr>
+              <th>Categoria</th>
+              <th>Descripcion</th>
+              <th>Creador</th>
+              <th>Fecha</th>
+              <th>Modificado por</th>
+              <th>Fecha</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let cate of listCate; let i = index">
+              <td>{{ cate.categoria}}</td>
+              <td>{{ cate.descripcion }}</td>
+              <td>{{ cate.creado_por}}</td>
+              <td>{{ cate.fecha_creacion }}</td>
+              <td>{{ cate.modificado_por}}</td>
+              <td>{{ cate.fecha_modificacion}}</td>
+              <td>{{ getEstadoText(cate.estado) }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+      <!-- Pie del modal -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary customn-print-button btn-danger" (click)="generatePDF()">
+          <i class="fas fa-file-pdf"></i>  Generar PDF</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>

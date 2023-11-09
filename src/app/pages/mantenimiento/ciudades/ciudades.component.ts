@@ -5,6 +5,11 @@ import { Subject } from 'rxjs';
 import { Ciudades } from 'src/app/interfaces/mantenimiento/ciudades';
 import { CiudadesService } from 'src/app/services/mantenimiento/ciudades.service';
 import { NgZone } from '@angular/core';
+import { BitacoraService } from 'src/app/services/administracion/bitacora.service';
+import { ErrorService } from 'src/app/services/error.service';
+import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Usuario } from 'src/app/interfaces/seguridad/usuario';
 
 
 
@@ -54,15 +59,17 @@ export class CiudadesComponent implements OnInit{
   constructor(
     private _ciudadService: CiudadesService, 
     private toastr: ToastrService,
-    private router: Router, 
-       private ngZone: NgZone
-    ) { }
+    private _bitacoraService: BitacoraService,
+    private _errorService: ErrorService,
+    private _userService: UsuariosService,
+    private ngZone: NgZone
+    ) {}
 
   
   ngOnInit(): void {
     this.dtOptions = {
       pagingType: 'full_numbers',
-      pageLength: 5,
+      pageLength: 10,
       language: {url:'//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'},
       responsive: true
     };
@@ -77,14 +84,6 @@ export class CiudadesComponent implements OnInit{
     // Do not forget to unsubscribe the event
     this.dtTrigger.unsubscribe();
   }
- /* eliminarEspaciosBlanco() {
-    this.ciudadEditando.ciudad = this.ciudadEditando.ciudad.toUpperCase(); // Convierte el texto a mayúsculas
-    this.ciudadEditando.descripcion = this.ciudadEditando.descripcion.toUpperCase(); // Convierte el texto a mayúsculas
-    this.nuevoCiudad.descripcion = this.nuevoCiudad.descripcion.toUpperCase(); // Convierte el texto a mayúsculas
-    this.nuevoCiudad.ciudad = this.nuevoCiudad.ciudad.toUpperCase(); // Convierte el texto a mayúsculas
-  }
-
-*/
 
 onInputChange(event: any, field: string) {
   if (field === 'ciudad' || field === 'descripcion') {
@@ -94,40 +93,108 @@ onInputChange(event: any, field: string) {
   }
 }
 
+// Variable de estado para alternar funciones
+
+toggleFunction(ciu: any, i: number) {
+
+  // Ejecuta una función u otra según el estado
+  if (ciu.estado === 1 ) {
+    this.inactivarCiudad(ciu, i); // Ejecuta la primera función
+  } else {
+    this.activarCiudad(ciu, i); // Ejecuta la segunda función
+  }
+}
 
   inactivarCiudad(ciudades: Ciudades, i: any){
-    this._ciudadService.inactivarCiudad(ciudades).subscribe(data => this.toastr.success('La Ciudad: '+ ciudades.ciudad + ' ha sido inactivado'));
+    this._ciudadService.inactivarCiudad(ciudades).subscribe(data => 
+    this.toastr.success('La Ciudad: '+ ciudades.ciudad + ' ha sido inactivado')
+    );
     this.listCiudades[i].estado = 2;
   }
   activarCiudad(ciudades: Ciudades, i: any){
-    this._ciudadService.activarCiudad(ciudades).subscribe(data => this.toastr.success('La ciudad: '+ ciudades.ciudad + ' ha sido activado'));
+    this._ciudadService.activarCiudad(ciudades).subscribe(data => 
+    this.toastr.success('La ciudad: '+ ciudades.ciudad + ' ha sido activado')
+    );
     this.listCiudades[i].estado = 1;
   }
+  
+  /*****************************************************************************************************/
+
+generatePDF() {
+
+  const {jsPDF} = require ("jspdf");
+ 
+  const doc = new jsPDF();
+  const data: any[][] =[]
+  const headers = ['Nombre Ciudad', 'Descripcion', 'Creador', 'Fecha', 'Modificado por', 'Fecha', 'Estado'];
+
+  // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
+  this.listCiudades.forEach((ciu, index) => {
+    const row = [
+      ciu.ciudad,
+      ciu.descripcion,
+      ciu.creado_por,
+      ciu.fecha_creacion,
+      ciu.modificado_por,
+      ciu.fecha_modificacion,
+      this.getEstadoText(ciu.estado) // Función para obtener el texto del estado
+    ];
+    data.push(row);
+  });
+
+  doc.autoTable({
+    head: [headers],
+    body: data,
+  });
+
+  doc.output('dataurlnewwindow', null, 'Pymes.pdf');
+}
+
+getEstadoText(estado: number): string {
+  switch (estado) {
+    case 1:
+      return 'ACTIVO';
+    case 2:
+      return 'INACTIVO';
+    default:
+      return 'Desconocido';
+  }
+}
+
+
+/**************************************************************/
+
 
   agregarNuevoCiudad() {
 
+    const userLocal = localStorage.getItem('usuario');
+    if (userLocal){
     this.nuevoCiudad = {
       id_ciudad: 0, 
       ciudad: this.nuevoCiudad.ciudad, 
       descripcion:this.nuevoCiudad.descripcion,
-      creado_por: 'SYSTEM', 
+      creado_por: userLocal, 
       fecha_creacion: new Date(), 
-      modificado_por: 'SYSTEM', 
+      modificado_por: userLocal, 
       fecha_modificacion: new Date(),
       estado: 1,
 
     };
 
-    this._ciudadService.addCiudad(this.nuevoCiudad).subscribe(data => {
+    this._ciudadService.addCiudad(this.nuevoCiudad).subscribe({
+      next:(data) => {
+      this.insertBitacora(data);
       this.toastr.success('Ciudad agregado con éxito');
-      
-       // Recargar la página
-       location.reload();
-       // Actualizar la vista
-       this.ngZone.run(() => {        
-       });
-    });
-  }
+    },
+    error: (e: HttpErrorResponse) => {
+      this._errorService.msjError(e);
+    }
+  });
+  location.reload();
+  this.ngZone.run(() => {        
+  });
+ }
+}
 
 
   obtenerIdCiudad(ciudades: Ciudades, i: any){
@@ -161,6 +228,118 @@ onInputChange(event: any, field: string) {
     
     });
   }
+
+  /*************************************************************** Métodos de Bitácora ***************************************************************************/
+
+  getUser: Usuario = {
+    id_usuario: 0,
+    creado_por: '',
+    fecha_creacion: new Date(),
+    modificado_por: '',
+    fecha_modificacion: new Date(),
+    usuario: '',
+    nombre_usuario: '',
+    correo_electronico: '',
+    estado_usuario: 0,
+    contrasena: '',
+    id_rol: 0,
+    fecha_ultima_conexion: new Date(),
+    primer_ingreso: new Date(),
+    fecha_vencimiento: new Date(),
+    intentos_fallidos: 0
+  };
+
+  getUsuario(){
+    const userlocal = localStorage.getItem('usuario');
+    if(userlocal){
+      this.getUser = {
+        usuario: userlocal,
+        id_usuario: 0,
+        creado_por: '',
+        fecha_creacion: new Date(),
+        modificado_por: '',
+        fecha_modificacion: new Date(),
+        nombre_usuario: '',
+        correo_electronico: '',
+        estado_usuario: 0,
+        contrasena: '',
+        id_rol: 0,
+        fecha_ultima_conexion: new Date(),
+        primer_ingreso: new Date(),
+        fecha_vencimiento: new Date(),
+        intentos_fallidos: 0
+    }
+   }
+
+   this._userService.getUsuario(this.getUser).subscribe({
+     next: (data) => {
+       this.getUser = data;
+     },
+     error: (e: HttpErrorResponse) => {
+       this._errorService.msjError(e);
+     }
+   });
+ }
+
+  insertBitacora(dataCiudad: Ciudades){
+    const bitacora = {
+      fecha: new Date(),
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 2,
+      accion: 'INSERTAR',
+      descripcion: 'SE INSERTA LA CIUDAD CON EL ID: '+ dataCiudad.id_ciudad
+    }
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+    })
+  }
+  updateBitacora(dataCiudad: Ciudades){
+    const bitacora = {
+      fecha: new Date(),
+      id_usuario: this.getUser.usuario,
+      id_objeto: 2,
+      accion: 'ACTUALIZAR',
+      descripcion: 'SE ACTUALIZA LA CIUDAD CON EL ID: '+ dataCiudad.id_ciudad
+    };
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+    })
+  }
+  activarBitacora(dataCiudad: Ciudades){
+    const bitacora = {
+      fecha: new Date(),
+      id_usuario: this.getUser.usuario,
+      id_objeto: 2,
+      accion: 'ACTIVAR',
+      descripcion: 'SE ACTIVA LA CIUDAD CON EL ID: '+ dataCiudad.id_ciudad
+    }
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+    })
+  }
+  inactivarBitacora(dataCiudad: Ciudades){
+    const bitacora = {
+      fecha: new Date(),
+      id_usuario: this.getUser.usuario,
+      id_objeto: 2,
+      accion: 'INACTIVAR',
+      descripcion: 'SE INACTIVA LA CIUDAD CON EL ID: '+ dataCiudad.id_ciudad
+    }
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+    })
+  }
+  deleteBitacora(dataCiudad: Ciudades){
+    const bitacora = {
+      fecha: new Date(),
+      id_usuario: this.getUser.usuario,
+      id_objeto: 2,
+      accion: 'ELIMINAR',
+      descripcion: 'SE ELIMINA LA CIUDAD CON EL ID: '+ dataCiudad.id_ciudad
+    }
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+    })
+  }
+    /*************************************************************** Fin Métodos de Bitácora ***************************************************************************/
+
+
+
 }
 
 

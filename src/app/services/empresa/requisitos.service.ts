@@ -16,7 +16,7 @@ export class RequisitoService {
 
   constructor(private http: HttpClient) {
     this.myAppUrl = environment.endpoint;
-    this.myApiUrl = 'api/Tipo_Requisito'
+    this.myApiUrl = 'api/tipo_requisito'
     // Asignar un valor a una clave en localStorage
 
    }
@@ -45,15 +45,15 @@ export class RequisitoService {
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
     return this.http.get<Requisito[]>(`${this.myAppUrl}${this.myApiUrl}/getAllTipo_Requisito`, { headers: headers })
    }
-   inactivarRequisito(requisito: Requisito): Observable<Requisito>{
+   inactivarRequisito(tipo_requisito: Requisito): Observable<Requisito>{
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.post<Requisito>(`${this.myAppUrl}${this.myApiUrl}/inactivateTipoRequisito`, requisito, { headers: headers })
+    return this.http.post<Requisito>(`${this.myAppUrl}${this.myApiUrl}/inactivateRequisito`, tipo_requisito, { headers: headers })
    }
-   activarRequisito(requisito: Requisito): Observable<Requisito>{
+   activarRequisito(tipo_requisito: Requisito): Observable<Requisito>{
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.post<Requisito>(`${this.myAppUrl}${this.myApiUrl}/activateTipoRequisito`, requisito, { headers: headers })
+    return this.http.post<Requisito>(`${this.myAppUrl}${this.myApiUrl}/activateRequisito`, tipo_requisito, { headers: headers })
    }
 
    editarRequisito(requisito: Requisito): Observable<any> {
