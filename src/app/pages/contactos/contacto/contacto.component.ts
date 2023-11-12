@@ -30,9 +30,9 @@ export class ContactoComponent implements OnInit{
     segundo_apellido: '',
     correo: '',
     descripcion: '',
-    creado_por: 'SYSTEM',
+    creado_por: '',
     fecha_creacion: new Date(), 
-    modificado_por: 'SYSTEM',
+    modificado_por: '',
     fecha_modificacion:new Date(), 
     estado: 0,
   };
@@ -47,9 +47,9 @@ export class ContactoComponent implements OnInit{
     segundo_apellido: '',
     correo: '',
     descripcion: '',
-    creado_por: 'SYSTEM',
+    creado_por: '',
     fecha_creacion: new Date(), 
-    modificado_por: 'SYSTEM',
+    modificado_por: '',
     fecha_modificacion:new Date(), 
     estado: 0,
 
@@ -72,7 +72,6 @@ export class ContactoComponent implements OnInit{
     private _errorService: ErrorService,
     private _userService: UsuariosService,
     private toastr: ToastrService,
-    private router: Router, 
     private ngZone: NgZone
     ) { }
 
@@ -98,15 +97,6 @@ export class ContactoComponent implements OnInit{
   }
 
 
- /* eliminarEspaciosBlanco() {
-    this.ciudadEditando.ciudad = this.ciudadEditando.ciudad.toUpperCase(); // Convierte el texto a mayúsculas
-    this.ciudadEditando.descripcion = this.ciudadEditando.descripcion.toUpperCase(); // Convierte el texto a mayúsculas
-    this.nuevoCiudad.descripcion = this.nuevoCiudad.descripcion.toUpperCase(); // Convierte el texto a mayúsculas
-    this.nuevoCiudad.ciudad = this.nuevoCiudad.ciudad.toUpperCase(); // Convierte el texto a mayúsculas
-  }
-
-*/
-
 onInputChange(event: any, field: string) {
   const inputValue = event.target.value; // Mueve esta línea fuera del condicional para definir inputValue independientemente del campo
   
@@ -122,18 +112,82 @@ onInputChange(event: any, field: string) {
   }
 }
 
+// Variable de estado para alternar funciones
 
+toggleFunction(contac: any, i: number) {
+
+  // Ejecuta una función u otra según el estado
+  if (contac.estado === 1 ) {
+    this.inactivarContacto(contac, i); // Ejecuta la primera función
+  } else {
+    this.activarContacto(contac, i); // Ejecuta la segunda función
+  }
+}
 
   inactivarContacto(contacto: Contacto, i: any){
-    this._contactoService.inactivarContacto(contacto).subscribe(data => this.toastr.success('El contacto: '+ contacto.id_contacto + ' ha sido inactivado'));
+    this._contactoService.inactivarContacto(contacto).subscribe(data => 
+    this.toastr.success('El contacto: '+ contacto.primer_nombre + ' ha sido inactivado')
+    );
     this.listContacto[i].estado = 2; 
   }
   activarContacto(contacto: Contacto, i: any){
-    this._contactoService.activarContacto(contacto).subscribe(data => this.toastr.success('El contacto: '+ contacto.id_contacto + ' ha sido activado'));
+    this._contactoService.activarContacto(contacto).subscribe(data => 
+    this.toastr.success('El contacto: '+ contacto.primer_nombre + ' ha sido activado')
+    );
     this.listContacto[i].estado = 1;
   }
 
+/*****************************************************************************************************/
+
+generatePDF() {
+
+  const {jsPDF} = require ("jspdf");
+ 
+  const doc = new jsPDF();
+  const data: any[][] =[]
+  const headers = ['DNI','Nombre Contacto','Correo' ,'Descripcion', 'Creador', 'Fecha', 'Modificado por', 'Fecha', 'Estado'];
+
+  // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
+  this.listContacto.forEach((contac, index) => {
+    const row = [
+      contac.dni,
+      contac.primer_nombre +" "+ contac.segundo_nombre+" "+ contac.primer_apellido +" "+contac.segundo_apellido,
+      contac.correo,
+      contac.descripcion,
+      contac.creado_por,
+      contac.fecha_creacion,
+      contac.fecha_modificacion,
+      this.getEstadoText(contac.estado) // Función para obtener el texto del estado
+    ];
+    data.push(row);
+  });
+
+  doc.autoTable({
+    head: [headers],
+    body: data,
+  });
+
+  doc.output('dataurlnewwindow', null, 'Pymes.pdf');
+}
+
+getEstadoText(estado: number): string {
+  switch (estado) {
+    case 1:
+      return 'ACTIVO';
+    case 2:
+      return 'INACTIVO';
+    default:
+      return 'Desconocido';
+  }
+}
+
+
+/**************************************************************/
+
   agregarNuevoContacto() {
+    
+    const userLocal = localStorage.getItem('usuario');
+    if (userLocal){
     this.nuevoContacto = {
       id_contacto: 0,
       id_tipo_contacto: 0, 
@@ -144,9 +198,9 @@ onInputChange(event: any, field: string) {
       segundo_apellido: this.nuevoContacto.segundo_apellido,   
       correo:this.nuevoContacto.correo,
       descripcion:this.nuevoContacto.descripcion,
-      creado_por: 'SYSTEM', 
+      creado_por: userLocal,
       fecha_creacion: new Date(), 
-      modificado_por: 'SYSTEM', 
+      modificado_por: userLocal, 
       fecha_modificacion: new Date(),
       estado: 1,
 
@@ -161,6 +215,7 @@ onInputChange(event: any, field: string) {
         this._errorService.msjError(e);
       }
     });
+  }
   }
 
 

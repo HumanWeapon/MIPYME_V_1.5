@@ -6,7 +6,9 @@
               <div class="card">
                 <div class="card-header">
                   <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarTipoContacto">
-                    <i class="fas fa-user-plus"></i> Agregar Tipo Contacto</button>
+                    <i class="fas fa-plus"></i> Nuevo</button>
+                    <button type="button" class="btn btn-primary custom-print-button btn-danger" title="Generar el Reporte" data-toggle="modal" data-target="#PDFTipContacto">
+                      <i class="fas fa-file-pdf mr-2"></i>PDF</button>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
@@ -38,9 +40,8 @@
                             </td>
                             <td class="text-center">
                               <div class="btn-group">
-                                  <button type="button" (click)="obtenerIdTipoContacto(Tconta, i)" data-toggle="modal" data-target="#abrirModalEditarTipoContacto"data-toggle="modal" data-target="#abrirModalEditarTipoContacto" class="btn btn-warning" ><i class="fas fa-solid fa-pen"></i></button>
-                                  <button type="button" (click)="inactivarTipoContacto(Tconta, i)" class="btn btn-danger"><i class="fas fa-solid fa-lock "></i></button>
-                                  <button type="button" (click)="activarTipoContacto(Tconta, i)" class="btn btn-primary"><i class="fas fa-solid fa-lock-open"></i></button>
+                                  <button type="button" (click)="obtenerIdTipoContacto(Tconta, i)"  title="Editar Tipo de Contacto"  data-toggle="modal" data-target="#abrirModalEditarTipoContacto"data-toggle="modal" data-target="#abrirModalEditarTipoContacto" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
+                                  <button type="button" (click)="toggleFunction(Tconta, i)" class="btna " [title]="Tconta.estado === 1 ? 'Desactivar Tipo de Contacto' : 'Activar Tipo de Contacto'"><i class="fas" [ngClass]="Tconta.estado === 1 ? 'fa-solid fa-lock' : 'fa-solid fa-lock-open'"></i> </button>
                                 </div>
                             </td>
                           </tr>
@@ -59,9 +60,6 @@
         <!-- /.container-fluid -->
     </section>
       <!-- /.content -->
-  
-  
-  
   
   
    
@@ -130,7 +128,55 @@
   </div>
   <!-- /Actualizar ciudad Form -->
 
+<!-- Form Ver PDF-->
+<div class="modal fade" id="PDFTipContacto">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
 
+      <!-- Cabecera del modal -->
+      <div class="modal-header">
+        <h4 class="modal-title" >Reporte Tipo de Contacto</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Contenido del modal -->
+      <div class="modal-body">
+        <!-- Aquí puedes colocar tu DataTable o cualquier otro contenido que desees mostrar -->
+        <table class="table table-striped">
+          <thead class="thead-dark">
+            <tr>
+              <th>Tipo Contacto</th>
+              <th>Descripcion</th>
+              <th>Creador</th>
+              <th>Fecha</th>
+              <th>Modificado por</th>
+              <th>Fecha</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+              <tr *ngFor="let Tconta of listTipoC">
+                <td>{{ Tconta.tipo_contacto }}</td>
+                <td>{{ Tconta.descripcion }}</td>
+                <td>{{ Tconta.creado_por}}</td>
+                <td>{{ Tconta.fecha_creacion }}</td>
+                <td>{{ Tconta.modificado_por}}</td>
+                <td>{{ Tconta.fecha_modificacion}}</td>
+              <td>{{ getEstadoText(Tconta.estado) }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+      <!-- Pie del modal -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary customn-print-button btn-danger" (click)="generatePDF()">
+          <i class="fas fa-file-pdf"></i>  Generar PDF</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
 
 
 
