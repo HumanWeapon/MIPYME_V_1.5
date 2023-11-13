@@ -6,7 +6,9 @@
         <div class="card">
           <div class="card-header">
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarUsuario">
-              <i class="fas fa-user-plus"></i> Agregar Usuario</button>
+              <i class="fas fa-plus"></i> Nuevo</button>
+              <button type="button" class="btn btn-primary custom-print-button btn-danger" title="Generar el Reporte" data-toggle="modal" data-target="#PDFUsuarios">
+                <i class="fas fa-file-pdf mr-2"></i>PDF</button>
           </div>
           <!-- /.card-header -->
           <div class="card-body">
@@ -21,7 +23,7 @@
                       <th>Creado</th>
                       <th>Ultima Vez</th>
                       <th>Vence</th>
-                      <th>Aciones</th>
+                      <th>Acciones</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -31,19 +33,18 @@
                       <td>{{ user.correo_electronico }}</td>
                       <td>{{ user.roles.rol }}</td>
                       <td>
-                          <ng-container *ngIf="user.estado_usuario === 1">Activo</ng-container>
-                          <ng-container *ngIf="user.estado_usuario === 2">Inactivo</ng-container>
-                          <ng-container *ngIf="user.estado_usuario === 3">Vencido</ng-container>
-                          <ng-container *ngIf="user.estado_usuario === 3">Bloqueado</ng-container>
+                          <ng-container *ngIf="user.estado_usuario === 1">ACTIVO</ng-container>
+                          <ng-container *ngIf="user.estado_usuario === 2">INACTIVO</ng-container>
+                          <ng-container *ngIf="user.estado_usuario === 3">VENCIDO</ng-container>
+                          <ng-container *ngIf="user.estado_usuario === 3">BLOQUEADO</ng-container>
                         </td>
                       <td>{{ user.creado_por}}</td>
                       <td>{{ user.fecha_ultima_conexion }}</td>
                       <td>{{ user.fecha_vencimiento}}</td>
                       <td class="text-center">
                         <div class="btn-group">
-                            <button type="button" (click)="obtenerIdUsuario(user, i)" class="btna" data-toggle="modal" data-target="#abrirModalEditar"data-toggle="modal" data-target="#abrirModalEditar"  ><i class="fas fa-solid fa-pen"></i></button>
-                            <button type="button" (click)="inactivarUsuario(user, i)" class="btna"><i class="fas fa-solid fa-user-lock"></i></button>
-                            <button type="button" (click)="activarUsuario(user, i)" class="btna"><i class="fas fa-solid fa-lock-open"></i></button>
+                            <button type="button" (click)="obtenerIdUsuario(user, i)" title="Editar Usuario" class="btna" data-toggle="modal" data-target="#abrirModalEditar"data-toggle="modal" data-target="#abrirModalEditar"  ><i class="fas fa-solid fa-pen"></i></button>
+                            <button type="button" (click)="toggleFunction(user, i)" class="btna " [title]="user.estado_usuario === 1 ? 'Desactivar Usuario' : 'Activar Usuario'"><i class="fas" [ngClass]="user.estado_usuario === 1 ? 'fa-solid fa-lock' : 'fa-solid fa-lock-open'"></i> </button>
                           </div>
                       </td>
                     </tr>
@@ -155,3 +156,56 @@
   </div>
 </div>
 <!-- /Actualizar Usuario Form -->
+
+<!-- Form Ver PDF-->
+<div class="modal fade" id="PDFUsuarios">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+
+      <!-- Cabecera del modal -->
+      <div class="modal-header">
+        <h4 class="modal-title" >Reporte Usuarios</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Contenido del modal -->
+      <div class="modal-body">
+        <!-- Aquí puedes colocar tu DataTable o cualquier otro contenido que desees mostrar -->
+        <table class="table table-striped">
+          <thead class="thead-dark">
+            <tr>
+              <th>Usuario</th>
+              <th>Nombre</th>
+              <th>Correo</th>
+              <th>Rol</th>
+              <th>Creado</th>
+              <th>Ultima Vez</th>
+              <th>Vence</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of usuariosAllRoles; let i = index">
+              <td>{{ user.usuario }}</td>
+              <td>{{ user.nombre_usuario }}</td>
+              <td>{{ user.correo_electronico }}</td>
+              <td>{{ user.roles.rol }}</td>
+              <td>{{ user.creado_por}}</td>
+              <td>{{ user.fecha_ultima_conexion }}</td>
+              <td>{{ user.fecha_vencimiento}}</td>
+              <td>{{ getEstadoText(user.estado_usuario) }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+      <!-- Pie del modal -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary customn-print-button btn-danger" (click)="generatePDF()">
+          <i class="fas fa-file-pdf"></i>  Generar PDF</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+

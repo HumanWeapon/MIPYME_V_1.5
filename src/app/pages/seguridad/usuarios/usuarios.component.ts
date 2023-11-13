@@ -66,7 +66,6 @@ export class UsuariosComponent {
   }
   constructor(
     private _userService: UsuariosService,
-    private _router: Router,
     private _ngZone: NgZone,
     private _toastr: ToastrService,
     private _rolService: RolesService,
@@ -113,11 +112,24 @@ export class UsuariosComponent {
     this.editUser.contrasena = this.editUser.contrasena.replace(/\s/g, ''); // Elimina espacios en blanco para el cambo contraseña
   }
   
+  // Variable de estado para alternar funciones
+
+toggleFunction(user: any, i: number) {
+
+  // Ejecuta una función u otra según el estado
+  if (user.estado_usuario === 1 ) {
+    this.inactivarUsuario(user, i); // Ejecuta la primera función
+  } else {
+    this.activarUsuario(user, i); // Ejecuta la segunda función
+  }
+}
+
+
   inactivarUsuario(usuario: any, i: any) {
     this._userService.inactivarUsuario(usuario).subscribe({
       next: (data) => {
         this.inactivarBitacora(data);
-        this._toastr.success('El usuario: ' + usuario.usuario + ' ha sido activado')
+        this._toastr.success('El usuario: ' + usuario.nombre_usuario + ' ha sido Inactivado')
       },
       error: (e: HttpErrorResponse) => {
         this._errorService.msjError(e);
@@ -130,7 +142,7 @@ export class UsuariosComponent {
     this._userService.activarUsuario(usuario).subscribe({
       next: (data) => {
         this.activarBitacora(data);
-        this._toastr.success('El usuario: ' + usuario.usuario + ' ha sido activado')
+        this._toastr.success('El usuario: ' + usuario.nombre_usuario + ' ha sido Activado')
       },
       error: (e: HttpErrorResponse) => {
         this._errorService.msjError(e);
@@ -138,6 +150,58 @@ export class UsuariosComponent {
     });
     this.usuariosAllRoles[i].estado_usuario = 1;
   }
+
+  /*****************************************************************************************************/
+
+generatePDF() {
+
+  const {jsPDF} = require ("jspdf");
+ 
+  const doc = new jsPDF();
+  const data: any[][] =[]
+  const headers = ['ID Usuario','Nombre Usuario', 'Correo Electronico','Rol','Creador', 'Ultima Conexion', 'Fecha de Vencimiento', 'Estado'];
+
+  // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
+  this.usuariosAllRoles.forEach((user, index) => {
+    const row = [
+       user.usuario, 
+       user.nombre_usuario,
+       user.correo_electronico,
+       user.roles.rol,
+       user.creado_por,
+       user.fecha_ultima_conexion,
+       user.fecha_vencimiento,
+      this.getEstadoText(user.estado_usuario) // Función para obtener el texto del estado
+    ];
+    data.push(row);
+  });
+
+  doc.autoTable({
+    head: [headers],
+    body: data,
+  });
+
+  doc.output('dataurlnewwindow', null, 'Pymes.pdf');
+}
+
+getEstadoText(estado_usuario: number): string {
+  switch (estado_usuario) {
+    case 1:
+      return 'ACTIVO';
+    case 2:
+      return 'INACTIVO';
+      case 3:
+        return 'BLOQUEADO';
+      case 4:
+        return 'VENCIDO';
+    default:
+      return 'Desconocido';
+  }
+}
+
+
+/**************************************************************/
+
 
   agregarNuevoUsuario() {
     const LocalUser = localStorage.getItem('usuario');

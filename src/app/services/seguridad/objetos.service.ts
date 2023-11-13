@@ -53,7 +53,7 @@ export class ObjetosService {
    inactivarObjeto(objetos: Objetos): Observable<Objetos>{
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.post<Objetos>(`${this.myAppUrl}${this.myApiUrl}/inactivateObjetos`, objetos, { headers: headers })
+    return this.http.post<Objetos>(`${this.myAppUrl}${this.myApiUrl}/inactivateObjeto`, objetos, { headers: headers })
    }
    activarObjeto(objetos: Objetos): Observable<Objetos>{
     const token = localStorage.getItem('token')
