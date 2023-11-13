@@ -36,7 +36,7 @@ const routes: Routes = [
   children:[
     {path: 'dashboard', component: DashboardComponent, data:{titulo: 'Dashboard'}},
     {path: 'perfil', component: PerfilComponent, data:{titulo: 'Mi Perfil'}},
-    {path: 'search', component: SearchComponent, data:{titulo: 'Buscar productos'}},
+    {path: 'search', component: SearchComponent},
 
     //ABC grado A.
     {path: 'paises', component: PaisesComponent, data:{titulo: 'Administrar países'}},

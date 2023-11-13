@@ -17,7 +17,7 @@ export class SidebarService {
       icono: 'nav-icon fas fa-solid fa-building',
       submenu: [
         {titulo:'Empresas', url: 'empresas', icono: 'far fa-circle nav-icon ml-2'},
-        {titulo:'Productos', url: 'empresas_productos', icono: 'far fa-circle nav-icon ml-2'},
+        {titulo:'Productos', url: 'productos', icono: 'far fa-circle nav-icon ml-2'},
         {titulo:'Requisitos', url: 'requisitos_exportacion', icono: 'far fa-circle nav-icon ml-2'},
       ]
     },
