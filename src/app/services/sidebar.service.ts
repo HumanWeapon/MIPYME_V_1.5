@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
 })
-export class SidebarService {
-  menu:any[]=[
+export class SidebarService implements OnInit{
+  menu:any[]=[];
 
     /*{
       titulo:'Dashboard',
@@ -12,61 +12,68 @@ export class SidebarService {
       icono: 'nav-icon fas fa-solid fa-user',
       submenu: []
     },*/
-    {
-      titulo:'Empresas',
-      icono: 'nav-icon fas fa-solid fa-building',
-      submenu: [
-        {titulo:'Empresas', url: 'empresas', icono: 'far fa-circle nav-icon ml-2'},
-        {titulo:'Productos', url: 'productos', icono: 'far fa-circle nav-icon ml-2'},
-        {titulo:'Requisitos', url: 'requisitos_exportacion', icono: 'far fa-circle nav-icon ml-2'},
-      ]
-    },
-    {
-      titulo:'Mantenimiento',
-      icono: 'nav-icon fas fa-solid fa-wrench',
-      submenu: [
-        {titulo:'Productos', url: 'productos', icono: 'far fa-circle nav-icon ml-2'},
-        {titulo:'Categoría productos', url: 'Categoria_productos', icono: 'far fa-circle nav-icon ml-2'},
-        {titulo:'Ciudades', url: 'ciudades', icono: 'far fa-circle nav-icon ml-2'},
-        {titulo:'paises', url: 'paises', icono: 'far fa-circle nav-icon ml-2'},
-        {titulo:'Tipo Empresas', url: 'tipo_empresa', icono: 'far fa-circle nav-icon ml-2'},
-        {titulo:'Tipo contacto', url: 'tipo_contacto', icono: 'far fa-circle nav-icon ml-2'},
-        {titulo:'Tipo dirección', url: 'tipo_direccion', icono: 'far fa-circle nav-icon ml-2'},
-        {titulo:'Tipo teléfono', url: 'tipo_telefono', icono: 'far fa-circle nav-icon ml-2'},
-        {titulo:'Tipo requisitos', url: 'tipo_requisito', icono: 'far fa-circle nav-icon ml-2'}
-      ]
-    },
-    {
-      titulo:'Contactos',
-      icono: 'nav-icon fas fa-solid fa-address-book',
-      submenu: [
-        {titulo:'Contacto', url: 'contacto', icono: 'far fa-circle nav-icon ml-2'},
-        {titulo:'Direcciones', url: 'contacto_direcciones', icono: 'far fa-circle nav-icon ml-2'},
-        {titulo:'Teléfonos', url: 'contacto_telefono', icono: 'far fa-circle nav-icon ml-2'},
-      ]
-    },
-    {
-      titulo:'Seguridad',
-      icono: 'nav-icon fas fa-solid fa-lock',
-      submenu: [
-        {titulo:'Usuarios', url: 'usuarios', icono: 'far fa-circle nav-icon ml-2'},
-        {titulo:'Objetos', url: 'objetos', icono: 'far fa-circle nav-icon ml-2'},
-        {titulo:'Permisos', url: 'permisos', icono: 'far fa-circle nav-icon ml-2'},
-        {titulo:'Roles', url: 'roles', icono: 'far fa-circle nav-icon ml-2'},
-        {titulo:'Preguntas', url: 'preguntas', icono: 'far fa-circle nav-icon ml-2'},
-        {titulo:'Parametros', url: 'parametros', icono: 'far fa-circle nav-icon ml-2'}
-      ]
-    },
-    {
-      titulo:'Administración',
-      icono: 'nav-icon fas fa-solid fa-list',
-      submenu: [
-        {titulo:'Bitácora', url: 'bitacora', icono: 'far fa-circle nav-icon ml-2'},
-        {titulo:'Backups', url: 'backup', icono: 'far fa-circle nav-icon ml-2'},
-        {titulo:'Restaurar', url: 'restore', icono: 'far fa-circle nav-icon ml-2'},
-      ]
-    }
-  ]
-  constructor() { }
+
+  
+  constructor() {
+    this.menu = [
+      {
+        titulo:'Empresas',
+        icono: 'nav-icon fas fa-solid fa-building',
+        submenu: [
+          {titulo:'Empresas', url: 'empresas', icono: 'far fa-circle nav-icon ml-2'},
+          {titulo:'Productos', url: 'productos', icono: 'far fa-circle nav-icon ml-2'},
+          {titulo:'Requisitos', url: 'requisitos_exportacion', icono: 'far fa-circle nav-icon ml-2'},
+        ]
+      },
+      {
+        titulo:'Mantenimiento',
+        icono: 'nav-icon fas fa-solid fa-wrench',
+        submenu: [
+          {titulo:'Productos', url: 'productos', icono: 'far fa-circle nav-icon ml-2'},
+          {titulo:'Categoría productos', url: 'Categoria_productos', icono: 'far fa-circle nav-icon ml-2'},
+          {titulo:'Ciudades', url: 'ciudades', icono: 'far fa-circle nav-icon ml-2'},
+          {titulo:'paises', url: 'paises', icono: 'far fa-circle nav-icon ml-2'},
+          {titulo:'Tipo Empresas', url: 'tipo_empresa', icono: 'far fa-circle nav-icon ml-2'},
+          {titulo:'Tipo contacto', url: 'tipo_contacto', icono: 'far fa-circle nav-icon ml-2'},
+          {titulo:'Tipo dirección', url: 'tipo_direccion', icono: 'far fa-circle nav-icon ml-2'},
+          {titulo:'Tipo teléfono', url: 'tipo_telefono', icono: 'far fa-circle nav-icon ml-2'},
+          {titulo:'Tipo requisitos', url: 'tipo_requisito', icono: 'far fa-circle nav-icon ml-2'}
+        ]
+      },
+      {
+        titulo:'Contactos',
+        icono: 'nav-icon fas fa-solid fa-address-book',
+        submenu: [
+          {titulo:'Contacto', url: 'contacto', icono: 'far fa-circle nav-icon ml-2'},
+          {titulo:'Direcciones', url: 'contacto_direcciones', icono: 'far fa-circle nav-icon ml-2'},
+          {titulo:'Teléfonos', url: 'contacto_telefono', icono: 'far fa-circle nav-icon ml-2'},
+        ]
+      },
+      {
+        titulo:'Seguridad',
+        icono: 'nav-icon fas fa-solid fa-lock',
+        submenu: [
+          {titulo:'Usuarios', url: 'usuarios', icono: 'far fa-circle nav-icon ml-2'},
+          {titulo:'Objetos', url: 'objetos', icono: 'far fa-circle nav-icon ml-2'},
+          {titulo:'Permisos', url: 'permisos', icono: 'far fa-circle nav-icon ml-2'},
+          {titulo:'Roles', url: 'roles', icono: 'far fa-circle nav-icon ml-2'},
+          {titulo:'Preguntas', url: 'preguntas', icono: 'far fa-circle nav-icon ml-2'},
+          {titulo:'Parametros', url: 'parametros', icono: 'far fa-circle nav-icon ml-2'}
+        ]
+      },
+      {
+        titulo:'Administración',
+        icono: 'nav-icon fas fa-solid fa-list',
+        submenu: [
+          {titulo:'Bitácora', url: 'bitacora', icono: 'far fa-circle nav-icon ml-2'},
+          {titulo:'Backups', url: 'backup', icono: 'far fa-circle nav-icon ml-2'},
+          {titulo:'Restaurar', url: 'restore', icono: 'far fa-circle nav-icon ml-2'},
+        ]
+      }
+    ]
+   }
+  ngOnInit(): void {
+    throw new Error('Method not implemented.');
+  }
   
 }

@@ -1,0 +1,163 @@
+<!-- Main content -->
+<section class="content">
+<div class="container-fluid">
+    <div class="row">
+    <div class="col-12">
+        <div class="card">
+        <div class="card-header">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarContacto">
+            <i class="fas fa-plus"></i> Nuevo</button>
+            <button type="button" class="btn btn-primary custom-print-button btn-danger" title="Generar el Reporte" data-toggle="modal" data-target="#PDFContacto">
+            <i class="fas fa-file-pdf mr-2"></i>PDF</button>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+            <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover"> 
+                <thead>
+                <tr>
+                    <th>DNI</th>
+                    <th>Nombre Completo</th> 
+                    <th>Correo</th>
+                    <th>Descripción</th>
+                    <th>Creado</th>
+                    <th>Fecha Creación</th>
+                    <th>Fecha Modificación</th>
+                    <th>Estado</th>
+                    <th>Aciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let contac of listContacto; let i = index">
+                    <td>{{ contac.dni }}</td>
+                    <td>{{ contac.primer_nombre +" "+ contac.segundo_nombre+" "+ contac.primer_apellido +" "+contac.segundo_apellido }}</td>
+                    <td>{{ contac.correo }}</td>
+                    <td>{{ contac.descripcion}}</td>
+                    <td>{{ contac.creado_por}}</td>
+                    <td>{{ contac.fecha_creacion }}</td>
+                    <td>{{ contac.fecha_modificacion}}</td>
+                    <td>
+                    <ng-container *ngIf="contac.estado === 1">Activo</ng-container>
+                    <ng-container *ngIf="contac.estado === 2">Inactivo</ng-container>
+                    
+                    </td>
+                    <td class="text-center">
+                        <div class="btn-group">
+                        
+                        <button type="button" (click)="obtenerIdContacto(contac, i)" data-toggle="modal" title="Editar Contacto" data-target="#abrirModalEditarContacto"data-toggle="modal" data-target="#abrirModalEditarContacto" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
+                        <button type="button" (click)="toggleFunction(contac, i)" class="btna " [title]="contac.estado === 1 ? 'Desactivar Contacto' : 'Activar contacto'"><i class="fas" [ngClass]="contac.estado === 1 ? 'fa-solid fa-lock' : 'fa-solid fa-lock-open'"></i> </button>
+                        <button type="button" class="btna" data-toggle="modal" data-target="#modal-xl"><i class="fas fa-solid fa-eye"></i></button>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+    <!-- /.col -->
+    </div>
+    <!-- /.row -->
+</div>
+<!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+
+
+<div class="modal fade show" id="modal-xl"  aria-modal="true" role="dialog">
+<div class="modal-dialog modal-xl">
+    <div class="modal-content">
+    <div class="modal-header">
+        <h4 class="modal-title">Extra Large Modal</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">×</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="card card-primary card-outline card-outline-tabs">
+            <div class="card-header p-0 border-bottom-0">
+                <ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="custom-tabs-four-profile-tab" data-toggle="pill" href="#custom-tabs-four-profile" role="tab" aria-controls="custom-tabs-four-profile" aria-selected="true">Direcciones</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="custom-tabs-four-messages-tab" data-toggle="pill" href="#custom-tabs-four-messages" role="tab" aria-controls="custom-tabs-four-messages" aria-selected="false">Teléfonos</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body">
+                <div class="tab-content" id="custom-tabs-four-tabContent">
+                    <div class="tab-pane fade active show" id="custom-tabs-four-profile" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
+                        Mauris tincidunt mi at erat gravida, eget tristique urna bibendum. Mauris pharetra purus ut ligula tempor, et vulputate metus facilisis. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Maecenas sollicitudin, nisi a luctus interdum, nisl ligula placerat mi, quis posuere purus ligula eu lectus. Donec nunc tellus, elementum sit amet ultricies at, posuere nec nunc. Nunc euismod pellentesque diam.
+                    </div>
+                    <div class="tab-pane fade" id="custom-tabs-four-messages" role="tabpanel" aria-labelledby="custom-tabs-four-messages-tab">
+                        Morbi turpis dolor, vulputate vitae felis non, tincidunt congue mauris. Phasellus volutpat augue id mi placerat mollis. Vivamus faucibus eu massa eget condimentum. Fusce nec hendrerit sem, ac tristique nulla. Integer vestibulum orci odio. Cras nec augue ipsum. Suspendisse ut velit condimentum, mattis urna a, malesuada nunc. Curabitur eleifend facilisis velit finibus tristique. Nam vulputate, eros non luctus efficitur, ipsum odio volutpat massa, sit amet sollicitudin est libero sed ipsum. Nulla lacinia, ex vitae gravida fermentum, lectus ipsum gravida arcu, id fermentum metus arcu vel metus. Curabitur eget sem eu risus tincidunt eleifend ac ornare magna.
+                    </div>
+                </div>
+            </div>
+            <!-- /.card -->
+        </div>
+    </div>
+    <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+    </div>
+    </div>
+    <!-- /.modal-content -->
+</div>
+<!-- /.modal-dialog -->
+</div>
+      
+
+  <!-- Agregar Usuario Form -->
+  <div class="modal fade" id="modal-xl">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Agregar Contacto</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form (submit)="agregarNuevoContacto()">
+                    <div class="form-group">
+                        <label for="nuevoContacto">DNI:</label>
+                        <input type="text" [(ngModel)]="nuevoContacto.dni" name="nuevoContacto.dni" (input)="onInputChange($event, 'dni')"  class="form-control" id="nuevoDNI" placeholder="DNI">
+                    </div>
+                    <div class="form-group">
+                        <label for="nuevoContacto">Primer Nombre</label>
+                        <input type="text" [(ngModel)]="nuevoContacto.primer_nombre" name="nuevoContacto.primer_nombre" (input)="onInputChange($event, 'primer_nombre')" class="form-control" id="nuevoPN" placeholder="Primer Nombre">
+                    </div>  
+                    <div class="form-group">
+                      <label for="nuevoContacto">Segundo Nombre:</label>
+                      <input type="text" [(ngModel)]="nuevoContacto.segundo_nombre" name="nuevoContacto.segundo_nombre" (input)="onInputChange($event, 'segundo_nombre')"  class="form-control" id="nuevoSN" placeholder="Segundo Nombre">
+                  </div>
+                  <div class="form-group">
+                      <label for="nuevoContacto">Primer Apellido</label>
+                      <input type="text" [(ngModel)]="nuevoContacto.primer_apellido" name="nuevoContacto.primer_apellido" (input)="onInputChange($event, 'primer_apellido')" class="form-control" id="nuevoPA" placeholder="Primer Apellido">
+                  </div>  
+                  <div class="form-group">
+                      <label for="nuevoContacto">Segundo Apellido:</label>
+                      <input type="text" [(ngModel)]="nuevoContacto.segundo_apellido" name="nuevoContacto.segundo_apellido" (input)="onInputChange($event, 'segundo_apellido')"  class="form-control" id="nuevoSA" placeholder="Segundo Apellido">
+                  </div>
+                  <div class="form-group">
+                      <label for="nuevoContacto">Correo Electrónico</label>
+                      <input type="text" [(ngModel)]="nuevoContacto.correo" name="nuevoContacto.correo" (input)="onInputChange($event, 'correo')" class="form-control" id="nuevoCorreo" placeholder="Correo">
+                  </div> 
+                  <div class="form-group">
+                      <label for="nuevoContacto">Descripción</label>
+                      <input type="text" [(ngModel)]="nuevoContacto.descripcion" name="nuevoContacto.descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="nuevoDescripcion" placeholder="Descripción">
+                  </div>      
+                </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                <button type="button" (click)="agregarNuevoContacto()" class="btn btn-success" data-dismiss="modal">Guardar</button>
+            </div>
+        </div>
+    </div>
+    </div>
+    <!-- /Agregar contacto Form -->
