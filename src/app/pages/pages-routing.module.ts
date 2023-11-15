@@ -9,7 +9,7 @@ import { PermisosComponent } from './seguridad/permisos/permisos.component';
 import { RolesComponent } from './seguridad/roles/roles.component';
 import { PreguntasComponent } from './seguridad/preguntas/preguntas.component';
 import { ParametrosComponent } from './seguridad/parametros/parametros.component';
-import { PerfilComponent } from '../perfil/perfil.component';
+import { PerfilComponent } from './perfil/perfil.component';
 import { ProductosComponent } from './mantenimiento/productos/productos.component';
 import { TipoRequisitosComponent } from './mantenimiento/tipo-requisitos/tipo-requisitos.component';
 import { CiudadesComponent } from './mantenimiento/ciudades/ciudades.component';

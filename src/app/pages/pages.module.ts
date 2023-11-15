@@ -32,6 +32,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { RestoreComponent } from './administracion/restore/restore.component';
 import { BackupComponent } from './administracion/backup/backup.component';
 import { PymeComponent } from './pyme/pyme.component';
+import { PerfilComponent } from './perfil/perfil.component';
 
 
 
@@ -64,7 +65,8 @@ import { PymeComponent } from './pyme/pyme.component';
     DashboardComponent,
     RestoreComponent,
     BackupComponent,
-    PymeComponent
+    PymeComponent,
+    PerfilComponent
   ],
   imports: [
     CommonModule,
