@@ -30,6 +30,7 @@ import { RequisitosExportacionComponent } from './empresas/requisitos-exportacio
 import { BackupComponent } from './administracion/backup/backup.component';
 import { RestoreComponent } from './administracion/restore/restore.component';
 import { PymeComponent } from './pyme/pyme.component';
+import { ContactoEmpresasComponent } from './contacto/contacto-empresas/contacto-empresas.component';
 
 const routes: Routes = [
   {path:'dashboard',component:PagesComponent, 
@@ -67,6 +68,9 @@ const routes: Routes = [
     {path: 'contacto', component:ContactoComponent, data:{titulo: 'Contacto'}},
     {path: 'contacto_telefono', component:TelefonosComponent, data:{titulo: 'Contacto de teléfono'}},
     {path: 'contacto_direcciones', component:DireccionesComponent, data:{titulo: 'Contacto de direcciones'}},
+
+    //ABC grado C.
+    {path: 'contactos', component:ContactoEmpresasComponent, data:{titulo: 'Contactos'}},
   ]}
 ];
 

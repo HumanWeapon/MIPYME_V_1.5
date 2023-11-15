@@ -58,7 +58,7 @@ export class CategoriaProductosComponent implements OnInit{
 
   constructor(
     private _categoriaService: CategoriaService,     
-    private toastr: ToastrService,
+    private _toastr: ToastrService,
     private ngZone: NgZone,
     private _errorService: ErrorService,
     private _bitacoraService: BitacoraService,
@@ -107,18 +107,33 @@ toggleFunction(cate: any, i: number) {
 }
 
   activarCategoria(categoria: Categoria, i: any){
-    this._categoriaService.activarCategoria(categoria).subscribe(data => 
-     this.toastr.success('La categoria: '+ categoria.categoria + ' ha sido activada')
-     );
-    this.listCate[i].estado = 1; 
-
+    this._categoriaService.activarCategoria(categoria).subscribe({
+      next: (data) => {
+        this.activarBitacora(data);
+        this._toastr.success('La categoria: '+ categoria.categoria + ' ha sido activada')
+        console.log(data);
+        console.log(categoria);
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
+    this.listCate[i].estado = 1;
   }
   
   inactivarCategoria(categoria: Categoria, i: any){
-    this._categoriaService.inactivarCategoria(categoria).subscribe(data => 
-     this.toastr.success('La categoria: '+ categoria.categoria + ' ha sido inactivada')
-     );
-    this.listCate[i].estado = 2; 
+    this._categoriaService.inactivarCategoria(categoria).subscribe({
+      next: (data) => {
+        this.inactivarBitacora(data);
+        this._toastr.success('La categoria: '+ categoria.categoria + ' ha sido inactivada')
+        console.log(data);
+        console.log(categoria);
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
+    this.listCate[i].estado = 2;
   }
   
   /*****************************************************************************************************/
@@ -181,7 +196,7 @@ getEstadoText(estado: number): string {
         estado: 1,
       }
       this._categoriaService.addCategoriaProducto(catProducto).subscribe((data: Categoria) => {
-        this.toastr.success('Categoría agregada exitosamente');
+        this._toastr.success('Categoría agregada exitosamente');
         location.reload();
       });
     }
@@ -206,7 +221,7 @@ getEstadoText(estado: number): string {
 
   editarCategoriaProducto(){
     this._categoriaService.editarCategoriaProducto(this.CategoriaEditando).subscribe(data => {
-      this.toastr.success('Categoria editada con éxito');
+      this._toastr.success('Categoria editada con éxito');
       this.listCate[this.indice].categoria = this.CategoriaEditando.categoria;
       this.listCate[this.indice].categoria = this.CategoriaEditando.descripcion;
         // Recargar la página
@@ -272,7 +287,7 @@ getEstadoText(estado: number): string {
 
   insertBitacora(dataCatProd: Categoria){
     const bitacora = {
-      fecha: new Date(),
+      fecha: new Date().toISOString().split('T')[0],
       id_usuario: this.getUser.id_usuario,
       id_objeto: 5,
       accion: 'INSERTAR',
@@ -283,7 +298,7 @@ getEstadoText(estado: number): string {
   }
   updateBitacora(dataCatProd: Categoria){
     const bitacora = {
-      fecha: new Date(),
+      fecha: new Date().toISOString().split('T')[0],
       id_usuario: this.getUser.usuario,
       id_objeto: 5,
       accion: 'ACTUALIZAR',
@@ -294,7 +309,7 @@ getEstadoText(estado: number): string {
   }
   activarBitacora(dataCatProd: Categoria){
     const bitacora = {
-      fecha: new Date(),
+      fecha: new Date().toISOString().split('T')[0],
       id_usuario: this.getUser.usuario,
       id_objeto: 5,
       accion: 'ACTIVAR',
@@ -305,18 +320,18 @@ getEstadoText(estado: number): string {
   }
   inactivarBitacora(dataCatProd: Categoria){
     const bitacora = {
-      fecha: new Date(),
+      fecha: new Date().toISOString().split('T')[0],
       id_usuario: this.getUser.usuario,
       id_objeto: 5,
       accion: 'INACTIVAR',
-      descripcion: 'SE INACTIVA EL CONTACTO CON EL ID: '+ dataCatProd.id_categoria
+      descripcion: 'SE INACTIVA LA CATEGORÍA CON EL ID: '+ dataCatProd.id_categoria
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
   }
   deleteBitacora(dataCatProd: Categoria){
     const bitacora = {
-      fecha: new Date(),
+      fecha: new Date().toISOString().split('T')[0],
       id_usuario: this.getUser.usuario,
       id_objeto: 5,
       accion: 'ELIMINAR',
