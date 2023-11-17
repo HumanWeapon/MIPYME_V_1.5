@@ -1,0 +1,18 @@
+/* Estilo para el contenedor del select */
+  
+/* Estilo para los options */
+  #buscadores option {
+    color: #495057; /* Color del texto para opciones */
+  }
+  
+  /* Estilo para el select cuando está enfocado */
+  #buscadores:focus {
+    border-color: #1254a1;  /* Color del borde cuando está enfocado */
+  }
+  
+  /* Estilo para el select cuando está desplegado */
+  #buscadores:active, #buscadores:hover {
+    border-color: rgb(255, 174, 0) /* Color del borde cuando está activo o se pasa el ratón */
+  }
+  
+  

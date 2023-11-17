@@ -1,20 +1,59 @@
-<!-- Main content -->
 <section class="content">
     <div class="container-fluid">
-        <h2 class="text-center display-4">Buscar Productos</h2>
-        <div class="row">
-            <div class="col-md-8 offset-md-2">
-                <form action="simple-results.html">
-                    <div class="input-group">
-                        <input type="search" class="form-control form-control-lg" placeholder="Ingresa el producto que quieras buscar">
-                        <div class="input-group-append">
-                            <button type="submit" class="btn btn-lg btn-default">
-                                <i class="fa fa-search"></i>
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
+    <h2 class="text-center display-4">Busqueda MIPYME</h2>
+    <br>
+    <br>
+    <form action="enhanced-results.html" data-select2-id="10">
+     <div class="row">
+     <div class="col-md-10 offset-md-1">
+     <div class="row">
+    
+       
+       <div class="col-6">
+       <div class="form-group">
+       <label>Busqueda por Pais</label>
+       <select name="buscapais" class="form-control" id="buscadores">
+        <option value="0">Selecciona el Pais</option>
+        <option *ngFor="let item of _listPaises" [ngValue]="item.pais">{{ item.pais }}</option>
+       </select>
+       </div>
+       </div>
+
+      <div class="col-6">
+      <div class="form-group">
+      <label>Busqueda por Categoria</label>
+      <select name="buscacategoria" class="form-control" id="buscadores">
+        <option value="0">Selecciona la Categoria</option>
+        <option *ngFor="let item of _listCategorias" [ngValue]="item.id_categoria">{{ item.categoria }}</option>
+      </select>
+      </div>
+      </div>
+      
+      <!--<div class="col-3">
+      <div class="form-group">
+      <label>Busqueda por</label>
+      <select name="buscacategoria" class="form-control" id="buscadores">
+        <option value="0">Selecciona la Categoria</option>
+        <option value="1">Tecnologia</option>
+        <option value="2">Alimentos</option>
+        <option value="3">Granos</option>
+      </select>
+      </div>
+      </div>-->
+
     </div>
+
+     <div class="form-group">
+     <div class="input-group input-group-lg">
+     <input type="search" class="form-control form-control-lg" placeholder="Busca tu Producto">
+     <div class="input-group-append">
+     <button type="submit" class="btn btn-lg btn-default"><i class="fa fa-search"></i></button>
+    </div>
+    </div>
+    </div>
+
+   </div>
+   </div>
+   </form>
+  </div>
 </section>
