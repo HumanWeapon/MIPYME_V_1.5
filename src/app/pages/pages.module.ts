@@ -32,6 +32,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { RestoreComponent } from './administracion/restore/restore.component';
 import { BackupComponent } from './administracion/backup/backup.component';
 import { PymeComponent } from './pyme/pyme.component';
+import { PerfilComponent } from './perfil/perfil.component';
 import { ContactoEmpresasComponent } from './contacto/contacto-empresas/contacto-empresas.component';
 import { Empresas2Component } from './empresas2/empresas2.component';
 
@@ -68,7 +69,8 @@ import { Empresas2Component } from './empresas2/empresas2.component';
     BackupComponent,
     PymeComponent,
     ContactoEmpresasComponent,
-    Empresas2Component
+    Empresas2Component,
+    PerfilComponent
   ],
   imports: [
     CommonModule,

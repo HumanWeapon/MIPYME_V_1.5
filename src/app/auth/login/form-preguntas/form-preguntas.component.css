@@ -1,0 +1,60 @@
+:root {
+    --color-amarillo: #ECAB0F;
+    --color-azul: #00008B;
+    --primary: #1254a1;
+    --warning: #ffd973;
+}
+
+.div-principal {
+    width: 400px;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-size: cover;
+    background: radial-gradient(circle, rgba(0, 0, 139, 0.219) 0%, rgba(18,84,161,1) 100%);
+}
+.form-principal-preguntas{
+    width: 400px;
+    height: 650px;
+    background-color: #ffffff;
+    border-radius: 10px;
+}
+option, select{
+    font-size: 12px;
+}
+.form-cabecera {
+    display: block;
+    width: 100%;
+    height: 20%;
+    text-align: center;
+    padding-top: 20px;
+}
+.form-preguntas{
+    width: 400px;
+    height: 500px;
+    padding: 10px 30px 30px 30px;
+    align-items: center;
+}
+
+p{
+    text-align: center;
+}
+.boton-container {
+    align-items: center;
+    display: block;
+    padding-top: 0px;
+}
+.boton {
+    width: 45%; /* Cambiado para dar espacio para ambos botones */
+    height: 40px;
+    display: inline-block; /* Cambiado a inline-block */
+    margin-right: 5px; /* Espacio entre los botones (ajusta según sea necesario) */
+    background-color: #1254a1;
+    color: white;
+    border-radius: 5px;
+    border-color: #1254a1;
+}
