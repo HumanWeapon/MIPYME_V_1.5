@@ -31,6 +31,9 @@ export class Empresas2Component implements OnInit{
   listContactosDirecciones: ContactoDirecciones[] = [];
   listContactosTelefonos: ContactoTelefono[] = [];
 
+  //TITULO MODAL CONTACTOS
+  nombre_empresa: string = '';
+
   idOpEmpresas: number = 0;
   
   constructor(
@@ -95,7 +98,8 @@ export class Empresas2Component implements OnInit{
   deleteDirecciones(){}
   deleteTelefonos(){}
 
-  obtenerIdOpEmpresa(dni: any) {
+  obtenerIdOpEmpresa(dni: any, nombre_empresa: any) {
    this.getContactos(dni);
+   this.nombre_empresa = nombre_empresa;
   }
 }
