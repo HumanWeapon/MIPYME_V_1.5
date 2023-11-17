@@ -1,0 +1,172 @@
+<section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarEmpresa">
+                <i class="fas fa-plus"></i> Nuevo</button>
+              <button type="button" class="btn btn-primary custom-print-button btn-danger" title="Generar el Reporte" data-toggle="modal" data-target="#PDFEmpresa">
+                <i class="fas fa-file-pdf mr-2"></i>PDF</button>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"class="table table-bordered table-striped row-border hover">
+                    <thead>
+                      <tr>
+                        <th>Nombre Empresa</th>
+                        <th>Descripcion</th>
+                        <th>Creado</th>
+                        <th>Fecha Creación</th>
+                        <th>modificador</th>
+                        <th>Fecha Modificación</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let empresa of listOpEmpresa; let i = index">
+                        <td>{{ empresa.empresa.nombre_empresa }}</td>
+                        <td>{{ empresa.empresa.descripcion }}</td>
+                        <td>{{ empresa.empresa.creado_por}}</td>
+                        <td>{{ empresa.empresa.fecha_creacion}}</td>
+                        <td>{{ empresa.empresa.modificado_por}}</td>
+                        <td>{{ empresa.empresa.fecha_modificacion}}</td>
+                        <td>
+                            <ng-container *ngIf="empresa.empresa.estado === 1">ACTIVO</ng-container>
+                            <ng-container *ngIf="empresa.empresa.estado === 2">INACTIVO</ng-container>
+                        </td>
+
+                        <td class="text-center">
+                            <div class="btn-group" >
+                                <button type="button" (click)="obtenerIdOpEmpresa(empresa.contacto.dni)" title="Contactos" data-toggle="modal" data-toggle="modal" data-target="#modal-xl" class="btna " ><i class="fas fa-solid fa-address-book"></i></button>
+                                <button type="button"  title="Editar Empresa" data-toggle="modal" data-target="#abrirModalEditarEmpresa" data-toggle="modal" data-target="#abrirModalEditarEmpresa" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
+                                <button type="button"  class="btna" title="Eliminar Empresa"><i class=" fas fa-solid fa-trash" style="color: #E74C3C;"></i></button>
+                                <button type="button"  class="btna " [title]="empresa.empresa.estado === 1 ? 'Desactivar Empresa' : 'Activar Empresa'"><i class="fas" [ngClass]="empresa.empresa.estado === 1 ? 'fa-solid fa-lock-open' : 'fa-solid fa-lock'"></i> </button>
+                            </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                </table>
+
+            </div>
+            <!-- /.card-body -->
+          </div>
+          <!-- /.card -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</section>
+  <!-- /.content -->
+
+<div class="modal fade show" id="modal-xl"  aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">Extra Large Modal</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="card card-primary card-outline card-outline-tabs">
+                <div class="card-header p-0 border-bottom-0">
+                    <ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="custom-tabs-four-contactos-tab" data-toggle="pill" href="#custom-tabs-four-contactos" role="tab" aria-controls="custom-tabs-four-contactos" aria-selected="true">Contactos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="custom-tabs-four-direcciones-tab" data-toggle="pill" href="#custom-tabs-four-direcciones" role="tab" aria-controls="custom-tabs-four-direcciones" aria-selected="false">Direcciones</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="custom-tabs-four-telefonos-tab" data-toggle="pill" href="#custom-tabs-four-telefonos" role="tab" aria-controls="custom-tabs-four-telefonos" aria-selected="false">Teléfonos</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content" id="custom-tabs-four-tabContent">
+                        <div class="tab-pane fade active show" id="custom-tabs-four-profile" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
+
+                                <div class="row">
+                                    <div class="col-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarContacto">
+                                            <i class="fas fa-plus"></i> Nuevo</button>
+                                        <button type="button" class="btn btn-primary custom-print-button btn-danger" title="Generar el Reporte" data-toggle="modal" data-target="#PDFContacto">
+                                            <i class="fas fa-file-pdf mr-2"></i>PDF</button>
+                                        </div>
+                                        <!-- /.card-header -->
+                                        <div class="card-body">
+                                            <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover"> 
+                                                <thead>
+                                                <tr>
+                                                    <th>DNI</th>
+                                                    <th>Nombre Completo</th> 
+                                                    <th>Correo</th>
+                                                    <th>Descripción</th>
+                                                    <th>Creado</th>
+                                                    <th>Fecha Creación</th>
+                                                    <th>Fecha Modificación</th>
+                                                    <th>Estado</th>
+                                                    <th>Aciones</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr *ngFor="let contacto of listContactos; let i = index">
+                                                    <td>{{ contacto.dni }}</td>
+                                                    <td>{{ contacto.primer_nombre +" "+ contacto.segundo_nombre+" "+ contacto.primer_apellido +" "+contacto.segundo_apellido }}</td>
+                                                    <td>{{ contacto.correo }}</td>
+                                                    <td>{{ contacto.descripcion}}</td>
+                                                    <td>{{ contacto.creado_por}}</td>
+                                                    <td>{{ contacto.fecha_creacion }}</td>
+                                                    <td>{{ contacto.fecha_modificacion}}</td>
+                                                    <td>
+                                                    <ng-container *ngIf="contacto.estado === 1">Activo</ng-container>
+                                                    <ng-container *ngIf="contacto.estado === 2">Inactivo</ng-container>
+                                                    
+                                                    </td>
+                                                    <td class="text-center">
+                                                    <div class="btn-group">
+                                                        <button type="button"  data-toggle="modal" title="Editar Contacto" data-target="#abrirModalEditarContacto"data-toggle="modal" data-target="#abrirModalEditarContacto" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
+                                                        <button type="button"  class="btna " [title]="contacto.estado === 1 ? 'Desactivar Contacto' : 'Activar contacto'"><i class="fas" [ngClass]="contacto.estado === 1 ? 'fa-solid fa-lock' : 'fa-solid fa-lock-open'"></i> </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                            
+                                        </div>
+                                        <!-- /.card-body -->
+                                    </div>
+                                    <!-- /.card -->
+                                    </div>
+                                    <!-- /.col -->
+                                </div>
+                                <!-- /.row -->
+
+                        </div>
+                        
+                        <div class="tab-pane fade" id="custom-tabs-four-messages" role="tabpanel" aria-labelledby="custom-tabs-four-messages-tab">
+                            
+                        </div>
+                        <div class="tab-pane fade" id="custom-tabs-four-messages" role="tabpanel" aria-labelledby="custom-tabs-four-messages-tab">
+                            
+                        </div>
+                    </div>
+                </div>
+                <!-- /.card -->
+            </div>
+        </div>
+        <div class="modal-footer justify-content-between">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>

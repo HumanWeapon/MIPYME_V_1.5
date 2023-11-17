@@ -33,6 +33,7 @@ import { RestoreComponent } from './administracion/restore/restore.component';
 import { BackupComponent } from './administracion/backup/backup.component';
 import { PymeComponent } from './pyme/pyme.component';
 import { ContactoEmpresasComponent } from './contacto/contacto-empresas/contacto-empresas.component';
+import { Empresas2Component } from './empresas2/empresas2.component';
 
 
 
@@ -66,7 +67,8 @@ import { ContactoEmpresasComponent } from './contacto/contacto-empresas/contacto
     RestoreComponent,
     BackupComponent,
     PymeComponent,
-    ContactoEmpresasComponent
+    ContactoEmpresasComponent,
+    Empresas2Component
   ],
   imports: [
     CommonModule,
