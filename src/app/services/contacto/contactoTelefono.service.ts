@@ -9,7 +9,6 @@ import { Observable, catchError } from 'rxjs';
 })
 export class ContactoTService {
 
-  public contactoTelefono: ContactoTelefono | undefined;
   
   private myAppUrl: string;
   private myApiUrl: string;
@@ -46,6 +45,11 @@ export class ContactoTService {
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
     return this.http.post<ContactoTelefono>(`${this.myAppUrl}${this.myApiUrl}/getContactoTelefono`, contactoTelefono, { headers: headers })
    }
+   getTelefonos(id_contacto: any): Observable<ContactoTelefono[]> {
+    const token = localStorage.getItem('token')
+    const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
+    return this.http.post<ContactoTelefono[]>(`${this.myAppUrl}${this.myApiUrl}/getContactoTelefono`, { id_contacto: id_contacto }, { headers: headers })
+   }
 
    getAllContactosTelefono(): Observable<ContactoTelefono[]> {
     const token = localStorage.getItem('token')
@@ -69,25 +73,6 @@ export class ContactoTService {
     return this.http.post<ContactoTelefono>(`${this.myAppUrl}${this.myApiUrl}/updateContactoTelefono`, contactoTelefono, { headers: headers })
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*                                          FRANKLIN ALEXANDER MURILLO CRUZ
                                                 CUENTA: 20151021932
  */
