@@ -86,15 +86,15 @@ export class EmpresasComponent {
 /**********************************************************/
 // Variable de estado para alternar funciones
 
-toggleFunction(empresa: any, i: number) {
+  toggleFunction(empresa: any, i: number) {
 
-  // Ejecuta una función u otra según el estado
-  if (empresa.estado === 1 ) {
-    this.inactivarEmpresa(empresa, i); // Ejecuta la primera función
-  } else {
-    this.activarEmpresa(empresa, i); // Ejecuta la segunda función
+    // Ejecuta una función u otra según el estado
+    if (empresa.estado === 1 ) {
+      this.inactivarEmpresa(empresa, i); // Ejecuta la primera función
+    } else {
+      this.activarEmpresa(empresa, i); // Ejecuta la segunda función
+    }
   }
-}
   
   activarEmpresa(nombre_empresa: any, i: number) {
     this._empresaService.activarEmpresa(nombre_empresa).subscribe(data =>
@@ -178,9 +178,6 @@ getEstadoText(estado: number): string {
       error: (e: HttpErrorResponse) => {
         this._errorService.msjError(e);
       }
-    });
-    location.reload();
-    this.ngZone.run(() => {        
     });
   }
 }
