@@ -33,7 +33,7 @@
     </div>
 
 <!-- Mostrar los productos filtrados -->
-<div *ngIf="productosFiltrados.length > 0" class="productos-filtrados" id="buscadores">
+<div *ngIf="productosFiltrados.length > 0" class="productos-filtrados" >
   <h4>Resultados </h4>
   <ul>
     <li *ngFor="let producto of productosFiltrados" class="producto-item">{{ producto.producto }}</li>
