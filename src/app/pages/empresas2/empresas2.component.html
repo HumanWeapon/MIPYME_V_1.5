@@ -14,14 +14,14 @@
                 <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"class="table table-bordered table-striped row-border hover">
                     <thead>
                       <tr>
-                        <th>Nombre Empresa</th>
-                        <th>Descripcion</th>
-                        <th>Creado</th>
-                        <th>Fecha Creación</th>
-                        <th>modificador</th>
-                        <th>Fecha Modificación</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
+                        <th>EMPRESA</th>
+                        <th>DESCRIPCIÓN</th>
+                        <th>CREADO POR</th>
+                        <th>FECHA CREACIÓN</th>
+                        <th>MODIFICADO POR</th>
+                        <th>FECHA MODIFICACIÓN</th>
+                        <th>ESTADO</th>
+                        <th class="text-center">ACCIONES</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -39,10 +39,10 @@
 
                         <td class="text-center">
                             <div class="btn-group" >
-                                <button type="button" (click)="obtenerIdOpEmpresa(empresa.contacto.dni)" title="Contactos" data-toggle="modal" data-toggle="modal" data-target="#modal-xl" class="btna " ><i class="fas fa-solid fa-address-book"></i></button>
-                                <button type="button"  title="Editar Empresa" data-toggle="modal" data-target="#abrirModalEditarEmpresa" data-toggle="modal" data-target="#abrirModalEditarEmpresa" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
-                                <button type="button"  class="btna" title="Eliminar Empresa"><i class=" fas fa-solid fa-trash" style="color: #E74C3C;"></i></button>
-                                <button type="button"  class="btna " [title]="empresa.empresa.estado === 1 ? 'Desactivar Empresa' : 'Activar Empresa'"><i class="fas" [ngClass]="empresa.empresa.estado === 1 ? 'fa-solid fa-lock-open' : 'fa-solid fa-lock'"></i> </button>
+                                <button type="button" title="Contactos"(click)="obtenerIdOpEmpresa(empresa.contacto.dni, empresa.empresa.nombre_empresa, empresa.contacto.id_contacto)" title="Contactos" data-toggle="modal" data-toggle="modal" data-target="#modal-xl" class="btna " ><i class="fas fa-solid fa-address-book"></i></button>
+                                <button type="button" title="Editar" (click)="obtenerIdEmpresa(empresa, i)" data-toggle="modal" data-target="#abrirModalEditarEmpresa" data-toggle="modal" data-target="#abrirModalEditarEmpresa" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
+                                <button type="button" title="Eliminar" class="btna" ><i class=" fas fa-solid fa-trash" style="color: #E74C3C;"></i></button>
+                                <button type="button" [title]="empresa.empresa.estado === 1 ? 'Desactivar' : 'Activar'" class="btna " (click)="toggleFunction(empresa.empresa.estado, i, empresa.empresa.id_empresa)"><i class="fas" [ngClass]="empresa.empresa.estado === 1 ? 'fa-solid fa-lock-open' : 'fa-solid fa-lock'"></i> </button>
                             </div>
                         </td>
                       </tr>
@@ -63,10 +63,10 @@
   <!-- /.content -->
 
 <div class="modal fade show" id="modal-xl"  aria-modal="true" role="dialog">
-    <div class="modal-dialog modal-xl">
+    <div class="modal-dialog modal-xl" style="font-size: 0.85em;">
         <div class="modal-content">
         <div class="modal-header">
-            <h4 class="modal-title">Extra Large Modal</h4>
+            <h4 class="modal-title">Información de contacto para la empresa <strong>{{nombre_empresa}}</strong> </h4>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">×</span>
             </button>
@@ -88,73 +88,113 @@
                 </div>
                 <div class="card-body">
                     <div class="tab-content" id="custom-tabs-four-tabContent">
-                        <div class="tab-pane fade active show" id="custom-tabs-four-profile" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
-
-                                <div class="row">
-                                    <div class="col-12">
-                                    <div class="card">
-                                        <div class="card-header">
-                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarContacto">
-                                            <i class="fas fa-plus"></i> Nuevo</button>
-                                        <button type="button" class="btn btn-primary custom-print-button btn-danger" title="Generar el Reporte" data-toggle="modal" data-target="#PDFContacto">
-                                            <i class="fas fa-file-pdf mr-2"></i>PDF</button>
+                        <div class="tab-pane fade active show" id="custom-tabs-four-contactos" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
+                            <button type="button" class="btn btn-primary mr-2 mb-2" style="font-size: 0.9em;" data-toggle="modal" data-target="#agregarContacto">
+                                <i class="fas fa-plus" style="font-size: 0.85em;"></i> Nuevo
+                            </button>
+                            <table  class="table table-bordered table-striped row-border hover"> 
+                                <thead>
+                                <tr>
+                                    <th>NOMBRE</th> 
+                                    <th>CORREO</th>
+                                    <th>ESTADO</th>
+                                    <th>CREADOR</th>
+                                    <th>FECHA CREACIÓN</th>
+                                    <th class="text-center">Aciones</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr *ngFor="let contacto of listContactos; let i = index">
+                                    <td>{{ contacto.primer_nombre +" "+ contacto.segundo_nombre+" "+ contacto.primer_apellido +" "+contacto.segundo_apellido }}</td>
+                                    <td>{{ contacto.correo }}</td>
+                                    <td>
+                                        <ng-container *ngIf="contacto.estado === 1">Activo</ng-container>
+                                        <ng-container *ngIf="contacto.estado === 2">Inactivo</ng-container>
+                                    </td>
+                                    <td>{{ contacto.creado_por }}</td>
+                                    <td>{{ contacto.fecha_creacion }}</td>
+                                    <td class="text-center">
+                                    <div class="btn-group">
+                                        <button type="button"  data-toggle="modal" title="Editar" data-target="#abrirModalEditarContacto"data-toggle="modal" data-target="#abrirModalEditarContacto" class="btna" ><i class="fas fa-solid fa-pen" style="font-size: 0.85em;"></i></button>
+                                        <button type="button"  class="btna " [title]="contacto.estado === 1 ? 'Desactivar' : 'Activar'"><i class="fas" [ngClass]="contacto.estado === 1 ? 'fa-solid fa-lock' : 'fa-solid fa-lock-open'" style="font-size: 0.85em;"></i> </button>
                                         </div>
-                                        <!-- /.card-header -->
-                                        <div class="card-body">
-                                            <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover"> 
-                                                <thead>
-                                                <tr>
-                                                    <th>DNI</th>
-                                                    <th>Nombre Completo</th> 
-                                                    <th>Correo</th>
-                                                    <th>Descripción</th>
-                                                    <th>Creado</th>
-                                                    <th>Fecha Creación</th>
-                                                    <th>Fecha Modificación</th>
-                                                    <th>Estado</th>
-                                                    <th>Aciones</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                <tr *ngFor="let contacto of listContactos; let i = index">
-                                                    <td>{{ contacto.dni }}</td>
-                                                    <td>{{ contacto.primer_nombre +" "+ contacto.segundo_nombre+" "+ contacto.primer_apellido +" "+contacto.segundo_apellido }}</td>
-                                                    <td>{{ contacto.correo }}</td>
-                                                    <td>{{ contacto.descripcion}}</td>
-                                                    <td>{{ contacto.creado_por}}</td>
-                                                    <td>{{ contacto.fecha_creacion }}</td>
-                                                    <td>{{ contacto.fecha_modificacion}}</td>
-                                                    <td>
-                                                    <ng-container *ngIf="contacto.estado === 1">Activo</ng-container>
-                                                    <ng-container *ngIf="contacto.estado === 2">Inactivo</ng-container>
-                                                    
-                                                    </td>
-                                                    <td class="text-center">
-                                                    <div class="btn-group">
-                                                        <button type="button"  data-toggle="modal" title="Editar Contacto" data-target="#abrirModalEditarContacto"data-toggle="modal" data-target="#abrirModalEditarContacto" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
-                                                        <button type="button"  class="btna " [title]="contacto.estado === 1 ? 'Desactivar Contacto' : 'Activar contacto'"><i class="fas" [ngClass]="contacto.estado === 1 ? 'fa-solid fa-lock' : 'fa-solid fa-lock-open'"></i> </button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                            
-                                        </div>
-                                        <!-- /.card-body -->
-                                    </div>
-                                    <!-- /.card -->
-                                    </div>
-                                    <!-- /.col -->
-                                </div>
-                                <!-- /.row -->
-
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
                         </div>
                         
-                        <div class="tab-pane fade" id="custom-tabs-four-messages" role="tabpanel" aria-labelledby="custom-tabs-four-messages-tab">
-                            
+                        <div class="tab-pane fade" id="custom-tabs-four-direcciones" role="tabpanel" aria-labelledby="custom-tabs-four-messages-tab">
+                            <button type="button" class="btn btn-primary mr-2 mb-2" style="font-size: 0.9em;" data-toggle="modal" data-target="#agregarContacto">
+                                <i class="fas fa-plus" style="font-size: 0.85em;"></i> Nuevo
+                            </button>
+                            <table class="table table-bordered table-striped row-border hover"> 
+                                <thead>
+                                <tr>
+                                    <th>DIRECCIONES</th> 
+                                    <th>DESCRIPCIÓN</th>
+                                    <th>ESTADO</th>
+                                    <th>CREADOR</th>
+                                    <th>FECHA CREACIÓN</th>
+                                    <th class="text-center">Aciones</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr *ngFor="let direccion of listContactosDirecciones; let i = index">
+                                    <td>{{ direccion.direccion}}</td>
+                                    <td>{{ direccion.descripcion }}</td>
+                                    <td>
+                                        <ng-container *ngIf="direccion.estado === 1">Activo</ng-container>
+                                        <ng-container *ngIf="direccion.estado === 2">Inactivo</ng-container>
+                                    </td>
+                                    <td>{{ direccion.creado_por }}</td>
+                                    <td>{{ direccion.fecha_creacion }}</td>
+                                    <td class="text-center">
+                                        <div class="btn-group">
+                                            <button type="button"  data-toggle="modal" title="Editar" data-target="#abrirModalEditarContacto"data-toggle="modal" data-target="#abrirModalEditarContacto" class="btna" ><i class="fas fa-solid fa-pen" style="font-size: 0.85em;"></i></button>
+                                            <button type="button"  class="btna " [title]="direccion.estado === 1 ? 'Desactivar' : 'Activar'"><i class="fas" [ngClass]="direccion.estado === 1 ? 'fa-solid fa-lock' : 'fa-solid fa-lock-open'" style="font-size: 0.85em;"></i> </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
                         </div>
-                        <div class="tab-pane fade" id="custom-tabs-four-messages" role="tabpanel" aria-labelledby="custom-tabs-four-messages-tab">
-                            
+                        <div class="tab-pane fade" id="custom-tabs-four-telefonos" role="tabpanel" aria-labelledby="custom-tabs-four-messages-tab">
+                            <button type="button" class="btn btn-primary mr-2 mb-2" style="font-size: 0.9em;" data-toggle="modal" data-target="#agregarContacto">
+                                <i class="fas fa-plus" style="font-size: 0.85em;"></i> Teléfono
+                            </button>
+                            <table  class="table table-bordered table-striped row-border hover"> 
+                                <thead>
+                                <tr>
+                                    <th>TELÉFONO</th> 
+                                    <th>EXTENCIÓN</th> 
+                                    <th>DESCRIPCIÓN</th>
+                                    <th>ESTADO</th>
+                                    <th>CREADOR</th>
+                                    <th>FECHA</th>
+                                    <th class="text-center">Aciones</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr *ngFor="let telefono of listContactosTelefonos; let i = index">
+                                    <td>{{ telefono.telefono}}</td>
+                                    <td>{{ telefono.extencion}}</td>
+                                    <td>{{ telefono.descripcion }}</td>
+                                    <td>
+                                        <ng-container *ngIf="telefono.estado === 1">Activo</ng-container>
+                                        <ng-container *ngIf="telefono.estado === 2">Inactivo</ng-container>
+                                    </td>
+                                    <td>{{ telefono.creado_por }}</td>
+                                    <td>{{ telefono.fecha_creacion }}</td>
+                                    <td class="text-center">
+                                        <div class="btn-group">
+                                            <button type="button"  data-toggle="modal" title="Editar" data-target="#abrirModalEditarContacto"data-toggle="modal" data-target="#abrirModalEditarContacto" class="btna" ><i class="fas fa-solid fa-pen" style="font-size: 0.85em;"></i></button>
+                                            <button type="button"  class="btna " [title]="telefono.estado === 1 ? 'Desactivar' : 'Activar'"><i class="fas" [ngClass]="telefono.estado === 1 ? 'fa-solid fa-lock' : 'fa-solid fa-lock-open'" style="font-size: 0.85em;"></i> </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -169,4 +209,85 @@
         <!-- /.modal-content -->
     </div>
     <!-- /.modal-dialog -->
+</div>
+
+<!-- Actualizar Empresa Form -->
+<div class="modal fade" id="abrirModalEditarEmpresa">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Editar Empresa</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                  <div class="form-group">
+                      <label for="empresaEditando">Nombre de Empresa</label>
+                      <input type="text" [(ngModel)]="empresaEditando.nombre_empresa" name="empresaEditando.nombre_empresa" (input)="onInputChange($event, 'nombre_empresa')" class="form-control" id="editarNombre" placeholder="Nombre de la Empresa">
+                  </div>  
+                <div class="form-group">
+                    <label for="empresaEditando">Descripción</label>
+                    <input type="text" [(ngModel)]="empresaEditando.descripcion" name="empresaEditando.descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="editarDescripcion" placeholder="Descripción">
+                </div>      
+              </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                <button type="button" (click)="editarEmpresa()" class="btn btn-success" data-dismiss="modal">Guardar</button>
+            </div>
+        </div>
+    </div>
+    </div>
+    <!-- /Actualizar Empresa Form -->
+
+<!-- Form Ver PDF-->
+<div class="modal fade" id="PDFEmpresa">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+
+      <!-- Cabecera del modal -->
+      <div class="modal-header">
+        <h4 class="modal-title" >Reporte Empresas</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Contenido del modal -->
+      <div class="modal-body">
+        <!-- Aquí puedes colocar tu DataTable o cualquier otro contenido que desees mostrar -->
+        <table class="table table-striped">
+          <thead class="thead-dark">
+            <tr>
+              <th>Nombre Empresa</th>
+              <th>Descripcion</th>
+              <th>Creador</th>
+              <th>Fecha</th>
+              <th>Modificado por</th>
+              <th>Fecha</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let empresa of listEmpresa">
+              <td>{{ empresa.nombre_empresa }}</td>
+              <td>{{ empresa.descripcion }}</td>
+              <td>{{ empresa.creado_por }}</td>
+              <td>{{ empresa.fecha_creacion}}</td>
+              <td>{{ empresa.modificado_por}}</td>
+              <td>{{ empresa.fecha_modificacion}}</td>
+              <td>{{ getEstadoText(empresa.estado) }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+      <!-- Pie del modal -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary customn-print-button btn-danger" (click)="generatePDF()">
+          <i class="fas fa-file-pdf"></i>  Generar PDF</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
 </div>

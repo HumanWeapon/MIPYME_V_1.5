@@ -125,8 +125,7 @@ this.inputDeshabilitado = true;
 
 validarPassword() {
   // Obtener la contraseña almacenada en el Local Storage
-  const userLocal = localStorage.getItem('contrasena')
-  console.log(userLocal)
+  const userLocal = localStorage.getItem('CCP')
   if (this.contrasenaActual === '' || this.nuevaContrasena === '' || this.confirmarContrasena === '') {
     this.toastr.warning('Completa todos los campos');
   } else if (this.confirmarContrasena !== this.nuevaContrasena) {
