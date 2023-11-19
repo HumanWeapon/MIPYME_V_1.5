@@ -14,5 +14,34 @@
   #buscadores:active, #buscadores:hover {
     border-color: rgb(255, 174, 0) /* Color del borde cuando está activo o se pasa el ratón */
   }
+
+  .productos-filtrados {
+    margin-top: 20px;
+    padding: 10px;
+    text-transform: capitalize;
+  }
   
+  .producto-item {
+    list-style-type: none;
+    margin-bottom: 5px;
+    text-transform: capitalize;
+  }
   
+  /* Estilos adicionales si es necesario */
+.custom-input {
+  border-radius: 8px; /* Borde redondeado */
+  padding: 10px; /* Espaciado interno */
+  /* Agrega más estilos según sea necesario */
+}
+
+/* Estilos adicionales para el contenedor del input si es necesario */
+.form-group {
+  margin-bottom: 20px; /* Margen inferior */
+  /* Agrega más estilos según sea necesario */
+}
+
+.custom-select{
+  border-radius: 7px; /* Borde redondeado */
+
+}
+

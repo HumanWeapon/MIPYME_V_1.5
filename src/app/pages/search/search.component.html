@@ -7,53 +7,41 @@
      <div class="row">
      <div class="col-md-10 offset-md-1">
      <div class="row">
-    
-       
-       <div class="col-6">
-       <div class="form-group">
-       <label>Busqueda por Pais</label>
-       <select name="buscapais" class="form-control" id="buscadores">
-        <option value="0">Selecciona el Pais</option>
-        <option *ngFor="let item of _listPaises" [ngValue]="item.pais">{{ item.pais }}</option>
-       </select>
-       </div>
-       </div>
 
       <div class="col-6">
-      <div class="form-group">
-      <label>Busqueda por Categoria</label>
-      <select name="buscacategoria" class="form-control" id="buscadores">
-        <option value="0">Selecciona la Categoria</option>
-        <option *ngFor="let item of _listCategorias" [ngValue]="item.id_categoria">{{ item.categoria }}</option>
-      </select>
+        <div class="form-group">
+          <label>Busqueda por Categoria</label>
+          <select name="buscacategoria" class="form-control custom-select" id="buscadores" [(ngModel)]="opcionSeleccionada" (change)="filtrarProductosPorCategoria()">
+            <option value="0">Selecciona la Categoria</option>
+            <option *ngFor="let categoria of _listCategorias" [ngValue]="categoria.id_categoria">{{ categoria.categoria }}</option>
+          </select>
+        </div>
       </div>
-      </div>
-      
-      <!--<div class="col-3">
-      <div class="form-group">
-      <label>Busqueda por</label>
-      <select name="buscacategoria" class="form-control" id="buscadores">
-        <option value="0">Selecciona la Categoria</option>
-        <option value="1">Tecnologia</option>
-        <option value="2">Alimentos</option>
-        <option value="3">Granos</option>
-      </select>
-      </div>
-      </div>-->
 
     </div>
 
-     <div class="form-group">
-     <div class="input-group input-group-lg">
-     <input type="search" class="form-control form-control-lg" placeholder="Busca tu Producto">
-     <div class="input-group-append">
-     <button type="submit" class="btn btn-lg btn-default"><i class="fa fa-search"></i></button>
-    </div>
-    </div>
+    <div class="form-group">
+      <input
+        type="search"
+        class="form-control custom-input"
+        placeholder="Buscar productos"
+        [(ngModel)]="searchTerm"
+        (input)="filtrarProductos()"
+        name="searchTerm"
+        [ngModelOptions]="{standalone: true}" 
+      />
     </div>
 
-   </div>
-   </div>
-   </form>
-  </div>
-</section>
+<!-- Mostrar los productos filtrados -->
+<div *ngIf="productosFiltrados.length > 0" class="productos-filtrados" id="buscadores">
+  <h4>Resultados </h4>
+  <ul>
+    <li *ngFor="let producto of productosFiltrados" class="producto-item">{{ producto.producto }}</li>
+  </ul>
+</div>
+
+
+      </div>
+    </div>
+
+
