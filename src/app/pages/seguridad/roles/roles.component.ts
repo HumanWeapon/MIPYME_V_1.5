@@ -53,8 +53,8 @@ export class RolesComponent implements OnInit{
 
   constructor(
     private _rolService: RolesService,
-    private toastr: ToastrService,
-    private ngZone: NgZone,
+    private _toastr: ToastrService,
+    private _ngZone: NgZone,
     private _errorService: ErrorService,
     private _userService: UsuariosService,
     private _bitacoraService: BitacoraService
@@ -101,6 +101,37 @@ toggleFunction(roles: any, i: number) {
     this.activarRol(roles, i); // Ejecuta la segunda función
   }
 }
+
+inactivarRol(roles: any, i: any) {
+  this._rolService.inactivarRol(roles).subscribe({
+    next: (data) => {
+      this.inactivarBitacora(data);
+      this._toastr.success('El rol: ' + roles.rol + ' ha sido Inactivado')
+    },
+    error: (e: HttpErrorResponse) => {
+      this._errorService.msjError(e);
+    }
+  });
+  this.listRoles[i].estado_rol = 2;
+  
+}
+activarRol(roles: any, i: any) {
+  this._rolService.activarRol(roles).subscribe({
+    next: (data) => {
+      this.activarBitacora(data);
+      this._toastr.success('El rol: ' + roles.rol + ' ha sido Activado')
+    },
+    error: (e: HttpErrorResponse) => {
+      this._errorService.msjError(e);
+    }
+  });
+  this.listRoles[i].estado_rol = 1;
+}
+
+
+
+
+/*
   inactivarRol(roles: Roles, i: any){
     this._rolService.inactivarRol(roles).subscribe(data => 
     this.toastr.success('El rol: '+ roles.rol+ ' ha sido inactivado')
@@ -113,6 +144,8 @@ toggleFunction(roles: any, i: number) {
     );
     this.listRoles[i].estado_rol = 1;
   }
+
+  */
 
   /*****************************************************************************************************/
 
@@ -176,17 +209,18 @@ getEstadoText(estado: number): string {
 
     this._rolService.addRol(this.nuevoRol).subscribe({
       next: (data) => {
+        this._toastr.success('Rol agregado con éxito');
         this.insertBitacora(data);
-        this.toastr.success('Rol agregado con éxito');
       },
       error: (e: HttpErrorResponse) => {
         this._errorService.msjError(e);
       }
     });
-    location.reload();
-    this.ngZone.run(() => {        
-    });
+    
   }
+  location.reload();
+    this._ngZone.run(() => {        
+    });
 }
 
   obtenerIdRol(roles: Roles, i: any){
@@ -206,15 +240,17 @@ getEstadoText(estado: number): string {
 
   editarRol(){
     this._rolService.editarRol(this.rolEditando).subscribe(data => {
-      this.toastr.success('Rol editado con éxito');
-      this.listRoles[this.indice].rol = this.rolEditando.rol;
-
-        // Recargar la página
-        location.reload();
-        // Actualizar la vista
-        this.ngZone.run(() => {        
-        });
+      this._toastr.success('Rol editado con éxito');
       
+      if(this.listRoles[this.indice].rol = this.rolEditando.rol){
+        //no se puede editar el usuario
+      }else{
+      // Recargar la página
+      location.reload();
+      // Actualizar la vista
+      this._ngZone.run(() => {        
+      });
+    }
     });
   }
 
@@ -270,63 +306,63 @@ getUsuario(){
  });
 }
 
-insertBitacora(dataRoles: Roles){
+insertBitacora(dataUser: Usuario){
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
-    id_objeto: 26,
+    id_objeto: 2,
     accion: 'INSERTAR',
-    descripcion: 'SE INSERTA EL ROL CON EL ID: '+ dataRoles.id_rol
+    descripcion: 'SE INSERTA EL REGISTRO CON EL ID: '+ dataUser.usuario
   }
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
   })
 }
-updateBitacora(dataRoles: Roles){
+updateBitacora(dataUser: Usuario){
   const bitacora = {
     fecha: new Date(),
-    id_usuario: this.getUser.usuario,
-    id_objeto: 26,
-    accion: 'ACTUALIZAR',
-    descripcion: 'SE ACTUALIZA EL ROL CON EL ID: '+ dataRoles.id_rol
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 2,
+    accion: 'INSERTAR',
+    descripcion: 'SE INSERTA EL REGISTRO CON EL ID: '+ dataUser.usuario
   };
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
   })
 }
-activarBitacora(dataRoles: Roles){
+activarBitacora(dataUser: Roles){
   const bitacora = {
     fecha: new Date(),
-    id_usuario: this.getUser.usuario,
-    id_objeto: 26,
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 2,
     accion: 'ACTIVAR',
-    descripcion: 'SE ACTIVA EL ROL CON EL ID: '+ dataRoles.id_rol
+    descripcion: 'SE ACTIVA EL USUARIO CON EL ID: '+ dataUser.rol
   }
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
   })
 }
-inactivarBitacora(dataRoles: Roles){
+inactivarBitacora(dataRol: Roles){
   const bitacora = {
     fecha: new Date(),
-    id_usuario: this.getUser.usuario,
-    id_objeto: 26,
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 2,
     accion: 'INACTIVAR',
-    descripcion: 'SE INACTIVA EL ROL CON EL ID: '+ dataRoles.id_rol
+    descripcion: 'SE INACTIVA EL USUARIO CON EL ID: '+ dataRol.rol
   }
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
   })
 }
-deleteBitacora(dataRoles: Roles){
+deleteBitacora(dataUser: Usuario){
   const bitacora = {
     fecha: new Date(),
-    id_usuario: this.getUser.usuario,
-    id_objeto: 26,
-    accion: 'ELIMINAR',
-    descripcion: 'SE ELIMINA EL ROL CON EL ID: '+ dataRoles.id_rol
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 2,
+    accion: 'INSERTAR',
+    descripcion: 'SE INSERTA EL REGISTRO CON EL ID: '+ dataUser.usuario
   }
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
   })
 }
   /*************************************************************** Fin Métodos de Bitácora ***************************************************************************/
-
+ 
 }
 
 
