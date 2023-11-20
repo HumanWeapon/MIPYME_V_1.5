@@ -5,6 +5,11 @@ import { Subject } from 'rxjs';
 import { Parametros } from 'src/app/interfaces/seguridad/parametros';
 import { ParametrosService } from 'src/app/services/seguridad/parametros.service';
 import { NgZone } from '@angular/core';
+import { BitacoraService } from 'src/app/services/administracion/bitacora.service';
+import { Usuario } from 'src/app/interfaces/seguridad/usuario';
+import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
+import { ErrorService } from 'src/app/services/error.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 
 @Component({
@@ -55,7 +60,10 @@ export class ParametrosComponent implements OnInit{
     private _parametroService: ParametrosService, 
     private toastr: ToastrService,
     private router: Router, 
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private _bitacoraService: BitacoraService,
+    private _errorService: ErrorService,
+    private _userService: UsuariosService
     ) { }
 
   
@@ -88,14 +96,82 @@ export class ParametrosComponent implements OnInit{
   }
 
 
-  inactivarParametro(parametros: Parametros, i: any){
-    this._parametroService.inactivarParametro(parametros).subscribe(data => this.toastr.success('El parametro: '+ parametros.parametro+ ' ha sido inactivado'));
+
+   // Variable de estado para alternar funciones
+
+toggleFunction(parametros: any, i: number) {
+
+  // Ejecuta una función u otra según el estado
+  if (parametros.estado_parametro === 1 ) {
+    this.inactivarParametro(parametros, i); // Ejecuta la primera función
+  } else {
+    this.activarParametro(parametros, i); // Ejecuta la segunda función
+  }
+}
+ 
+inactivarParametro(parametros: any, i: number){
+    this._parametroService.inactivarParametro(parametros).subscribe(data => 
+    this.toastr.success('El parametro: '+ parametros.parametro+ ' ha sido inactivado')
+    );
     this.listParametros[i].estado_parametro = 2;
   }
-  activarParametro(parametros: Parametros, i: any){
-    this._parametroService.activarParametro(parametros).subscribe(data => this.toastr.success('El parametro: '+ parametros.parametro+ ' ha sido activado'));
+  activarParametro(parametros: any, i: number){
+    this._parametroService.activarParametro(parametros).subscribe(data => 
+    this.toastr.success('El parametro: '+ parametros.parametro+ ' ha sido activado')
+    );
     this.listParametros[i].estado_parametro = 1;
   }
+
+
+
+   /*****************************************************************************************************/
+
+generatePDF() {
+
+  const {jsPDF} = require ("jspdf");
+ 
+  const doc = new jsPDF();
+  const data: any[][] =[]
+  const headers = ['ID', 'Parametro', 'Valor', 'Id Usuario',  'Creador', 'Fecha', 'Modificado por', 'Fecha', 'Estado'];
+
+  // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
+  this.listParametros.forEach((parametro, index) => {
+    const row = [
+      parametro.id_parametro,
+      parametro.parametro,
+      parametro.valor,
+      parametro.id_usuario,
+      parametro.creado_por,
+      parametro.fecha_creacion,
+      parametro.modificado_por,
+      parametro.fecha_modificacion,
+      parametro.alerta_busqueda, 
+      this.getEstadoText(parametro.estado_parametro) // Función para obtener el texto del estado
+    ];
+    data.push(row);
+  });
+
+  doc.autoTable({
+    head: [headers],
+    body: data,
+  });
+
+  doc.output('dataurlnewwindow', null, 'Pymes.pdf');
+}
+
+getEstadoText(estado: number): string {
+  switch (estado) {
+    case 1:
+      return 'ACTIVO';
+    case 2:
+      return 'INACTIVO';
+    default:
+      return 'Desconocido';
+  }
+}
+
+
+/**************************************************************/
 
 
   agregarNuevoParametro() {
@@ -156,6 +232,119 @@ export class ParametrosComponent implements OnInit{
       
     });
   }
+
+
+
+  
+   /*************************************************************** Métodos de Bitácora ***************************************************************************/
+
+   getUser: Usuario = {
+    id_usuario: 0,
+    creado_por: '',
+    fecha_creacion: new Date(),
+    modificado_por: '',
+    fecha_modificacion: new Date(),
+    usuario: '',
+    nombre_usuario: '',
+    correo_electronico: '',
+    estado_usuario: 0,
+    contrasena: '',
+    id_rol: 0,
+    fecha_ultima_conexion: new Date(),
+    primer_ingreso: new Date(),
+    fecha_vencimiento: new Date(),
+    intentos_fallidos: 0
+  };
+
+  getUsuario(){
+    const userlocal = localStorage.getItem('usuario');
+    if(userlocal){
+      this.getUser = {
+        usuario: userlocal,
+        id_usuario: 0,
+        creado_por: '',
+        fecha_creacion: new Date(),
+        modificado_por: '',
+        fecha_modificacion: new Date(),
+        nombre_usuario: '',
+        correo_electronico: '',
+        estado_usuario: 0,
+        contrasena: '',
+        id_rol: 0,
+        fecha_ultima_conexion: new Date(),
+        primer_ingreso: new Date(),
+        fecha_vencimiento: new Date(),
+        intentos_fallidos: 0
+    }
+   }
+
+   this._userService.getUsuario(this.getUser).subscribe({
+     next: (data) => {
+       this.getUser = data;
+     },
+     error: (e: HttpErrorResponse) => {
+       this._errorService.msjError(e);
+     }
+   });
+ }
+
+  insertBitacora(dataParametro: Parametros){
+    const bitacora = {
+      fecha: new Date(),
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 29,
+      accion: 'INSERTAR',
+      descripcion: 'SE INSERTA EL PARAMETRO CON EL ID: '+ dataParametro.parametro
+    }
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+    })
+  }
+  updateBitacora(dataParametro: Parametros){
+    const bitacora = {
+      fecha: new Date(),
+      id_usuario: this.getUser.usuario,
+      id_objeto: 29,
+      accion: 'ACTUALIZAR',
+      descripcion: 'SE ACTUALIZA EL PARAMETRO CON EL ID: '+ dataParametro.parametro
+    };
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+    })
+  }
+  activarBitacora(dataParametro: Parametros){
+    const bitacora = {
+      fecha: new Date(),
+      id_usuario: this.getUser.usuario,
+      id_objeto: 29,
+      accion: 'ACTIVAR',
+      descripcion: 'SE ACTIVA EL PARAMETRO CON EL ID: '+ dataParametro.parametro
+    }
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+    })
+  }
+  inactivarBitacora(dataParametro: Parametros){
+    const bitacora = {
+      fecha: new Date(),
+      id_usuario: this.getUser.usuario,
+      id_objeto: 29,
+      accion: 'INACTIVAR',
+      descripcion: 'SE INACTIVA EL PARAMETRO CON EL ID: '+ dataParametro.parametro
+    }
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+    })
+  }
+  deleteBitacora(dataParametro: Parametros){
+    const bitacora = {
+      fecha: new Date(),
+      id_usuario: this.getUser.usuario,
+      id_objeto: 29,
+      accion: 'ELIMINAR',
+      descripcion: 'SE ELIMINA EL PARAMETRO CON EL ID: '+ dataParametro.parametro
+    }
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+    })
+  }
+    /*************************************************************** Fin Métodos de Bitácora ***************************************************************************/
+
 }
 
 

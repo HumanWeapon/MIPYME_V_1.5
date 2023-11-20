@@ -6,6 +6,11 @@ import { Preguntas } from 'src/app/interfaces/seguridad/preguntas';
 import { PreguntasService } from 'src/app/services/seguridad/preguntas.service';
 import { Preguntas_Usuario } from 'src/app/interfaces/seguridad/preguntasUsuario';
 import { NgZone } from '@angular/core';
+import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
+import { ErrorService } from 'src/app/services/error.service';
+import { BitacoraService } from 'src/app/services/administracion/bitacora.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Usuario } from 'src/app/interfaces/seguridad/usuario';
 
 
 @Component({
@@ -51,7 +56,10 @@ export class PreguntasComponent implements OnInit{
     private _questionService: PreguntasService,
     private toastr: ToastrService,
     private router: Router, 
-    private ngZone: NgZone 
+    private ngZone: NgZone, 
+    private _bitacoraService: BitacoraService,
+    private _errorService: ErrorService,
+    private _userService: UsuariosService
     ) { }
 
   
@@ -74,14 +82,78 @@ export class PreguntasComponent implements OnInit{
     this.dtTrigger.unsubscribe();
   }
 
-  inactivarPregunta(preguntas: Preguntas, i: any){
-    this._questionService.inactivarPregunta(preguntas).subscribe(data => this.toastr.success('La pregunta: '+ preguntas.id_pregunta+ ' ha sido inactivada'));
+
+    // Variable de estado para alternar funciones
+
+toggleFunction(preguntas: any, i: number) {
+
+  // Ejecuta una función u otra según el estado
+  if (preguntas.estado_pregunta === 1 ) {
+    this.inactivarPregunta(preguntas, i); // Ejecuta la primera función
+  } else {
+    this.activarPregunta(preguntas, i); // Ejecuta la segunda función
+  }
+}
+ 
+inactivarPregunta(preguntas: any, i: number){
+    this._questionService.inactivarPregunta(preguntas).subscribe(data => 
+    this.toastr.success('La pregunta: '+ preguntas.pregunta+ ' ha sido inactivado')
+    );
     this.listPreguntas[i].estado_pregunta = 2;
   }
-  activarPregunta(preguntas: Preguntas, i: any){
-    this._questionService.activarPregunta(preguntas).subscribe(data => this.toastr.success('La pregunta: '+ preguntas.id_pregunta+ ' ha sido activada'));
+  activarPregunta(preguntas: any, i: number){
+    this._questionService.activarPregunta(preguntas).subscribe(data => 
+    this.toastr.success('La pregunta: '+ preguntas.pregunta+ ' ha sido activado')
+    );
     this.listPreguntas[i].estado_pregunta = 1;
   }
+
+
+   /*****************************************************************************************************/
+
+generatePDF() {
+
+  const {jsPDF} = require ("jspdf");
+ 
+  const doc = new jsPDF();
+  const data: any[][] =[]
+  const headers = ['ID', 'Pregunta', 'Creador', 'Fecha', 'Modificado por', 'Fecha', 'Estado'];
+
+  // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
+  this.listPreguntas.forEach((preg, index) => {
+    const row = [
+    preg.id_pregunta,
+    preg.pregunta,
+    preg.creado_por,
+    preg.fecha_creacion,
+    preg.modificado_por,
+    preg.fecha_modificacion, 
+      this.getEstadoText(preg.estado_pregunta) // Función para obtener el texto del estado
+    ];
+    data.push(row);
+  });
+
+  doc.autoTable({
+    head: [headers],
+    body: data,
+  });
+
+  doc.output('dataurlnewwindow', null, 'Pymes.pdf');
+}
+
+getEstadoText(estado: number): string {
+  switch (estado) {
+    case 1:
+      return 'ACTIVO';
+    case 2:
+      return 'INACTIVO';
+    default:
+      return 'Desconocido';
+  }
+}
+
+
+/**************************************************************/
  
 
   agregarNuevoPregunta() {
@@ -131,14 +203,125 @@ export class PreguntasComponent implements OnInit{
       this.toastr.success('Pregunta editada con éxito');
       this.listPreguntas[this.indice].pregunta = this.preguntaEditando.pregunta;
 
-        // Recargar la página
-        location.reload();
-        // Actualizar la vista
-        this.ngZone.run(() => {        
-        });
       
     });
+      // Recargar la página
+      location.reload();
+      // Actualizar la vista
+      this.ngZone.run(() => {        
+      });
   }
+
+
+   /*************************************************************** Métodos de Bitácora ***************************************************************************/
+
+   getUser: Usuario = {
+    id_usuario: 0,
+    creado_por: '',
+    fecha_creacion: new Date(),
+    modificado_por: '',
+    fecha_modificacion: new Date(),
+    usuario: '',
+    nombre_usuario: '',
+    correo_electronico: '',
+    estado_usuario: 0,
+    contrasena: '',
+    id_rol: 0,
+    fecha_ultima_conexion: new Date(),
+    primer_ingreso: new Date(),
+    fecha_vencimiento: new Date(),
+    intentos_fallidos: 0
+  };
+
+  getUsuario(){
+    const userlocal = localStorage.getItem('usuario');
+    if(userlocal){
+      this.getUser = {
+        usuario: userlocal,
+        id_usuario: 0,
+        creado_por: '',
+        fecha_creacion: new Date(),
+        modificado_por: '',
+        fecha_modificacion: new Date(),
+        nombre_usuario: '',
+        correo_electronico: '',
+        estado_usuario: 0,
+        contrasena: '',
+        id_rol: 0,
+        fecha_ultima_conexion: new Date(),
+        primer_ingreso: new Date(),
+        fecha_vencimiento: new Date(),
+        intentos_fallidos: 0
+    }
+   }
+
+   this._userService.getUsuario(this.getUser).subscribe({
+     next: (data) => {
+       this.getUser = data;
+     },
+     error: (e: HttpErrorResponse) => {
+       this._errorService.msjError(e);
+     }
+   });
+ }
+
+  insertBitacora(dataPregunta: Preguntas){
+    const bitacora = {
+      fecha: new Date(),
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 29,
+      accion: 'INSERTAR',
+      descripcion: 'SE INSERTA LA PREGUNTA CON EL ID: '+ dataPregunta.pregunta
+    }
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+    })
+  }
+  updateBitacora(dataPregunta: Preguntas){
+    const bitacora = {
+      fecha: new Date(),
+      id_usuario: this.getUser.usuario,
+      id_objeto: 29,
+      accion: 'ACTUALIZAR',
+      descripcion: 'SE ACTUALIZA LA PREGUNTA CON EL ID: '+ dataPregunta.pregunta
+    };
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+    })
+  }
+  activarBitacora(dataPregunta: Preguntas){
+    const bitacora = {
+      fecha: new Date(),
+      id_usuario: this.getUser.usuario,
+      id_objeto: 29,
+      accion: 'ACTIVAR',
+      descripcion: 'SE ACTIVA LA PREGUNTA CON EL ID: '+ dataPregunta.pregunta
+    }
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+    })
+  }
+  inactivarBitacora(dataPregunta: Preguntas){
+    const bitacora = {
+      fecha: new Date(),
+      id_usuario: this.getUser.usuario,
+      id_objeto: 29,
+      accion: 'INACTIVAR',
+      descripcion: 'SE INACTIVA LA PREGUNTA CON EL ID: '+ dataPregunta.pregunta
+    }
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+    })
+  }
+  deleteBitacora(dataPregunta: Preguntas){
+    const bitacora = {
+      fecha: new Date(),
+      id_usuario: this.getUser.usuario,
+      id_objeto: 29,
+      accion: 'ELIMINAR',
+      descripcion: 'SE ELIMINA LA PREGUNTA CON EL ID: '+ dataPregunta.pregunta
+    }
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+    })
+  }
+    /*************************************************************** Fin Métodos de Bitácora ***************************************************************************/
+
 }
 
 
