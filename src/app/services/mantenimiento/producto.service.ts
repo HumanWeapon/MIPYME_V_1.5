@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from 'src/enviroments/enviromet';
 import { Observable, catchError } from 'rxjs';
 import { Productos } from '../../interfaces/mantenimiento/productos';
+import { Contacto } from 'src/app/interfaces/contacto/contacto';
 
 @Injectable({
   providedIn: 'root'
@@ -54,5 +55,11 @@ export class ProductosService {
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
     return this.http.post<Productos>(`${this.myAppUrl}${this.myApiUrl}/updateProducto`, productos, { headers: headers })
+  }
+
+  getAllProductosByCategoria(id_categoria: Contacto): Observable<any> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.post<any>(`${this.myAppUrl}${this.myApiUrl}/getAllProductosByCategoria`,id_categoria, { headers: headers });
   }
 }

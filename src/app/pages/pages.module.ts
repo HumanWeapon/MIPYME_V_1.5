@@ -34,6 +34,7 @@ import { BackupComponent } from './administracion/backup/backup.component';
 import { PymeComponent } from './pyme/pyme.component';
 import { PerfilComponent } from './perfil/perfil.component';
 import { ContactoEmpresasComponent } from './contacto/contacto-empresas/contacto-empresas.component';
+import { Empresas2Component } from './empresas2/empresas2.component';
 
 
 
@@ -67,8 +68,9 @@ import { ContactoEmpresasComponent } from './contacto/contacto-empresas/contacto
     RestoreComponent,
     BackupComponent,
     PymeComponent,
-    PerfilComponent,
-    ContactoEmpresasComponent
+    ContactoEmpresasComponent,
+    Empresas2Component,
+    PerfilComponent
   ],
   imports: [
     CommonModule,

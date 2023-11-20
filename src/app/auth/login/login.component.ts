@@ -123,6 +123,7 @@ export class LoginComponent {
         }
         else{
           localStorage.setItem('usuario', this.usuario);
+          localStorage.setItem('CCP',this.contrasena);
           this._router.navigate(['dashboard'])
         }
       },

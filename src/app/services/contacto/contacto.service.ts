@@ -51,6 +51,11 @@ export class ContactoService {
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
     return this.http.post<Contacto>(`${this.myAppUrl}${this.myApiUrl}/getContacto`, contacto, { headers: headers })
    }
+   getContactoID(dni: any): Observable<Contacto[]> {
+    const token = localStorage.getItem('token')
+    const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
+    return this.http.post<Contacto[]>(`${this.myAppUrl}${this.myApiUrl}/getContacto`, { dni: dni }, { headers: headers })
+   }
 
    getAllContactos(): Observable<Contacto[]> {
     const token = localStorage.getItem('token')

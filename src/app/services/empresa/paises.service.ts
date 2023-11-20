@@ -26,10 +26,10 @@ export class PaisesService {
     return this.http.post<Paises>(`${this.myAppUrl}${this.myApiUrl}/postPais`, req, { headers: headers })
   }
   
-  getAllPaises(): Observable<Paises> {
+  getAllPaises(): Observable<Paises[]> {
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.get<Paises>(`${this.myAppUrl}${this.myApiUrl}/getAllPaises`, { headers: headers })
+    return this.http.get<Paises[]>(`${this.myAppUrl}${this.myApiUrl}/getAllPaises`, { headers: headers })
   }
 
   getPais(pais: any): Observable<Paises[]> {
