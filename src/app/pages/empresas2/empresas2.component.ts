@@ -15,8 +15,9 @@ import { DireccionesService } from 'src/app/services/contacto/direcciones.servic
 import { EmpresaService } from 'src/app/services/empresa/empresa.service';
 import { OperacionEmpresasService } from 'src/app/services/empresa/operacion-empresas.service';
 import { ErrorService } from 'src/app/services/error.service';
-import { TipoDireccionService } from 'src/app/services/mantenimiento/tipoDireccion.service';
 import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
+import { TipoDireccionService } from 'src/app/services/mantenimiento/tipoDireccion.service';
+
 
 @Component({
   selector: 'app-empresas2',
@@ -62,6 +63,7 @@ export class Empresas2Component implements OnInit{
     private _empresaService: EmpresaService,
     private _contactosService: ContactoService,
     private _direccionesService: DireccionesService,
+    private _tipoDService: DireccionesService,
     private _telefonosService: ContactoTService,
     private _toastr: ToastrService,
     private _ngZone: NgZone,
@@ -153,6 +155,31 @@ export class Empresas2Component implements OnInit{
       this.activarEmpresa(i, id_empresa); // Ejecuta la segunda función
     }
   }
+
+  toggleFunctionContacto(contacto: any, i: number) {
+
+    // Ejecuta una función u otra según el estado
+    if (contacto.estado === 1 ) {
+      this.inactivarContacto(contacto, i); // Ejecuta la primera función
+    } else {
+      this.activarContacto(contacto, i); // Ejecuta la segunda función
+    }
+  }
+
+
+  inactivarContacto(contacto: Contacto, i: any){
+    this._contactosService.inactivarContacto(contacto).subscribe(data => 
+    this._toastr.success('El contacto: '+ contacto.primer_nombre + ' ha sido inactivado')
+    );
+    this.listContactos[i].estado = 2; 
+  }
+  activarContacto(contacto: Contacto, i: any){
+    this._contactosService.activarContacto(contacto).subscribe(data => 
+    this._toastr.success('El contacto: '+ contacto.primer_nombre + ' ha sido activado')
+    );
+    this.listContactos[i].estado = 1;
+  }
+
 
   generatePDF() {
 
