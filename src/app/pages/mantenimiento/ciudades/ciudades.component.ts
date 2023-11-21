@@ -229,113 +229,120 @@ getEstadoText(estado: number): string {
     });
   }
 
-  /*************************************************************** Métodos de Bitácora ***************************************************************************/
+ /***************************************************************
+ * Métodos de Bitácora
+ *****************************************************************/
 
-  getUser: Usuario = {
-    id_usuario: 0,
-    creado_por: '',
-    fecha_creacion: new Date(),
-    modificado_por: '',
-    fecha_modificacion: new Date(),
-    usuario: '',
-    nombre_usuario: '',
-    correo_electronico: '',
-    estado_usuario: 0,
-    contrasena: '',
-    id_rol: 0,
-    fecha_ultima_conexion: new Date(),
-    primer_ingreso: new Date(),
-    fecha_vencimiento: new Date(),
-    intentos_fallidos: 0
+// Usuario por defecto
+getUser: Usuario = {
+  id_usuario: 0,
+  creado_por: '',
+  fecha_creacion: new Date(),
+  modificado_por: '',
+  fecha_modificacion: new Date(),
+  usuario: '',
+  nombre_usuario: '',
+  correo_electronico: '',
+  estado_usuario: 0,
+  contrasena: '',
+  id_rol: 0,
+  fecha_ultima_conexion: new Date(),
+  primer_ingreso: new Date(),
+  fecha_vencimiento: new Date(),
+  intentos_fallidos: 0
+};
+
+// Obtener información del usuario
+getUsuario() {
+  const userLocal = localStorage.getItem('usuario');
+  if (userLocal) {
+    this.getUser = {
+      ...this.getUser,
+      usuario: userLocal
+    };
+  }
+
+  this._userService.getUsuario(this.getUser).subscribe({
+    next: (data: Usuario) => {
+      this.getUser = data;
+    },
+    error: (e: HttpErrorResponse) => {
+      this._errorService.msjError(e);
+    }
+  });
+}
+
+// Insertar una entrada en la bitácora para una ciudad
+insertBitacora(dataCiudad: Ciudades) {
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 2,
+    accion: 'INSERTAR',
+    descripcion: 'SE INSERTA LA CIUDAD CON EL ID: ' + dataCiudad.id_ciudad
   };
 
-  getUsuario(){
-    const userlocal = localStorage.getItem('usuario');
-    if(userlocal){
-      this.getUser = {
-        usuario: userlocal,
-        id_usuario: 0,
-        creado_por: '',
-        fecha_creacion: new Date(),
-        modificado_por: '',
-        fecha_modificacion: new Date(),
-        nombre_usuario: '',
-        correo_electronico: '',
-        estado_usuario: 0,
-        contrasena: '',
-        id_rol: 0,
-        fecha_ultima_conexion: new Date(),
-        primer_ingreso: new Date(),
-        fecha_vencimiento: new Date(),
-        intentos_fallidos: 0
-    }
-   }
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+    // Puedes manejar el éxito aquí si es necesario
+  });
+}
 
-   this._userService.getUsuario(this.getUser).subscribe({
-     next: (data) => {
-       this.getUser = data;
-     },
-     error: (e: HttpErrorResponse) => {
-       this._errorService.msjError(e);
-     }
-   });
- }
+// Actualizar la bitácora para una ciudad
+updateBitacora(dataCiudad: Ciudades) {
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.usuario,
+    id_objeto: 2,
+    accion: 'ACTUALIZAR',
+    descripcion: 'SE ACTUALIZA LA CIUDAD CON EL ID: ' + dataCiudad.id_ciudad
+  };
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+    // Puedes manejar el éxito aquí si es necesario
+  });
+}
 
-  insertBitacora(dataCiudad: Ciudades){
-    const bitacora = {
-      fecha: new Date(),
-      id_usuario: this.getUser.id_usuario,
-      id_objeto: 2,
-      accion: 'INSERTAR',
-      descripcion: 'SE INSERTA LA CIUDAD CON EL ID: '+ dataCiudad.id_ciudad
-    }
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
-  }
-  updateBitacora(dataCiudad: Ciudades){
-    const bitacora = {
-      fecha: new Date(),
-      id_usuario: this.getUser.usuario,
-      id_objeto: 2,
-      accion: 'ACTUALIZAR',
-      descripcion: 'SE ACTUALIZA LA CIUDAD CON EL ID: '+ dataCiudad.id_ciudad
-    };
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
-  }
-  activarBitacora(dataCiudad: Ciudades){
-    const bitacora = {
-      fecha: new Date(),
-      id_usuario: this.getUser.usuario,
-      id_objeto: 2,
-      accion: 'ACTIVAR',
-      descripcion: 'SE ACTIVA LA CIUDAD CON EL ID: '+ dataCiudad.id_ciudad
-    }
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
-  }
-  inactivarBitacora(dataCiudad: Ciudades){
-    const bitacora = {
-      fecha: new Date(),
-      id_usuario: this.getUser.usuario,
-      id_objeto: 2,
-      accion: 'INACTIVAR',
-      descripcion: 'SE INACTIVA LA CIUDAD CON EL ID: '+ dataCiudad.id_ciudad
-    }
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
-  }
-  deleteBitacora(dataCiudad: Ciudades){
-    const bitacora = {
-      fecha: new Date(),
-      id_usuario: this.getUser.usuario,
-      id_objeto: 2,
-      accion: 'ELIMINAR',
-      descripcion: 'SE ELIMINA LA CIUDAD CON EL ID: '+ dataCiudad.id_ciudad
-    }
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
-  }
+// Activar la bitácora para una ciudad
+activarBitacora(dataCiudad: Ciudades) {
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.usuario,
+    id_objeto: 2,
+    accion: 'ACTIVAR',
+    descripcion: 'SE ACTIVA LA CIUDAD CON EL ID: ' + dataCiudad.id_ciudad
+  };
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+    // Puedes manejar el éxito aquí si es necesario
+  });
+}
+
+// Inactivar la bitácora para una ciudad
+inactivarBitacora(dataCiudad: Ciudades) {
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.usuario,
+    id_objeto: 2,
+    accion: 'INACTIVAR',
+    descripcion: 'SE INACTIVA LA CIUDAD CON EL ID: ' + dataCiudad.id_ciudad
+  };
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+    // Puedes manejar el éxito aquí si es necesario
+  });
+}
+
+// Eliminar la bitácora para una ciudad
+deleteBitacora(dataCiudad: Ciudades) {
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.usuario,
+    id_objeto: 2,
+    accion: 'ELIMINAR',
+    descripcion: 'SE ELIMINA LA CIUDAD CON EL ID: ' + dataCiudad.id_ciudad
+  };
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+    // Puedes manejar el éxito aquí si es necesario
+  });
+}
+
     /*************************************************************** Fin Métodos de Bitácora ***************************************************************************/
 
 

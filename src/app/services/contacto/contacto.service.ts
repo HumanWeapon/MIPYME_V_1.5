@@ -24,25 +24,9 @@ export class ContactoService {
 
 
    addContacto(contac: Contacto): Observable<any> {
-    const nuevoContacto = {
-        id_contacto: contac.id_contacto,
-        id_tipo_contacto: contac.id_tipo_contacto,
-        dni: contac.dni,
-        primer_nombre: contac.primer_nombre,
-        segundo_nombre: contac.segundo_nombre,
-        primer_apellido: contac.primer_apellido,
-        segundo_apellido: contac.segundo_apellido,
-        correo: contac.correo,
-        descripcion: contac.descripcion,
-        creado_por: contac.creado_por,
-        fecha_creacion: contac.fecha_creacion, 
-        modificado_por: contac.modificado_por,
-        fecha_modificacion: contac.fecha_modificacion, 
-        estado: contac.estado,
-      };
       const token = localStorage.getItem('token')
       const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-      return this.http.post<Contacto>(`${this.myAppUrl}${this.myApiUrl}/postContacto`, nuevoContacto, { headers: headers })
+      return this.http.post<Contacto>(`${this.myAppUrl}${this.myApiUrl}/postContacto`, contac, { headers: headers })
   }
 
   

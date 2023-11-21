@@ -23,8 +23,28 @@ import { TipoDireccionService } from 'src/app/services/mantenimiento/tipoDirecci
   selector: 'app-empresas2',
   templateUrl: './empresas2.component.html',
   styleUrls: ['./empresas2.component.css']
+  
 })
 export class Empresas2Component implements OnInit{
+
+  //Contacto
+  nuevoContacto: Contacto = {
+    id_contacto: 0,
+    id_tipo_contacto: 0,
+    dni: '',
+    primer_nombre: '',
+    segundo_nombre: '',
+    primer_apellido: '',
+    segundo_apellido: '',
+    correo: '',
+    descripcion: '',
+    creado_por: '',
+    fecha_creacion: new Date(), 
+    modificado_por: '',
+    fecha_modificacion:new Date(), 
+    estado: 0,
+
+  };
 
   //DATATABLE
   dtTrigger: Subject<any> = new Subject<any>();
@@ -53,10 +73,28 @@ export class Empresas2Component implements OnInit{
     estado: 0
   };
 
+  contactoEditando: Contacto = {
+    id_contacto: 0,
+    id_tipo_contacto: 0,
+    dni: '',
+    primer_nombre: '',
+    segundo_nombre: '',
+    primer_apellido: '',
+    segundo_apellido: '',
+    correo: '',
+    descripcion: '',
+    creado_por: '',
+    fecha_creacion: new Date(), 
+    modificado_por: '',
+    fecha_modificacion:new Date(), 
+    estado: 0,
+  };
+
   //TITULO MODAL CONTACTOS
   nombre_empresa: string = '';
 
   idOpEmpresas: number = 0;
+  ngZone: any;
   
   constructor(
     private _opEmpresasService: OperacionEmpresasService,
@@ -70,6 +108,8 @@ export class Empresas2Component implements OnInit{
     private _bitacoraService: BitacoraService,
     private _errorService: ErrorService,
     private _userService: UsuariosService,
+    private _contactoService: ContactoService, 
+    private toastr: ToastrService,
   ) {}
 
 
@@ -156,6 +196,8 @@ export class Empresas2Component implements OnInit{
     }
   }
 
+  //CODIGO PARA CONTACTOS
+
   toggleFunctionContacto(contacto: any, i: number) {
 
     // Ejecuta una función u otra según el estado
@@ -178,6 +220,79 @@ export class Empresas2Component implements OnInit{
     this._toastr.success('El contacto: '+ contacto.primer_nombre + ' ha sido activado')
     );
     this.listContactos[i].estado = 1;
+  }
+  editarContacto(){
+    console.log(this.contactoEditando)
+    this._contactoService.editarContacto(this.contactoEditando).subscribe({
+      next: (data: any) => {
+        this.toastr.success('contacto editado con éxito', 'Éxito');
+        this.listContactos[this.indice].dni = this.contactoEditando.dni;
+        this.listContactos[this.indice].primer_nombre = this.contactoEditando.primer_nombre;
+        this.listContactos[this.indice].segundo_nombre = this.contactoEditando.segundo_nombre;
+        this.listContactos[this.indice].primer_apellido = this.contactoEditando.primer_apellido;
+        this.listContactos[this.indice].segundo_apellido = this.contactoEditando.segundo_apellido;
+        this.listContactos[this.indice].correo = this.contactoEditando.correo;
+        this.listContactos[this.indice].descripcion = this.contactoEditando.descripcion;
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
+  }
+
+  agregarNuevoContacto() {
+    
+    const userLocal = localStorage.getItem('usuario');
+    if (userLocal){
+    this.nuevoContacto = {
+      id_contacto: 0,
+      id_tipo_contacto: 6, 
+      dni: this.nuevoContacto.dni,
+      primer_nombre: this.nuevoContacto.primer_nombre,
+      segundo_nombre: this.nuevoContacto.segundo_nombre, 
+      primer_apellido: this.nuevoContacto.primer_apellido,
+      segundo_apellido: this.nuevoContacto.segundo_apellido,   
+      correo:this.nuevoContacto.correo,
+      descripcion:this.nuevoContacto.descripcion,
+      creado_por: userLocal,
+      fecha_creacion: new Date(), 
+      modificado_por: userLocal, 
+      fecha_modificacion: new Date(),
+      estado: 1,
+
+    };
+  
+    this._contactoService.addContacto(this.nuevoContacto).subscribe({
+      next: (data) => {
+        this.toastr.success('Contacto Agregado Exitosamente')
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
+  }
+  }
+
+
+  obtenerIdContacto(contac: Contacto, i: any){
+    this.contactoEditando = {
+      id_contacto: contac.id_contacto,
+      id_tipo_contacto: contac.id_tipo_contacto,
+      dni: contac.dni,
+      primer_nombre: contac.primer_nombre,
+      segundo_nombre: contac.segundo_nombre,
+      primer_apellido: contac.primer_apellido,
+      segundo_apellido: contac.segundo_nombre,
+      correo: contac.correo,
+      descripcion: contac.descripcion,
+      creado_por: contac.creado_por,
+      fecha_creacion: contac.fecha_creacion, 
+      modificado_por: contac.modificado_por,
+      fecha_modificacion: contac.fecha_modificacion, 
+      estado: contac.estado,
+
+    };
+    this.indice = i;
   }
 
 
@@ -279,4 +394,33 @@ export class Empresas2Component implements OnInit{
     });
   }
 
+ //CODIGO PARA Telefonos
+ toggleFunctionContactoTelefono(telefono: any, i: number) {
+
+  // Ejecuta una función u otra según el estado
+  if (telefono.estado === 1 ) {
+    this.inactivarContactoTelefono(telefono, i); // Ejecuta la primera función
+  } else {
+    this.activarContactoTelefono(telefono, i); // Ejecuta la segunda función
+  }
 }
+
+
+inactivarContactoTelefono(telefono: ContactoTelefono, i: any){
+  this._telefonosService.inactivarContactoTelefono(telefono).subscribe(data => 
+  this._toastr.success('El telefono: '+ telefono.telefono + ' ha sido inactivado')
+  );
+  this.listContactosTelefonos[i].estado = 2; 
+}
+activarContactoTelefono(contactot: ContactoTelefono, i: any){
+  this._telefonosService.activarContactoTelefono(contactot).subscribe(data => 
+  this._toastr.success('El telefono: '+ contactot.telefono + ' ha sido activado')
+  );
+  this.listContactosTelefonos[i].estado = 1;
+}
+
+}
+
+
+
+  
