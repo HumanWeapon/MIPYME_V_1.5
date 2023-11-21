@@ -9,6 +9,7 @@ import { ErrorService } from 'src/app/services/error.service';
 import { BitacoraService } from 'src/app/services/administracion/bitacora.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Usuario } from 'src/app/interfaces/seguridad/usuario';
+import { DatePipe } from '@angular/common';
 
 
 @Component({
@@ -60,7 +61,8 @@ export class ObjetosComponent implements OnInit{
     private ngZone: NgZone,
     private _bitacoraService: BitacoraService,
     private _errorService: ErrorService,
-    private _userService: UsuariosService
+    private _userService: UsuariosService,
+    private datePipe: DatePipe
     ) {}
 
   
@@ -73,8 +75,9 @@ export class ObjetosComponent implements OnInit{
     };
     this._objService.getAllObjetos()
       .subscribe((res: any) => {
+        console.log(res);
         this.listObjetos = res;
-        this.dtTrigger.next(null);
+        this.dtTrigger.next(0);
       });
   }
 
@@ -168,34 +171,33 @@ getEstadoText(estado: number): string {
 /**************************************************************/
 
 
-  agregarNuevoObjeto() {
+agregarNuevoObjeto() {
+  const userLocal = localStorage.getItem('usuario');
+  if (userLocal) {
+    const fechaActual = new Date();
+    const fechaFormateada = this.datePipe.transform(fechaActual, 'yyyy-MM-dd');
 
-    const userLocal = localStorage.getItem('usuario');
-    if (userLocal){
     this.nuevoObjeto = {
-      id_objeto: 0, 
-      objeto: this.nuevoObjeto.objeto, 
-      descripcion:this.nuevoObjeto.descripcion, 
-      tipo_objeto: this.nuevoObjeto.tipo_objeto, 
-      estado_objeto: 0,
-      creado_por: userLocal, 
-      fecha_creacion: new Date(), 
-      modificado_por: userLocal, 
-      fecha_modificacion: new Date()
-
+      id_objeto: 0,
+      objeto: this.nuevoObjeto.objeto,
+      descripcion: this.nuevoObjeto.descripcion,
+      tipo_objeto: this.nuevoObjeto.tipo_objeto,
+      estado_objeto: 1,
+      creado_por: userLocal,
+      fecha_creacion: fechaFormateada as unknown as Date, // Convertir la cadena a Date
+      modificado_por: userLocal,
+      fecha_modificacion: fechaFormateada as unknown as Date // Convertir la cadena a Date
     };
 
     this._objService.addObjeto(this.nuevoObjeto).subscribe({
       next: (data) => {
         this.insertBitacora(data);
-        this.toastr.success('Objeto agregado con éxito');
+        this.listObjetos.push(this.nuevoObjeto);
+        this.toastr.success(data, 'Éxito');
       },
       error: (e: HttpErrorResponse) => {
         this._errorService.msjError(e);
       }
-    });
-    location.reload();
-    this.ngZone.run(() => {        
     });
   }
 }
@@ -203,16 +205,15 @@ getEstadoText(estado: number): string {
 
   obtenerIdObjeto(objetos: Objetos, i: any){
     this.objetoEditando = {
-    id_objeto: objetos.id_objeto, 
-    objeto: objetos.objeto, 
-    descripcion: objetos.descripcion, 
-    tipo_objeto: objetos.tipo_objeto, 
-    estado_objeto: objetos.estado_objeto,
-    creado_por: objetos.creado_por, 
-    fecha_creacion: objetos.fecha_creacion, 
-    modificado_por: objetos.modificado_por, 
-    fecha_modificacion: objetos.fecha_modificacion
-
+      id_objeto: objetos.id_objeto, 
+      objeto: objetos.objeto, 
+      descripcion: objetos.descripcion, 
+      tipo_objeto: objetos.tipo_objeto, 
+      estado_objeto: objetos.estado_objeto,
+      creado_por: objetos.creado_por, 
+      fecha_creacion: objetos.fecha_creacion, 
+      modificado_por: objetos.modificado_por, 
+      fecha_modificacion: objetos.fecha_modificacion
     };
     this.indice = i;
   }
@@ -224,12 +225,6 @@ getEstadoText(estado: number): string {
       this.listObjetos[this.indice].objeto = this.objetoEditando.objeto;
       this.listObjetos[this.indice].descripcion = this.objetoEditando.descripcion;
       this.listObjetos[this.indice].estado_objeto = this.objetoEditando.estado_objeto;
-        // Recargar la página
-        location.reload();
-        // Actualizar la vista
-        this.ngZone.run(() => {        
-        });
-    
     });
   }
 

@@ -11,6 +11,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { DataTablesModule } from 'angular-datatables';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthModule } from './auth/auth.module';
+import { DatePipe } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,7 @@ import { AuthModule } from './auth/auth.module';
     }), 
     HttpClientModule
   ],
-  providers: [{provide: HTTP_INTERCEPTORS, useClass: AddTokenInterceptor, multi: true}],
+  providers: [DatePipe, {provide: HTTP_INTERCEPTORS, useClass: AddTokenInterceptor, multi: true}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
