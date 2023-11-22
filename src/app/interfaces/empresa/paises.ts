@@ -1,5 +1,6 @@
 export interface Paises {
     id_pais: number,
+    id_contacto: number;
     pais: string,
     descripcion: string,
     creado_por: string,

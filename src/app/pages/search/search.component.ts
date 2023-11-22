@@ -5,6 +5,16 @@ import { ProductosService } from 'src/app/services/mantenimiento/producto.servic
 import { CategoriaService } from 'src/app/services/mantenimiento/categoria.service';
 import { Categoria } from 'src/app/interfaces/mantenimiento/categoria';
 import { Subject } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Contacto } from 'src/app/interfaces/contacto/contacto';
+import { ContactoDirecciones } from 'src/app/interfaces/contacto/contactoDirecciones';
+import { ContactoTelefono } from 'src/app/interfaces/contacto/contactoTelefono';
+import { ContactoService } from 'src/app/services/contacto/contacto.service';
+import { ContactoTService } from 'src/app/services/contacto/contactoTelefono.service';
+import { DireccionesService } from 'src/app/services/contacto/direcciones.service';
+import { ErrorService } from 'src/app/services/error.service';
+import { PaisesService } from 'src/app/services/empresa/paises.service';
+import { Paises } from 'src/app/interfaces/empresa/paises';
 
 @Component({
   selector: 'app-search',
@@ -12,30 +22,172 @@ import { Subject } from 'rxjs';
   styleUrls: ['./search.component.css'],
 })
 export class SearchComponent implements OnInit {
+
+  productoEditando: Productos = {
+    id_producto: 0, 
+    id_categoria: 0,
+    id_contacto: 0,
+    id_pais: 0, 
+    producto:'', 
+    descripcion: '', 
+    creado_por: '', 
+    fecha_creacion: new Date(), 
+    modificado_por: '', 
+    fecha_modificacion: new Date(), 
+    estado: 0
+
+  };
+
+  contactoEditando: Contacto = {
+    id_contacto: 0,
+    id_tipo_contacto: 0,
+    dni: '',
+    primer_nombre: '',
+    segundo_nombre: '',
+    primer_apellido: '',
+    segundo_apellido: '',
+    correo: '',
+    descripcion: '',
+    creado_por: '',
+    fecha_creacion: new Date(), 
+    modificado_por: '',
+    fecha_modificacion:new Date(), 
+    estado: 0,
+  };
   
+  //DATATABLE
+  dtTrigger: Subject<any> = new Subject<any>();
   dtOptions: DataTables.Settings = {};
+
+  indice: any;
+
   _listCategorias: Categoria[] = [];
+  _listContactos:Contacto[] = [];
   _listProductos: Productos[] = [];
   productosFiltrados: Productos[] = [];
   opcionSeleccionada: number = 0;
-  dtTrigger: Subject<any> = new Subject<any>();
   searchTerm: string = '';
+  categoriaSeleccionada: Categoria | null = null;
+  _listPaises: Paises[] = [];
+
+  //Lista de Vectores
+  listOpProductos: any[] = [];
+  listContactos: Contacto[] = [];
+  listContactosDirecciones: ContactoDirecciones[] = [];
+  listContactosTelefonos: ContactoTelefono[] = [];
+  listPaises: Paises[] = [];
+
+  //TITULO MODAL CONTACTOS
+  producto: string = '';
+
+  idOpProductos: number = 0;
+  ngZone: any;
 
   constructor(
     private _productoService: ProductosService,
     private toastr: ToastrService,
-    private ngZone: NgZone,
+    private _ngZone: NgZone,
     private _categoriaProductos: CategoriaService,
+    private _contactosService: ContactoService, 
+    private _telefonosService: ContactoTService,
+    private _direccionesService: DireccionesService,
+    private _objService: PaisesService, 
+    private _errorService: ErrorService
   ) {}
 
   ngOnInit(): void {
+    this.getOpProductos();
     this.getCategorias();
     this.getProductos();
   }
 
-  ngOnDestroy(): void {
-    // No olvides desuscribir el evento
-    this.dtTrigger.unsubscribe();
+  getOpProductos(){
+    this.dtOptions = {
+      pagingType: 'full_numbers',
+      pageLength: 10,
+      language: { url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json' },
+      responsive: true,
+    };
+    this._productoService.getAllOpProductos()
+      .subscribe((data: any) => {
+        this.listOpProductos = data;
+        this.dtTrigger.next(null);
+      });
+    }
+
+  Mayus1Letra(str: string): string {
+    return str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+  }
+
+  getContactos(id: string){
+    this._contactosService.getContactoID(id).subscribe({
+      next: (data: any) => {
+        this.listContactos = data;
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
+  }
+  getDirecciones(id_contacto: any){
+    this._direccionesService.getDireccion(id_contacto).subscribe({
+      next: (data: any) => {
+        this.listContactosDirecciones = data;
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
+  }
+  getTelefonos(id_contacto: any){
+    this._telefonosService.getTelefonos(id_contacto).subscribe({
+      next: (data: any) => {
+        this.listContactosTelefonos = data;
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
+  }
+  /*getPaises(id_contacto: any){
+    this._objService.getPaises(id_contacto).subscribe({
+      next: (data: any) => {
+        this.listPaises = data;
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
+  }*/
+  
+  obtenerIdOpProducto(dni: any, producto: any, id_contacto:any) {
+    console.log(id_contacto);
+    this.getContactos(dni);
+    this.producto = producto;
+    this.getDirecciones(id_contacto);
+    this.getTelefonos(id_contacto);
+   // this.getPaises(id_contacto);
+  }
+
+  obtenerIdContacto(contac: Contacto, i: any){
+    this.contactoEditando = {
+      id_contacto: contac.id_contacto,
+      id_tipo_contacto: contac.id_tipo_contacto,
+      dni: contac.dni,
+      primer_nombre: contac.primer_nombre,
+      segundo_nombre: contac.segundo_nombre,
+      primer_apellido: contac.primer_apellido,
+      segundo_apellido: contac.segundo_nombre,
+      correo: contac.correo,
+      descripcion: contac.descripcion,
+      creado_por: contac.creado_por,
+      fecha_creacion: contac.fecha_creacion, 
+      modificado_por: contac.modificado_por,
+      fecha_modificacion: contac.fecha_modificacion, 
+      estado: contac.estado,
+
+    };
+    this.indice = i;
   }
 
   getCategorias() {
@@ -65,7 +217,7 @@ export class SearchComponent implements OnInit {
   
 
   getProductos() {
-    this._productoService.getAllProductos()
+    this._productoService.getAllOpProductos()
       .subscribe({
         next: (data) => {
           this._listProductos = data;
@@ -73,16 +225,26 @@ export class SearchComponent implements OnInit {
         }
       });
   }
-
+  
   filtrarProductosPorCategoria() {
-    // Filtrar los productos basados en la categoría seleccionada
+    // Resetear la categoría seleccionada
+    this.categoriaSeleccionada = null;
+  
     if (this.opcionSeleccionada !== 0) {
-      this.productosFiltrados = this._listProductos.filter(producto => producto.id_categoria === this.opcionSeleccionada);
+      if (this.opcionSeleccionada === 20) {
+        // Si la opción seleccionada es 20, mostrar todos los productos
+        this.productosFiltrados = this._listProductos;
+      } else {
+        // Filtrar por la categoría seleccionada
+        this.categoriaSeleccionada = this._listCategorias.find(categoria => categoria.id_categoria === this.opcionSeleccionada) || null;
+        this.productosFiltrados = this._listProductos.filter(producto => producto.id_categoria === this.opcionSeleccionada);
+      }
     } else {
       // Si la opción seleccionada es 0, mostrar todos los productos
       this.productosFiltrados = this._listProductos;
     }
   }
+  
 
   filtrarProductosPorTermino() {
     // Filtrar productos basados en el término ingresado por el usuario
@@ -100,12 +262,11 @@ export class SearchComponent implements OnInit {
 
   filtrarProductos() {
     const searchTerm = this.searchTerm ? this.searchTerm.trim().toLowerCase() : '';
-
-      // Agrega console logs para verificar los valores
-  console.log('Opción seleccionada:', this.opcionSeleccionada);
-  console.log('Término de búsqueda:', searchTerm);
-    
-    if (this.opcionSeleccionada === 20) {
+  
+    // Obtén la id_categoria de la categoría "Todos los productos"
+    const idTodosLosProductos = this._listCategorias.find(categoria => categoria.categoria.toLowerCase() === 'todos los productos')?.id_categoria;
+  
+    if (this.opcionSeleccionada === idTodosLosProductos) {
       // Mostrar todos los productos y filtrar por término de búsqueda
       this.productosFiltrados = this._listProductos.filter(producto =>
         producto.producto.toLowerCase().includes(searchTerm)
@@ -117,10 +278,12 @@ export class SearchComponent implements OnInit {
         producto.producto.toLowerCase().includes(searchTerm)
       );
     }
-    
-  // Agrega un console log para verificar los productos filtrados
-  console.log('Productos filtrados:', this.productosFiltrados);
+  
+    // Agrega un console log para verificar los productos filtrados
+    console.log('Productos filtrados:', this.productosFiltrados);
   }
+  
+  
   
 
 
@@ -130,7 +293,6 @@ export class SearchComponent implements OnInit {
 
   
 }
-
 
 
 

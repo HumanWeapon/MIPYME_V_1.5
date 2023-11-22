@@ -1,47 +1,191 @@
 <section class="content">
-    <div class="container-fluid">
-    <h2 class="text-center display-4">Busqueda MIPYME</h2>
-    <br>
-    <br>
-    <form action="enhanced-results.html" data-select2-id="10">
-     <div class="row">
-     <div class="col-md-10 offset-md-1">
-     <div class="row">
+  <div class="container-fluid">
+  <h2 class="text-center display-4">Busqueda MIPYME</h2>
+  <br>
+  <br>
+  <form action="enhanced-results.html" data-select2-id="10">
+   <div class="row">
+   <div class="col-md-10 offset-md-1">
+   <div class="row">
 
-      <div class="col-6">
-        <div class="form-group">
-          <label>Busqueda por Categoria</label>
-          <select name="buscacategoria" class="form-control custom-select" id="buscadores" [(ngModel)]="opcionSeleccionada" (change)="filtrarProductosPorCategoria()">
-            <option value="0">Selecciona la Categoria</option>
-            <option *ngFor="let categoria of _listCategorias" [ngValue]="categoria.id_categoria">{{ categoria.categoria }}</option>
-          </select>
-        </div>
+    <div class="col-6">
+      <div class="form-group">
+        <label>Busqueda por Categoria</label>
+        <select name="buscacategoria" class="form-control custom-select" id="buscadores" [(ngModel)]="opcionSeleccionada" (change)="filtrarProductosPorCategoria()">
+          <option value="0">Selecciona la Categoria</option>
+          <option *ngFor="let categoria of _listCategorias" [ngValue]="categoria.id_categoria">{{ categoria.categoria }}</option>
+        </select>
       </div>
-
     </div>
 
-    <div class="form-group">
-      <input
-        type="search"
-        class="form-control custom-input"
-        placeholder="Buscar productos"
-        [(ngModel)]="searchTerm"
-        (input)="filtrarProductos()"
-        name="searchTerm"
-        [ngModelOptions]="{standalone: true}" 
-      />
-    </div>
+  </div>
 
-<!-- Mostrar los productos filtrados -->
-<div *ngIf="productosFiltrados.length > 0" class="productos-filtrados" >
-  <h4>Resultados </h4>
-  <ul>
-    <li *ngFor="let producto of productosFiltrados" class="producto-item">{{ producto.producto }}</li>
-  </ul>
+  <div class="form-group">
+    <input
+      type="search"
+      class="form-control custom-input"
+      placeholder="Buscar productos"
+      [(ngModel)]="searchTerm"
+      (input)="filtrarProductos()"
+      name="searchTerm"
+      [ngModelOptions]="{standalone: true}" 
+    />
+  </div>
+
+<!-- Mostrar los productos filtrados en una tabla -->
+<div *ngIf="productosFiltrados.length > 0" class="productos-filtrados">
+  <h4>Resultados {{ categoriaSeleccionada ? Mayus1Letra(categoriaSeleccionada.categoria) : '' }}</h4>
+  <p>{{ categoriaSeleccionada ? categoriaSeleccionada.descripcion : '' }}</p>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Producto</th>
+        <th>Descripción</th>
+        <th>Mayor Informacion</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let producto of listOpProductos" class="producto-item">
+        <td>{{ producto.producto }}</td>
+        <td>{{ producto.descripcion }}</td>
+        <td class="text-center">
+          <div class="btn-group">
+            <button type="button" title="Contactos" (click)="obtenerIdOpProducto(producto.contacto.dni, producto.producto.nombre_producto, producto.contacto.id_contacto)" data-toggle="modal" data-target="#modal-xl" class="btna">
+              <i class="fas fa-solid fa-address-book"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+  
+  <div class="modal fade show" id="modal-xl"  aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-xl" style="font-size: 0.85em;">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">Información de contacto para el producto<strong>{{producto}}</strong> </h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="card card-primary card-outline card-outline-tabs">
+                <div class="card-header p-0 border-bottom-0">
+                    <ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="custom-tabs-four-contactos-tab" data-toggle="pill" href="#custom-tabs-four-contactos" role="tab" aria-controls="custom-tabs-four-contactos" aria-selected="true">Contactos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="custom-tabs-four-direcciones-tab" data-toggle="pill" href="#custom-tabs-four-direcciones" role="tab" aria-controls="custom-tabs-four-direcciones" aria-selected="false">Direcciones</a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" id="custom-tabs-four-paises-tab" data-toggle="pill" href="#custom-tabs-four-paises" role="tab" aria-controls="custom-tabs-four-paises" aria-selected="false">Paises</a>
+                      </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="custom-tabs-four-telefonos-tab" data-toggle="pill" href="#custom-tabs-four-telefonos" role="tab" aria-controls="custom-tabs-four-telefonos" aria-selected="false">Teléfonos</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body">
+                    <div class="tab-content" id="custom-tabs-four-tabContent">
+                        <div class="tab-pane fade active show" id="custom-tabs-four-contactos" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
+                            <button type="button" class="btn btn-primary mr-2 mb-2" style="font-size: 0.9em;" data-toggle="modal" data-target="#agregarContacto">
+                                <i class="fas fa-plus" style="font-size: 0.85em;"></i> Nuevo
+                            </button>
+                            <table  class="table table-bordered table-striped row-border hover"> 
+                                <thead>
+                                <tr>
+                                    <th>NOMBRE</th> 
+                                    <th>CORREO</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr *ngFor="let contacto of listContactos; let i = index">
+                                    <td>{{ contacto.primer_nombre +" "+ contacto.segundo_nombre+" "+ contacto.primer_apellido +" "+contacto.segundo_apellido }}</td>
+                                    <td>{{ contacto.correo }}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <div class="tab-pane fade" id="custom-tabs-four-direcciones" role="tabpanel" aria-labelledby="custom-tabs-four-messages-tab">
+                            <button type="button" class="btn btn-primary mr-2 mb-2" style="font-size: 0.9em;" data-toggle="modal" data-target="#agregarContacto">
+                                <i class="fas fa-plus" style="font-size: 0.85em;"></i> Nuevo
+                            </button>
+                            <table class="table table-bordered table-striped row-border hover"> 
+                                <thead>
+                                <tr>
+                                    <th>DIRECCIONES</th> 
+                                    <th>DESCRIPCIÓN</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr *ngFor="let direccion of listContactosDirecciones; let i = index">
+                                    <td>{{ direccion.direccion}}</td>
+                                    <td>{{ direccion.descripcion }}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="tab-pane fade" id="custom-tabs-four-paises" role="tabpanel" aria-labelledby="custom-tabs-four-messages-tab">
+                          <button type="button" class="btn btn-primary mr-2 mb-2" style="font-size: 0.9em;" data-toggle="modal" data-target="#agregarContacto">
+                              <i class="fas fa-plus" style="font-size: 0.85em;"></i> Nuevo
+                          </button>
+                          <table class="table table-bordered table-striped row-border hover"> 
+                              <thead>
+                              <tr>
+                                  <th>PAIS</th> 
+                                  <th>DESCRIPCIÓN</th>
+                              </tr>
+                              </thead>
+                              <tbody>
+                              <tr *ngFor="let pais of listPaises; let i = index">
+                                  <td>{{ pais.pais}}</td>
+                                  <td>{{ pais.descripcion }}</td>
+                              </tr>
+                              </tbody>
+                          </table>
+                      </div>
+
+                        <div class="tab-pane fade" id="custom-tabs-four-telefonos" role="tabpanel" aria-labelledby="custom-tabs-four-messages-tab">
+                            <button type="button" class="btn btn-primary mr-2 mb-2" style="font-size: 0.9em;" data-toggle="modal" data-target="#agregarContacto">
+                                <i class="fas fa-plus" style="font-size: 0.85em;"></i> Teléfono
+                            </button>
+                            <table  class="table table-bordered table-striped row-border hover"> 
+                                <thead>
+                                <tr>
+                                    <th>TELÉFONO</th> 
+                                    <th>EXTENCIÓN</th> 
+                                    <th>DESCRIPCIÓN</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr *ngFor="let telefono of listContactosTelefonos; let i = index">
+                                    <td>{{ telefono.telefono}}</td>
+                                    <td>{{ telefono.extencion}}</td>
+                                    <td>{{ telefono.descripcion }}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.card -->
+            </div>
+        </div>
+        <div class="modal-footer justify-content-between">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+ </div>
+
 </div>
 
-
-      </div>
-    </div>
 
 
