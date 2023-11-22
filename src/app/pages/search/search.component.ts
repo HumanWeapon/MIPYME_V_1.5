@@ -66,6 +66,7 @@ export class SearchComponent implements OnInit {
   _listProductos: Productos[] = [];
   productosFiltrados: Productos[] = [];
   opcionSeleccionada: number = 0;
+  opcionSeleccionadaPais: number = 0;
   searchTerm: string = '';
   categoriaSeleccionada: Categoria | null = null;
   _listPaises: Paises[] = [];
@@ -99,6 +100,7 @@ export class SearchComponent implements OnInit {
     this.getOpProductos();
     this.getCategorias();
     this.getProductos();
+    this.getPais();
   }
 
   getOpProductos(){
@@ -149,7 +151,7 @@ export class SearchComponent implements OnInit {
       }
     });
   }
-  /*getPaises(id_contacto: any){
+  getPaises(id_contacto: any){
     this._objService.getPaises(id_contacto).subscribe({
       next: (data: any) => {
         this.listPaises = data;
@@ -158,7 +160,7 @@ export class SearchComponent implements OnInit {
         this._errorService.msjError(e);
       }
     });
-  }*/
+  }
   
   obtenerIdOpProducto(dni: any, producto: any, id_contacto:any) {
     console.log(id_contacto);
@@ -188,6 +190,31 @@ export class SearchComponent implements OnInit {
 
     };
     this.indice = i;
+  }
+
+  getPais(){
+    this._objService.getAllPaises()
+      .subscribe({
+        next: (data) => {
+          // Encontrar la categoría "Todos los productos"
+          const todosLosPaises = data.find(pais => pais.pais.toLowerCase() === 'all');
+  
+          // Filtrar las categorías excluyendo la que tiene el nombre "Todos los productos"
+          const otrosPaises = data.filter(pais => pais.pais.toLowerCase() !== 'all');
+  
+          // Verificar si se encontró la categoría "Todos los productos" antes de asignarla
+          if (todosLosPaises) {
+            // Ordenar el arreglo de categorías para que la categoría "Todos los productos" esté al principio
+            this._listPaises = [todosLosPaises, ...otrosPaises];
+          } else {
+            // Manejar el caso en que no se encuentra la categoría "Todos los productos"
+            console.error('Error: No se encontró la categoría "Todos los productos".');
+            // Puedes asignar un valor predeterminado o manejarlo de otra manera según tus necesidades
+          }
+  
+          this.dtTrigger.next(0);
+        }
+      });
   }
 
   getCategorias() {
@@ -227,39 +254,41 @@ export class SearchComponent implements OnInit {
   }
   
   filtrarProductosPorCategoria() {
-    // Resetear la categoría seleccionada
+    // Resetear la categoría y país seleccionados
     this.categoriaSeleccionada = null;
   
-    if (this.opcionSeleccionada !== 0) {
-      if (this.opcionSeleccionada === 20) {
-        // Si la opción seleccionada es 20, mostrar todos los productos
-        this.productosFiltrados = this._listProductos;
-      } else {
-        // Filtrar por la categoría seleccionada
-        this.categoriaSeleccionada = this._listCategorias.find(categoria => categoria.id_categoria === this.opcionSeleccionada) || null;
-        this.productosFiltrados = this._listProductos.filter(producto => producto.id_categoria === this.opcionSeleccionada);
-      }
+    if (this.opcionSeleccionada === 20) {
+      // Si la opción seleccionada es 20, mostrar todos los productos
+      this.listOpProductos = this._listProductos.filter(producto =>
+        (this.opcionSeleccionadaPais === 99 || producto.id_pais === this.opcionSeleccionadaPais)
+      );
     } else {
-      // Si la opción seleccionada es 0, mostrar todos los productos
-      this.productosFiltrados = this._listProductos;
+      // Filtrar por la categoría y país seleccionados
+      this.categoriaSeleccionada = this._listCategorias.find(categoria => categoria.id_categoria === this.opcionSeleccionada) || null;
+  
+      this.listOpProductos = this._listProductos.filter(producto =>
+        (this.opcionSeleccionada === 0 || producto.id_categoria === this.opcionSeleccionada) &&
+        (this.opcionSeleccionadaPais === 0 || producto.id_pais === this.opcionSeleccionadaPais)
+      );
     }
   }
   
-
+  
   filtrarProductosPorTermino() {
     // Filtrar productos basados en el término ingresado por el usuario
     const searchTerm = this.searchTerm ? this.searchTerm.trim().toLowerCase() : '';
   
     if (searchTerm !== '') {
-      this.productosFiltrados = this._listProductos.filter(producto => 
-        producto.producto.toLowerCase().includes(searchTerm)
+      this.listOpProductos = this._listProductos.filter(producto =>
+        producto.producto.toLowerCase().includes(searchTerm) &&
+        (this.opcionSeleccionadaPais === 0 || producto.id_pais === this.opcionSeleccionadaPais)
       );
     } else {
       // Si el campo de búsqueda está vacío, mostrar todos los productos
-      this.productosFiltrados = this._listProductos;
+      this.listOpProductos = this._listProductos;
     }
   }
-
+  
   filtrarProductos() {
     const searchTerm = this.searchTerm ? this.searchTerm.trim().toLowerCase() : '';
   
@@ -267,21 +296,25 @@ export class SearchComponent implements OnInit {
     const idTodosLosProductos = this._listCategorias.find(categoria => categoria.categoria.toLowerCase() === 'todos los productos')?.id_categoria;
   
     if (this.opcionSeleccionada === idTodosLosProductos) {
-      // Mostrar todos los productos y filtrar por término de búsqueda
-      this.productosFiltrados = this._listProductos.filter(producto =>
-        producto.producto.toLowerCase().includes(searchTerm)
+      // Mostrar todos los productos y filtrar por término de búsqueda y país
+      this.listOpProductos = this._listProductos.filter(producto =>
+        producto.producto.toLowerCase().includes(searchTerm) &&
+        (this.opcionSeleccionadaPais === 0 || producto.id_pais === this.opcionSeleccionadaPais)
       );
     } else {
-      // Filtrar por categoría y término de búsqueda
-      this.productosFiltrados = this._listProductos.filter(producto =>
+      // Filtrar por categoría, término de búsqueda y país
+      this.listOpProductos = this._listProductos.filter(producto =>
         (this.opcionSeleccionada === 0 || producto.id_categoria === this.opcionSeleccionada) &&
-        producto.producto.toLowerCase().includes(searchTerm)
+        producto.producto.toLowerCase().includes(searchTerm) &&
+        (this.opcionSeleccionadaPais === 0 || producto.id_pais === this.opcionSeleccionadaPais)
       );
     }
   
     // Agrega un console log para verificar los productos filtrados
-    console.log('Productos filtrados:', this.productosFiltrados);
+    console.log('Productos filtrados:', this.listOpProductos);
   }
+  
+  
   
   
   

@@ -18,6 +18,16 @@
       </div>
     </div>
 
+    <div class="col-6">
+      <div class="form-group">
+        <label>Busqueda por Pais</label>
+        <select name="buscacategoria" class="form-control custom-select" id="buscadoresPais" [(ngModel)]="opcionSeleccionadaPais" (change)="filtrarProductosPorCategoria()">
+          <option value="0">Selecciona el Pais</option>
+          <option *ngFor="let pais of _listPaises" [ngValue]="pais.id_pais">{{ pais.pais }}</option>
+        </select>
+      </div>
+    </div>
+
   </div>
 
   <div class="form-group">
@@ -33,7 +43,7 @@
   </div>
 
 <!-- Mostrar los productos filtrados en una tabla -->
-<div *ngIf="productosFiltrados.length > 0" class="productos-filtrados">
+<div *ngIf="listOpProductos.length > 0" class="productos-filtrados"></div>
   <h4>Resultados {{ categoriaSeleccionada ? Mayus1Letra(categoriaSeleccionada.categoria) : '' }}</h4>
   <p>{{ categoriaSeleccionada ? categoriaSeleccionada.descripcion : '' }}</p>
   <table class="table">
