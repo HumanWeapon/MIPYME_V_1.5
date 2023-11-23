@@ -16,7 +16,8 @@ import { SidebarService } from 'src/app/services/sidebar.service';
 export class SidebarComponent implements OnInit{
   menuItems:any[]=[];
   userName: string = '';
-  listObjetos: any [] = [];
+  listMenu: any [] = [];
+  listSubMenu: any [] = [];
 
   user: Usuario = {
     id_usuario: 0,
@@ -45,7 +46,8 @@ export class SidebarComponent implements OnInit{
 
   ngOnInit(): void {
     this.getUsuario();
-    //this.getPermisosRolesObjetos();
+    
+
     this.menuItems = this._sideBarService.menu;
     const local = localStorage.getItem('usuario');
     if(local !== null){
@@ -63,9 +65,8 @@ export class SidebarComponent implements OnInit{
     if(usuarioStore){
       this._usuarioService.getOneUsuario(usuarioStore).subscribe({
         next: (data: any) => {
-          console.log(data);
           this.user = data;
-          console.log(this.user);
+          this.getPermisosRolesObjetos();
         },
         error: (e: HttpErrorResponse) => {
           this._errorService.msjError(e);
@@ -74,12 +75,13 @@ export class SidebarComponent implements OnInit{
     }
   }
   getPermisosRolesObjetos(){
-    console.log(this.user.id_rol)
     this._sideBarService.getPermisosRolesObjetos(this.user.id_rol).subscribe({
       next: (data: any) => {
-        console.log(data);
-        this.listObjetos = data;
-        console.log(this.listObjetos);
+        
+        if(data){
+          this.listMenu = data;
+        }
+
       },
       error: (e: HttpErrorResponse) => {
         this._errorService.msjError(e);

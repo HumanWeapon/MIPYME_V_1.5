@@ -12,10 +12,12 @@ export class SidebarService {
   private myAppUrl: string;
   private myApiUrl: string;
 
+  
+
   constructor(
     private _http: HttpClient) {
       this.myAppUrl = environment.endpoint;
-      this.myApiUrl = 'api/permisos',
+      this.myApiUrl = 'api/permisos'/*,
     this.menu = [
       {
         titulo:'Empresas',
@@ -71,11 +73,11 @@ export class SidebarService {
           {titulo:'Restaurar', url: 'restore', icono: 'far fa-circle nav-icon ml-2'},
         ]
       }
-    ]
+    ]*/
    }
   getPermisosRolesObjetos(id_rol: any): Observable<any[]> {
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this._http.post<any[]>(`${this.myAppUrl}${this.myApiUrl}/permisosRolesObjetos`, id_rol, { headers: headers })
+    return this._http.post<any[]>(`${this.myAppUrl}${this.myApiUrl}/permisosRolesObjetos`, {id_rol:id_rol}, { headers: headers })
   }
 }

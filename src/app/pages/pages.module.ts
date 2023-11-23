@@ -35,7 +35,8 @@ import { PymeComponent } from './pyme/pyme.component';
 import { PerfilComponent } from './perfil/perfil.component';
 import { ContactoEmpresasComponent } from './contacto/contacto-empresas/contacto-empresas.component';
 import { Empresas2Component } from './empresas2/empresas2.component';
-import { Permisos2Component } from './seguridad/permisos2.component';
+import { Permisos2Component } from './seguridad/permisos2/permisos2.component';
+
 
 
 
