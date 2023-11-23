@@ -21,21 +21,10 @@ export class PermisosService {
 
    
 
-   addPermiso(per: Permisos): Observable<any> {
-    const nuevoPermiso = {
-      id_permisos: 0,    
-      id_rol: per.id_rol, 
-      id_objeto: per.id_objeto,
-      permiso_insercion: per.permiso_insercion,
-      permiso_eliminacion: per.permiso_eliminacion,
-      permiso_actualizacion: per.permiso_actualizacion,
-      permiso_consultar: per.permiso_consultar,      
-      creado_por: per.creado_por, 
-      fecha_creacion: per.fecha_creacion, 
-      modificado_por: per.modificado_por, 
-      fecha_modificacion: per.fecha_modificacion
-      };
-      return this.http.post<Permisos>(`${this.myAppUrl}${this.myApiUrl}/postPermiso`, nuevoPermiso)
+   addPermiso(permiso: Permisos): Observable<any> {
+    const token = localStorage.getItem('token')
+    const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
+    return this.http.post<Permisos>(`${this.myAppUrl}${this.myApiUrl}/postPermiso`, permiso, { headers: headers })
   }
 
   
