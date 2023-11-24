@@ -45,3 +45,9 @@
 
 }
 
+.mensaje-no-resultados {
+  color: #ff0000; /* Cambia el color del texto a rojo o el color que prefieras */
+  font-size: 14px; /* Ajusta el tamaño de fuente según tus preferencias */
+  font-weight: bold; /* Puedes hacer que el texto sea negrita */
+  padding: 7px; /* Agrega relleno alrededor del mensaje */
+}

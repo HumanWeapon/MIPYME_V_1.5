@@ -54,6 +54,19 @@ export class SearchComponent implements OnInit {
     fecha_modificacion:new Date(), 
     estado: 0,
   };
+
+  paisEditando: Paises = {
+    id_pais: 0, 
+    id_contacto:0,
+    pais:'', 
+    descripcion: '', 
+    creado_por: '', 
+    fecha_creacion: new Date(), 
+    modificado_por: '', 
+    fecha_modificacion: new Date(), 
+    estado: 0
+
+  };
   
   //DATATABLE
   dtTrigger: Subject<any> = new Subject<any>();
@@ -83,6 +96,7 @@ export class SearchComponent implements OnInit {
 
   idOpProductos: number = 0;
   ngZone: any;
+  noResultadosEncontrados: boolean = false;
 
   constructor(
     private _productoService: ProductosService,
@@ -117,10 +131,13 @@ export class SearchComponent implements OnInit {
       });
     }
 
+    //Convercion de Letras
   Mayus1Letra(str: string): string {
     return str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
   }
 
+  /************************************************************************/
+  //Obtencion de Todos las Combinaciones
   getContactos(id: string){
     this._contactosService.getContactoID(id).subscribe({
       next: (data: any) => {
@@ -161,14 +178,18 @@ export class SearchComponent implements OnInit {
       }
     });
   }
-  
+  /***************************************************************************/
+
+
+  /***************************************************************************/
+  //Obtencion de Combinaciones para obtener todos los datos por Id
   obtenerIdOpProducto(dni: any, producto: any, id_contacto:any) {
     console.log(id_contacto);
     this.getContactos(dni);
     this.producto = producto;
     this.getDirecciones(id_contacto);
     this.getTelefonos(id_contacto);
-   // this.getPaises(id_contacto);
+    //this.getPaises(id_contacto);
   }
 
   obtenerIdContacto(contac: Contacto, i: any){
@@ -192,6 +213,8 @@ export class SearchComponent implements OnInit {
     this.indice = i;
   }
 
+  /***********************************************************************/
+  //Obtencion de Datos
   getPais(){
     this._objService.getAllPaises()
       .subscribe({
@@ -242,7 +265,6 @@ export class SearchComponent implements OnInit {
       });
   }
   
-
   getProductos() {
     this._productoService.getAllOpProductos()
       .subscribe({
@@ -252,7 +274,10 @@ export class SearchComponent implements OnInit {
         }
       });
   }
+  /************************************************************************/
   
+  /************************************************************************/
+  //Filtros de Busquedas
   filtrarProductosPorCategoria() {
     // Resetear la categoría y país seleccionados
     this.categoriaSeleccionada = null;
@@ -278,54 +303,66 @@ export class SearchComponent implements OnInit {
     // Filtrar productos basados en el término ingresado por el usuario
     const searchTerm = this.searchTerm ? this.searchTerm.trim().toLowerCase() : '';
   
-    if (searchTerm !== '') {
+    // Si el campo de búsqueda está vacío, mostrar todos los productos
+    if (searchTerm === '') {
+      this.listOpProductos = this._listProductos;
+      this.noResultadosEncontrados = false;
+      return;
+    } else {
       this.listOpProductos = this._listProductos.filter(producto =>
         producto.producto.toLowerCase().includes(searchTerm) &&
-        (this.opcionSeleccionadaPais === 0 || producto.id_pais === this.opcionSeleccionadaPais)
+        ((this.opcionSeleccionada === 0 && this.opcionSeleccionadaPais === 0) ||
+          (this.opcionSeleccionada !== 0 && this.opcionSeleccionadaPais === 0 && producto.id_categoria === this.opcionSeleccionada) ||
+          (this.opcionSeleccionada === 0 && this.opcionSeleccionadaPais !== 0 && producto.id_pais === this.opcionSeleccionadaPais) ||
+          (this.opcionSeleccionada !== 0 && this.opcionSeleccionadaPais !== 0 && producto.id_categoria === this.opcionSeleccionada && producto.id_pais === this.opcionSeleccionadaPais))
       );
-    } else {
-      // Si el campo de búsqueda está vacío, mostrar todos los productos
-      this.listOpProductos = this._listProductos;
     }
+  
+    // Verificar si no se encontraron resultados
+    this.noResultadosEncontrados = this.listOpProductos.length === 0;
   }
   
   filtrarProductos() {
     const searchTerm = this.searchTerm ? this.searchTerm.trim().toLowerCase() : '';
-  
-    // Obtén la id_categoria de la categoría "Todos los productos"
     const idTodosLosProductos = this._listCategorias.find(categoria => categoria.categoria.toLowerCase() === 'todos los productos')?.id_categoria;
   
-    if (this.opcionSeleccionada === idTodosLosProductos) {
-      // Mostrar todos los productos y filtrar por término de búsqueda y país
+    if (this.opcionSeleccionadaPais === 99 && this.opcionSeleccionada === 20) {
+      // Si la opción seleccionada de países es "All" y de categoría es "Todos los Productos", mostrar todos los productos y aplicar filtro por término de búsqueda
       this.listOpProductos = this._listProductos.filter(producto =>
-        producto.producto.toLowerCase().includes(searchTerm) &&
-        (this.opcionSeleccionadaPais === 0 || producto.id_pais === this.opcionSeleccionadaPais)
+        producto.producto.toLowerCase().includes(searchTerm)
       );
     } else {
-      // Filtrar por categoría, término de búsqueda y país
-      this.listOpProductos = this._listProductos.filter(producto =>
-        (this.opcionSeleccionada === 0 || producto.id_categoria === this.opcionSeleccionada) &&
-        producto.producto.toLowerCase().includes(searchTerm) &&
-        (this.opcionSeleccionadaPais === 0 || producto.id_pais === this.opcionSeleccionadaPais)
-      );
+      if (searchTerm !== '') {
+        // Filtrar por término de búsqueda, categoría y país
+        this.listOpProductos = this._listProductos.filter(producto =>
+          producto.producto.toLowerCase().includes(searchTerm) &&
+          (this.opcionSeleccionadaPais === 0 || producto.id_pais === this.opcionSeleccionadaPais) &&
+          (this.opcionSeleccionada === 0 || producto.id_categoria === this.opcionSeleccionada)
+        );
+      } else {
+        if (this.opcionSeleccionada === 0 || this.opcionSeleccionada === idTodosLosProductos) {
+          // Si la opción seleccionada es "Todos los productos" o "All", mostrar todos los productos y filtrar por país
+          this.listOpProductos = this._listProductos.filter(producto =>
+            (this.opcionSeleccionadaPais === 0 || producto.id_pais === this.opcionSeleccionadaPais)
+          );
+        } else {
+          // Filtrar por categoría y país
+          this.listOpProductos = this._listProductos.filter(producto =>
+            (this.opcionSeleccionada === 0 || producto.id_categoria === this.opcionSeleccionada) &&
+            (this.opcionSeleccionadaPais === 0 || producto.id_pais === this.opcionSeleccionadaPais)
+          );
+        }
+      }
     }
   
     // Agrega un console log para verificar los productos filtrados
     console.log('Productos filtrados:', this.listOpProductos);
   }
   
-  
-  
-  
-  
-
-
-
-
-
-
-  
 }
+  /********************************************************************************/
+  
+
 
 
 
