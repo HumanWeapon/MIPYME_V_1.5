@@ -36,6 +36,7 @@ import { PerfilComponent } from './perfil/perfil.component';
 import { ContactoEmpresasComponent } from './contacto/contacto-empresas/contacto-empresas.component';
 import { Empresas2Component } from './empresas2/empresas2.component';
 import { Permisos2Component } from './seguridad/permisos2/permisos2.component';
+import { SeguridadComponent } from './seguridad/seguridad.component';
 
 
 
@@ -73,7 +74,8 @@ import { Permisos2Component } from './seguridad/permisos2/permisos2.component';
     ContactoEmpresasComponent,
     Empresas2Component,
     PerfilComponent,
-    Permisos2Component
+    Permisos2Component,
+    SeguridadComponent
   ],
   imports: [
     CommonModule,
