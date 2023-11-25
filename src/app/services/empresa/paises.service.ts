@@ -3,6 +3,8 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Paises } from 'src/app/interfaces/empresa/paises';
 import { environment } from 'src/enviroments/enviromet';
+import { ContactoDirecciones } from 'src/app/interfaces/contacto/contactoDirecciones';
+
 
 @Injectable({
   providedIn: 'root'
@@ -58,4 +60,10 @@ export class PaisesService {
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
     return this.http.post<Paises>(`${this.myAppUrl}${this.myApiUrl}/updatePais`, pais, { headers: headers })
   }
+
+  getPaises(id_contacto: any): Observable<Paises[]> {
+    const token = localStorage.getItem('token')
+    const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
+    return this.http.post<Paises[]>(`${this.myAppUrl}${this.myApiUrl}/getPais`, { id_contacto: id_contacto }, { headers: headers })
+   }
 }

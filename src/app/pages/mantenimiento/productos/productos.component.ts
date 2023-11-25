@@ -22,7 +22,9 @@ export class ProductosComponent implements OnInit{
 
   productoEditando: Productos = {
     id_producto: 0, 
-    id_categoria: 0, 
+    id_categoria: 0,
+    id_contacto: 0,
+    id_pais: 0, 
     producto:'', 
     descripcion: '', 
     creado_por: '', 
@@ -36,6 +38,8 @@ export class ProductosComponent implements OnInit{
   nuevoProducto: Productos = {
     id_producto: 0, 
     id_categoria: 0, 
+    id_contacto: 0,
+    id_pais: 0, 
     producto:'', 
     descripcion: '', 
     creado_por: '', 
@@ -114,6 +118,8 @@ export class ProductosComponent implements OnInit{
       this.nuevoProducto = {
         id_producto: 0, 
         id_categoria: this.nuevoProducto.id_categoria, 
+        id_contacto:this.nuevoProducto.id_categoria,
+        id_pais:this.nuevoProducto.id_pais,
         producto: this.nuevoProducto.producto, 
         descripcion:this.nuevoProducto.descripcion, 
         estado: 1,
@@ -145,6 +151,8 @@ export class ProductosComponent implements OnInit{
     this.productoEditando = {
     id_producto: productos.id_producto,
     id_categoria: productos.id_categoria, 
+    id_contacto:productos.id_contacto,
+    id_pais:productos.id_pais,
     producto: productos.producto, 
     descripcion: productos.descripcion,  
     creado_por: productos.creado_por, 

@@ -58,6 +58,12 @@ export class ObjetosService {
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
     return this.http.post<Objetos>(`${this.myAppUrl}${this.myApiUrl}/updateObjetos`, objetos, { headers: headers })
   }
+
+  getAllObjetosMenu(tipo_objeto: string, estado_objeto: number): Observable<Objetos[]> {
+    const token = localStorage.getItem('token')
+    const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
+    return this.http.post<Objetos[]>(`${this.myAppUrl}${this.myApiUrl}/getAllObjetosMenu`, {tipo_objeto:tipo_objeto, estado_objeto: estado_objeto}, { headers: headers })
+   }
 }
 
 

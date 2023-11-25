@@ -32,10 +32,26 @@ import { RestoreComponent } from './administracion/restore/restore.component';
 import { PymeComponent } from './pyme/pyme.component';
 import { ContactoEmpresasComponent } from './contacto/contacto-empresas/contacto-empresas.component';
 import { Empresas2Component } from './empresas2/empresas2.component';
+import { SeguridadComponent } from './seguridad/seguridad.component';
 
 const routes: Routes = [
   {path:'dashboard',component:PagesComponent, 
   children:[
+    //RUTAS DEL SIDEBAR
+    {path: 'seguridad', component: SeguridadComponent, data:{titulo: 'COMPONENTES DE SEGURIDAD'},
+    children: [
+      //ABC modulo seguridad.
+      { path: 'usuarios', component: UsuariosComponent, data:{titulo: 'Usuarios'}},
+      { path: 'objetos', component: ObjetosComponent, data:{titulo: 'Objetos'}},
+      { path: 'permisos', component: PermisosComponent, data:{titulo: 'Permisos'}},
+      { path: 'roles', component: RolesComponent, data:{titulo: 'Roles'}},
+      { path: 'preguntas', component: PreguntasComponent, data:{titulo: 'Preguntas'}},
+      { path: 'parametros', component: ParametrosComponent, data:{titulo: 'Parametros'}},
+    ]
+  },
+  { path: 'bitacora', component:BitacoraComponent, data:{titulo: 'Bitácora'}},
+  { path: 'backup', component:BackupComponent, data:{titulo: 'Copia de seguridad'}},
+  { path: 'restore', component:RestoreComponent, data:{titulo: 'Restaurar'}},
     {path: 'dashboard', component: DashboardComponent, data:{titulo: 'Dashboard'}},
     {path: 'perfil', component: PerfilComponent, data:{titulo: 'Mi Perfil'}},
     {path: 'search', component: SearchComponent},
@@ -50,16 +66,7 @@ const routes: Routes = [
     {path: 'tipo_contacto', component:TipoContactoComponent, data:{titulo: 'Tipos de Contacto'}},
     {path: 'tipo_empresa', component:TipoEmpresaComponent, data:{titulo: 'Tipos de Empresa'}},
     {path: 'tipo_requisito', component:TipoRequisitosComponent, data:{titulo: 'Tipos de requisitos'}},
-    //ABC modulo seguridad.
-    {path: 'usuarios', component: UsuariosComponent, data:{titulo: 'Usuarios'}},
-    {path: 'objetos', component: ObjetosComponent, data:{titulo: 'Objetos'}},
-    {path: 'permisos', component: PermisosComponent, data:{titulo: 'Permisos'}},
-    {path: 'roles', component: RolesComponent, data:{titulo: 'Roles'}},
-    {path: 'preguntas', component: PreguntasComponent, data:{titulo: 'Preguntas'}},
-    {path: 'parametros', component: ParametrosComponent, data:{titulo: 'Parametros'}},
-    {path: 'bitacora', component:BitacoraComponent, data:{titulo: 'Bitácora'}},
-    {path: 'backup', component:BackupComponent, data:{titulo: 'Copia de seguridad'}},
-    {path: 'restore', component:RestoreComponent, data:{titulo: 'Restaurar'}},
+
     
     //ABC grado B.
     {path: 'pymes', component:PymeComponent, data:{titulo:'Pyme'}},
@@ -73,6 +80,7 @@ const routes: Routes = [
 
     //ABC grado C.
     {path: 'contactos', component:ContactoEmpresasComponent, data:{titulo: 'Contactos'}},
+
   ]}
 ];
 

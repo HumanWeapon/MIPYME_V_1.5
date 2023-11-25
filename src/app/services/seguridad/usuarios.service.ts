@@ -33,13 +33,13 @@ export class UsuariosService {
   getOneUsuario(usuario: any): Observable<Usuario> {
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.post<Usuario>(`${this.myAppUrl}${this.myApiUrl}/getUsuario`, usuario,{ headers: headers })
+    return this.http.post<Usuario>(`${this.myAppUrl}${this.myApiUrl}/getUsuario`, {usuario: usuario},{ headers: headers })
   }
 
   getUsuario(usuario: Usuario): Observable<Usuario> {
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.post<Usuario>(`${this.myAppUrl}${this.myApiUrl}/getUsuario`, usuario,{ headers: headers })
+    return this.http.post<Usuario>(`${this.myAppUrl}${this.myApiUrl}/getUsuario`, usuario, { headers: headers })
   }
 
   getAllUsuarios(): Observable<Usuario[]> {

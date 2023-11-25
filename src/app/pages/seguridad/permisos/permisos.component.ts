@@ -196,36 +196,49 @@ getEstadoText(estado: number): string {
 
 
   agregarNuevoPermiso() {
-    this.nuevoPermiso.id_rol = 3; // Asigna el ID del rol 
-    this.nuevoPermiso.id_objeto = 3; // Asigna el ID del objeto
-
-    this._permService.addPermiso(this.nuevoPermiso).subscribe(() => {
-      this.toastr.success('Permiso agregado con éxito');
-      // Recargar la página
-        location.reload();  
-      this.ngZone.run(() => {
-        // Actualizar la vista
-      });    
-    });
+    const LocalUser = localStorage.getItem('usuario');
+    if (LocalUser){
+      this.nuevoPermiso = {
+        id_permisos: 0,
+        id_rol: 0,
+        id_objeto: 0,
+        permiso_insercion: false,
+        permiso_eliminacion: false,
+        permiso_actualizacion: false,
+        permiso_consultar: false,
+        estado_permiso: 0,
+        creado_por: LocalUser,
+        fecha_creacion: new Date(),
+        modificado_por: LocalUser,
+        fecha_modificacion: new Date(),
+      }
+      this._permService.addPermiso(this.nuevoPermiso).subscribe({
+        next: (data) => {
+          this.insertBitacora(data);
+          this.toastr.success('Permiso agregado exitosamente', 'Éxito')
+        },
+        error: (e: HttpErrorResponse) => {
+          this._errorService.msjError(e);
+        }
+      });
+    }
   }
 
-  /*agregarNuevoPermiso() {
-    // Obtén el valor seleccionado en el campo de selección de rol y objeto
-    const selectedRol = this.nuevoPermiso.id_rol; // Asigna el valor del rol seleccionado
-    const selectedObjeto = this.nuevoPermiso.id_objeto; // Asigna el valor del objeto seleccionado
-  
-    // Luego, asigna estos valores a this.nuevoPermiso
-    this.nuevoPermiso.id_rol = selectedRol;
-    this.nuevoPermiso.id_objeto = selectedObjeto;
-  
-    this._permService.addPermiso(this.nuevoPermiso).subscribe(() => {
-      this.toastr.success('Permiso agregado con éxito');
-    });
-  }*/
-  
-
   obtenerIdPermiso(permisos: Permisos, i: any) {
-    this.permisoeditando = { ...permisos };
+    this.permisoeditando = {
+      id_permisos: permisos.id_permisos,
+      id_rol: permisos.id_rol,
+      id_objeto: permisos.id_objeto,
+      permiso_insercion: permisos.permiso_insercion,
+      permiso_eliminacion: permisos.permiso_eliminacion,
+      permiso_actualizacion: permisos.permiso_actualizacion,
+      permiso_consultar: permisos.permiso_consultar,
+      estado_permiso: permisos.estado_permiso,
+      creado_por: permisos.creado_por,
+      fecha_creacion: permisos.fecha_creacion,
+      modificado_por: permisos.modificado_por,
+      fecha_modificacion: permisos.fecha_modificacion,
+    };
     this.indice = i;
   }
 

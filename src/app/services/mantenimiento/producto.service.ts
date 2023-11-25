@@ -35,10 +35,10 @@ export class ProductosService {
     return this.http.post<Productos>(`${this.myAppUrl}${this.myApiUrl}/getProducto`, productos, { headers: headers })
    }
 
-   getAllProductos(): Observable<Productos[]> {
+   getAllProductos(): Observable<any[]> {
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.get<Productos[]>(`${this.myAppUrl}${this.myApiUrl}/getAllProductos`, { headers: headers })
+    return this.http.get<any[]>(`${this.myAppUrl}${this.myApiUrl}/getAllProductos`, { headers: headers })
    }
    inactivarProductos(productos: Productos): Observable<Productos>{
     const token = localStorage.getItem('token')
@@ -62,4 +62,17 @@ export class ProductosService {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.post<any>(`${this.myAppUrl}${this.myApiUrl}/getAllProductosByCategoria`,id_categoria, { headers: headers });
   }
+
+  getOpProductos(id_producto: Productos): Observable<any> {
+    const token = localStorage.getItem('token')
+    const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
+    return this.http.post<any>(`${this.myAppUrl}${this.myApiUrl}/getOpProductos`, id_producto,{ headers: headers })
+  }
+
+  getAllOpProductos(): Observable<any[]> {
+    const token = localStorage.getItem('token')
+    const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
+    return this.http.get<any[]>(`${this.myAppUrl}${this.myApiUrl}/getAllOpProductos`, { headers: headers })
+  }
+
 }
