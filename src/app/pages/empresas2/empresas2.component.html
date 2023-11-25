@@ -86,6 +86,97 @@
                         </li>
                     </ul>
                 </div>
+<!-- Actualizar Contacto Form -->
+<div class="modal fade" id="abrirModalEditarContacto">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Editar Contacto</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                  <div class="form-group">
+                      <label for="contactoEditando">Primer Nombre</label>
+                      <input type="text" [(ngModel)]="contactoEditando.primer_nombre" name="contactoEditando.primer_nombre" (input)="onInputChange($event, 'primer_nombre')" class="form-control" id="editarPN" placeholder="Primer Nombre">
+                  </div>  
+                  <div class="form-group">
+                    <label for="contactoEditando">Segundo Nombre:</label>
+                    <input type="text" [(ngModel)]="contactoEditando.segundo_nombre" name="contactoEditando.segundo_nombre" (input)="onInputChange($event, 'segundo_nombre')"  class="form-control" id="editarSN" placeholder="Segundo Nombre">
+                </div>
+                <div class="form-group">
+                    <label for="contactoEditando">Primer Apellido</label>
+                    <input type="text" [(ngModel)]="contactoEditando.primer_apellido" name="contactoEditando.primer_apellido" (input)="onInputChange($event, 'primer_apellido')" class="form-control" id="editarPA" placeholder="Primer Apellido">
+                </div>  
+                <div class="form-group">
+                    <label for="contactoEditando">Segundo Apellido:</label>
+                    <input type="text" [(ngModel)]="contactoEditando.segundo_apellido" name="contactoEditando.segundo_apellido" (input)="onInputChange($event, 'segundo_apellido')"  class="form-control" id="editarSA" placeholder="Tipo Contacto">
+                </div>
+                <div class="form-group">
+                    <label for="contactoEditando">Correo Electrónico</label>
+                    <input type="text" [(ngModel)]="contactoEditando.correo" name="contactoEditando.correo" (input)="onInputChange($event, 'correo')" class="form-control" id="editarCorreo" placeholder="Correo">
+                </div>      
+              </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                <button type="button" (click)="editarContacto()" class="btn btn-success" data-dismiss="modal">Guardar</button>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Agregar Contacto Form -->
+  <div class="modal fade" id="agregarContacto">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Agregar Contacto</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form (submit)="agregarNuevoContacto()">
+                    <div class="form-group">
+                        <label for="nuevoContacto">DNI:</label>
+                        <input type="text" [(ngModel)]="nuevoContacto.dni" name="nuevoContacto.dni" (input)="onInputChange($event, 'dni')"  class="form-control" id="nuevoDNI" placeholder="DNI">
+                    </div>
+                    <div class="form-group">
+                        <label for="nuevoContacto">Primer Nombre</label>
+                        <input type="text" [(ngModel)]="nuevoContacto.primer_nombre" name="nuevoContacto.primer_nombre" (input)="onInputChange($event, 'primer_nombre')" class="form-control" id="nuevoPN" placeholder="Primer Nombre">
+                    </div>  
+                    <div class="form-group">
+                      <label for="nuevoContacto">Segundo Nombre:</label>
+                      <input type="text" [(ngModel)]="nuevoContacto.segundo_nombre" name="nuevoContacto.segundo_nombre" (input)="onInputChange($event, 'segundo_nombre')"  class="form-control" id="nuevoSN" placeholder="Segundo Nombre">
+                  </div>
+                  <div class="form-group">
+                      <label for="nuevoContacto">Primer Apellido</label>
+                      <input type="text" [(ngModel)]="nuevoContacto.primer_apellido" name="nuevoContacto.primer_apellido" (input)="onInputChange($event, 'primer_apellido')" class="form-control" id="nuevoPA" placeholder="Primer Apellido">
+                  </div>  
+                  <div class="form-group">
+                      <label for="nuevoContacto">Segundo Apellido:</label>
+                      <input type="text" [(ngModel)]="nuevoContacto.segundo_apellido" name="nuevoContacto.segundo_apellido" (input)="onInputChange($event, 'segundo_apellido')"  class="form-control" id="nuevoSA" placeholder="Segundo Apellido">
+                  </div>
+                  <div class="form-group">
+                      <label for="nuevoContacto">Correo Electrónico</label>
+                      <input type="text" [(ngModel)]="nuevoContacto.correo" name="nuevoContacto.correo" (input)="onInputChange($event, 'correo')" class="form-control" id="nuevoCorreo" placeholder="Correo">
+                  </div> 
+                  <div class="form-group">
+                      <label for="nuevoContacto">Descripción</label>
+                      <input type="text" [(ngModel)]="nuevoContacto.descripcion" name="nuevoContacto.descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="nuevoDescripcion" placeholder="Descripción">
+                  </div>      
+                </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                <button type="button" (click)="agregarNuevoContacto()" class="btn btn-success" data-dismiss="modal">Guardar</button>
+            </div>
+        </div>
+    </div>
+    </div>
                 <div class="card-body">
                     <div class="tab-content" id="custom-tabs-four-tabContent">
                         <div class="tab-pane fade active show" id="custom-tabs-four-contactos" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
@@ -124,8 +215,9 @@
                             </table>
                         </div>
                         
+                        
                         <div class="tab-pane fade" id="custom-tabs-four-direcciones" role="tabpanel" aria-labelledby="custom-tabs-four-messages-tab">
-                            <button type="button" class="btn btn-primary mr-2 mb-2" style="font-size: 0.9em;" data-toggle="modal" data-target="#agregarContacto">
+                            <button type="button" class="btn btn-primary mr-2 mb-2" style="font-size: 0.9em;" data-toggle="modal" data-target="#agregarProducto">
                                 <i class="fas fa-plus" style="font-size: 0.85em;"></i> Nuevo
                             </button>
                             <table class="table table-bordered table-striped row-border hover"> 
@@ -140,19 +232,19 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr *ngFor="let direccion of listContactosDirecciones; let i = index">
-                                    <td>{{ direccion.direccion}}</td>
-                                    <td>{{ direccion.descripcion }}</td>
+                                <tr *ngFor="let obj of listDirecciones; let i = index">
+                                    <td>{{ obj.direccion}}</td>
+                                    <td>{{ obj.descripcion }}</td>
                                     <td>
-                                        <ng-container *ngIf="direccion.estado === 1">Activo</ng-container>
-                                        <ng-container *ngIf="direccion.estado === 2">Inactivo</ng-container>
+                                        <ng-container *ngIf="obj.estado === 1">Activo</ng-container>
+                                        <ng-container *ngIf="obj.estado === 2">Inactivo</ng-container>
                                     </td>
-                                    <td>{{ direccion.creado_por }}</td>
-                                    <td>{{ direccion.fecha_creacion }}</td>
+                                    <td>{{ obj.creado_por }}</td>
+                                    <td>{{ obj.fecha_creacion }}</td>
                                     <td class="text-center">
                                         <div class="btn-group">
-                                            <button type="button"  data-toggle="modal" title="Editar" data-target="#abrirModalEditarContacto"data-toggle="modal" data-target="#abrirModalEditarContacto" class="btna" ><i class="fas fa-solid fa-pen" style="font-size: 0.85em;"></i></button>
-                                            <button type="button"  class="btna " [title]="direccion.estado === 1 ? 'Desactivar' : 'Activar'"><i class="fas" [ngClass]="direccion.estado === 1 ? 'fa-solid fa-lock' : 'fa-solid fa-lock-open'" style="font-size: 0.85em;"></i> </button>
+                                            <button type="button"  data-toggle="modal" title="Editar" data-target="#abrirModalEditarObjeto"data-toggle="modal" data-target="#abrirModalEditarObjeto" class="btna" ><i class="fas fa-solid fa-pen" style="font-size: 0.85em;"></i></button>
+                                            <button type="button"  class="btna " [title]="obj.estado === 1 ? 'Desactivar' : 'Activar'"><i class="fas" [ngClass]="obj.estado === 1 ? 'fa-solid fa-lock' : 'fa-solid fa-lock-open'" style="font-size: 0.85em;"></i> </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -160,7 +252,7 @@
                             </table>
                         </div>
                         <div class="tab-pane fade" id="custom-tabs-four-telefonos" role="tabpanel" aria-labelledby="custom-tabs-four-messages-tab">
-                            <button type="button" class="btn btn-primary mr-2 mb-2" style="font-size: 0.9em;" data-toggle="modal" data-target="#agregarContacto">
+                            <button type="button" class="btn btn-primary mr-2 mb-2" style="font-size: 0.9em;" data-toggle="modal" data-target="#agregarContactoT">
                                 <i class="fas fa-plus" style="font-size: 0.85em;"></i> Teléfono
                             </button>
                             <table  class="table table-bordered table-striped row-border hover"> 
@@ -176,20 +268,20 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr *ngFor="let telefono of listContactosTelefonos; let i = index">
-                                    <td>{{ telefono.telefono}}</td>
-                                    <td>{{ telefono.extencion}}</td>
-                                    <td>{{ telefono.descripcion }}</td>
+                                <tr *ngFor="let conT of listContactoT; let i = index">
+                                    <td>{{ conT.telefono}}</td>
+                                    <td>{{ conT.extencion}}</td>
+                                    <td>{{ conT.descripcion }}</td>
                                     <td>
-                                        <ng-container *ngIf="telefono.estado === 1">Activo</ng-container>
-                                        <ng-container *ngIf="telefono.estado === 2">Inactivo</ng-container>
+                                        <ng-container *ngIf="conT.estado === 1">Activo</ng-container>
+                                        <ng-container *ngIf="conT.estado === 2">Inactivo</ng-container>
                                     </td>
-                                    <td>{{ telefono.creado_por }}</td>
-                                    <td>{{ telefono.fecha_creacion }}</td>
+                                    <td>{{ conT.creado_por }}</td>
+                                    <td>{{ conT.fecha_creacion }}</td>
                                     <td class="text-center">
                                         <div class="btn-group">
-                                            <button type="button"  data-toggle="modal" title="Editar" data-target="#abrirModalEditarContacto"data-toggle="modal" data-target="#abrirModalEditarContacto" class="btna" ><i class="fas fa-solid fa-pen" style="font-size: 0.85em;"></i></button>
-                                            <button type="button"  class="btna " [title]="telefono.estado === 1 ? 'Desactivar' : 'Activar'"><i class="fas" [ngClass]="telefono.estado === 1 ? 'fa-solid fa-lock' : 'fa-solid fa-lock-open'" style="font-size: 0.85em;"></i> </button>
+                                            <button type="button"  data-toggle="modal" title="Editar" data-target="#abrirModalEditarContactoT"data-toggle="modal" data-target="#abrirModalEditarContactoT" class="btna" ><i class="fas fa-solid fa-pen" style="font-size: 0.85em;"></i></button>
+                                            <button type="button"  class="btna " [title]="conT.estado === 1 ? 'Desactivar' : 'Activar'"><i class="fas" [ngClass]="conT.estado === 1 ? 'fa-solid fa-lock' : 'fa-solid fa-lock-open'" style="font-size: 0.85em;"></i> </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -292,12 +384,128 @@
 </div>
 </div>
 
-<!-- Actualizar Usuario Form -->
-<div class="modal fade" id="abrirModalEditarContacto">
+
+
+<!-- Agregar Direccion Form -->
+<div class="modal fade" id="agregarProducto">
+    <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title">Agregar Direccion</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <form (submit)="agregarNuevaDireccion()">
+    
+                  <div class="form-group">
+                      <label for="nuevaDireccion">Direccion:</label>
+                      <input type="text" [(ngModel)]="nuevaDireccion.direccion" name="nuevaDireccion.direccion" (input)="onInputChange($event, 'direccion')" class="form-control" id="nuevaDireccion" placeholder="Direccion">
+                  </div>
+                  <div class="form-group">
+                      <label for="nuevoDescripcion">Descripción</label>
+                      <input type="text" [(ngModel)]="nuevaDireccion.descripcion" name="nuevaDireccion.descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="nuevodescripcion" placeholder="Descripción">
+                  </div>
+    
+                <div class="form-group">
+                  <label for="editarTipoDireccion">Tipo_Direccion:</label>
+                  <select class="form-control" id="editarRol" [(ngModel)]="nuevaDireccion.id_tipo_direccion" name="id_tipo_direccion">
+                    <option *ngFor="let item of listTipoC" [ngValue]="item.id_tipo_direccion">{{ item.tipo_direccion }}</option>
+                  </select>
+                </div>
+                              
+              </form>
+          </div>
+          <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+              <button type="button" (click)="agregarNuevaDireccion()" class="btn btn-success" data-dismiss="modal">Guardar</button>
+          </div>
+      </div>
+    </div>
+    </div>
+    <!-- /Agregar Usuario Form -->
+    
+    <!-- Actualizar Direccion Form -->
+    <div class="modal fade" id="abrirModalEditarObjeto">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h4 class="modal-title">Editar Direccion</h4>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                  </button>
+              </div>
+              <div class="modal-body">
+                  <form>
+                    <div class="form-group">
+                        <label for="editarDireccion">Direccion:</label>
+                        <input type="text" [(ngModel)]="direccionEditando.direccion" name="direccionEditando" (input)="onInputChange($event, 'direccion')" class="form-control" id="editarDireccion" placeholder="Direccion">
+                    </div>
+                    <div class="form-group">
+                        <label for="editarDescripcion">Descripción:</label>
+                        <input type="text" [(ngModel)]="direccionEditando.descripcion" name="descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="editarDescripcion" placeholder="Descripción">
+                    </div>
+                    <div class="form-group">
+                      <label for="editarTipoContacto">Tipo Contacto:</label>
+                      <select class="form-control" id="editarTipoContacto" [(ngModel)]="direccionEditando.id_tipo_direccion" name="id_tipo_direccion">
+                        <option *ngFor="let item of listTipoC" [ngValue]="item.id_tipo_direccion">{{ item.tipo_direccion }}</option>
+                      </select>
+                    </div>
+    
+                    <div class="modal-footer justify-content-between">
+                      <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                      <button type="submit" class="btn btn-success" (click)="editarDireccion(con)" data-dismiss="modal">Guardar</button>
+                  </div>
+                  </form>
+              </div>
+    
+          </div>
+      </div>
+    </div>
+
+    <!-- Agregar Telefono Form -->
+  <div class="modal fade" id="agregarContactoT">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Editar Contacto</h4>
+                <h4 class="modal-title">Agregar Contacto Telefono</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form (submit)="agregarNuevoContactoT()">
+                    <div class="form-group">
+                        <label for="nuevoContactoT">Teléfono:</label>
+                        <input type="text" [(ngModel)]="nuevoContactoT.telefono" name="nuevoContactoT.telefono" class="form-control" id="nuevoContactoT" placeholder="Teléfono">
+                    </div>
+                    <div class="form-group">
+                      <label for="nuevoContactoT">Extención</label>
+                      <input type="text" [(ngModel)]="nuevoContactoT.extencion" name="nuevoContactoT.extencion"  class="form-control" id="nuevoContactoT" placeholder="Extención">
+                  </div>  
+                    <div class="form-group">
+                        <label for="nuevoContactoT">Descripción</label>
+                        <input type="text" [(ngModel)]="nuevoContactoT.descripcion" name="nuevoContactoT.descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="nuevoContactoT" placeholder="Descripción">
+                    </div>    
+                </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                <button type="button" (click)="agregarNuevoContactoT()" class="btn btn-success" data-dismiss="modal">Guardar</button>
+            </div>
+        </div>
+    </div>
+    </div>
+    <!-- /Agregar Telefono Form -->
+    
+    
+    <!-- Actualizar Telefono Form -->
+    <div class="modal fade" id="abrirModalEditarContactoT">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Editar Contacto Telefono</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -305,81 +513,26 @@
             <div class="modal-body">
                 <form>
                   <div class="form-group">
-                      <label for="contactoEditando">Primer Nombre</label>
-                      <input type="text" [(ngModel)]="contactoEditando.primer_nombre" name="contactoEditando.primer_nombre" (input)="onInputChange($event, 'primer_nombre')" class="form-control" id="editarPN" placeholder="Primer Nombre">
-                  </div>  
-                  <div class="form-group">
-                    <label for="contactoEditando">Segundo Nombre:</label>
-                    <input type="text" [(ngModel)]="contactoEditando.segundo_nombre" name="contactoEditando.segundo_nombre" (input)="onInputChange($event, 'segundo_nombre')"  class="form-control" id="editarSN" placeholder="Segundo Nombre">
-                </div>
-                <div class="form-group">
-                    <label for="contactoEditando">Primer Apellido</label>
-                    <input type="text" [(ngModel)]="contactoEditando.primer_apellido" name="contactoEditando.primer_apellido" (input)="onInputChange($event, 'primer_apellido')" class="form-control" id="editarPA" placeholder="Primer Apellido">
-                </div>  
-                <div class="form-group">
-                    <label for="contactoEditando">Segundo Apellido:</label>
-                    <input type="text" [(ngModel)]="contactoEditando.segundo_apellido" name="contactoEditando.segundo_apellido" (input)="onInputChange($event, 'segundo_apellido')"  class="form-control" id="editarSA" placeholder="Tipo Contacto">
-                </div>
-                <div class="form-group">
-                    <label for="contactoEditando">Correo Electrónico</label>
-                    <input type="text" [(ngModel)]="contactoEditando.correo" name="contactoEditando.correo" (input)="onInputChange($event, 'correo')" class="form-control" id="editarCorreo" placeholder="Correo">
-                </div>      
-              </form>
-            </div>
-            <div class="modal-footer justify-content-between">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-                <button type="button" (click)="editarContacto()" class="btn btn-success" data-dismiss="modal">Guardar</button>
-            </div>
-        </div>
-    </div>
-    </div>
-
-    <!-- Agregar Usuario Form -->
-  <div class="modal fade" id="agregarContacto">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Agregar Contacto</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form (submit)="agregarNuevoContacto()">
-                    <div class="form-group">
-                        <label for="nuevoContacto">DNI:</label>
-                        <input type="text" [(ngModel)]="nuevoContacto.dni" name="nuevoContacto.dni" (input)="onInputChange($event, 'dni')"  class="form-control" id="nuevoDNI" placeholder="DNI">
-                    </div>
-                    <div class="form-group">
-                        <label for="nuevoContacto">Primer Nombre</label>
-                        <input type="text" [(ngModel)]="nuevoContacto.primer_nombre" name="nuevoContacto.primer_nombre" (input)="onInputChange($event, 'primer_nombre')" class="form-control" id="nuevoPN" placeholder="Primer Nombre">
-                    </div>  
-                    <div class="form-group">
-                      <label for="nuevoContacto">Segundo Nombre:</label>
-                      <input type="text" [(ngModel)]="nuevoContacto.segundo_nombre" name="nuevoContacto.segundo_nombre" (input)="onInputChange($event, 'segundo_nombre')"  class="form-control" id="nuevoSN" placeholder="Segundo Nombre">
+                      <label for="contactoTEditando">Teléfono</label>
+                      <input type="text" [(ngModel)]="contactoTEditando.telefono" name="contactoTEditando.telefono" class="form-control" id="editarTelefono" placeholder="Teléfono" >
                   </div>
                   <div class="form-group">
-                      <label for="nuevoContacto">Primer Apellido</label>
-                      <input type="text" [(ngModel)]="nuevoContacto.primer_apellido" name="nuevoContacto.primer_apellido" (input)="onInputChange($event, 'primer_apellido')" class="form-control" id="nuevoPA" placeholder="Primer Apellido">
-                  </div>  
-                  <div class="form-group">
-                      <label for="nuevoContacto">Segundo Apellido:</label>
-                      <input type="text" [(ngModel)]="nuevoContacto.segundo_apellido" name="nuevoContacto.segundo_apellido" (input)="onInputChange($event, 'segundo_apellido')"  class="form-control" id="nuevoSA" placeholder="Segundo Apellido">
+                      <label for="contactoTEditando">Extención</label>
+                      <input type="text" [(ngModel)]="contactoTEditando.extencion" name="contactoTEditando.extencion" class="form-control" id="editarExtencion" placeholder="Extención" >
                   </div>
                   <div class="form-group">
-                      <label for="nuevoContacto">Correo Electrónico</label>
-                      <input type="text" [(ngModel)]="nuevoContacto.correo" name="nuevoContacto.correo" (input)="onInputChange($event, 'correo')" class="form-control" id="nuevoCorreo" placeholder="Correo">
-                  </div> 
-                  <div class="form-group">
-                      <label for="nuevoContacto">Descripción</label>
-                      <input type="text" [(ngModel)]="nuevoContacto.descripcion" name="nuevoContacto.descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="nuevoDescripcion" placeholder="Descripción">
-                  </div>      
+                      <label for="contactoTEditando">Descripción:</label>
+                      <input type="text" [(ngModel)]="contactoTEditando.descripcion" name="contactoTEditando.descripcion"  class="form-control" id="editarDescripcion" placeholder="Descripción" (input)="onInputChange($event, 'descripcion')" >
+                  </div>
+            
+                 
                 </form>
             </div>
             <div class="modal-footer justify-content-between">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-                <button type="button" (click)="agregarNuevoContacto()" class="btn btn-success" data-dismiss="modal">Guardar</button>
+                <button type="button" (click)="editarContactoTelefono()" class="btn btn-success" data-dismiss="modal">Guardar</button>
             </div>
         </div>
     </div>
     </div>
+    <!-- /Actualizar contacto Form -->
