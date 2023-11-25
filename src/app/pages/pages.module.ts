@@ -37,7 +37,8 @@ import { ContactoEmpresasComponent } from './contacto/contacto-empresas/contacto
 import { Empresas2Component } from './empresas2/empresas2.component';
 import { Permisos2Component } from './seguridad/permisos2/permisos2.component';
 import { SeguridadComponent } from './seguridad/seguridad.component';
-
+import { AdministracionComponent } from './administracion/administracion.component'
+import { MantenimientoComponent } from './mantenimiento/mantenimiento.component'
 
 
 
@@ -75,7 +76,9 @@ import { SeguridadComponent } from './seguridad/seguridad.component';
     Empresas2Component,
     PerfilComponent,
     Permisos2Component,
-    SeguridadComponent
+    SeguridadComponent,
+    AdministracionComponent,
+    MantenimientoComponent
   ],
   imports: [
     CommonModule,
