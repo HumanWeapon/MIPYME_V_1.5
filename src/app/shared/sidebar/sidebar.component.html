@@ -28,8 +28,10 @@
   
 
       <!-- SidebarSearch Form -->
-      <div class="form-inline">
+      <!--
+      <div class="form-inline">-->
         <!-- Sidebar Menu -->
+        <!--
         <nav class="mt-4 mb-2">
           <ul class="nav nav-pills nav-sidebar flex-column">
             <li class="nav-item">
@@ -46,7 +48,9 @@
 
 
 
-        <!-- Sidebar Menu -->
+        Sidebar Menu -->
+
+         <!-- 
         <nav class="mt-2">
           <ul class="nav nav-pills nav-sidebar flex-column">
             <li class="nav-item">
@@ -59,8 +63,11 @@
             </li>
           </ul>
         </nav>
+        -->
 
+        
         <!-- Sidebar Menu -->
+        <!--
         <nav>
           <ul class="nav nav-pills nav-sidebar flex-column">
             <li class="nav-item">
@@ -73,6 +80,9 @@
             </li>
           </ul>
         </nav>
+      -->
+
+        
         <!-- 
         <nav>
           <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="true">
@@ -103,10 +113,10 @@
 
 
         <nav>
-          <ul class="nav nav-pills nav-sidebar flex-column">
+          <ul class="nav nav-pills nav-sidebar flex-column mt-4 mb-2">
             <li class="nav-item" *ngFor="let item of listMenu">
-
               <a  [routerLink]='item.objetos.url' class="nav-link" style="cursor: pointer;">
+                <i class="{{item.objetos.icono}}"></i>
                   <p class="ml-2">
                     {{item.objetos.descripcion}}
                   </p>

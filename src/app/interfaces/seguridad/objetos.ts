@@ -4,6 +4,7 @@ export interface Objetos{
     descripcion:string, 
     tipo_objeto: string, 
     url: string, 
+    icono: string,
     estado_objeto: number,
     creado_por: string, 
     fecha_creacion: Date, 
