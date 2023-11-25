@@ -17,6 +17,9 @@ import { OperacionEmpresasService } from 'src/app/services/empresa/operacion-emp
 import { ErrorService } from 'src/app/services/error.service';
 import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 import { TipoDireccionService } from 'src/app/services/mantenimiento/tipoDireccion.service';
+import { DatePipe } from '@angular/common';
+import { TipoDireccion } from 'src/app/interfaces/mantenimiento/tipoDireccion';
+
 
 
 @Component({
@@ -43,12 +46,45 @@ export class Empresas2Component implements OnInit{
     modificado_por: '',
     fecha_modificacion:new Date(), 
     estado: 0,
+  };
 
+  //Direcion
+  nuevaDireccion: ContactoDirecciones = {
+    id_direccion: 0, 
+    id_contacto: 0, 
+    id_tipo_direccion: 0,
+    direccion:'', 
+    descripcion: '', 
+    creado_por: '', 
+    fecha_creacion: new Date(), 
+    modificado_por: '', 
+    fecha_modificacion: new Date(), 
+    estado: 0
+
+  };
+
+  //Telefonos
+  contactoTEditando: ContactoTelefono = {
+    id_telefono: 0, 
+    id_contacto: 0,
+    id_tipo_telefono: 0,
+    telefono: '', 
+    extencion: '',
+    descripcion:'',
+    creado_por: '', 
+    fecha_creacion: new Date(), 
+    modificado_por: '', 
+    fecha_modificacion: new Date(),
+    estado: 0,
   };
 
   //DATATABLE
   dtTrigger: Subject<any> = new Subject<any>();
   dtOptions: DataTables.Settings = {};
+
+  tip: TipoDireccion[] = [];
+  Alltipocontacto: any[] = [];
+  con: Contacto[] = []
 
   //INDICES
   indice: any;
@@ -56,9 +92,12 @@ export class Empresas2Component implements OnInit{
   //LISTAS DE VECTORES
   listOpEmpresa: any[] = [];
   listContactos: Contacto[] = [];
-  listContactosDirecciones: ContactoDirecciones[] = [];
+  listDirecciones: ContactoDirecciones[] = [];
   listContactosTelefonos: ContactoTelefono[] = [];
   listEmpresa: Empresa[] = [];
+  listTipoC: TipoDireccion[] = [];
+  listContactoT: ContactoTelefono[] = [];
+
 
   //OBJETOS DE INTERFACES
   empresaEditando: Empresa = {
@@ -90,6 +129,34 @@ export class Empresas2Component implements OnInit{
     estado: 0,
   };
 
+  direccionEditando: ContactoDirecciones = {
+    id_direccion: 0, 
+    id_contacto: 0, 
+    id_tipo_direccion: 0,
+    direccion:'', 
+    descripcion: '', 
+    creado_por: '', 
+    fecha_creacion: new Date(), 
+    modificado_por: '', 
+    fecha_modificacion: new Date(), 
+    estado: 0
+
+  };
+
+  nuevoContactoT: ContactoTelefono = {
+    id_telefono: 0, 
+    id_contacto: 0,
+    id_tipo_telefono: 0,
+    telefono: '', 
+    extencion: '',
+    descripcion:'',
+    creado_por: '', 
+    fecha_creacion: new Date(), 
+    modificado_por: '', 
+    fecha_modificacion: new Date(),
+    estado: 0,
+  };
+
   //TITULO MODAL CONTACTOS
   nombre_empresa: string = '';
 
@@ -110,6 +177,9 @@ export class Empresas2Component implements OnInit{
     private _userService: UsuariosService,
     private _contactoService: ContactoService, 
     private toastr: ToastrService,
+    private _datePipe: DatePipe,
+    private _objService: DireccionesService,
+    private _contactoTService: ContactoTService,
   ) {}
 
 
@@ -144,7 +214,7 @@ export class Empresas2Component implements OnInit{
   getDirecciones(id_contacto: any){
     this._direccionesService.getDireccion(id_contacto).subscribe({
       next: (data: any) => {
-        this.listContactosDirecciones = data;
+        this.listDirecciones = data;
       },
       error: (e: HttpErrorResponse) => {
         this._errorService.msjError(e);
@@ -244,6 +314,8 @@ export class Empresas2Component implements OnInit{
     
     const userLocal = localStorage.getItem('usuario');
     if (userLocal){
+      const fechaActual = new Date();
+    const fechaFormateada = this._datePipe.transform(fechaActual, 'yyyy-MM-dd');
     this.nuevoContacto = {
       id_contacto: 0,
       id_tipo_contacto: 6, 
@@ -255,15 +327,16 @@ export class Empresas2Component implements OnInit{
       correo:this.nuevoContacto.correo,
       descripcion:this.nuevoContacto.descripcion,
       creado_por: userLocal,
-      fecha_creacion: new Date(), 
+      fecha_creacion: fechaFormateada as unknown as Date, // Convertir la cadena a Date, 
       modificado_por: userLocal, 
-      fecha_modificacion: new Date(),
+      fecha_modificacion: fechaFormateada as unknown as Date, // Convertir la cadena a Date,
       estado: 1,
 
     };
   
     this._contactoService.addContacto(this.nuevoContacto).subscribe({
       next: (data) => {
+        this.listContactos.push(this.nuevoContacto)
         this.toastr.success('Contacto Agregado Exitosamente')
       },
       error: (e: HttpErrorResponse) => {
@@ -294,6 +367,111 @@ export class Empresas2Component implements OnInit{
     };
     this.indice = i;
   }
+
+  //Cogido para direcciones
+  toggleFunctionD(obj: any, i: number) {
+
+    // Ejecuta una función u otra según el estado
+    if (obj.estado === 1 ) {
+      this.inactivarDireccion(obj, i); // Ejecuta la primera función
+    } else {
+      this.activarDireccion(obj, i); // Ejecuta la segunda función
+    }
+  }
+    
+  inactivarDireccion(direccion: ContactoDirecciones, i: any){
+    this._objService.inactivarDireccion(direccion).subscribe(data => 
+      this.toastr.success('La Direccion: '+ direccion.direccion+ ' ha sido inactivada')
+      );
+    this.listDirecciones[i].estado = 2;
+  }
+  activarDireccion(direccion: ContactoDirecciones, i: any){
+    this._objService.activarDireccion(direccion).subscribe(data => 
+    this.toastr.success('La Direccion: '+ direccion.direccion+ ' ha sido activada')
+    );
+    this.listDirecciones[i].estado = 1;
+  }
+  
+  agregarNuevaDireccion() {
+
+    const usuarioLocal = localStorage.getItem('usuario')
+    if(usuarioLocal){
+      this.nuevaDireccion = {
+        id_direccion: 0, 
+        id_contacto: this.nuevaDireccion.id_contacto,
+        id_tipo_direccion: this.nuevaDireccion.id_tipo_direccion, 
+        direccion: this.nuevaDireccion.direccion, 
+        descripcion:this.nuevaDireccion.descripcion, 
+        estado: 1,
+        creado_por: usuarioLocal, 
+        fecha_creacion: new Date(), 
+        modificado_por: usuarioLocal, 
+        fecha_modificacion: new Date()
+
+      };
+
+
+    
+      this._objService.addDireccion(this.nuevaDireccion).subscribe({
+        next: (data) => {
+          this.toastr.success('Direccion agregado con éxito')
+        },
+        error: (e: HttpErrorResponse) => {
+          this._errorService.msjError(e);
+        }
+      });
+      location.reload();
+      this.ngZone.run(() => {        
+      });
+    }
+  }
+  
+
+
+  obtenerIdDireccion(direccion: ContactoDirecciones, i: any){
+    this.direccionEditando = {
+    id_direccion: direccion.id_direccion,
+    id_contacto: direccion.id_contacto,
+    id_tipo_direccion: this.nuevaDireccion.id_tipo_direccion, 
+    direccion: direccion.direccion, 
+    descripcion: direccion.descripcion,  
+    creado_por: direccion.creado_por, 
+    fecha_creacion: direccion.fecha_creacion, 
+    modificado_por: direccion.modificado_por, 
+    fecha_modificacion: direccion.fecha_modificacion,
+    estado: direccion.estado
+
+    };
+    this.indice = i;
+  
+  }
+
+
+  editarDireccion(con: any) {
+    
+    this._objService.editarDireccion(this.direccionEditando).subscribe(data => {
+      this.toastr.success('Direccion editado con éxito');
+      if(this.Alltipocontacto == null){
+        //no se puede editar el usuario
+      }else{
+      this.Alltipocontacto[this.indice].direccion = this.direccionEditando.direccion;
+      this.Alltipocontacto[this.indice].descripcion = this.direccionEditando.descripcion;
+      this.Alltipocontacto[this.indice].contacto.con = con.con;
+       // Recargar la página
+       location.reload();
+      }
+
+    });
+  }
+
+
+
+
+
+
+
+
+
 
 
   generatePDF() {
@@ -417,6 +595,76 @@ activarContactoTelefono(contactot: ContactoTelefono, i: any){
   this._toastr.success('El telefono: '+ contactot.telefono + ' ha sido activado')
   );
   this.listContactosTelefonos[i].estado = 1;
+}
+agregarNuevoContactoT() {
+
+  const userLocal = localStorage.getItem('usuario');
+  if (userLocal){
+  this.nuevoContactoT = {
+    id_telefono: 0, 
+    id_contacto: 0,
+    id_tipo_telefono: 0,
+    telefono: this.nuevoContactoT.telefono, 
+    extencion: this.nuevoContactoT.extencion,
+    descripcion:this.nuevoContactoT.descripcion,
+    creado_por: userLocal,
+    fecha_creacion: new Date(), 
+    modificado_por: userLocal,
+    fecha_modificacion: new Date(),
+    estado: 0,
+  };
+
+  this._contactoTService.addContactoT(this.nuevoContactoT).subscribe({
+    next: (data) => {
+      //this.insertBitacora(data);
+      this.toastr.success('Contacto agregado con éxito');
+    },
+    error: (e: HttpErrorResponse) => {
+      this._errorService.msjError(e);
+    }
+  });
+  location.reload();
+  this.ngZone.run(() => {        
+  });
+}
+}
+
+
+obtenerIdContactoT(contactoT: ContactoTelefono, i: any){
+  this.contactoTEditando = {
+    id_telefono: contactoT.id_telefono, 
+    id_contacto: contactoT.id_contacto,
+    id_tipo_telefono: contactoT. id_tipo_telefono,
+    telefono: contactoT.telefono, 
+    extencion: contactoT.extencion,
+    descripcion: contactoT.descripcion,
+    creado_por: contactoT.creado_por, 
+    fecha_creacion: contactoT.fecha_creacion, 
+    modificado_por: contactoT.modificado_por, 
+    fecha_modificacion: contactoT.fecha_modificacion,
+    estado: contactoT.estado,
+  
+
+  };
+  this.indice = i;
+}
+
+
+editarContactoTelefono(){
+  this._contactoTService.editarContactoTelefono(this.contactoTEditando).subscribe(data => {
+    this.toastr.success('contacto editado con éxito');
+    this.listContactoT[this.indice].telefono = this.contactoTEditando.telefono;
+    this.listContactoT[this.indice].extencion = this.contactoTEditando.extencion;
+    this.listContactoT[this.indice].descripcion = this.contactoTEditando.descripcion;
+
+    
+      // Recargar la página
+      location.reload();
+      // Actualizar la vista
+      this.ngZone.run(() => {        
+      });
+  
+  });
 }
 
 }
