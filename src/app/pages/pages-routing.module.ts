@@ -54,9 +54,9 @@ const routes: Routes = [
    //ABC modulo administracion.
    {path: 'administracion', component: AdministracionComponent, data:{titulo: 'COMPONENTES DE ADMINISTRACION'},
    children: [
-     { path: 'bitacora', component:BitacoraComponent, data:{titulo: 'Bitácora'}},
-     { path: 'backup', component:BackupComponent, data:{titulo: 'Copia de seguridad'}},
-     { path: 'restore', component:RestoreComponent, data:{titulo: 'Restaurar'}},
+     { path: 'administracion/bitacora', component:BitacoraComponent, data:{titulo: 'Bitácora'}},
+     { path: 'administracion/backup', component:BackupComponent, data:{titulo: 'Copia de seguridad'}},
+     { path: 'administracion/restore', component:RestoreComponent, data:{titulo: 'Restaurar'}},
     ]
   },
      //ABC modulo mantenimiento.

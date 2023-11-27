@@ -1,27 +1,30 @@
+<!-- administracion.component.html -->
 <section class="content" *ngIf="mostrar">
-    <div class="container-fluid" style="padding-left: 2%; padding-right: 2%;">
-        <div class="row">
-            <p>Estos componentes están diseñados para gestionar y supervisar la información 
-              relacionada con la actividad del sistema, la recuperación de datos y la realización de copias de seguridad.</p>
-        </div>
-        <div class="row">
-            <div *ngFor="let objeto of listObjetos" class="col-lg-3 col-6">
-                <!-- small card -->
-                <div class="small-box" style="background-color: #ffd973; color: #1254a1;">
-                  <div class="inner">
-                    <h3>{{ objeto.objeto }}</h3>
-    
-                    <p>{{ objeto.descripcion }}</p>
-                  </div>
-                  <div class="icon">
-                    <i class="{{ objeto.icono }}"></i>
-                  </div>
-                  <a (click)="navegar(objeto.url)" class="small-box-footer" style="color: #1254a1;" title="Seleccionar">Acceder
-                    <i class="fas fa-arrow-circle-right"></i>
-                  </a>
+  <div class="container-fluid" style="padding-left: 2%; padding-right: 2%;">
+      <div class="row">
+          <p>Estos componentes están diseñados para gestionar y supervisar la información 
+            relacionada con la actividad del sistema, la recuperación de datos y la realización de copias de seguridad.</p>
+      </div>
+      <div class="row">
+          <div *ngFor="let objeto of listObjetos" class="col-lg-3 col-6">
+              <!-- small card -->
+              <div class="small-box" style="background-color: #ffd973; color: #1254a1;">
+                <div class="inner">
+                  <h3>{{ objeto.objeto }}</h3>
+  
+                  <p>{{ objeto.descripcion }}</p>
                 </div>
-            </div>
-        </div>
-    </div>
+                <div class="icon">
+                  <i class="{{ objeto.icono }}"></i>
+                </div>
+                <a (click)="navegar(objeto.url)" class="small-box-footer" style="color: #1254a1;" title="Seleccionar">Acceder
+                  <i class="fas fa-arrow-circle-right"></i>
+                </a>
+              </div>
+          </div>
+      </div>
+  </div>
 </section>
+
+
 

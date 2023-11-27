@@ -10,5 +10,11 @@
   ],
   "include": [
     "src/**/*.d.ts"
-  ]
+  ],
+  
+  "exclude": [
+    "node_modules/canvg",
+    "node_modules/otra-dependencia-con-commonjs"
+]
+
 }

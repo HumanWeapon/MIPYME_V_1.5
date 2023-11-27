@@ -29,5 +29,11 @@
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true
-  }
+  },
+
+  "exclude": [
+    "node_modules/canvg",
+    "node_modules/otra-dependencia-con-commonjs"
+]
+
 }
