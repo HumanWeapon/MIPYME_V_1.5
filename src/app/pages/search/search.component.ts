@@ -97,6 +97,7 @@ export class SearchComponent implements OnInit {
   idOpProductos: number = 0;
   ngZone: any;
   noResultadosEncontrados: boolean = false;
+  historialBusquedas: { termino: string, cantidad: number }[] = [];
 
   constructor(
     private _productoService: ProductosService,
@@ -327,37 +328,24 @@ export class SearchComponent implements OnInit {
     const idTodosLosProductos = this._listCategorias.find(categoria => categoria.categoria.toLowerCase() === 'todos los productos')?.id_categoria;
   
     if (this.opcionSeleccionadaPais === 99 && this.opcionSeleccionada === 20) {
-      // Si la opción seleccionada de países es "All" y de categoría es "Todos los Productos", mostrar todos los productos y aplicar filtro por término de búsqueda
+      // Si la opción seleccionada de países es "All" y de categoría es "Todos los Productos",
+      // mostrar todos los productos y aplicar filtro por término de búsqueda
       this.listOpProductos = this._listProductos.filter(producto =>
         producto.producto.toLowerCase().includes(searchTerm)
       );
     } else {
-      if (searchTerm !== '') {
-        // Filtrar por término de búsqueda, categoría y país
-        this.listOpProductos = this._listProductos.filter(producto =>
-          producto.producto.toLowerCase().includes(searchTerm) &&
-          (this.opcionSeleccionadaPais === 0 || producto.id_pais === this.opcionSeleccionadaPais) &&
-          (this.opcionSeleccionada === 0 || producto.id_categoria === this.opcionSeleccionada)
-        );
-      } else {
-        if (this.opcionSeleccionada === 0 || this.opcionSeleccionada === idTodosLosProductos) {
-          // Si la opción seleccionada es "Todos los productos" o "All", mostrar todos los productos y filtrar por país
-          this.listOpProductos = this._listProductos.filter(producto =>
-            (this.opcionSeleccionadaPais === 0 || producto.id_pais === this.opcionSeleccionadaPais)
-          );
-        } else {
-          // Filtrar por categoría y país
-          this.listOpProductos = this._listProductos.filter(producto =>
-            (this.opcionSeleccionada === 0 || producto.id_categoria === this.opcionSeleccionada) &&
-            (this.opcionSeleccionadaPais === 0 || producto.id_pais === this.opcionSeleccionadaPais)
-          );
-        }
-      }
+      // Filtrar por término de búsqueda, categoría y país
+      this.listOpProductos = this._listProductos.filter(producto =>
+        producto.producto.toLowerCase().includes(searchTerm) &&
+        ((this.opcionSeleccionada === 0 || this.opcionSeleccionada === idTodosLosProductos) || producto.id_categoria === this.opcionSeleccionada) &&
+        ((this.opcionSeleccionadaPais === 0) || producto.id_pais === this.opcionSeleccionadaPais)
+      );
     }
   
     // Agrega un console log para verificar los productos filtrados
     console.log('Productos filtrados:', this.listOpProductos);
   }
+  
   
 }
   /********************************************************************************/

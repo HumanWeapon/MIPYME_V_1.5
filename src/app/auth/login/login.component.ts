@@ -44,10 +44,15 @@ export class LoginComponent {
     private _userService: UsuariosService,
     private _toastr: ToastrService,
     private _router: Router, 
-    private _errorService: ErrorService) {}
+    private _errorService: ErrorService,
+    private router: Router) {}
 
   ngOnInit(): void {
 
+  }
+
+  irLoginPyme() {
+    this.router.navigate(['/login-pyme']); // Reemplaza '/ruta-del-modulo-pyme' con la ruta real de tu módulo Pyme
   }
 
 

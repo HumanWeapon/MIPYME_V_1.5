@@ -7,6 +7,8 @@ import { CorreoComponent } from './login/correo/correo.component';
 import { RecuperarComponent } from './login/recuperar/recuperar.component';
 import { FirstLoginComponent } from './login/first-login/first-login.component';
 import { PreguntasUsuarioComponent } from './login/preguntas-usuario/preguntas-usuario.component';
+import { LoginPymeComponent } from './login-pyme/login-pyme.component';
+
 
 const routes: Routes =[
   {path: 'login', component: LoginComponent},
@@ -15,6 +17,7 @@ const routes: Routes =[
   {path: 'correo', component: CorreoComponent},
   {path: 'recuperar', component: RecuperarComponent},
   {path: 'firstlogin', component: FirstLoginComponent},
+  {path: 'login-pyme', component: LoginPymeComponent},
 ];
 
 @NgModule({
