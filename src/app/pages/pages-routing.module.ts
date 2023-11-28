@@ -35,62 +35,56 @@ import { Empresas2Component } from './empresas2/empresas2.component';
 import { SeguridadComponent } from './seguridad/seguridad.component';
 import { AdministracionComponent } from './administracion/administracion.component';
 import { MantenimientoComponent } from './mantenimiento/mantenimiento.component';
+import { PreguntasUsuarioComponent } from '../auth/login/preguntas-usuario/preguntas-usuario.component';
 
 const routes: Routes = [
   {path:'dashboard',component:PagesComponent, 
   children:[
     //RUTAS DEL SIDEBAR
     //ABC modulo seguridad.
-    {path: 'seguridad', component: SeguridadComponent, data:{titulo: 'COMPONENTES DE SEGURIDAD'},
-    children: [
-      { path: 'usuarios', component: UsuariosComponent, data:{titulo: 'Usuarios'}},
-      { path: 'objetos', component: ObjetosComponent, data:{titulo: 'Objetos'}},
-      { path: 'permisos', component: PermisosComponent, data:{titulo: 'Permisos'}},
-      { path: 'roles', component: RolesComponent, data:{titulo: 'Roles'}},
-      { path: 'preguntas', component: PreguntasComponent, data:{titulo: 'Preguntas'}},
-      { path: 'parametros', component: ParametrosComponent, data:{titulo: 'Parametros'}},
-    ]
-  },
+    { path: 'seguridad', component: SeguridadComponent, data:{titulo: 'COMPONENTES DE SEGURIDAD'}},
+    { path: 'usuarios', component: UsuariosComponent, data:{titulo: 'Usuarios'}},
+    { path: 'objetos', component: ObjetosComponent, data:{titulo: 'Objetos'}},
+    { path: 'permisos', component: PermisosComponent, data:{titulo: 'Permisos'}},
+    { path: 'roles', component: RolesComponent, data:{titulo: 'Roles'}},
+    { path: 'preguntas_usuario', component: PreguntasComponent, data:{titulo: 'Preguntas'}},
+    { path: 'parametros', component: ParametrosComponent, data:{titulo: 'Parametros'}},
+
    //ABC modulo administracion.
-   {path: 'administracion', component: AdministracionComponent, data:{titulo: 'COMPONENTES DE ADMINISTRACION'},
-   children: [
-     { path: 'administracion/bitacora', component:BitacoraComponent, data:{titulo: 'Bitácora'}},
-     { path: 'administracion/backup', component:BackupComponent, data:{titulo: 'Copia de seguridad'}},
-     { path: 'administracion/restore', component:RestoreComponent, data:{titulo: 'Restaurar'}},
-    ]
-  },
-     //ABC modulo mantenimiento.
-     {path: 'mantenimiento', component: MantenimientoComponent, data:{titulo: 'COMPONENTES DE MANTENIMIENTO'},
-     children: [
-      {path: 'paises', component: PaisesComponent, data:{titulo: 'Países'}},
-      {path: 'ciudades', component:CiudadesComponent, data:{titulo: 'Ciudades'}},
-      {path: 'Categoria_productos', component:CategoriaProductosComponent, data:{titulo: 'Categorías de productos'}},
-      {path: 'productos', component:ProductosComponent, data:{titulo: 'Productos'}},
-      {path: 'tipo_telefono', component:TipoTelefonoComponent, data:{titulo: 'Tipos de teléfono'}},
-      {path: 'tipo_direccion', component:TipoDireccionComponent, data:{titulo: 'Tipos de Direccion'}},
-      {path: 'tipo_contacto', component:TipoContactoComponent, data:{titulo: 'Tipos de Contacto'}},
-      {path: 'tipo_empresa', component:TipoEmpresaComponent, data:{titulo: 'Tipos de Empresa'}},
-      {path: 'tipo_requisito', component:TipoRequisitosComponent, data:{titulo: 'Tipos de requisitos'}}
-      ]
-    },
+    { path: 'administracion', component: AdministracionComponent, data:{titulo: 'COMPONENTES DE ADMINISTRACION'}},
+    { path: 'bitacora', component:BitacoraComponent, data:{titulo: 'Bitácora'}},
+    { path: 'backup', component:BackupComponent, data:{titulo: 'Copia de seguridad'}},
+    { path: 'restore', component:RestoreComponent, data:{titulo: 'Restaurar'}},
     
-    {path: 'dashboard', component: DashboardComponent, data:{titulo: 'Dashboard'}},
-    {path: 'perfil', component: PerfilComponent, data:{titulo: 'Mi Perfil'}},
-    {path: 'search', component: SearchComponent},
+    //ABC modulo mantenimiento.
+    { path: 'mantenimiento', component: MantenimientoComponent, data:{titulo: 'COMPONENTES DE MANTENIMIENTO'}},
+    { path: 'paises', component: PaisesComponent, data:{titulo: 'Países'}},
+    { path: 'ciudades', component:CiudadesComponent, data:{titulo: 'Ciudades'}},
+    { path: 'Categoria_productos', component:CategoriaProductosComponent, data:{titulo: 'Categorías de productos'}},
+    { path: 'productos', component:ProductosComponent, data:{titulo: 'Productos'}},
+    { path: 'tipo_telefono', component:TipoTelefonoComponent, data:{titulo: 'Tipos de teléfono'}},
+    { path: 'tipo_direccion', component:TipoDireccionComponent, data:{titulo: 'Tipos de Direccion'}},
+    { path: 'tipo_contacto', component:TipoContactoComponent, data:{titulo: 'Tipos de Contacto'}},
+    { path: 'tipo_empresa', component:TipoEmpresaComponent, data:{titulo: 'Tipos de Empresa'}},
+    { path: 'tipo_requisito', component:TipoRequisitosComponent, data:{titulo: 'Tipos de requisitos'}},
+    
+    { path: 'dashboard', component: DashboardComponent, data:{titulo: 'Dashboard'}},
+    { path: 'perfil', component: PerfilComponent, data:{titulo: 'Mi Perfil'}},
+    { path: 'search', component: SearchComponent},
 
     
     //ABC grado B.
-    {path: 'pymes', component:PymeComponent, data:{titulo:'Pyme'}},
-    {path: 'empresas', component:EmpresasComponent, data:{titulo:'Empresas'}},
-    {path: 'requisitos_exportacion', component:RequisitosExportacionComponent, data:{titulo: 'Requisitos de exportación'}},
-    {path: 'empresas_productos', component:EmpresasProductosComponent, data:{titulo: 'Productos de empresas'}},
-    {path: 'contacto', component:ContactoComponent, data:{titulo: 'Contacto'}},
-    {path: 'contacto_telefono', component:TelefonosComponent, data:{titulo: 'Contacto de teléfono'}},
-    {path: 'contacto_direcciones', component:DireccionesComponent, data:{titulo: 'Contacto de direcciones'}},
-    {path: 'empresas2', component:Empresas2Component, data:{titulo: 'Empresas'}},
+    { path: 'pymes', component:PymeComponent, data:{titulo:'Pyme'}},
+    { path: 'empresas', component:EmpresasComponent, data:{titulo:'Empresas'}},
+    { path: 'requisitos_exportacion', component:RequisitosExportacionComponent, data:{titulo: 'Requisitos de exportación'}},
+    { path: 'empresas_productos', component:EmpresasProductosComponent, data:{titulo: 'Productos de empresas'}},
+    { path: 'contacto', component:ContactoComponent, data:{titulo: 'Contacto'}},
+    { path: 'contacto_telefono', component:TelefonosComponent, data:{titulo: 'Contacto de teléfono'}},
+    { path: 'contacto_direcciones', component:DireccionesComponent, data:{titulo: 'Contacto de direcciones'}},
+    { path: 'empresas2', component:Empresas2Component, data:{titulo: 'Empresas'}},
 
     //ABC grado C.
-    {path: 'contactos', component:ContactoEmpresasComponent, data:{titulo: 'Contactos'}},
+    { path: 'contactos', component:ContactoEmpresasComponent, data:{titulo: 'Contactos'}},
 
   ]}
 ];

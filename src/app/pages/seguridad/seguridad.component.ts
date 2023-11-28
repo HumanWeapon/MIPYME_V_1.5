@@ -43,8 +43,8 @@ export class SeguridadComponent implements OnInit {
   }
 
   navegar(url: string) {
-    this.mostrar = false;
-    this._router.navigate([url])
+    //this.mostrar = false;
+    this._router.navigate(['/dashboard/'+url])
   }
 
 }
