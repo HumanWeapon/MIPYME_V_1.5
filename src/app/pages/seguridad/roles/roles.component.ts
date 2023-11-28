@@ -10,6 +10,7 @@ import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 import { BitacoraService } from 'src/app/services/administracion/bitacora.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Usuario } from 'src/app/interfaces/seguridad/usuario';
+import { DatePipe } from '@angular/common';
 
 
 @Component({
@@ -57,7 +58,8 @@ export class RolesComponent implements OnInit{
     private _ngZone: NgZone,
     private _errorService: ErrorService,
     private _userService: UsuariosService,
-    private _bitacoraService: BitacoraService
+    private _bitacoraService: BitacoraService,
+    private _datePipe: DatePipe
     ) { }
 
   
@@ -70,8 +72,9 @@ export class RolesComponent implements OnInit{
     };
     this._rolService.getAllRoles()
       .subscribe((res: any) => {
+        console.log(res)
         this.listRoles = res;
-        this.dtTrigger.next(null);
+        this.dtTrigger.next(0);
       });
   }
 
@@ -196,32 +199,32 @@ getEstadoText(estado: number): string {
 
     const userLocal = localStorage.getItem('usuario');
     if (userLocal){
-    this.nuevoRol = {
-      id_rol: 0, 
-      rol: this.nuevoRol.rol , 
-      descripcion: '', 
-      estado_rol: 1,
-      creado_por: userLocal,
-      fecha_creacion: new Date(), 
-      modificado_por: userLocal, 
-      fecha_modificacion: new Date(),
-    };
+      const fechaActual = new Date();
+      const fechaFormateada = this._datePipe.transform(fechaActual, 'yyyy-MM-dd');
+      this.nuevoRol = {
+        id_rol: 0, 
+        rol: this.nuevoRol.rol , 
+        descripcion: this.nuevoRol.descripcion, 
+        estado_rol: 1,
+        creado_por: userLocal,
+        fecha_creacion: fechaFormateada as unknown as Date, 
+        modificado_por: userLocal, 
+        fecha_modificacion: fechaFormateada as unknown as Date,
+      };
 
-    this._rolService.addRol(this.nuevoRol).subscribe({
-      next: (data) => {
-        this._toastr.success('Rol agregado con éxito');
-        this.insertBitacora(data);
-      },
-      error: (e: HttpErrorResponse) => {
-        this._errorService.msjError(e);
-      }
-    });
-    
+      this._rolService.addRol(this.nuevoRol).subscribe({
+        next: (data) => {
+          this._toastr.success('Rol agregado con éxito');
+          this.insertBitacora(data);
+          this.listRoles.push(this.nuevoRol);
+          
+        },
+        error: (e: HttpErrorResponse) => {
+          this._errorService.msjError(e);
+        }
+      });
+    }
   }
-  location.reload();
-    this._ngZone.run(() => {        
-    });
-}
 
   obtenerIdRol(roles: Roles, i: any){
     this.rolEditando = {

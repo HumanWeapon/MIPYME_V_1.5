@@ -9,12 +9,7 @@ import { ParametrosComponent } from './parametros/parametros.component';
 import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
-  { path: 'usuarios', component: UsuariosComponent, data:{titulo: 'Usuarios'}},
-  { path: 'objetos', component: ObjetosComponent, data:{titulo: 'Objetos'}},
-  { path: 'permisos', component: PermisosComponent, data:{titulo: 'Permisos'}},
-  { path: 'roles', component: RolesComponent, data:{titulo: 'Roles'}},
-  { path: 'preguntas_usuario', component: PreguntasUsuarioComponent, data:{titulo: 'Preguntas'}},
-  { path: 'parametros', component: ParametrosComponent, data:{titulo: 'Parametros'}}
+
 ]
 
 

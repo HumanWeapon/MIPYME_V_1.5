@@ -17,6 +17,7 @@
                           <tr>
                             <th>Codigo</th>
                             <th>Nombre Rol</th>
+                            <th>DESCRIPCIÓN</th>
                             <th>Estado</th>
                             <th>Fecha Creación</th>
                             <th>Fecha Modificación</th>
@@ -27,10 +28,11 @@
                           <tr *ngFor="let roles of listRoles; let i = index">
                             <td>{{ roles.id_rol }}</td>
                             <td>{{ roles.rol }}</td>
+                            <td>{{ roles.descripcion }}</td>
                             <td>
-                                <ng-container *ngIf="roles.estado_rol === 1">Activo</ng-container>
-                                <ng-container *ngIf="roles.estado_rol === 2">Inactivo</ng-container>
-                                <ng-container *ngIf="roles.estado_rol === 3">Bloqueado</ng-container>
+                                <ng-container *ngIf="roles.estado_rol == 1">Activo</ng-container>
+                                <ng-container *ngIf="roles.estado_rol == 2">Inactivo</ng-container>
+                                <ng-container *ngIf="roles.estado_rol == 3">Bloqueado</ng-container>
                               </td>
                             <td>{{ roles.fecha_creacion }}</td>
                             <td>{{ roles.fecha_modificacion }}</td>
@@ -77,7 +79,9 @@
                     <div class="form-group">
                         <label for="nuevoRol">Nombre del Rol:</label>
                         <input type="text" [(ngModel)]="nuevoRol.rol" name="nuevoRol.rol" (input)="onInputChange($event, 'rol')"class="form-control" id="nuevoRol" placeholder="Nombre del rol">
-                        </div>
+                        <label for="nuevoRol">Descripción:</label>
+                        <input type="text" [(ngModel)]="nuevoRol.descripcion" name="nuevoRol.descripcion" (input)="onInputChange($event, 'rol')"class="form-control" id="nuevoRol" placeholder="Nombre del rol">
+                      </div>
                 </form>
             </div>
             <div class="modal-footer justify-content-between">
