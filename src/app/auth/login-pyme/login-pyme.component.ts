@@ -38,6 +38,10 @@ export class LoginPymeComponent {
     this.contrasena = this.contrasena.replace(/\s/g, ''); // Elimina espacios en blanco
   }
 
+  irLogin() {
+    this.router.navigate(['/login']); // Reemplaza '/ruta-del-modulo-pyme' con la ruta real de tu módulo Pyme
+  }
+
 
 
 
