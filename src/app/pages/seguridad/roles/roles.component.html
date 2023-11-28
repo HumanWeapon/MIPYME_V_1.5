@@ -15,13 +15,13 @@
                     <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover">
                         <thead>
                           <tr>
-                            <th>Codigo</th>
-                            <th>Nombre Rol</th>
+                            <th>CODIGO</th>
+                            <th>NOMBRE ROL</th>
                             <th>DESCRIPCIÓN</th>
-                            <th>Estado</th>
-                            <th>Fecha Creación</th>
-                            <th>Fecha Modificación</th>
-                            <th>Aciones</th>
+                            <th>ESTADO</th>
+                            <th>FECHA CREACION</th>
+                            <th>FECHA MODIFICACION</th>
+                            <th>ACCIONES</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -80,7 +80,7 @@
                         <label for="nuevoRol">Nombre del Rol:</label>
                         <input type="text" [(ngModel)]="nuevoRol.rol" name="nuevoRol.rol" (input)="onInputChange($event, 'rol')"class="form-control" id="nuevoRol" placeholder="Nombre del rol">
                         <label for="nuevoRol">Descripción:</label>
-                        <input type="text" [(ngModel)]="nuevoRol.descripcion" name="nuevoRol.descripcion" (input)="onInputChange($event, 'rol')"class="form-control" id="nuevoRol" placeholder="Nombre del rol">
+                        <input type="text" [(ngModel)]="nuevoRol.descripcion" name="nuevoRol.descripcion" (input)="onInputChange($event, 'rol')"class="form-control" id="nuevoRol" placeholder="Descripcion">
                       </div>
                 </form>
             </div>
@@ -115,6 +115,8 @@
                   <div class="form-group">
                       <label for="rolEditando">Nombre del Rol:</label>
                       <input type="text" [(ngModel)]="rolEditando.rol" name="rolEditando.rol" (input)="onInputChange($event, 'rol')" class="form-control" id="editarRol" placeholder="Nombre del rol">
+                      <label for="rolEditando">Descripcion:</label>
+                      <input type="text" [(ngModel)]="rolEditando.descripcion" name="rolEditando.descripcion" (input)="onInputChange($event, 'rol')" class="form-control" id="editarRol" placeholder="Descripcion">
                   </div>
                 </form>
             </div>

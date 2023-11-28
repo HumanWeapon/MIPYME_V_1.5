@@ -58,12 +58,12 @@ export class PreguntasService {
    inactivarPregunta(preguntas: Preguntas): Observable<Preguntas>{
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.post<Preguntas>(`${this.myAppUrl}${this.myApiUrl}/inactivatePreguntas`, preguntas, { headers: headers })
+    return this.http.post<Preguntas>(`${this.myAppUrl}${this.myApiUrl}/inactivatePregunta`, preguntas, { headers: headers })
    }
    activarPregunta(preguntas: Preguntas): Observable<Preguntas>{
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.post<Preguntas>(`${this.myAppUrl}${this.myApiUrl}/activatePreguntas`, preguntas, { headers: headers })
+    return this.http.post<Preguntas>(`${this.myAppUrl}${this.myApiUrl}/activatePregunta`, preguntas, { headers: headers })
    }
 
    editarPregunta(preguntas: Preguntas): Observable<any> {
