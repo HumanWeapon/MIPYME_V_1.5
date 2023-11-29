@@ -105,29 +105,16 @@ toggleFunction(roles: any, i: number) {
   }
 }
 
-inactivarRol(roles: any, i: any) {
-  this._rolService.inactivarRol(roles).subscribe({
-    next: (data) => {
-      this.inactivarBitacora(data);
-      this._toastr.success('El rol: ' + roles.rol + ' ha sido Inactivado')
-    },
-    error: (e: HttpErrorResponse) => {
-      this._errorService.msjError(e);
-    }
-  });
+inactivarRol(roles: Roles, i: any){
+  this._rolService.inactivarRol(roles).subscribe(data => 
+    this._toastr.success('El Rol: '+ roles.rol+ ' ha sido inactivado')
+    );
   this.listRoles[i].estado_rol = 2;
-  
 }
-activarRol(roles: any, i: any) {
-  this._rolService.activarRol(roles).subscribe({
-    next: (data) => {
-      this.activarBitacora(data);
-      this._toastr.success('El rol: ' + roles.rol + ' ha sido Activado')
-    },
-    error: (e: HttpErrorResponse) => {
-      this._errorService.msjError(e);
-    }
-  });
+activarRol(roles: Roles, i: any){
+  this._rolService.activarRol(roles).subscribe(data => 
+  this._toastr.success('El Rol: '+ roles.rol+ ' ha sido activado')
+  );
   this.listRoles[i].estado_rol = 1;
 }
 

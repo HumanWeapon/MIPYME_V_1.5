@@ -85,25 +85,25 @@ export class PreguntasComponent implements OnInit{
 
     // Variable de estado para alternar funciones
 
-toggleFunction(preguntas: any, i: number) {
+toggleFunction(pregunta: any, i: number) {
 
   // Ejecuta una función u otra según el estado
-  if (preguntas.estado_pregunta === 1 ) {
-    this.inactivarPregunta(preguntas, i); // Ejecuta la primera función
+  if (pregunta.estado_pregunta === 1 ) {
+    this.inactivarPregunta(pregunta, i); // Ejecuta la primera función
   } else {
-    this.activarPregunta(preguntas, i); // Ejecuta la segunda función
+    this.activarPregunta(pregunta, i); // Ejecuta la segunda función
   }
 }
  
-inactivarPregunta(preguntas: any, i: number){
-    this._questionService.inactivarPregunta(preguntas).subscribe(data => 
-    this.toastr.success('La pregunta: '+ preguntas.pregunta+ ' ha sido inactivado')
+inactivarPregunta(pregunta: any, i: number){
+    this._questionService.inactivarPregunta(pregunta).subscribe(data => 
+    this.toastr.success('La pregunta: '+ pregunta.pregunta+ ' ha sido inactivado')
     );
     this.listPreguntas[i].estado_pregunta = 2;
   }
-  activarPregunta(preguntas: any, i: number){
-    this._questionService.activarPregunta(preguntas).subscribe(data => 
-    this.toastr.success('La pregunta: '+ preguntas.pregunta+ ' ha sido activado')
+  activarPregunta(pregunta: any, i: number){
+    this._questionService.activarPregunta(pregunta).subscribe(data => 
+    this.toastr.success('La pregunta: '+ pregunta.pregunta+ ' ha sido activado')
     );
     this.listPreguntas[i].estado_pregunta = 1;
   }
