@@ -5,6 +5,8 @@ import { Usuario } from 'src/app/interfaces/seguridad/usuario';
 import { PreguntasUsuarioService } from 'src/app/services/seguridad/preguntas-usuario.service';
 import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 import { ToastrService } from 'ngx-toastr';
+import { Roles } from 'src/app/interfaces/seguridad/roles';
+import { RolesService } from 'src/app/services/seguridad/roles.service';
 
 
 
@@ -25,6 +27,9 @@ export class PerfilComponent  implements OnInit{
   botonDeshabilitado: boolean = true;
   mostrarBoton: boolean = false; //Oculta el Boton de Cancelar
 /********************************************************************************************** */
+
+ listRoles: Roles [] = [];
+
   usuario: Usuario = {
     id_usuario: 0,
     creado_por: '',
@@ -42,6 +47,18 @@ export class PerfilComponent  implements OnInit{
     fecha_vencimiento: new Date(),
     intentos_fallidos: 0
   };
+
+  rolEditando: Roles = {
+    id_rol: 0, 
+    rol: '', 
+    descripcion: '', 
+    estado_rol: 0,
+    creado_por: '', 
+    fecha_creacion: new Date(), 
+    modificado_por: '', 
+    fecha_modificacion: new Date(),
+  };
+
   preguntas: Preguntas_Usuario[] = [];
   listPreguntas: any[] = [];
 
@@ -49,10 +66,13 @@ export class PerfilComponent  implements OnInit{
     private _preguntasUsuarioService: PreguntasUsuarioService,
     private _userService: UsuariosService,
     private toastr: ToastrService,
+    private _rolService: RolesService,
+    
     ){}
 
   ngOnInit(): void {
     this.getUsuario();
+    this.getRoles();
   }
 
   getUsuario(){
@@ -66,6 +86,19 @@ export class PerfilComponent  implements OnInit{
       });
     }
   }
+
+  getRoles() {
+    this._rolService.getAllRoles().subscribe((res: any) => {
+      console.log(res);
+      this.listRoles = res;
+      // Asigna el rol correspondiente al usuario actual
+      const rolUsuario = this.listRoles.find(rol => rol.id_rol === this.usuario.id_rol);
+      if (rolUsuario) {
+        this.rolEditando = rolUsuario;
+      }
+    });
+  }
+
 
   //Bloqueo y Desbloqueo de Inputs
 habilitarInput() {

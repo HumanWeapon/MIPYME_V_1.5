@@ -10,7 +10,7 @@
     
           <form  method="post">
             <div class="input-group mb-3">
-              <input type="text" class="form-control"  name="usuario" (input)="eliminarEspaciosBlanco()" placeholder="Pyme" maxlength="50" autocomplete="false">
+              <input type="text" class="form-control" [(ngModel)]="nombre_empresa" name="nombre_empresa" (input)="eliminarEspaciosBlanco()" placeholder="Pyme" maxlength="50" autocomplete="false">
               <div class="input-group-append">
                 <div class="input-group-text">
                   <span class="fas fa-user"></span>
@@ -18,7 +18,7 @@
               </div>
             </div>
             <div class="input-group mb-3">
-              <input type="password"   name="contrasena" (input)="eliminarEspaciosBlanco()" autocomplete="false" class="form-control" id="contraseña" placeholder="RTN">
+              <input type="password" [(ngModel)]="rtn" name="rtn" (input)="eliminarEspaciosBlanco()" autocomplete="false" class="form-control" id="contraseña" placeholder="RTN">
               <div class="input-group-append">
                 <div class="input-group-text">
                   <span class="fas fa-lock"></span>
@@ -36,7 +36,7 @@
               </div>
               <!-- /.col -->
               <div class="col-4">
-                <button type="submit" class="btn btn-primary btn-block">Iniciar</button>
+                <button type="submit" (click)="loginPyme()" class="btn btn-primary btn-block">Iniciar</button>
               </div>
               <!-- /.col -->
             </div>

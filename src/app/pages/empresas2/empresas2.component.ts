@@ -109,7 +109,8 @@ export class Empresas2Component implements OnInit{
     fecha_creacion: new Date(),
     modificado_por: '',
     fecha_modificacion: new Date(),
-    estado: 0
+    estado: 0,
+    rtn:''
   };
 
   contactoEditando: Contacto = {
@@ -560,7 +561,8 @@ export class Empresas2Component implements OnInit{
       fecha_creacion: empresa.empresa.fecha_creacion,
       modificado_por: empresa.empresa.modificado_por,
       fecha_modificacion: empresa.empresa.fecha_modificacion,
-      estado: empresa.empresa.estado
+      estado: empresa.empresa.estado,
+      rtn:empresa.empresa.rtn
     };
     this.indice = i;
   }

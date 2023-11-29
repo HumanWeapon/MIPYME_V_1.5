@@ -28,11 +28,14 @@ export class EmpresaService {
       return this.http.post<Empresa>(`${this.myAppUrl}${this.myApiUrl}/postEmpresa`, empresa, { headers: headers })
   }
 
+  loginPyme(nombre_empresa: Empresa): Observable<string> {
+    return this.http.post<string>(`${this.myAppUrl}${this.myApiUrl}/loginPyme`, nombre_empresa)
+  }
 
-  getEmpresa(empresa: Empresa): Observable<Empresa> {
+  getEmpresa(nombre_empresa: Empresa): Observable<Empresa> {
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.post<Empresa>(`${this.myAppUrl}${this.myApiUrl}/getEmpresa`, empresa,{ headers: headers })
+    return this.http.post<Empresa>(`${this.myAppUrl}${this.myApiUrl}/getEmpresa`, nombre_empresa,{ headers: headers })
   }
 
   getAllEmpresas(): Observable<Empresa[]> {

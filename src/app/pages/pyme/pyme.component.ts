@@ -28,7 +28,8 @@ export class PymeComponent {
     fecha_creacion: new Date(),
     modificado_por: '',
     fecha_modificacion: new Date(),
-    estado: 0
+    estado: 0,
+    rtn:''
   };
 
   newEmpresa: Empresa = {
@@ -40,7 +41,8 @@ export class PymeComponent {
     fecha_creacion: new Date(),
     modificado_por: '',
     fecha_modificacion: new Date(),
-    estado: 0
+    estado: 0,
+    rtn:''
   };
   indice: any;
 
@@ -180,7 +182,8 @@ getEstadoText(estado: number): string {
         fecha_creacion: new Date(),
         modificado_por: userLocal,
         fecha_modificacion: new Date(),
-        estado: 1
+        estado: 1,
+        rtn:''
       };
   
       this._empresasService.addEmpresa(this.newEmpresa).subscribe({
@@ -220,7 +223,8 @@ getEstadoText(estado: number): string {
       fecha_creacion: pyme.fecha_creacion,
       modificado_por: pyme.modificado_por,
       fecha_modificacion: pyme.fecha_modificacion,
-      estado: 0
+      estado: 0,
+      rtn:''
     };
     this.indice = i;
   }
