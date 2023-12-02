@@ -10,6 +10,10 @@ import { BitacoraService } from 'src/app/services/administracion/bitacora.servic
 import { ErrorService } from 'src/app/services/error.service';
 import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 import { Usuario } from 'src/app/interfaces/seguridad/usuario';
+import { Paises } from 'src/app/interfaces/empresa/paises';
+import { PaisesService } from 'src/app/services/empresa/paises.service';
+import { Contacto } from 'src/app/interfaces/contacto/contacto';
+import { ContactoService } from 'src/app/services/contacto/contacto.service';
 
 
 @Component({
@@ -55,6 +59,8 @@ export class ProductosComponent implements OnInit{
   listProductos: Productos[] = [];
   data: any;
   listCategorias: Categoria[] = [];
+  listPaises: Paises[] = [];
+  listContactos: Contacto[] = [];
 
   // We use this trigger because fetching the list of persons can be quite long,
   // thus we ensure the data is fetched before rendering
@@ -65,13 +71,15 @@ export class ProductosComponent implements OnInit{
   productoAllCategoria: any[] = []
 
   constructor(
-    private _objService: ProductosService, 
+    private _productoService: ProductosService, 
     private toastr: ToastrService,
     private _bitacoraService: BitacoraService,
     private _errorService: ErrorService,
     private _userService: UsuariosService,
-    private ngZone: NgZone,
-    private _categoriaProductos: CategoriaService
+    private _ngZone: NgZone,
+    private _categoriaProductos: CategoriaService,
+    private _paisesService: PaisesService,
+    private _contactoService: ContactoService
     ) {}
 
   
@@ -83,7 +91,7 @@ export class ProductosComponent implements OnInit{
       language: {url:'//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'},
       responsive: true
     };
-    this._objService.getAllProductos()
+    this._productoService.getAllProductos()
       .subscribe((res: any) => {
         this.listProductos= res;
         console.log(res)
@@ -94,6 +102,16 @@ export class ProductosComponent implements OnInit{
         this.listCategorias = data
         console.log(this.listCategorias)
       });
+
+      this._paisesService.getAllPaises().subscribe(data => {
+        this.listPaises = data
+        console.log(this.listPaises)
+      });
+
+      this._contactoService.getAllContactos().subscribe(data => {
+        this.listContactos = data
+        console.log(this.listContactos)
+      });
   }
 
   ngOnDestroy(): void {
@@ -103,7 +121,7 @@ export class ProductosComponent implements OnInit{
 
 
   onInputChange(event: any, field: string) {
-    if (field === 'producto' || field === 'descripcion') {
+    if (field === 'producto') {
       const inputValue = event.target.value;
       const uppercaseValue = inputValue.toUpperCase();
       event.target.value = uppercaseValue;
@@ -129,8 +147,7 @@ export class ProductosComponent implements OnInit{
         fecha_modificacion: new Date()
 
       };
-
-      this._objService.addProducto(this.nuevoProducto).subscribe({
+      this._productoService.addProducto(this.nuevoProducto).subscribe({
         next: (data) => {
           this.insertBitacora(data);
           this.toastr.success('Producto agregado con éxito')
@@ -138,9 +155,6 @@ export class ProductosComponent implements OnInit{
         error: (e: HttpErrorResponse) => {
           this._errorService.msjError(e);
         }
-      });
-      location.reload();
-      this.ngZone.run(() => {        
       });
     }
   }
@@ -168,8 +182,11 @@ export class ProductosComponent implements OnInit{
 
 
   editarProducto(cat: any) {
-    
-    this._objService.editarProducto(this.productoEditando).subscribe(data => {
+
+    this.productoEditando.producto = this.productoEditando.producto.toUpperCase();
+    this.productoEditando.descripcion = this.productoEditando.descripcion.toUpperCase();
+
+    this._productoService.editarProducto(this.productoEditando).subscribe(data => {
       this.toastr.success('Producto editado con éxito');
       if(this.productoAllCategoria == null){
         //no se puede editar el usuario
@@ -179,6 +196,8 @@ export class ProductosComponent implements OnInit{
       this.productoAllCategoria[this.indice].categoria.cat = cat.cat;
        // Recargar la página
        location.reload();
+       this._ngZone.run(() => {        
+      });
       }
 
     });
@@ -198,13 +217,13 @@ toggleFunction(obj: any, i: number) {
 }
   
 inactivarProducto(productos: Productos, i: any){
-  this._objService.inactivarProductos(productos).subscribe(data => 
+  this._productoService.inactivarProductos(productos).subscribe(data => 
     this.toastr.success('El producto: '+ productos.producto+ ' ha sido inactivado')
     );
   this.listProductos[i].estado = 2;
 }
 activarProductos(productos: Productos, i: any){
-  this._objService.activarProductos(productos).subscribe(data => 
+  this._productoService.activarProductos(productos).subscribe(data => 
   this.toastr.success('El producto: '+ productos.producto+ ' ha sido activado')
   );
   this.listProductos[i].estado = 1;
