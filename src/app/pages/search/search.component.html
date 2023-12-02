@@ -70,7 +70,7 @@
         <td class="text-center">
           <div class="btn-group">
             <button type="button" title="Contactos" (click)="obtenerIdOpProducto(producto.contacto.dni, producto.producto, producto.contacto.id_contacto)" data-toggle="modal" data-target="#modal-xl" class="btna">
-              <i class="fas fa-solid fa-address-book"></i>
+              <i class="fas fa-search"></i>
             </button>
           </div>
         </td>
@@ -100,9 +100,6 @@
                         <li class="nav-item">
                             <a class="nav-link" id="custom-tabs-four-direcciones-tab" data-toggle="pill" href="#custom-tabs-four-direcciones" role="tab" aria-controls="custom-tabs-four-direcciones" aria-selected="false">Direcciones</a>
                         </li>
-                        <li class="nav-item">
-                          <a class="nav-link" id="custom-tabs-four-paises-tab" data-toggle="pill" href="#custom-tabs-four-paises" role="tab" aria-controls="custom-tabs-four-paises" aria-selected="false">Paises</a>
-                      </li>
                         <li class="nav-item">
                             <a class="nav-link" id="custom-tabs-four-telefonos-tab" data-toggle="pill" href="#custom-tabs-four-telefonos" role="tab" aria-controls="custom-tabs-four-telefonos" aria-selected="false">Teléfonos</a>
                         </li>
@@ -146,24 +143,6 @@
                                 </tbody>
                             </table>
                         </div>
-
-                        <div class="tab-pane fade" id="custom-tabs-four-paises" role="tabpanel" aria-labelledby="custom-tabs-four-messages-tab">
-                          <p>Aqui puedes ver los paises registrados por producto</p>
-                          <table class="table table-bordered table-striped row-border hover"> 
-                              <thead>
-                              <tr>
-                                  <th>PAIS</th> 
-                                  <th>DESCRIPCIÓN</th>
-                              </tr>
-                              </thead>
-                              <tbody>
-                              <tr *ngFor="let pais of listPaises; let i = index">
-                                  <td>{{ pais.pais}}</td>
-                                  <td>{{ pais.descripcion }}</td>
-                              </tr>
-                              </tbody>
-                          </table>
-                      </div>
 
                         <div class="tab-pane fade" id="custom-tabs-four-telefonos" role="tabpanel" aria-labelledby="custom-tabs-four-messages-tab">
                           <p>Aqui puedes ver los telefonos registrados por producto</p>

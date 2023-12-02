@@ -190,7 +190,7 @@ export class SearchComponent implements OnInit {
     this.producto = producto;
     this.getDirecciones(id_contacto);
     this.getTelefonos(id_contacto);
-    this.getPaises(id_contacto);
+   // this.getPaises(id_contacto);
   }
 
   obtenerIdContacto(contac: Contacto, i: any){
