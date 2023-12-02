@@ -9,6 +9,7 @@ import { Roles } from 'src/app/interfaces/seguridad/roles';
 import { RolesService } from 'src/app/services/seguridad/roles.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { error } from 'jquery';
+import { Router } from '@angular/router';
 
 
 
@@ -74,7 +75,8 @@ export class PerfilComponent  implements OnInit{
     private _userService: UsuariosService,
     private toastr: ToastrService,
     private _rolService: RolesService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private router: Router
     ){}
 
   ngOnInit(): void {
@@ -157,18 +159,25 @@ this.botonDeshabilitado = false;
 //Fin Metodo de Ocultar/Mostrar Boton
 
 validarCambios() {
+
+  this.usuario.usuario = this.usuario.usuario.toUpperCase();
+  this.usuario.nombre_usuario = this.usuario.nombre_usuario.toUpperCase();
+  this.usuario.correo_electronico = this.usuario.correo_electronico.toUpperCase();
+
   if (this.usuario.usuario === '' || this.usuario.nombre_usuario === '' || this.usuario.correo_electronico === '') {
     this.toastr.warning('Completa todos los campos');
   } else {
     // Realiza la actualización de usuario, nombre y correo
     this._userService.editarUsuario(this.usuario).subscribe((data) => {
       if (data) {
-        this.toastr.success('Cambios guardados con éxito', 'success');
+        this.toastr.success('Cambios guardados con éxito', 'Completado');
         this.mostrarBoton = false; // Oculta el botón Cancelar
         this.mostrarEditarUsuario = true; // Muestra el botón Editar Usuario
         this.mostrarCamposContrasena = false; // Oculta los campos de contraseña
         this.botonDeshabilitado = true; // Vuelve a deshabilitar el botón de Guardar Cambios
         this.inputDeshabilitado = true; // Vuelve a deshabilitar los campos de edición
+        this.toastr.warning('Vuelve a iniciar Sesion con el nuevo Usuario', 'Atencion');
+        this.router.navigate(['/login']);
       } else {
         this.toastr.error('Error al guardar los cambios', 'error');
       }
@@ -209,6 +218,7 @@ validarPassword() {
           this.mostrarCamposContrasena = false; // Oculta los campos de contraseña
           this.botonDeshabilitado = true; // Vuelve a deshabilitar el botón de Guardar Cambios
           this.inputDeshabilitado = true; // Vuelve a deshabilitar los campos de edición
+          this.router.navigate(['/login']);
         } else {
           this.toastr.error('Error al actualizar la contraseña', 'error');
         }
@@ -279,6 +289,19 @@ guardarImagen(){
 
   
 }
+
+/*******************************************************************************/
+onInputChange(event: any, field: string) {
+  if (field === 'usuario' || field === 'nombre_usuario'|| field === 'correo') {
+    const inputValue = event.target.value;
+    const uppercaseValue = inputValue.toUpperCase();
+    event.target.value = uppercaseValue;
+  }
+}
+
+
+
+/************************************************************************************/
 
 
 }

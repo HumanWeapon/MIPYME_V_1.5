@@ -66,25 +66,25 @@
     <div class="form-group row">
     <label for="inputName" class="col-sm-2 col-form-label">Usuario</label>
     <div class="col-sm-10">
-      <input type="text" [disabled]="inputDeshabilitado" [(ngModel)]="usuario.usuario" name="usuario.usuario" class="form-control" id="formGroupExampleInput" placeholder="Usuario">
+      <input type="text" [disabled]="inputDeshabilitado" [(ngModel)]="usuario.usuario" name="usuario.usuario" class="form-control" id="formGroupExampleInput" placeholder="Usuario" (input)="onInputChange($event, 'usuario')">
     </div>
     </div>
 
     <div class="form-group row">
       <label for="inputName" class="col-sm-2 col-form-label">Nombre</label>
       <div class="col-sm-10">
-        <input type="text" [disabled]="inputDeshabilitado" [(ngModel)]="usuario.nombre_usuario" name="usuario.nombre_usuario" class="form-control" id="formGroupExampleInput" placeholder="Nombre del Usuario">
+        <input type="text" [disabled]="inputDeshabilitado" [(ngModel)]="usuario.nombre_usuario" name="usuario.nombre_usuario" class="form-control" id="formGroupExampleInput" placeholder="Nombre del Usuario" (input)="onInputChange($event, 'nombre_usuario')">
       </div>
       </div>
 
     <div class="form-group row">
     <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
     <div class="col-sm-10">
-      <input type="text" [disabled]="inputDeshabilitado" [(ngModel)]="usuario.correo_electronico" name="usuario.correo_electronico" class="form-control" id="formGroupExampleInput" placeholder="Correo Electronico">
+      <input type="text" [disabled]="inputDeshabilitado" [(ngModel)]="usuario.correo_electronico" name="usuario.correo_electronico" class="form-control" id="formGroupExampleInput" placeholder="Correo Electronico" (input)="onInputChange($event, 'correo')">
     </div>
     </div>
 
-    <div class="form-group row">
+    <div class="form-group row" *ngIf="mostrarCamposContrasena">
     <label for="inputName2" class="col-sm-2 col-form-label">Contraseña</label>
     <div class="col-sm-10">
       <input type="password" [(ngModel)]="contrasenaActual" name="contrasenaActual" [disabled]="inputDeshabilitado" class="form-control" placeholder="Contraseña actual">
