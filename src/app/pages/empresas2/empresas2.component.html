@@ -6,7 +6,7 @@
             <div class="card-header">
               <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarEmpresa">
                 <i class="fas fa-plus"></i> Nuevo</button>
-              <button type="button" class="btn btn-primary custom-print-button btn-danger" title="Generar el Reporte" data-toggle="modal" data-target="#PDFEmpresa">
+              <button type="button" class="btn btn-primary custom-print-button btn-danger" title="Generar el Reporte" data-toggle="modal" data-target="#PDFEmpresa1">
                 <i class="fas fa-file-pdf mr-2"></i>PDF</button>
             </div>
             <!-- /.card-header -->
@@ -42,7 +42,7 @@
                                 <button type="button" title="Contactos"(click)="obtenerIdOpEmpresa(empresa.contacto.dni, empresa.empresa.nombre_empresa, empresa.contacto.id_contacto)" title="Contactos" data-toggle="modal" data-toggle="modal" data-target="#modal-xl" class="btna " ><i class="fas fa-solid fa-address-book"></i></button>
                                 <button type="button" title="Editar" (click)="obtenerIdEmpresa(empresa, i)" data-toggle="modal" data-target="#abrirModalEditarEmpresa" data-toggle="modal" data-target="#abrirModalEditarEmpresa" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
                                 <button type="button" title="Eliminar" class="btna" ><i class=" fas fa-solid fa-trash" style="color: #E74C3C;"></i></button>
-                                <button type="button" [title]="empresa.empresa.estado === 1 ? 'Desactivar' : 'Activar'" class="btna " (click)="toggleFunction(empresa.empresa.estado, i, empresa.empresa.id_empresa)"><i class="fas" [ngClass]="empresa.empresa.estado === 1 ? 'fa-solid fa-lock-open' : 'fa-solid fa-lock'"></i> </button>
+                                <button type="button" [title]="empresa.empresa.estado === 1 ? 'Desactivar' : 'Activar'" class="btna " (click)="toggleFunction(empresa.empresa.estado, i, empresa.empresa.id_empresa)"><i class="fas" [ngClass]="empresa.empresa.estado === 1 ? 'fa-solid fa-lock' : 'fa-solid fa-lock-open'"></i> </button>
                             </div>
                         </td>
                       </tr>
@@ -536,3 +536,54 @@
     </div>
     </div>
     <!-- /Actualizar contacto Form -->
+
+        <!-- Form Ver PDF-->
+<div class="modal fade" id="PDFEmpresa1">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+  
+        <!-- Cabecera del modal -->
+        <div class="modal-header">
+          <h4 class="modal-title" >Reporte Empresas</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+  
+        <!-- Contenido del modal -->
+        <div class="modal-body">
+          <!-- Aquí puedes colocar tu DataTable o cualquier otro contenido que desees mostrar -->
+          <table class="table table-striped">
+            <thead class="thead-dark">
+              <tr>
+                <th>Nombre Empresa</th>
+                <th>Descripcion</th>
+                <th>Creador</th>
+                <th>Fecha</th>
+                <th>Modificado por</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let empresa of listOpEmpresa">
+                <td>{{ empresa.empresa.nombre_empresa }}</td>
+                <td>{{ empresa.empresa.descripcion }}</td>
+                <td>{{ empresa.empresa.creado_por }}</td>
+                <td>{{ empresa.empresa.fecha_creacion}}</td>
+                <td>{{ empresa.empresa.modificado_por}}</td>
+                <td>{{ empresa.empresa.fecha_modificacion}}</td>
+                <td>{{ getEstadoText(empresa.estado) }}</td>
+              </tr>
+            </tbody>
+          </table>
+  
+        <!-- Pie del modal -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary customn-print-button btn-danger" (click)="generatePDF()">
+            <i class="fas fa-file-pdf"></i>  Generar PDF</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+

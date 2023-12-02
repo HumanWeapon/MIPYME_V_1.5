@@ -78,13 +78,13 @@ const routes: Routes = [
     { path: 'empresas', component:EmpresasComponent, data:{titulo:'Empresas'}},
     { path: 'requisitos_exportacion', component:RequisitosExportacionComponent, data:{titulo: 'Requisitos de exportación'}},
     { path: 'empresas_productos', component:EmpresasProductosComponent, data:{titulo: 'Productos de empresas'}},
-    { path: 'contacto', component:ContactoComponent, data:{titulo: 'Contacto'}},
+    { path: 'contactos', component:ContactoComponent, data:{titulo: 'Contacto'}},
     { path: 'contacto_telefono', component:TelefonosComponent, data:{titulo: 'Contacto de teléfono'}},
     { path: 'contacto_direcciones', component:DireccionesComponent, data:{titulo: 'Contacto de direcciones'}},
     { path: 'empresas2', component:Empresas2Component, data:{titulo: 'Empresas'}},
 
     //ABC grado C.
-    { path: 'contactos', component:ContactoEmpresasComponent, data:{titulo: 'Contactos'}},
+    //{ path: 'contactos', component:ContactoEmpresasComponent, data:{titulo: 'Contactos'}},
 
   ]}
 ];

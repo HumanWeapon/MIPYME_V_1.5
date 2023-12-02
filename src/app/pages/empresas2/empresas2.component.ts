@@ -293,6 +293,12 @@ export class Empresas2Component implements OnInit{
     this.listContactos[i].estado = 1;
   }
   editarContacto(){
+
+    this.contactoEditando.primer_nombre = this.contactoEditando.primer_nombre.toUpperCase();
+    this.contactoEditando.segundo_nombre = this.contactoEditando.segundo_nombre.toUpperCase();
+    this.contactoEditando.primer_apellido = this.contactoEditando.primer_apellido.toUpperCase();
+    this.contactoEditando.segundo_apellido = this.contactoEditando.segundo_apellido.toUpperCase();
+    this.contactoEditando.correo = this.contactoEditando.correo.toUpperCase();
     console.log(this.contactoEditando)
     this._contactoService.editarContacto(this.contactoEditando).subscribe({
       next: (data: any) => {
@@ -450,6 +456,8 @@ export class Empresas2Component implements OnInit{
 
   editarDireccion(con: any) {
     
+    this.direccionEditando.direccion = this.direccionEditando.direccion.toUpperCase();
+    this.direccionEditando.descripcion = this.direccionEditando.descripcion.toUpperCase();
     this._objService.editarDireccion(this.direccionEditando).subscribe(data => {
       this.toastr.success('Direccion editado con éxito');
       if(this.Alltipocontacto == null){
@@ -465,16 +473,6 @@ export class Empresas2Component implements OnInit{
     });
   }
 
-
-
-
-
-
-
-
-
-
-
   generatePDF() {
 
     const {jsPDF} = require ("jspdf");
@@ -484,15 +482,15 @@ export class Empresas2Component implements OnInit{
     const headers = ['Nombre Empresa', 'Descripcion', 'Creador', 'Fecha', 'Modificado por', 'Fecha', 'Estado'];
   
     // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
-    this.listEmpresa.forEach((empresa, index) => {
+    this.listOpEmpresa.forEach((empresa, index) => {
       const row = [
-        empresa.nombre_empresa,
-        empresa.descripcion,
-        empresa.creado_por,
-        empresa.fecha_creacion,
-        empresa.modificado_por,
-        empresa.fecha_modificacion,
-        this.getEstadoText(empresa.estado) // Función para obtener el texto del estado
+        empresa.empresa.nombre_empresa,
+        empresa.empresa.descripcion,
+        empresa.empresa.creado_por,
+        empresa.empresa.fecha_creacion,
+        empresa.empresa.modificado_por,
+        empresa.empresa.fecha_modificacion,
+        this.getEstadoText(empresa.empresa.estado) // Función para obtener el texto del estado
       ];
       data.push(row);
     });
@@ -567,6 +565,8 @@ export class Empresas2Component implements OnInit{
     this.indice = i;
   }
   editarEmpresa(){
+    this.empresaEditando.nombre_empresa = this.empresaEditando.nombre_empresa.toUpperCase();
+    this.empresaEditando.descripcion = this.empresaEditando.descripcion.toUpperCase();
     this._empresaService.editarEmpresa(this.empresaEditando).subscribe(data => {
       this._toastr.success('Empresa editada con éxito', 'Éxito');
       this.listOpEmpresa[this.indice].empresa.nombre_empresa = this.empresaEditando.nombre_empresa;
@@ -653,6 +653,9 @@ obtenerIdContactoT(contactoT: ContactoTelefono, i: any){
 
 
 editarContactoTelefono(){
+
+  this.contactoTEditando.extencion= this.contactoTEditando.extencion.toUpperCase();
+  this.contactoTEditando.descripcion= this.contactoTEditando.descripcion.toUpperCase();
   this._contactoTService.editarContactoTelefono(this.contactoTEditando).subscribe(data => {
     this.toastr.success('contacto editado con éxito');
     this.listContactoT[this.indice].telefono = this.contactoTEditando.telefono;
