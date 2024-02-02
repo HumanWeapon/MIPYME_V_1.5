@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { Empresa } from 'src/app/interfaces/empresa/empresas';
 import { operacionEmpresas } from 'src/app/interfaces/empresa/operacion-empresas';
 import { environment } from 'src/enviroments/enviromet';
 
@@ -28,4 +29,11 @@ export class OperacionEmpresasService {
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
     return this.http.get<any[]>(`${this.myAppUrl}${this.myApiUrl}/getAllOpEmpresas`, { headers: headers })
   }
+
+  addEmpresa(nombre_empresa: Empresa): Observable<any> {
+    const token = localStorage.getItem('token')
+    const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
+    return this.http.post<Empresa>(`${this.myAppUrl}${this.myApiUrl}/postOpEmpresa`, nombre_empresa, { headers: headers })
+}
+
 }

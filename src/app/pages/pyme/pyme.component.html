@@ -16,6 +16,7 @@
                       <tr>
                         <th>Nombre Pyme</th>
                         <th>Descripcion</th>
+                        <th>Categoria</th>
                         <th>Creado</th>
                         <th>Fecha Creación</th>
                         <th>Modificador</th>
@@ -26,8 +27,9 @@
                     </thead>
                     <tbody>
                       <tr *ngFor="let pyme of listPymes; let i = index">
-                        <td>{{ pyme.nombre_empresa }}</td>
+                        <td>{{ pyme.nombre_pyme }}</td>
                         <td>{{ pyme.descripcion }}</td>
+                        <td>{{ pyme.categoria }}</td>
                         <td>{{ pyme.creado_por}}</td>
                         <td>{{ pyme.fecha_creacion}}</td>
                         <td>{{ pyme.modificado_por}}</td>
@@ -39,8 +41,8 @@
                         <td class="text-center">
                           <div class="btn-group">
                               <button type="button" (click)="obtenerIdPyme(pyme, i)" data-toggle="modal" title='Editar Pyme' data-target="#abrirModalEditarPyme"data-toggle="modal" data-target="#abrirModalEditarPyme" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
-                              <button type="button" (click)="toggleFunction(pyme, i)" class="btna " [title]="pyme.estado === 1 ? 'Desactivar Pyme' : 'Activar Pyme'"><i class="fas" [ngClass]="pyme.estado === 1 ? 'fa-solid fa-lock' : 'fa-solid fa-lock-open'"></i> </button>
-                              <button type="button" (click)="deletePyme(pyme.id_empresa)" class="btna"  style="color: #E74C3C;" title="Eliminar Pyme"><i class=" fas fa-solid fa-trash"></i></button>
+                              <button type="button" (click)="toggleFunction(pyme, i)" class="btna " [title]="pyme.estado === 1 ? 'Desactivar Pyme' : 'Activar Pyme'"><i class="fas" [ngClass]="pyme.estado === 1 ? 'fa-solid fa-lock-open' : 'fa-solid fa-lock'"></i> </button>
+                              <button type="button" (click)="deletePyme(pyme.id_pyme)" class="btna"  style="color: #E74C3C;" title="Eliminar Pyme"><i class=" fas fa-solid fa-trash"></i></button>
                             </div>
                         </td>
                       </tr>
@@ -76,16 +78,26 @@
         <!-- Campo: Nombre de la Pyme -->
         <div class="form-group">
           <label for="nuevaPyme">Nombre de la Pyme:</label>
-          <input type="text" [(ngModel)]="newEmpresa.nombre_empresa" name="newEmpresa.nombre_empresa" (input)="onInputChange($event, 'nombre_pyme')" class="form-control" id="nuevapyme" placeholder="Nombre de la Pyme">
+          <input type="text" [(ngModel)]="newPyme.nombre_pyme" name="newPyme.nombre_pyme" (input)="onInputChange($event, 'nombre_pyme')" class="form-control" id="nuevapyme" placeholder="Nombre de la Pyme">
         </div>
         <!-- Campo: Descripción -->
         <div class="form-group">
           <label for="nuevaDescripcion">Descripción:</label>
-          <input type="text" [(ngModel)]="newEmpresa.descripcion" name="newEmpresa.descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="descripcion" placeholder="Descripción">
+          <input type="text" [(ngModel)]="newPyme.descripcion" name="newPyme.descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="descripcion" placeholder="Descripción">
         </div>
+
+        <!-- Campo: Categoria -->
+        <div class="form-group">
+          <label for="nuevaDescripcion">Categoria:</label>
+          <select [(ngModel)]="newPyme.categoria" name="newPyme.categoria"  class="form-control" id="categoria">
+            <option value="1">Selecciona la Categoria</option>
+            <option *ngFor="let categoria of listCategorias" [ngValue]="categoria.categoria">{{ categoria.categoria }}</option>
+          </select>
+        </div>
+
         <div class="form-group">
           <label for="estado">Estado</label>
-          <select [(ngModel)]="newEmpresa.estado" name="newEmpresa.estado" class="form-control" id="estado">
+          <select [(ngModel)]="newPyme.estado" name="newPyme.estado" class="form-control" id="estado">
             <option value="0">Selecciona un Estado</option>
             <option value="1">ACTIVO</option>
             <option value="2">INACTIVO</option>           
@@ -121,12 +133,20 @@
                 <form>
                   <div class="form-group">
                       <label for="pymeEditando">Nombre de Pyme</label>
-                      <input type="text" [(ngModel)]="editEmpresa.nombre_empresa" name="pymeEditando.nombre_pyme" (input)="onInputChange($event, 'nombre_pyme')" class="form-control" id="editarNombre" placeholder="Nombre de la Pyme">
+                      <input type="text" [(ngModel)]="editPyme.nombre_pyme" name="pymeEditando.nombre_pyme" (input)="onInputChange($event, 'nombre_pyme')" class="form-control" id="editarNombre" placeholder="Nombre de la Pyme"[ngModelOptions]="{standalone: true}" (ngModelChange)="editPyme.nombre_pyme=$event.toUpperCase()">
                   </div>   
                 <div class="form-group">
                     <label for="PymeEditando">Descripción</label>
-                    <input type="text" [(ngModel)]="editEmpresa.descripcion" name="pymeEditando.descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="editarDescripcion" placeholder="Descripción">
-                </div>      
+                    <input type="text" [(ngModel)]="editPyme.descripcion" name="pymeEditando.descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="editarDescripcion" placeholder="Descripción">
+                </div>  
+                        <!-- Campo: Categoria -->
+                <div class="form-group">
+                  <label for="PymeEditando">Categoria:</label>
+                  <select [(ngModel)]="editPyme.categoria" name="pymeEditando.categoria"  class="form-control" id="categoria">
+                    <option value="0">Selecciona la Categoria</option>
+                    <option *ngFor="let categoria of listCategorias" [ngValue]="categoria.categoria">{{ categoria.categoria }}</option>
+                  </select>
+                </div>    
               </form>
             </div>
             <div class="modal-footer justify-content-between">
@@ -157,6 +177,7 @@
             <tr>
               <th>Nombre Pyme</th>
               <th>Descripcion</th>
+              <th>Categoria</th>
               <th>Creador</th>
               <th>Fecha</th>
               <th>Modificado por</th>
@@ -166,8 +187,9 @@
           </thead>
           <tbody>
             <tr *ngFor="let pyme of listPymes">
-              <td>{{ pyme.nombre_empresa }}</td>
+              <td>{{ pyme.nombre_pyme }}</td>
               <td>{{ pyme.descripcion }}</td>
+              <td>{{ pyme.categoria }}</td>
               <td>{{ pyme.creado_por}}</td>
               <td>{{ pyme.fecha_creacion}}</td>
               <td>{{ pyme.modificado_por}}</td>

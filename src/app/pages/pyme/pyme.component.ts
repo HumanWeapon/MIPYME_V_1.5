@@ -10,8 +10,9 @@ import 'jspdf-autotable';
 import { BitacoraService } from 'src/app/services/administracion/bitacora.service';
 import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 import { Usuario } from 'src/app/interfaces/seguridad/usuario';
-import { EmpresaService } from 'src/app/services/empresa/empresa.service';
-import { Empresa } from 'src/app/interfaces/empresa/empresas';
+import { PymeService } from 'src/app/services/pyme/pyme.service';
+import { Categoria } from 'src/app/interfaces/mantenimiento/categoria';
+import { CategoriaService } from 'src/app/services/mantenimiento/categoria.service';
 
 @Component({
   selector: 'app-pyme',
@@ -19,35 +20,38 @@ import { Empresa } from 'src/app/interfaces/empresa/empresas';
   styleUrls: ['./pyme.component.css']
 })
 export class PymeComponent {
-  editEmpresa: Empresa = {
-    id_empresa: 0,
-    id_tipo_empresa: 0,
-    nombre_empresa: '',
+  editPyme: Pyme = {
+    id_pyme: 0,
+    id_tipo_empresa: 1,
+    nombre_pyme: '',
+    rtn:'',
+    categoria: '',
     descripcion: '',
     creado_por: '',
     fecha_creacion: new Date(),
     modificado_por: '',
     fecha_modificacion: new Date(),
     estado: 0,
-    rtn:''
   };
 
-  newEmpresa: Empresa = {
-    id_empresa: 0,
+  newPyme: Pyme = {
+    id_pyme: 0,
     id_tipo_empresa: 1,
-    nombre_empresa: '',
+    nombre_pyme: '',
+    rtn:'',
+    categoria: '',
     descripcion: '',
     creado_por: '',
     fecha_creacion: new Date(),
     modificado_por: '',
     fecha_modificacion: new Date(),
     estado: 0,
-    rtn:''
   };
   indice: any;
 
   dtOptions: DataTables.Settings = {};
-  listPymes: Empresa[] = [];
+  listPymes: Pyme[] = [];
+  listCategorias: Categoria[] = [];
   data: any; 
 
   // We use this trigger because fetching the list of persons can be quite long,
@@ -56,23 +60,26 @@ export class PymeComponent {
 
 
   constructor(
-    private _empresasService: EmpresaService,
+    private categoriasService: CategoriaService,
     private toastr: ToastrService,
     private ngZone: NgZone,
     private _bitacoraService: BitacoraService,
     private _errorService: ErrorService,
     private _userService: UsuariosService,
+    private _pymesService: PymeService,
   ) {}
+
 
   ngOnInit(): void {
   this.getUsuario()
+  this.getCategorias();
   this.dtOptions = {
     pagingType: 'full_numbers',
     pageLength: 10,
     language: { url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json' },
     responsive: true,
   };
-    this._empresasService.getEmpresasPymes(1)
+    this._pymesService.getAllPymes()
     .subscribe({
       next: (data) =>{
         this.listPymes = data;
@@ -100,14 +107,14 @@ toggleFunction(pyme: any, i: number) {
 }
   
   activarPyme(nombre_pyme: any, i: number) {
-    this._empresasService.activarEmpresa(nombre_pyme).subscribe(data =>
+    this._pymesService.activarPyme(nombre_pyme).subscribe(data =>
       this.toastr.success('La Pyme: ' + nombre_pyme.nombre_pyme + ' ha sido activada')
     );
     this.listPymes[i].estado = 1;
   }
 
   inactivarPyme(nombre_pyme: any, i: number) {
-    this._empresasService.inactivarEmpresa(nombre_pyme).subscribe(data =>
+    this._pymesService.inactivarPyme(nombre_pyme).subscribe(data =>
       this.toastr.success('La Pyme: ' + nombre_pyme.nombre_pyme + ' ha sido inactivada')
     );
     this.listPymes[i].estado = 2;
@@ -115,26 +122,40 @@ toggleFunction(pyme: any, i: number) {
 /*****************************************************************************************************/
 
 generatePDF() {
-
-  const {jsPDF} = require ("jspdf");
- 
+  const { jsPDF } = require("jspdf");
   const doc = new jsPDF();
-  const data: any[][] =[]
-  const headers = ['Nombre Pyme', 'Descripcion', 'Creador', 'Fecha', 'Modificado por', 'Fecha', 'Estado'];
+  const data: any[][] = [];
+  const headers = ['Nombre Pyme', 'Descripcion', 'Categoria', 'Creador', 'Fecha', 'Modificado por', 'Fecha', 'Estado'];
+  const usuario = localStorage.getItem('usuario');
+
+  // Obtiene la fecha actual y la formatea
+  const fechaActual = new Date();
+  const fechaFormateada = fechaActual.toLocaleDateString();
+
+  // Título del PDF centrado
+  doc.setFontSize(16);
+  doc.text('Reporte de Pymes', 105, 10, null, null, 'center');
+
+  // Agrega una línea horizontal para separar el título y la descripción
+  doc.line(10, 20, 200, 20);
+
+  // Descripción
+  doc.setFontSize(12);
+  doc.text(`Reporte donde se muestran las Pymes registradas en la plataforma MYPIME`, 10, 30);
 
   // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
   this.listPymes.forEach((pyme, index) => {
-
     let estadoResult: any = '';
-    if(pyme.estado === 1){
-      estadoResult = 'ACTIVO'
-    }else{
-      estadoResult = 'INACTIVO'
+    if (pyme.estado === 1) {
+      estadoResult = 'ACTIVO';
+    } else {
+      estadoResult = 'INACTIVO';
     }
 
     const row = [
-      pyme.nombre_empresa,
+      pyme.nombre_pyme,
       pyme.descripcion,
+      pyme.categoria,
       pyme.creado_por,
       pyme.fecha_creacion,
       pyme.modificado_por,
@@ -144,68 +165,74 @@ generatePDF() {
     data.push(row);
   });
 
-  doc.autoTable({
+  // Genera la tabla
+  const table = doc.autoTable({
     head: [headers],
     body: data,
+    startY: 40
   });
 
+  // Calcula la posición de la línea horizontal después de la tabla
+  const tableBottomLine = table.lastAutoTable.finalY + 10;
+
+  // Agrega una línea horizontal para separar la tabla y la información del usuario
+  doc.line(10, tableBottomLine, 200, tableBottomLine);
+
+  // Fecha en la parte inferior izquierda
+  doc.setFontSize(12);
+  doc.text(`Fecha de Reporte: ${fechaFormateada}`, 10, tableBottomLine + 10);
+
+  // Usuario en la parte inferior izquierda, debajo de la fecha
+  doc.setFontSize(12);
+  doc.text(`Reporte Generado por el Usuario: ${usuario}`, 10, tableBottomLine + 20);
+
+  // Muestra el Documento
   doc.output('dataurlnewwindow', null, 'Pymes.pdf');
 }
 
-getEstadoText(estado: number): string {
-  switch (estado) {
-    case 1:
-      return 'Activo';
-    case 2:
-      return 'Inactivo';
-    case 3:
-      return 'Vencido';
-    case 4:
-      return 'Bloqueado';
-    default:
-      return 'Desconocido';
-  }
-}
 
 
 /**************************************************************/
-  agregarNuevaPyme() {
+agregarNuevaPyme() {
+  const userLocal = localStorage.getItem('usuario');
+  if (userLocal) {
+    this.newPyme = {
+      id_pyme: 0,
+      id_tipo_empresa: this.newPyme.id_tipo_empresa,
+      nombre_pyme: this.newPyme.nombre_pyme.toUpperCase(),
+      rtn:this.newPyme.rtn,
+      descripcion: this.newPyme.descripcion,
+      categoria: this.newPyme.categoria,
+      creado_por: userLocal,
+      fecha_creacion: new Date(),
+      modificado_por: userLocal,
+      fecha_modificacion: new Date(),
+      estado: this.newPyme.estado
+    };
 
-    const userLocal = localStorage.getItem('usuario');
-    if (userLocal){
-      this.newEmpresa={
-        id_empresa: 0,
-        id_tipo_empresa: this.newEmpresa.id_tipo_empresa,
-        nombre_empresa: this.newEmpresa.nombre_empresa,
-        descripcion: this.newEmpresa.descripcion,
-        creado_por: userLocal,
-        fecha_creacion: new Date(),
-        modificado_por: userLocal,
-        fecha_modificacion: new Date(),
-        estado: 1,
-        rtn:''
-      };
-  
-      this._empresasService.addEmpresa(this.newEmpresa).subscribe({
-        next: (data) => {
-          this.insertBitacora(data);
-          this.toastr.success('Pyme Agregada Exitosamente')
-        },
-        error: (e: HttpErrorResponse) => {
-          this._errorService.msjError(e);
-        }
-      });
-      location.reload();
-      this.ngZone.run(() => {        
-      });
-    }
+    this._pymesService.addPyme(this.newPyme).subscribe({
+      next: (data) => {
+        this.insertBitacora(data);
+        this.toastr.success('Pyme Agregada Exitosamente');
+
+        // Agrega la nueva Pyme a la lista
+        this.listPymes.push(data);
+        
+        // Actualiza la vista
+        this.ngZone.run(() => {});
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
   }
+}
     
 
 
 /*******************************************************************************/
   onInputChange(event: any, field: string) {
-    if (field === 'nombre_pyme' || field === 'descripcion'|| field === 'categoria') {
+    if (field === 'nombre_pyme' || field === 'categoria') {
       const inputValue = event.target.value;
       const uppercaseValue = inputValue.toUpperCase();
       event.target.value = uppercaseValue;
@@ -213,18 +240,19 @@ getEstadoText(estado: number): string {
   }
 
   /************************************************************************************/
-  obtenerIdPyme(pyme: Empresa, i: any) {
-    this.editEmpresa = {
-      id_empresa: pyme.id_empresa,
+  obtenerIdPyme(pyme: Pyme, i: any) {
+    this.editPyme = {
+      id_pyme: pyme.id_pyme,
       id_tipo_empresa: pyme.id_tipo_empresa,
-      nombre_empresa: pyme.nombre_empresa,
+      nombre_pyme: pyme.nombre_pyme,
+      rtn:pyme.rtn,
       descripcion: pyme.descripcion,
+      categoria: pyme.categoria,
       creado_por: pyme.creado_por,
       fecha_creacion: pyme.fecha_creacion,
       modificado_por: pyme.modificado_por,
       fecha_modificacion: pyme.fecha_modificacion,
-      estado: 0,
-      rtn:''
+      estado: pyme.estado
     };
     this.indice = i;
   }
@@ -232,10 +260,11 @@ getEstadoText(estado: number): string {
   /************************************************************************/
 
   editarPyme(){
-    this._empresasService.editarEmpresa(this.editEmpresa).subscribe(data => {
+    this._pymesService.editarPyme(this.editPyme).subscribe(data => {
       this.toastr.success('Pyme editada con éxito');
-      this.listPymes[this.indice].nombre_empresa = this.editEmpresa.nombre_empresa;
-      this.listPymes[this.indice].descripcion = this.editEmpresa.descripcion;
+      this.listPymes[this.indice].nombre_pyme = this.editPyme.nombre_pyme
+      this.listPymes[this.indice].descripcion = this.editPyme.descripcion
+      this.listPymes[this.indice].categoria = this.editPyme.categoria;
         // Actualizar la vista
         this.ngZone.run(() => {        
         });
@@ -243,18 +272,31 @@ getEstadoText(estado: number): string {
     });
   }
 
+  getCategorias(){
+    this.categoriasService.getAllCategorias().subscribe({
+      next: (data: any) => {
+        this.listCategorias = data;
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
+  }
+
   /***********************************************************************/
 
   deletePyme(id_pyme: number) {
     if (id_pyme !== undefined) {
-        this._empresasService.deleteEmpresa(id_pyme).subscribe(
+        this._pymesService.deletePyme(id_pyme).subscribe(
             (data) => {
                 // Elimina la pyme de la lista actual en el componente después de la eliminación
-                const index = this.listPymes.findIndex(pyme => pyme.id_empresa === id_pyme);
+                const index = this.listPymes.findIndex(pyme => pyme.id_pyme === id_pyme);
                 if (index !== -1) {
                     this.listPymes.splice(index, 1);
                 }
                 this.toastr.success('La Pyme ha sido eliminada con éxito');
+                this.ngZone.run(() => {        
+                });
             },
             (error) => {
                 console.error('Error al eliminar la Pyme', error);
@@ -339,7 +381,7 @@ getEstadoText(estado: number): string {
   insertBitacora(dataPyme: Pyme){
     const bitacora = {
       fecha: new Date(),
-      id_usuario: this.getUser.id_usuario,
+      id_usuario: this.getUser.nombre_usuario,
       id_objeto: 15,
       accion: 'INSERTAR',
       descripcion: 'SE INSERTA LA PYME CON EL ID: '+  dataPyme.id_pyme
@@ -361,7 +403,7 @@ getEstadoText(estado: number): string {
   activarBitacora(dataPyme: Pyme){
     const bitacora = {
       fecha: new Date(),
-      id_usuario: this.getUser.usuario,
+      id_usuario: this.getUser.id_usuario,
       id_objeto: 15,
       accion: 'ACTIVAR',
       descripcion: 'SE ACTIVA LA PYME CON EL ID: '+ dataPyme.id_pyme
@@ -372,7 +414,7 @@ getEstadoText(estado: number): string {
   inactivarBitacora(dataPyme: Pyme){
     const bitacora = {
       fecha: new Date(),
-      id_usuario: this.getUser.usuario,
+      id_usuario: this.getUser.id_usuario,
       id_objeto: 15,
       accion: 'INACTIVAR',
       descripcion: 'SE INACTIVA LA PYME CON EL ID: '+ dataPyme.id_pyme

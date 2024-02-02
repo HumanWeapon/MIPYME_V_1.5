@@ -2,9 +2,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { Empresa } from 'src/app/interfaces/empresa/empresas';
 import { Pyme } from 'src/app/interfaces/pyme/pyme';
-import { EmpresaService } from 'src/app/services/empresa/empresa.service';
+import { PymeService } from 'src/app/services/pyme/pyme.service';
 import { ErrorService } from 'src/app/services/error.service';
 
 
@@ -15,18 +14,19 @@ import { ErrorService } from 'src/app/services/error.service';
 })
 export class LoginPymeComponent {
 
-  nombre_empresa: string = '';
+  nombre_pyme: string = '';
   rtn: string = '';
   loading: boolean = false;
   ultimaConexion: string = '';
 
   metodoSeleccionado: string = '';
 
-  getEmpresas: Empresa = {
-    id_empresa: 0,
+  getPyme: Pyme = {
+    id_pyme: 0,
     id_tipo_empresa: 0,
-    nombre_empresa: '',
+    nombre_pyme: '',
     rtn:'',
+    categoria:'',
     descripcion: '',
     creado_por: '',
     fecha_creacion: new Date(),
@@ -38,7 +38,7 @@ export class LoginPymeComponent {
   valorEnviar: string = "";
 
   constructor(
-    private _empresaService: EmpresaService,
+    private _pymeService: PymeService,
     private _toastr: ToastrService,
     private _router: Router, 
     private _errorService: ErrorService,
@@ -49,8 +49,8 @@ export class LoginPymeComponent {
   }
 
   eliminarEspaciosBlanco() {
-    this.nombre_empresa = this.nombre_empresa.replace(/\s/g, ''); // Elimina espacios en blanco
-    this.nombre_empresa = this.nombre_empresa.toUpperCase(); // Convierte el texto a mayúsculas
+    this.nombre_pyme = this.nombre_pyme.replace(/\s/g, ''); // Elimina espacios en blanco
+    this.nombre_pyme = this.nombre_pyme.toUpperCase(); // Convierte el texto a mayúsculas
     this.rtn = this.rtn.replace(/\s/g, ''); // Elimina espacios en blanco
   }
 
@@ -60,16 +60,17 @@ export class LoginPymeComponent {
 
   loginPyme() {
     // Validamos que el usuario ingrese datos
-    if (this.nombre_empresa == '' || this.rtn == '') {
+    if (this.nombre_pyme == '' || this.rtn == '') {
       this._toastr.error('Todos los campos son obligatorios', 'Error');
       return
     }
 
     // Creamos el body
-    const empresa: Empresa = {
-      nombre_empresa: this.nombre_empresa,
+    const pyme: Pyme = {
+      nombre_pyme: this.nombre_pyme,
       rtn: this.rtn,
-      id_empresa: 0,
+      id_pyme: 0,
+      categoria:'',
       creado_por: '',
       fecha_creacion: new Date(),
       modificado_por: '',
@@ -81,19 +82,19 @@ export class LoginPymeComponent {
     
     this.loading = true;
 
-    this._empresaService.loginPyme(empresa).subscribe({
+    this._pymeService.loginPyme(pyme).subscribe({
       next: (token) => {
         localStorage.setItem('token', token);
         this.ultimaConexion = token
 
-        this.getEmpresa();
+        this.getPymes();
         
         if(this.ultimaConexion == null){
-          localStorage.setItem('firstLogin', this.nombre_empresa);
+          localStorage.setItem('firstLogin', this.nombre_pyme);
           this._router.navigate(['/firstlogin'])
         }
         else{
-          localStorage.setItem('nombre_empresa', this.nombre_empresa);
+          localStorage.setItem('nombre_pyme', this.nombre_pyme);
           localStorage.setItem('CCP',this.rtn);
           this._router.navigate(['dashboard'])
         }
@@ -106,10 +107,11 @@ export class LoginPymeComponent {
   })
 }
 
-  getEmpresa(){
-    this.getEmpresas = {
-     nombre_empresa: this.nombre_empresa,
-     id_empresa: 0,
+  getPymes(){
+    this.getPyme = {
+     nombre_pyme: this.nombre_pyme,
+     id_pyme: 0,
+     categoria:'',
      creado_por: '',
      fecha_creacion: new Date(),
      modificado_por: '',
@@ -119,11 +121,10 @@ export class LoginPymeComponent {
      id_tipo_empresa: 0,
      descripcion: ''
    }
-   this._empresaService.getEmpresa(this.getEmpresas).subscribe({
+   this._pymeService.getPyme(this.getPyme).subscribe({
      next: (data) => {
-       this.getEmpresas = data;
+       this.getPyme = data;
        console.log(data)
-       this.updateUltimaConexionUsuario()
      },
      error: (e: HttpErrorResponse) => {
        this._errorService.msjError(e);
@@ -131,25 +132,6 @@ export class LoginPymeComponent {
      }
    });
  }
-
- updateUltimaConexionUsuario(){
-  const updateEmpresa = {
-    id_empresa: this.getEmpresas.id_empresa,
-    creado_por: this.getEmpresas.creado_por,
-    fecha_creacion: this.getEmpresas.fecha_creacion,
-    modificado_por: this.getEmpresas.modificado_por,
-    fecha_modificacion: this.getEmpresas.fecha_modificacion,
-    nombre_empresa: this.getEmpresas.nombre_empresa,
-    estado: this.getEmpresas.estado,
-    rtn: this.getEmpresas.rtn,
-    fecha_ultima_conexion: new Date(),
-    id_tipo_empresa: this.getEmpresas.id_tipo_empresa,
-    descripcion: this.getEmpresas.descripcion
-  }
-  this._empresaService.editarEmpresa(updateEmpresa).subscribe(data => {
-  })
- }
-
 
 }
 

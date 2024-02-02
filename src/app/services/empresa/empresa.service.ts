@@ -22,10 +22,10 @@ export class EmpresaService {
    }
 
 
-   addEmpresa(empresa: Empresa): Observable<any> {
+   addEmpresa(nombre_empresa: Empresa): Observable<any> {
       const token = localStorage.getItem('token')
       const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-      return this.http.post<Empresa>(`${this.myAppUrl}${this.myApiUrl}/postEmpresa`, empresa, { headers: headers })
+      return this.http.post<Empresa>(`${this.myAppUrl}${this.myApiUrl}/postEmpresa`, nombre_empresa, { headers: headers })
   }
 
   loginPyme(nombre_empresa: Empresa): Observable<string> {
@@ -43,13 +43,12 @@ export class EmpresaService {
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
     return this.http.get<Empresa[]>(`${this.myAppUrl}${this.myApiUrl}/getAllEmpresas`,  { headers: headers })
   }
-  getEmpresasPymes(id_tipo_empresa: any): Observable<Empresa[]> {
+  getEmpresasPymes(id_tipo_empresa: number): Observable<Empresa[]> {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    const requestBody = { id_tipo_empresa }; // Coloca el id_tipo_empresa en un objeto
+    const requestBody = { id_tipo_empresa }; // Aquí asegúrate de que id_tipo_empresa se envía correctamente
     return this.http.post<Empresa[]>(`${this.myAppUrl}${this.myApiUrl}/getEmpresasPymes`, requestBody, { headers: headers });
   }
-  
 
   inactivarEmpresa(id_empresa: Empresa): Observable<string>{
     const token = localStorage.getItem('token')

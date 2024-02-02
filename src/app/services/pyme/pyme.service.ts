@@ -28,6 +28,9 @@ export class PymeService {
       return this.http.post<Pyme>(`${this.myAppUrl}${this.myApiUrl}/postPyme`, pyme, { headers: headers })
   }
 
+  loginPyme(nombre_pyme: Pyme): Observable<string> {
+    return this.http.post<string>(`${this.myAppUrl}${this.myApiUrl}/login`, nombre_pyme)
+  }
 
   getPyme(pyme: Pyme): Observable<Pyme> {
     const token = localStorage.getItem('token')
@@ -48,15 +51,15 @@ export class PymeService {
   }
   
 
-  inactivarPyme(pyme: Pyme): Observable<Pyme>{
+  inactivarPyme(nombre_pyme: Pyme): Observable<Pyme>{
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.post<Pyme>(`${this.myAppUrl}${this.myApiUrl}/inactivatePyme`, pyme, { headers: headers })
+    return this.http.post<Pyme>(`${this.myAppUrl}${this.myApiUrl}/inactivatePyme`, nombre_pyme, { headers: headers })
    }
-   activarPyme(pyme: Pyme): Observable<Pyme>{
+   activarPyme(nombre_pyme: Pyme): Observable<Pyme>{
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.post<Pyme>(`${this.myAppUrl}${this.myApiUrl}/activatePyme`, pyme, { headers: headers })
+    return this.http.post<Pyme>(`${this.myAppUrl}${this.myApiUrl}/activatePyme`, nombre_pyme, { headers: headers })
    }
 
    editarPymes(pyme: Pyme): Observable<any> {
@@ -64,7 +67,12 @@ export class PymeService {
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
     return this.http.post<Pyme>(`${this.myAppUrl}${this.myApiUrl}/updatePyme`, pyme, { headers: headers })
   }
-  
+
+  deletePyme(id_pyme: number): Observable<any> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.delete(`${this.myAppUrl}${this.myApiUrl}/deletePyme`,{ body: { id_pyme: id_pyme } });
+  }
 
   editarPyme(pyme: Pyme): Observable<any> {
     const token = localStorage.getItem('token')

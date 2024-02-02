@@ -19,6 +19,8 @@ import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 import { TipoDireccionService } from 'src/app/services/mantenimiento/tipoDireccion.service';
 import { DatePipe } from '@angular/common';
 import { TipoDireccion } from 'src/app/interfaces/mantenimiento/tipoDireccion';
+import { Usuario } from 'src/app/interfaces/seguridad/usuario';
+import { Route, Router } from '@angular/router';
 
 
 
@@ -76,6 +78,19 @@ export class Empresas2Component implements OnInit{
     modificado_por: '', 
     fecha_modificacion: new Date(),
     estado: 0,
+  };
+
+  nuevaEmpresa: Empresa = {
+    id_empresa: 0,
+    id_tipo_empresa:2,
+    nombre_empresa: '',
+    descripcion: '',
+    creado_por: '',
+    fecha_creacion: new Date(),
+    modificado_por: '',
+    fecha_modificacion: new Date(),
+    estado: 0,
+    rtn:''
   };
 
   //DATATABLE
@@ -181,6 +196,7 @@ export class Empresas2Component implements OnInit{
     private _datePipe: DatePipe,
     private _objService: DireccionesService,
     private _contactoTService: ContactoTService,
+    private router: Router
   ) {}
 
 
@@ -672,6 +688,148 @@ editarContactoTelefono(){
   });
 }
 
+agregarNuevaEmpresa() {
+
+  const userLocal = localStorage.getItem('usuario');
+  if (userLocal){
+    
+  this.nuevaEmpresa={
+    id_empresa: 0,
+    id_tipo_empresa:2,
+    nombre_empresa: this.nuevaEmpresa.nombre_empresa,
+    descripcion: this.nuevaEmpresa.descripcion,
+    creado_por: userLocal,
+    fecha_creacion: new Date(),
+    modificado_por: userLocal,
+    fecha_modificacion: new Date(),
+    estado: 1,
+    rtn:''
+  };
+
+  this._opEmpresasService.addEmpresa(this.nuevaEmpresa).subscribe({
+    next: (data) => {
+      this.insertBitacora(data);
+      this.toastr.success('Empresa Agregada Exitosamente')
+    },
+    error: (e: HttpErrorResponse) => {
+      this._errorService.msjError(e);
+    }
+  });
+}
+}
+
+/*************************************************************** Métodos de Bitácora ***************************************************************************/
+
+getUser: Usuario = {
+  id_usuario: 0,
+  creado_por: '',
+  fecha_creacion: new Date(),
+  modificado_por: '',
+  fecha_modificacion: new Date(),
+  usuario: '',
+  nombre_usuario: '',
+  correo_electronico: '',
+  estado_usuario: 0,
+  contrasena: '',
+  id_rol: 0,
+  fecha_ultima_conexion: new Date(),
+  primer_ingreso: new Date(),
+  fecha_vencimiento: new Date(),
+  intentos_fallidos: 0
+};
+
+getUsuario(){
+  const userlocal = localStorage.getItem('usuario');
+  if(userlocal){
+    this.getUser = {
+      usuario: userlocal,
+      id_usuario: 0,
+      creado_por: '',
+      fecha_creacion: new Date(),
+      modificado_por: '',
+      fecha_modificacion: new Date(),
+      nombre_usuario: '',
+      correo_electronico: '',
+      estado_usuario: 0,
+      contrasena: '',
+      id_rol: 0,
+      fecha_ultima_conexion: new Date(),
+      primer_ingreso: new Date(),
+      fecha_vencimiento: new Date(),
+      intentos_fallidos: 0
+  }
+ }
+
+ this._userService.getUsuario(this.getUser).subscribe({
+   next: (data) => {
+     this.getUser = data;
+   },
+   error: (e: HttpErrorResponse) => {
+     this._errorService.msjError(e);
+   }
+ });
+}
+
+insertBitacora(dataEmpresa: Empresa){
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 10,
+    accion: 'INSERTAR',
+    descripcion: 'SE INSERTA LA EMPRESA CON EL ID: '+ dataEmpresa.id_empresa
+  }
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+  })
+}
+updateBitacora(dataEmpresa: Empresa){
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.usuario,
+    id_objeto: 10,
+    accion: 'ACTUALIZAR',
+    descripcion: 'SE ACTUALIZA LA EMPRESA CON EL ID: '+ dataEmpresa.id_empresa
+  };
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+  })
+}
+activarBitacora(dataEmpresa: Empresa){
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.usuario,
+    id_objeto: 10,
+    accion: 'ACTIVAR',
+    descripcion: 'SE ACTIVA LA EMPRESA CON EL ID: '+ dataEmpresa.id_empresa
+  }
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+  })
+}
+inactivarBitacora(dataEmpresa: Empresa){
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.usuario,
+    id_objeto: 10,
+    accion: 'INACTIVAR',
+    descripcion: 'SE INACTIVA LA EMPRESA CON EL ID: '+ dataEmpresa.id_empresa
+  }
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+  })
+}
+deleteBitacora(dataEmpresa: Empresa){
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.usuario,
+    id_objeto: 10,
+    accion: 'ELIMINAR',
+    descripcion: 'SE ELIMINA LA EMPRESA CON EL ID: '+ dataEmpresa.id_empresa
+  }
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+  })
+}
+  /*************************************************************** Fin Métodos de Bitácora ***************************************************************************/
+
+  irLoginPyme() {
+    this.router.navigate(['/empresas']); // Reemplaza '/ruta-del-modulo-pyme' con la ruta real de tu módulo Pyme
+  }
 }
 
 
