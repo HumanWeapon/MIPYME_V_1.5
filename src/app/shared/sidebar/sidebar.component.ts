@@ -74,14 +74,21 @@ export class SidebarComponent implements OnInit{
       });
     }
   }
-  getPermisosRolesObjetos(){
+  getPermisosRolesObjetos() {
     this._sideBarService.getPermisosRolesObjetos(this.user.id_rol).subscribe({
       next: (data: any) => {
-        
-        if(data){
+        if (data) {
+          // Define el orden deseado
+          const ordenDeseado = ['Buscar Productos', 'Dashboard', 'Empresas', 'PYMES', 'Contactos', 'Seguridad', 'Mantenimiento'];
+  
+          // Ordena la lista según el orden deseado
+          data.sort((a: any, b: any) => {
+            return ordenDeseado.indexOf(a.objetos.descripcion) - ordenDeseado.indexOf(b.objetos.descripcion);
+          });
+  
+          // Asigna la lista ordenada a this.listMenu
           this.listMenu = data;
         }
-
       },
       error: (e: HttpErrorResponse) => {
         this._errorService.msjError(e);

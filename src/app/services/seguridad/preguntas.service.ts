@@ -71,6 +71,13 @@ export class PreguntasService {
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
     return this.http.post<Preguntas>(`${this.myAppUrl}${this.myApiUrl}/updatePregunta`, preguntas, { headers: headers })
   }
+  
+  getPreguntas(): Observable<Preguntas[]> {
+    /*  const token = localStorage.getItem('token')
+     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`) */
+    /*     return this.http.get<Product[]>(`${this.myAppUrl}${this.myApiUrl}`, { headers: headers } ) */
+    return this.http.get<Preguntas[]>(`${this.myAppUrl}${this.myApiUrl}/getAllPreguntas` )
+  }
 }
 
 

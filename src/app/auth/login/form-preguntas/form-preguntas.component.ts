@@ -86,17 +86,17 @@ export class FormPreguntasComponent implements OnInit{
     this._userService.getUsuario(user).subscribe(data =>{
       this.usuario = data; 
       this.getPreguntasUsuario(); // Llama a getPreguntasUsuario después de que usuario se inicialice
-      //this.getPreguntas(); // Llama a getPreguntas después de que usuario se inicialice
+      this.getPreguntas(); // Llama a getPreguntas después de que usuario se inicialice
     })
   }
 
-  /*getPreguntas() {
+  getPreguntas() {
     this._preguntasService.getPreguntas().subscribe(data => {
       this.listPreguntas = data; // Accede a la propiedad _pregunta del objeto de respuesta
       this.conbinarPreguntas();
       this.conbinarRespuestas();
     });
-  }*/
+  }
 
   getPreguntasUsuario() {
     const preguntasUsuario: Preguntas_Usuario = {
@@ -149,15 +149,13 @@ export class FormPreguntasComponent implements OnInit{
 
   validarRespuesta() {
 
-    /*for(const indice of this.respuestasFiltradas){
+    for(const indice of this.respuestasFiltradas){
       for(const indice2 of this.respuesta){
         const a: Preguntas_Usuario = {
           id_preguntas_usuario: indice.id_preguntas_usuario,
           id_pregunta: 0,
           id_usuario: 0,
           respuesta: '',
-          respuesta: '',
-
           creado_por: '',
           fecha_creacion: new Date(),
           modificado_por: '',
@@ -172,7 +170,7 @@ export class FormPreguntasComponent implements OnInit{
           console.error('Error al obtener preguntas de usuario:', error);
         });
       }
-    }*/
+    }
   }
 
   navigateLogin() {
