@@ -1,5 +1,6 @@
 body.login-page {
-    background-color: #fff;
+  background: rgb(255,255,255);
+  background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(254,254,254,1) 0%, rgba(233,233,233,1) 0%);
   }
   
   .h1 {
@@ -10,7 +11,8 @@ body.login-page {
     border: 2px solid #1254a1;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    max-width: 300px; /* Reducimos el ancho máximo de la tarjeta */
+    max-width: 100%; /* Reducimos el ancho máximo de la tarjeta */
+    max-height: 100%;
     margin: 0 auto; /* Centra la tarjeta en el centro de la pantalla */
   }
   
@@ -39,45 +41,6 @@ body.login-page {
   
   .form-control {
     border: 1px solid #3370e2;
-  }
-  
-  .btn-primary {
-    background-color: #3370e2;
-    border-color: #3370e2;
-    color: #fff;
-  }
-  
-  .btn-primary:hover {
-    background-color: #0074b9;
-    border-color: #000;
-    color: #fff;
-  }
-  
-  .btn-link {
-    color: #3370e2;
-  }
-  
-  /* Estilos para botones de radio */
-  .btn-group label.active {
-    background-color: #0074b9;
-    color: #fff;
-  }
-  
-  .btn-group label:not(.active) {
-    background-color: #fff;
-    color: #0074b9;
-    border: 1px solid #0074b9;
-    border-radius: 5px;
-    margin-right: 5px;
-  }
-  
-  .btn-group label:hover {
-    background-color: #0074b9;
-    color: #fff;
-  }
-  
-  .btn-group label input[type="radio"] {
-    display: none;
   }
   
   /* Estilos para pantallas más pequeñas */
