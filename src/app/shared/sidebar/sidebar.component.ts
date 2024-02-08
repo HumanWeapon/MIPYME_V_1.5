@@ -79,7 +79,7 @@ export class SidebarComponent implements OnInit{
       next: (data: any) => {
         if (data) {
           // Define el orden deseado
-          const ordenDeseado = ['Buscar Productos', 'Dashboard', 'Empresas', 'PYMES', 'Contactos', 'Seguridad', 'Mantenimiento'];
+          const ordenDeseado = ['BUSCAR PRODUCTOS', 'DASHBOARD', 'EMPRESAS', 'PYMES', 'SEGURIDAD', 'MANTENIMEINTO'];
   
           // Ordena la lista según el orden deseado
           data.sort((a: any, b: any) => {

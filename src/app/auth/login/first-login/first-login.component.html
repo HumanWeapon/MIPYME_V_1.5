@@ -15,7 +15,7 @@
                     <select [(ngModel)]="idPregunta[0]" class="form-control">https://webhint.io/docs/user-guide/hints/hint-no-inline-styles/
                       <option *ngFor="let pregunta of preguntas" [value]="pregunta.id_pregunta"> {{pregunta.pregunta}} </option>
                     </select>
-                    <input [(ngModel)]="respuesta[0]" name="respuesta[0]" class="form-control mt-1" type="text" placeholder="Ingresa tu respuesta">
+                    <input [(ngModel)]="respuesta[0]" name="respuesta[0]" class="form-control mt-1" type="text" placeholder="Ingresa tu respuesta" >
                 </div>
             </div>
             <div class="card-body">
@@ -37,7 +37,7 @@
                 </div>
             </div>
             <div class="col-4">
-                <button type="submit" (click)="PostPreguntaUsuario()" class="btn btn-primary btn-block">Sign In</button>
+                <button type="submit" (click)="PostPreguntaUsuario()" class="btn btn-primary btn-block">Enviar</button>
               </div>
             <!-- /.card-body -->
           </div>
