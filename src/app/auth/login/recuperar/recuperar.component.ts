@@ -45,23 +45,32 @@ export class RecuperarComponent implements OnInit{
     console.log(this.user.usuario);
   }
 
-  validarPassword(){
-    if(this.confirPassword === '' || this.user.contrasena === ''){
-      this.toastr.warning('Completa todos los campos');
+  validarPassword() {
+    if (this.confirPassword === '' || this.user.contrasena === '') {
+      this.toastr.warning('Por favor completa todos los campos.');
+      return;
     }
-    if(this.confirPassword !== this.user.contrasena){
-      this.toastr.warning('Las contraseñas no coinciden');
+  
+    if (this.confirPassword !== this.user.contrasena) {
+      this.toastr.warning('Las contraseñas no coinciden.');
+      return;
     }
-    else{
-      this._userService.cambiarContrasena(this.user).subscribe((data) => {
-        if(data){
-          this.toastr.success('Contraseña actualizada con éxito','success');
-          this.router.navigate(['/login'])
-        }else{
-          this.toastr.error('Completa todos los campos', 'error');
+  
+    // Validar aquí los criterios de seguridad de la contraseña si es necesario
+  
+    this._userService.cambiarContrasena(this.user).subscribe(
+      (data) => {
+        this.toastr.success('¡Contraseña actualizada con éxito!', 'Éxito');
+        this.router.navigate(['/login']);
+      },
+      (error) => {
+        if (error.status === 400) {
+          this.toastr.error('No se pudo cambiar la contraseña. Por favor, inténtalo de nuevo más tarde.', 'Error');
+        } else {
+          this.toastr.error('Se produjo un error inesperado. Por favor, inténtalo de nuevo más tarde.', 'Error');
         }
-        
-      });
-    }
+      }
+    );
   }
+  
 }

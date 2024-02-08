@@ -44,6 +44,12 @@ export class FormPreguntasComponent implements OnInit{
     this.getUsuario();
   }
 
+  convertirAMayusculas(): void {
+    this.respuesta[0] = this.respuesta[0].toUpperCase();
+    this.respuesta[1] = this.respuesta[1].toUpperCase();
+    this.respuesta[2] = this.respuesta[2].toUpperCase(); // Convierte el valor a mayúsculas
+  }
+
   conbinarPreguntas(){
     for(const item1 of this.listPreguntas){
       for(const item2 of this.listPreguntasUsuario){

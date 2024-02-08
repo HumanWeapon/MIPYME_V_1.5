@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { Preguntas_Usuario } from 'src/app/interfaces/seguridad/preguntasUsuario';
 import { Usuario } from 'src/app/interfaces/seguridad/usuario';
 import { PreguntasUsuarioService } from 'src/app/services/seguridad/preguntas-usuario.service';
@@ -18,9 +19,13 @@ export class PreguntasUsuarioComponent implements OnInit {
   id_usuario: any;
   usuario: Usuario | any = {};
   validador: boolean = false;
+  respuestaUsuarios: string[] = []; 
+  respuestasCorrectas: boolean = false;
+  mostrarBotonEnviar=false;
 
   constructor(
     private fb: FormBuilder,
+    private _toastr: ToastrService,
     private _preguntasUsuario: PreguntasUsuarioService,
     private router: Router,
     private _usuarioService: UsuariosService
@@ -69,26 +74,21 @@ export class PreguntasUsuarioComponent implements OnInit {
     this.securityForm = this.fb.group(formGroup);
   }
 
+  convertirAMayusculas(event: any) {
+    const inputValue = event.target.value;
+    event.target.value = inputValue.toUpperCase();
+  }
+
   onSubmit() {
-
     const respuestasUsuario = this.securityForm.value;
-
-    for (const key of Object.keys(respuestasUsuario)) {
-      const respuesta = respuestasUsuario[key];
-      console.log(`Pregunta ${key}: ${respuesta}`);
-      
-    }
-
-    
+    let respuestasCorrectasCount = 0; // Contador para contar las respuestas correctas
+  
     if (this.securityForm.valid) {
       // Recopila las respuestas del usuario y compáralas con las de la API
-
+  
       for (const item of this.preguntasRespuestas) {
-
         const respuestaUsuario = respuestasUsuario[item.id_pregunta]; 
-        //console.log('id_preguntas_usuario => '+ item.id_preguntas_usuario)
-        //console.log('Respuesta de usuario => '+ respuestaUsuario)
-
+  
         const body: Preguntas_Usuario = {
           id_preguntas_usuario: item.id_preguntas_usuario,
           id_pregunta: 0,
@@ -99,31 +99,34 @@ export class PreguntasUsuarioComponent implements OnInit {
           modificado_por: '',
           fecha_modificacion: new Date()
         };
-
+  
         this._preguntasUsuario.validarRespuesta(body).subscribe((data) => {
           if(data){
-            this.validador = true
+            respuestasCorrectasCount++; // Incrementa el contador si la respuesta es correcta
             console.log(data);
             console.log('Respuesta correcta');
-          }
-          else{
-          console.log(data);
-          this.validador = false
-          console.log('respuesta incorrecta');
+  
+            // Si todas las respuestas son correctas, habilita el botón "Enviar"
+            if (respuestasCorrectasCount === this.preguntasRespuestas.length) {
+              this.mostrarBotonEnviar = true;
+              this._toastr.success('Todas las respuestas son correctas', 'Respuestas Correctas');
+              this.navigateRecuperar()
+            }
+          } else {
+            console.log(data);
+            console.log('respuesta incorrecta');
+            this._toastr.error('Al menos una respuesta es incorrecta', 'Respuestas Incorrectas');
           }
         },
         (error) => {
           console.error('Error al validar respuesta:', error);
-        }
-        );
-
+          this._toastr.error('Ocurrió un error al validar las respuestas', 'Error');
+        });
+  
       }
-      if(this.validador){
-        this.navigateRecuperar();
-      }
-      
     }
   }
+  
   navigateRecuperar(){
     this.router.navigate(['/recuperar'])
   }

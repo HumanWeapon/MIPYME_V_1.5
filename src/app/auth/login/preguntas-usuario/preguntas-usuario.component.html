@@ -10,18 +10,21 @@
           <div class="card card-primary">
             <!-- /.card-header -->
             <div class="card-body">
-              <form [formGroup]="securityForm" (submit)="onSubmit()">
+              <form [formGroup]="securityForm" (submit)="onSubmit()" >
                 <div *ngFor="let pregunta of preguntasRespuestas">
                   <label>{{ pregunta.pregunta.pregunta }}</label>
                   <input
-                    type="text"
-                    [formControlName]="pregunta.id_pregunta"
-                    class="form-control mb-3"
-                    id="exampleInputBorderWidth2"
-                    placeholder="Respuesta"
-                  />
+                  type="text"
+                  [formControlName]="pregunta.id_pregunta"
+                  class="form-control mb-3"
+                  id="exampleInputBorderWidth2"
+                  placeholder="Respuesta"
+                  name="respuesta"
+                />
                 </div>
-                <button type="submit" class="btn btn-block btn-primary mt-4 mb-4">Enviar</button>
+                <button type="submit" class="btn btn-block btn-primary mt-4 mb-4">
+                  {{ mostrarBotonEnviar ? 'Enviar' : 'Validar' }}
+                </button>
               </form>
             </div>
             <!-- /.card-body -->

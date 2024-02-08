@@ -82,6 +82,7 @@ export class FirstLoginComponent {
       console.log(data)
     })
   }
+
   PostPreguntaUsuario(){
     if(this.respuesta[0] == null || this.respuesta[1] == null || this.respuesta[2] == null){
       this.toastr.warning('Responde a las preguntas seleccionadas');
@@ -89,13 +90,13 @@ export class FirstLoginComponent {
       this.toastr.warning('Hay preguntas sin seleccionar');
     }
     if(this.idPregunta[0] == this.idPregunta[1] || this.idPregunta[0] == this.idPregunta[2]){
-      this.toastr.warning('Las preguntas deben no se deben repetir');
+      this.toastr.warning('Las preguntas no se deben repetir');
     }
     if(this.idPregunta[1] == this.idPregunta[0] || this.idPregunta[1] == this.idPregunta[2]){
-      this.toastr.warning('Las preguntas deben no se deben repetir');
+      this.toastr.warning('Las preguntas no se deben repetir');
     }
     if(this.idPregunta[2] == this.idPregunta[0] || this.idPregunta[2] == this.idPregunta[1]){
-      this.toastr.warning('Las preguntas deben no se deben repetir');
+      this.toastr.warning('Las preguntas no se deben repetir');
     }
     else{
       for (let i = 0; i < this.idPregunta.length; i++) {
@@ -103,7 +104,7 @@ export class FirstLoginComponent {
           id_preguntas_usuario: this.usuario.id_usuario,
           id_pregunta: this.idPregunta[i],
           id_usuario: this.usuario.id_usuario,
-          respuesta: this.respuesta[i].toUpperCase(),
+          respuesta: this.respuesta[i],
           creado_por: this.usuario.usuario.toUpperCase(),
           fecha_creacion: new Date(),
           modificado_por: this.usuario.usuario.toUpperCase(),
@@ -114,6 +115,7 @@ export class FirstLoginComponent {
           this.router.navigate(['/recuperar'])
         });
       }
+      
       const updateUsuario = {
         id_usuario: this.usuario.id_usuario,
         creado_por: this.usuario.creado_por,
@@ -133,5 +135,11 @@ export class FirstLoginComponent {
       }
       this.updateUltimaConexionUsuario(updateUsuario);
     }
+  }
+
+  convertirAMayusculas(): void {
+    this.respuesta[0] = this.respuesta[0].toUpperCase();
+    this.respuesta[1] = this.respuesta[1].toUpperCase();
+    this.respuesta[2] = this.respuesta[2].toUpperCase(); // Convierte el valor a mayúsculas
   }
 }

@@ -16,7 +16,7 @@
                             </option>
                         </select>
                         <label>Respuesta</label>
-                        <input type="text" [(ngModel)]="respuesta[0]" name="respuesta[0]" class="form-control"/> 
+                        <input type="text" [(ngModel)]="respuesta[0]" name="respuesta[0]" class="form-control" (input)="convertirAMayusculas()"/> 
 
                         <label>Pregunta #2</label>
                         <select class="form-control" [(ngModel)]="pregunta[1]" name="pregunta[1]" (change)="selectedPregunta($event)">
@@ -25,7 +25,7 @@
                             </option>
                         </select>
                         <label>Respuesta</label>
-                        <input type="text" [(ngModel)]="respuesta[1]" name="respuesta[1]" class="form-control"/>
+                        <input type="text" [(ngModel)]="respuesta[1]" name="respuesta[1]" class="form-control" (input)="convertirAMayusculas()"/>
 
                         <label>Pregunta #3</label>
                         <select class="form-control" [(ngModel)]="pregunta[2]" name="pregunta[2]" (change)="selectedPregunta($event)">
@@ -34,7 +34,7 @@
                             </option>
                         </select>
                         <label>Respuesta</label>
-                        <input type="text" [(ngModel)]="respuesta[2]" name="respuesta[2]" class="form-control"/> <br>
+                        <input type="text" [(ngModel)]="respuesta[2]" name="respuesta[2]" class="form-control" (input)="convertirAMayusculas()"/> <br>
 
                         <div class="boton-container">
                             <button type="submit" class="boton" (click)="submitForm()">Guardar</button>
