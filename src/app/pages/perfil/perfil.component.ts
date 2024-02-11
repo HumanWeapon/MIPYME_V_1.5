@@ -35,6 +35,7 @@ export class PerfilComponent  implements OnInit{
   mostrarGuardar: boolean = true;
   public imagenes: any = [];
   public previsualizacion: string = '';
+  usuarioOriginal!: Usuario;
 /********************************************************************************************** */
 
  listRoles: Roles [] = [];
@@ -93,6 +94,7 @@ export class PerfilComponent  implements OnInit{
       this.usuario.usuario = userLocal;
       this._userService.getUsuario(this.usuario).subscribe(data => {
         this.usuario = data;
+        this.usuarioOriginal = { ...this.usuario }; // Copia del usuario original
       });
     }
   }
@@ -186,10 +188,14 @@ validarCambios() {
         this.mostrarCamposContrasena = false; // Oculta los campos de contraseña
         this.botonDeshabilitado = true; // Vuelve a deshabilitar el botón de Guardar Cambios
         this.inputDeshabilitado = true; // Vuelve a deshabilitar los campos de edición
-        this.toastr.warning('Vuelve a iniciar Sesion con el nuevo Usuario', 'Atencion');
-        this.router.navigate(['/login']);
+        
+        // Redirige a la ruta de login solo si el usuario ha sido modificado
+        if (this.usuario.usuario !== this.usuarioOriginal.usuario) {
+          this.toastr.warning('Vuelve a iniciar sesión con el nuevo Usuario', 'Atención');
+          this.router.navigate(['/login']);
+        }
       } else {
-        this.toastr.error('Error al guardar los cambios', 'error');
+        this.toastr.error('Error al guardar los cambios', 'Error');
       }
     });
   }
@@ -313,7 +319,7 @@ eliminarEspaciosBlanco(event: any, field: string) {
 convertirAMayusculas(event: any, field: string) {
   const inputValue = event.target.value;
   event.target.value = inputValue.toUpperCase();
-  }
+}
 
 /*******************************************************************************/
 onInputChange(event: any, field: string) {
