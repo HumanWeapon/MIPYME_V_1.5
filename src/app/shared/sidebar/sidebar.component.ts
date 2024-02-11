@@ -78,16 +78,9 @@ export class SidebarComponent implements OnInit{
     this._sideBarService.getPermisosRolesObjetos(this.user.id_rol).subscribe({
       next: (data: any) => {
         if (data) {
-          // Define el orden deseado
-          const ordenDeseado = ['BUSCAR PRODUCTOS', 'DASHBOARD', 'EMPRESAS', 'PYMES', 'SEGURIDAD', 'MANTENIMEINTO'];
-  
-          // Ordena la lista según el orden deseado
-          data.sort((a: any, b: any) => {
-            return ordenDeseado.indexOf(a.objetos.descripcion) - ordenDeseado.indexOf(b.objetos.descripcion);
-          });
-  
           // Asigna la lista ordenada a this.listMenu
           this.listMenu = data;
+          console.log(this.listMenu);
         }
       },
       error: (e: HttpErrorResponse) => {
