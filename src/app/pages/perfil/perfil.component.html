@@ -1,129 +1,125 @@
-  <section class="content">
-    <div class="container-fluid">
-    <div class="row">
-    <div class="col-md-3">
-    
-    <div class="card card-primary card-outline">
-    <div class="card-body box-profile">
-
-      <div class="text-center">
-        <div style="position: relative; display: inline-block;">
-          <label for="file-input" style="cursor: pointer; display: block; position: relative;" title="Cambiar Imagen">
-            <img *ngIf="!previsualizacion" 
-                 class="profile-user-img img-fluid img-circle" 
-                 src="assets/dist/img/avatar5.png" 
-                 alt="User profile picture" 
-                 style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%;">
-            <img *ngIf="previsualizacion" 
-                 [src]="previsualizacion" 
-                 alt="User profile picture" 
-                 style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%;">
-          </label>
-          <input (change)="imagenPerfil($event)" 
-                 type="file" 
-                 id="file-input" 
-                 style="display: none;" 
-                 accept="image/*">
-          <a *ngIf="mostrarBotonGuardar" (click)="guardarImagen()" class="btn" style="margin-top: 5px; padding: 3px; font-size: 12px;"><i class="fas fa-save"></i> Guardar</a>
-        </div>
-      </div>
-      
-      
-      
-      
-    <h3 class="profile-username text-center">{{ usuario.nombre_usuario }}</h3>
-    <p class="text-muted text-center">{{ rolEditando.rol }}</p>
-    <br>
-    <br>
-    <ul class="list-group list-group-unbordered mb-3">
-    <li class="list-group-item">
-    <b>Usuario</b> <a class="float-right">{{usuario.usuario}}</a>
-    </li>
-    <li class="list-group-item">
-      <b>Estado</b> <a class="float-right">{{ usuario.estado_usuario === 1 ? 'ACTIVO' : 'INACTIVO' }}</a>
-    </li>
-    <li class="list-group-item">
-    <b>Email</b> <a class="float-right">{{usuario.correo_electronico}}</a>
-    </li>
-    </ul>
-    </div>
-    </div>
-    </div>
-    
-    <div class="col-md-9">
-    <div class="card">
-
-    <div class="config">
-    <h4>Configuracion del Perfil</h4>
-    </div>
-
-    <div class="card-body">
-    <div class="tab-content">
-    <div class="tab-pane" id="activity"></div>
-    <div class="tab-pane active" id="settings">
-    <form class="form-horizontal">
-
-    <div class="form-group row">
-    <label for="inputName" class="col-sm-2 col-form-label">Usuario</label>
-    <div class="col-sm-10">
-      <input type="text" [disabled]="inputDeshabilitado" [(ngModel)]="usuario.usuario" name="usuario.usuario" class="form-control" id="formGroupExampleInput" placeholder="Usuario" (input)="onInputChange($event, 'usuario')">
-    </div>
-    </div>
-
-    <div class="form-group row">
-      <label for="inputName" class="col-sm-2 col-form-label">Nombre</label>
-      <div class="col-sm-10">
-        <input type="text" [disabled]="inputDeshabilitado" [(ngModel)]="usuario.nombre_usuario" name="usuario.nombre_usuario" class="form-control" id="formGroupExampleInput" placeholder="Nombre del Usuario" (input)="onInputChange($event, 'nombre_usuario')">
-      </div>
-      </div>
-
-    <div class="form-group row">
-    <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
-    <div class="col-sm-10">
-      <input type="text" [disabled]="inputDeshabilitado" [(ngModel)]="usuario.correo_electronico" name="usuario.correo_electronico" class="form-control" id="formGroupExampleInput" placeholder="Correo Electronico" (input)="onInputChange($event, 'correo')">
-    </div>
-    </div>
-
-    <div class="form-group row" *ngIf="mostrarCamposContrasena">
-    <label for="inputName2" class="col-sm-2 col-form-label">Contraseña</label>
-    <div class="col-sm-10">
-      <input type="password" [(ngModel)]="contrasenaActual" name="contrasenaActual" [disabled]="inputDeshabilitado" class="form-control" placeholder="Contraseña actual">
-    </div>
-    </div>
-
-    <div class="form-group row" *ngIf="mostrarCamposContrasena">
-      <label for="inputName2" class="col-sm-2 col-form-label">Nueva Contraseña</label>
-      <div class="col-sm-10">
-        <input type="password" [(ngModel)]="nuevaContrasena" name="nuevaContrasena" [disabled]="inputDeshabilitado" class="form-control" placeholder="Contraseña nueva">
-      </div>
-    </div>
-    
-    <div class="form-group row" *ngIf="mostrarCamposContrasena">
-      <label for="inputName2" class="col-sm-2 col-form-label">Repite Contraseña</label>
-      <div class="col-sm-10">
-        <input type="password" [(ngModel)]="confirmarContrasena" name="confirmarContrasena" [disabled]="inputDeshabilitado" class="form-control" placeholder="Confirmar contraseña">
-      </div>
-    </div>
-
-    <div class="form-group row">
-      <div class="offset-sm-2 col-sm-10">
-        <button type="button" class="btn btn-success btn-block" [disabled]="botonDeshabilitado" (click)="validarPassword()">
-          <i class="fa fa-check"></i> Guardar Cambios</button>
-        
-        <button type="button" class="btn btn-info btn-block" (click)="habilitarInput(); mostrarboton()" *ngIf="mostrarEditarUsuario">
-          <i class="fas fa-user-edit"></i> Editar Usuario </button>
-        
-        <button type="button" class="btn btn-danger btn-block" *ngIf="mostrarBoton" (click)="cancelarInput()">
-          <i class="fa fa-times"></i> Cancelar</button>
-      </div>
-    </div>
-    </form>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
-    </section>
+<section class="content">
+  <div class="container-fluid">
+  <div class="row">
+  <div class="col-md-3">
   
+  <div class="card card-primary card-outline">
+  <div class="card-body box-profile">
+
+    <div class="text-center">
+      <div style="position: relative; display: inline-block;">
+        <label for="file-input" style="cursor: pointer; display: block; position: relative;" title="Cambiar Imagen">
+          <img *ngIf="!previsualizacion" 
+               class="profile-user-img img-fluid img-circle" 
+               src="assets/dist/img/avatar5.png" 
+               alt="User profile picture" 
+               style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%;">
+          <img *ngIf="previsualizacion" 
+               [src]="previsualizacion" 
+               alt="User profile picture" 
+               style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%;">
+        </label>
+        <input (change)="imagenPerfil($event)" 
+               type="file" 
+               id="file-input" 
+               style="display: none;" 
+               accept="image/*">
+        <a *ngIf="mostrarBotonGuardar" (click)="guardarImagen()" class="btn" style="margin-top: 5px; padding: 3px; font-size: 12px;"><i class="fas fa-save"></i> Guardar</a>
+      </div>
+    </div>
+    
+  <h3 class="profile-username text-center">{{ usuario.nombre_usuario }}</h3>
+  <p class="text-muted text-center">{{ rolEditando.rol }}</p>
+  <br>
+  <br>
+  <ul class="list-group list-group-unbordered mb-3">
+  <li class="list-group-item">
+  <b>Usuario</b> <a class="float-right">{{usuario.usuario}}</a>
+  </li>
+  <li class="list-group-item">
+    <b>Estado</b> <a class="float-right">{{ usuario.estado_usuario === 1 ? 'ACTIVO' : 'INACTIVO' }}</a>
+  </li>
+  <li class="list-group-item">
+  <b>Email</b> <a class="float-right">{{usuario.correo_electronico}}</a>
+  </li>
+  </ul>
+  </div>
+  </div>
+  </div>
+  
+  <div class="col-md-9">
+  <div class="card">
+
+  <div class="config">
+  <h4>Configuracion del Perfil</h4>
+  </div>
+
+  <div class="card-body">
+  <div class="tab-content">
+  <div class="tab-pane" id="activity"></div>
+  <div class="tab-pane active" id="settings">
+  <form class="form-horizontal">
+
+  <div class="form-group row">
+  <label for="inputName" class="col-sm-2 col-form-label">Usuario</label>
+  <div class="col-sm-10">
+    <input type="text" [disabled]="inputDeshabilitado"  (input)="eliminarEspaciosBlanco($event, 'usuario')" [(ngModel)]="usuario.usuario" name="usuario.usuario" class="form-control" id="formGroupExampleInput" placeholder="Usuario" (input)="onInputChange($event, 'usuario')">
+  </div>
+  </div>
+
+  <div class="form-group row">
+    <label for="inputName" class="col-sm-2 col-form-label">Nombre</label>
+    <div class="col-sm-10">
+      <input type="text" [disabled]="inputDeshabilitado" (input)="convertirAMayusculas($event, 'usuario')" [(ngModel)]="usuario.nombre_usuario" name="usuario.nombre_usuario" class="form-control" id="formGroupExampleInput" placeholder="Nombre del Usuario" (input)="onInputChange($event, 'nombre_usuario')">
+    </div>
+    </div>
+
+  <div class="form-group row">
+  <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
+  <div class="col-sm-10">
+    <input type="text" [disabled]="inputDeshabilitado"  (input)="eliminarEspaciosBlanco($event, 'correo_electronico')" [(ngModel)]="usuario.correo_electronico" name="usuario.correo_electronico" class="form-control" id="formGroupExampleInput" placeholder="Correo Electronico" (input)="onInputChange($event, 'correo')">
+  </div>
+  </div>
+
+  <div class="form-group row" *ngIf="mostrarCamposContrasena">
+  <label for="inputName2" class="col-sm-2 col-form-label">Contraseña</label>
+  <div class="col-sm-10">
+    <input type="password" [(ngModel)]="contrasenaActual" name="contrasenaActual" [disabled]="inputDeshabilitado" class="form-control" placeholder="Contraseña actual">
+  </div>
+  </div>
+
+  <div class="form-group row" *ngIf="mostrarCamposContrasena">
+    <label for="inputName2" class="col-sm-2 col-form-label">Nueva Contraseña</label>
+    <div class="col-sm-10">
+      <input type="password" [(ngModel)]="nuevaContrasena" name="nuevaContrasena" [disabled]="inputDeshabilitado" class="form-control" placeholder="Contraseña nueva">
+    </div>
+  </div>
+  
+  <div class="form-group row" *ngIf="mostrarCamposContrasena">
+    <label for="inputName2" class="col-sm-2 col-form-label">Repite Contraseña</label>
+    <div class="col-sm-10">
+      <input type="password" [(ngModel)]="confirmarContrasena" name="confirmarContrasena" [disabled]="inputDeshabilitado" class="form-control" placeholder="Confirmar contraseña">
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <div class="offset-sm-2 col-sm-10">
+      <button type="button" class="btn btn-success btn-block" [disabled]="botonDeshabilitado" (click)="validarPassword()" *ngIf="mostrarBoton">
+        <i class="fa fa-check"></i> Guardar Cambios</button>
+      
+      <button type="button" class="btn btn-info btn-block" (click)="habilitarInput(); mostrarboton()" *ngIf="mostrarEditarUsuario">
+        <i class="fas fa-user-edit"></i> Editar Usuario </button>
+      
+      <button type="button" class="btn btn-danger btn-block" *ngIf="mostrarBoton" (click)="cancelarInput()">
+        <i class="fa fa-times"></i> Cancelar</button>
+    </div>
+  </div>
+  </form>
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
+  </section>

@@ -31,7 +31,8 @@ export class PerfilComponent  implements OnInit{
   mostrarBoton: boolean = false; //Oculta el Boton de Cancelar
   mostrarCamposContrasena = false;
   mostrarEditarUsuario = true;
-  mostrarBotonGuardar: boolean = false;
+  mostrarBotonGuardar: boolean = true;
+  mostrarGuardar: boolean = true;
   public imagenes: any = [];
   public previsualizacion: string = '';
 /********************************************************************************************** */
@@ -158,14 +159,23 @@ this.botonDeshabilitado = false;
 }
 //Fin Metodo de Ocultar/Mostrar Boton
 
-validarCambios() {
+// Función para validar el formato de correo electrónico
+validateEmailFormat(email: string): boolean {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
 
+
+validarCambios() {
   this.usuario.usuario = this.usuario.usuario.toUpperCase();
   this.usuario.nombre_usuario = this.usuario.nombre_usuario.toUpperCase();
   this.usuario.correo_electronico = this.usuario.correo_electronico.toUpperCase();
 
+  // Validación de correo electrónico
   if (this.usuario.usuario === '' || this.usuario.nombre_usuario === '' || this.usuario.correo_electronico === '') {
     this.toastr.warning('Completa todos los campos');
+  } else if (!this.validateEmailFormat(this.usuario.correo_electronico)) {
+    this.toastr.warning('El formato del correo electrónico no es válido');
   } else {
     // Realiza la actualización de usuario, nombre y correo
     this._userService.editarUsuario(this.usuario).subscribe((data) => {
@@ -189,6 +199,7 @@ validarCambios() {
   this.nuevaContrasena = '';
   this.confirmarContrasena = '';
 }
+
 
 validarPassword() {
   // Obtener la contraseña almacenada en el Local Storage
@@ -255,8 +266,6 @@ imagenPerfil(event: Event): any {
   }
 }
 
-
-
 extraerBase64 = async ($event: any) => {
   try {
     const unsafeImg = window.URL.createObjectURL($event);
@@ -290,6 +299,22 @@ guardarImagen(){
   
 }
 
+eliminarEspaciosBlanco(event: any, field: string) {
+
+  setTimeout(() => {
+    const inputValue = event.target.value;
+    event.target.value = inputValue.toUpperCase();
+    this.usuario.usuario = this.usuario.usuario.replace(/\s/g, ''); // Elimina espacios en blanco para el cambo usuario
+    this.usuario.contrasena= this.usuario.usuario.toUpperCase(); // Convierte el texto a mayúsculas
+    this.usuario.correo_electronico = this.usuario.correo_electronico.replace(/\s/g, ''); // Elimina espacios en blanco para el cambo contraseña
+  });
+}
+
+convertirAMayusculas(event: any, field: string) {
+  const inputValue = event.target.value;
+  event.target.value = inputValue.toUpperCase();
+  }
+
 /*******************************************************************************/
 onInputChange(event: any, field: string) {
   if (field === 'usuario' || field === 'nombre_usuario'|| field === 'correo') {
@@ -298,11 +323,7 @@ onInputChange(event: any, field: string) {
     event.target.value = uppercaseValue;
   }
 }
-
-
-
 /************************************************************************************/
 
 
 }
-
