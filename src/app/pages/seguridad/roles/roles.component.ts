@@ -83,15 +83,12 @@ export class RolesComponent implements OnInit{
     this.dtTrigger.unsubscribe();
   }
 
-
-  onInputChange(event: any, field: string) {
-    const inputValue = event.target.value;
-    if (field === 'rol') {
-      // Convierte a mayúsculas y elimina espacios en blanco
-      event.target.value = inputValue.toUpperCase().replace(/\s/g, '')
-    }
+  convertirAMayusculas(event: any, field: string) {
+    setTimeout(() => {
+      const inputValue = event.target.value;
+      event.target.value = inputValue.toUpperCase();
+    });
   }
-
   
   // Variable de estado para alternar funciones
 
@@ -118,25 +115,6 @@ activarRol(roles: Roles, i: any){
   this.listRoles[i].estado_rol = 1;
 }
 
-
-
-
-/*
-  inactivarRol(roles: Roles, i: any){
-    this._rolService.inactivarRol(roles).subscribe(data => 
-    this.toastr.success('El rol: '+ roles.rol+ ' ha sido inactivado')
-    );
-    this.listRoles[i].estado_rol = 2;
-  }
-  activarRol(roles: Roles, i: any){
-    this._rolService.activarRol(roles).subscribe(data => 
-    this.toastr.success('El rol: '+ roles.rol+ ' ha sido activado')
-    );
-    this.listRoles[i].estado_rol = 1;
-  }
-
-  */
-
   /*****************************************************************************************************/
 
 generatePDF() {
@@ -145,12 +123,11 @@ generatePDF() {
  
   const doc = new jsPDF();
   const data: any[][] =[]
-  const headers = ['ID Rol', 'Nombre del Rol', 'Estado', 'Descripcion', 'Fecha de Creacion', 'Fecha de Modificacion'];
+  const headers = ['Nombre del Rol', 'Estado', 'Descripcion', 'Fecha de Creacion', 'Fecha de Modificacion'];
 
   // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
   this.listRoles.forEach((roles, index) => {
     const row = [
-      roles.id_rol,
       roles.rol,
       this.getEstadoText(roles.estado_rol),
       roles.descripcion,
@@ -175,7 +152,7 @@ getEstadoText(estado: number): string {
     case 2:
       return 'INACTIVO';
     default:
-      return 'Desconocido';
+      return 'DESCONOCIDO';
   }
 }
 
@@ -216,7 +193,7 @@ getEstadoText(estado: number): string {
   obtenerIdRol(roles: Roles, i: any){
     this.rolEditando = {
       id_rol: roles.id_rol, 
-      rol: roles.rol , 
+      rol: roles.rol, 
       descripcion: roles.descripcion, 
       estado_rol: roles.estado_rol,
       creado_por: roles.creado_por, 
@@ -229,17 +206,17 @@ getEstadoText(estado: number): string {
 
 
   editarRol(){
+    this.rolEditando.rol = this.rolEditando.rol.toUpperCase();
+    this.rolEditando.descripcion = this.rolEditando.descripcion.toUpperCase();
+    this.rolEditando.creado_por = this.rolEditando.creado_por.toUpperCase();
+    this.rolEditando.modificado_por = this.rolEditando.modificado_por.toUpperCase();
+
     this._rolService.editarRol(this.rolEditando).subscribe(data => {
       this._toastr.success('Rol editado con éxito');
-      
+
       if(this.listRoles[this.indice].rol = this.rolEditando.rol){
         //no se puede editar el usuario
       }else{
-      // Recargar la página
-      location.reload();
-      // Actualizar la vista
-      this._ngZone.run(() => {        
-      });
     }
     });
   }

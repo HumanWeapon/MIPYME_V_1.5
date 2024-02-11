@@ -15,8 +15,7 @@
                     <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover">
                         <thead>
                           <tr>
-                            <th>CODIGO</th>
-                            <th>NOMBRE ROL</th>
+                            <th>ROL</th>
                             <th>DESCRIPCIÓN</th>
                             <th>ESTADO</th>
                             <th>FECHA CREACION</th>
@@ -26,7 +25,6 @@
                         </thead>
                         <tbody>
                           <tr *ngFor="let roles of listRoles; let i = index">
-                            <td>{{ roles.id_rol }}</td>
                             <td>{{ roles.rol }}</td>
                             <td>{{ roles.descripcion }}</td>
                             <td>
@@ -64,7 +62,7 @@
   
   
   
-  <!-- Agregar Usuario Form -->
+  <!-- Agregar Rol Form -->
   <div class="modal fade" id="agregarRol">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -78,9 +76,9 @@
                 <form (submit)="agregarNuevoRol()">
                     <div class="form-group">
                         <label for="nuevoRol">Nombre del Rol:</label>
-                        <input type="text" [(ngModel)]="nuevoRol.rol" name="nuevoRol.rol" (input)="onInputChange($event, 'rol')"class="form-control" id="nuevoRol" placeholder="Nombre del rol">
+                        <input type="text" [(ngModel)]="nuevoRol.rol" name="nuevoRol.rol" (input)="convertirAMayusculas($event, 'rol')" class="form-control" id="nuevoRol" placeholder="Nombre del rol">
                         <label for="nuevoRol">Descripción:</label>
-                        <input type="text" [(ngModel)]="nuevoRol.descripcion" name="nuevoRol.descripcion" (input)="onInputChange($event, 'rol')"class="form-control" id="nuevoRol" placeholder="Descripcion">
+                        <input type="text" [(ngModel)]="nuevoRol.descripcion" name="nuevoRol.descripcion" (input)="convertirAMayusculas($event, 'rol')"class="form-control" id="nuevoRol" placeholder="Descripcion">
                       </div>
                 </form>
             </div>
@@ -114,15 +112,15 @@
                 <form>
                   <div class="form-group">
                       <label for="rolEditando">Nombre del Rol:</label>
-                      <input type="text" [(ngModel)]="rolEditando.rol" name="rolEditando.rol" (input)="onInputChange($event, 'rol')" class="form-control" id="editarRol" placeholder="Nombre del rol">
+                      <input type="text" [(ngModel)]="rolEditando.rol" name="rolEditando.rol" (input)="convertirAMayusculas($event, 'rol')" class="form-control" id="editarRol" placeholder="Nombre del rol">
                       <label for="rolEditando">Descripcion:</label>
-                      <input type="text" [(ngModel)]="rolEditando.descripcion" name="rolEditando.descripcion" (input)="onInputChange($event, 'rol')" class="form-control" id="editarRol" placeholder="Descripcion">
+                      <input type="text" [(ngModel)]="rolEditando.descripcion" name="rolEditando.descripcion" (input)="convertirAMayusculas($event, 'rol')" class="form-control" id="editarRol" placeholder="Descripcion">
                   </div>
                 </form>
             </div>
             <div class="modal-footer justify-content-between">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-                <button type="button" (click)="editarRol()" class="btn btn-success">Guardar</button>
+                <button type="button" (click)="editarRol()" data-dismiss="modal" class="btn btn-success">Guardar</button>
             </div>
         </div>
     </div>

@@ -48,6 +48,7 @@ export class UsuariosComponent {
   }
 
   editUser: Usuario = {
+    
     id_usuario: 0,
     creado_por: '',
     fecha_creacion: new Date(),
@@ -106,11 +107,21 @@ export class UsuariosComponent {
     this.dtTrigger.unsubscribe();
   }
 
-  eliminarEspaciosBlanco() {
-    this.editUser.usuario = this.editUser.usuario.replace(/\s/g, ''); // Elimina espacios en blanco para el cambo usuario
-    this.editUser.usuario = this.editUser.usuario.toUpperCase(); // Convierte el texto a mayúsculas
-    this.editUser.contrasena = this.editUser.contrasena.replace(/\s/g, ''); // Elimina espacios en blanco para el cambo contraseña
+  eliminarEspaciosBlanco(event: any, field: string) {
+
+    setTimeout(() => {
+      const inputValue = event.target.value;
+      event.target.value = inputValue.toUpperCase();
+      this.editUser.usuario = this.editUser.usuario.replace(/\s/g, ''); // Elimina espacios en blanco para el cambo usuario
+      this.editUser.usuario = this.editUser.usuario.toUpperCase(); // Convierte el texto a mayúsculas
+      this.editUser.contrasena = this.editUser.contrasena.replace(/\s/g, ''); // Elimina espacios en blanco para el cambo contraseña
+    });
   }
+
+  convertirAMayusculas(event: any, field: string) {
+    const inputValue = event.target.value;
+    event.target.value = inputValue.toUpperCase();
+  }
   
   // Variable de estado para alternar funciones
 
@@ -237,43 +248,51 @@ getEstadoText(estado_usuario: number): string {
   }
 
   obtenerIdUsuario(usuario: Usuario, i: any) {
-    this.editUser = {
-      id_usuario: usuario.id_usuario,
-      creado_por: usuario.creado_por,
-      fecha_creacion: usuario.fecha_creacion,
-      modificado_por: usuario.modificado_por,
-      fecha_modificacion: usuario.fecha_modificacion,
-      usuario: usuario.usuario,
-      nombre_usuario: usuario.nombre_usuario,
-      correo_electronico: usuario.correo_electronico,
-      estado_usuario: usuario.estado_usuario,
-      contrasena: usuario.contrasena,
-      id_rol: usuario.id_rol,
-      fecha_ultima_conexion: usuario.fecha_ultima_conexion,
-      primer_ingreso: usuario.primer_ingreso,
-      fecha_vencimiento: usuario.fecha_vencimiento,
-      intentos_fallidos: usuario.intentos_fallidos,
-    };
+    const localuser = localStorage.getItem('usuario');
+    if(localuser){
+      this.editUser = {
+        id_usuario: usuario.id_usuario,
+        creado_por: usuario.creado_por,
+        fecha_creacion: usuario.fecha_creacion,
+        modificado_por: localuser,
+        fecha_modificacion: usuario.fecha_modificacion,
+        usuario: usuario.usuario,
+        nombre_usuario: usuario.nombre_usuario,
+        correo_electronico: usuario.correo_electronico,
+        estado_usuario: usuario.estado_usuario,
+        contrasena: usuario.contrasena,
+        id_rol: usuario.id_rol,
+        fecha_ultima_conexion: usuario.fecha_ultima_conexion,
+        primer_ingreso: usuario.primer_ingreso,
+        fecha_vencimiento: usuario.fecha_vencimiento,
+        intentos_fallidos: usuario.intentos_fallidos,
+      };
+    }
     this.indiceUser = i;
   }
 
   
-  editarUsuario(rol: any) {
+  editarUsuario(Id_Rol_Selected: any) {
+    // Busca el objeto de rol correspondiente en listRol
+    const modificador = localStorage.getItem('usuario')
+    const rolSeleccionado = this.listRol.find(rol => rol.id_rol == Id_Rol_Selected);
+    if (!rolSeleccionado) {
+      // Maneja el caso cuando no se encuentra el rol seleccionado
+      console.error('Rol no encontrado, contacta al administrador del sistema');
+      return;
+    }
+  
     this._userService.editarUsuario(this.editUser).subscribe(data => {
       this._toastr.success('Usuario editado con éxito');
-      if(this.usuariosAllRoles == null){
-        //no se puede editar el usuario
-      }else{
-      // Recargar la página
-      location.reload();
-      // Actualizar la vista
-      this._ngZone.run(() => {        
-      });
-      /*this.usuariosAllRoles[this.indiceUser].usuario = this.editUser.usuario;
-      this.usuariosAllRoles[this.indiceUser].nombre_usuario = this.editUser.nombre_usuario;
-      this.usuariosAllRoles[this.indiceUser].correo_electronico = this.editUser.correo_electronico;
-      this.usuariosAllRoles[this.indiceUser].roles.rol = this.indiceRol
-      this.usuariosAllRoles[this.indiceUser].fecha_vencimiento = this.editUser.fecha_vencimiento;*/
+      if (this.usuariosAllRoles == null) {
+        // No se puede editar el usuario
+      } else {
+        this.usuariosAllRoles[this.indiceUser].usuario = this.editUser.usuario;
+        this.usuariosAllRoles[this.indiceUser].nombre_usuario = this.editUser.nombre_usuario;
+        this.usuariosAllRoles[this.indiceUser].correo_electronico = this.editUser.correo_electronico;
+        this.usuariosAllRoles[this.indiceUser].roles = rolSeleccionado
+        this.usuariosAllRoles[this.indiceUser].fecha_vencimiento = this.editUser.fecha_vencimiento;
+        this.usuariosAllRoles[this.indiceUser].modificado_por = modificador;
       }
     });
   }

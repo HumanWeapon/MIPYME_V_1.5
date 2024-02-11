@@ -12,18 +12,19 @@
           </div>
           <!-- /.card-header -->
           <div class="card-body">
-              <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover">
+              <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover ">
                   <thead>
                     <tr>
-                      <th>Usuario</th>
-                      <th>Nombre</th>
-                      <th>Correo</th>
-                      <th>Rol</th>
-                      <th>Estado</th>
-                      <th>Creado</th>
-                      <th>Ultima Vez</th>
-                      <th>Vence</th>
-                      <th>Acciones</th>
+                      <th>USUARIO</th>
+                      <th>NOMBRE</th>
+                      <th>CORREO</th>
+                      <th>ROL</th>
+                      <th>ESTADO</th>
+                      <th>CREADOR</th>
+                      <th>MODIFICADOR</th>
+                      <th>ULTIMA VEZ</th>
+                      <th>VENCE</th>
+                      <th>ACCIONES</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -39,6 +40,7 @@
                           <ng-container *ngIf="user.estado_usuario === 3">BLOQUEADO</ng-container>
                         </td>
                       <td>{{ user.creado_por}}</td>
+                      <td>{{ user.modificado_por}}</td>
                       <td>{{ user.fecha_ultima_conexion }}</td>
                       <td>{{ user.fecha_vencimiento}}</td>
                       <td class="text-center">
@@ -77,15 +79,15 @@
         <form (ngSubmit)="agregarNuevoUsuario()">
           <div class="form-group">
             <label for="nuevoUsuario">Nombre de usuario:</label>
-            <input type="text" [(ngModel)]="newUser.usuario" name="nuevoUsuario.usuario" (input)="eliminarEspaciosBlanco()" class="form-control" id="nuevoUsuario" placeholder="Nombre de usuario">
+            <input type="text" [(ngModel)]="newUser.usuario" name="nuevoUsuario.usuario" (input)="eliminarEspaciosBlanco($event, 'usuario')" class="form-control" id="nuevoUsuario" placeholder="Nombre de usuario">
           </div>
           <div class="form-group">
             <label for="nuevoNombre">Nombre completo:</label>
-            <input type="text" [(ngModel)]="newUser.nombre_usuario" name="nuevoUsuario.nombre_usuario" (input)="eliminarEspaciosBlanco()" class="form-control" id="nuevoNombre" placeholder="Nombre completo">
+            <input type="text" [(ngModel)]="newUser.nombre_usuario" name="nuevoUsuario.nombre_usuario" (input)="convertirAMayusculas($event, 'usuario')" class="form-control" id="nuevoNombre" placeholder="Nombre completo">
           </div>
           <div class="form-group">
             <label for="nuevoCorreo">Correo Electrónico:</label>
-            <input type="text" [(ngModel)]="newUser.correo_electronico" name="nuevoUsuario.correo_electronico" (input)="eliminarEspaciosBlanco()" class="form-control" id="nuevoCorreo" placeholder="Correo Electrónico">
+            <input type="text" [(ngModel)]="newUser.correo_electronico" name="nuevoUsuario.correo_electronico" (input)="eliminarEspaciosBlanco($event, 'usuario')" class="form-control" id="nuevoCorreo" placeholder="Correo Electrónico">
           </div>
           <div class="form-group">
             <label for="nuevoRol">Rol:</label>
@@ -124,15 +126,15 @@
               <form>
                 <div class="form-group">
                     <label for="editarUsuario">Nombre de usuario:</label>
-                    <input type="text" [(ngModel)]="editUser.usuario" name="editUser.usuario" (input)="eliminarEspaciosBlanco()" class="form-control" id="editarUsuario" placeholder="Nombre de usuario">
+                    <input type="text" [(ngModel)]="editUser.usuario" name="editUser.usuario" (input)="eliminarEspaciosBlanco($event, 'usuario')" class="form-control" id="editarUsuario" placeholder="Nombre de usuario">
                 </div>
                 <div class="form-group">
                     <label for="editarNombre">Nombre completo:</label>
-                    <input type="text" [(ngModel)]="editUser.nombre_usuario" name="editUser.nombre_usuario" (input)="eliminarEspaciosBlanco()" class="form-control" id="editarNombre" placeholder="Nombre completo">
+                    <input type="text" [(ngModel)]="editUser.nombre_usuario" name="editUser.nombre_usuario" (input)="convertirAMayusculas($event, 'usuario')" class="form-control" id="editarNombre" placeholder="Nombre completo">
                 </div>
                 <div class="form-group">
                     <label for="editarCorreo">Correo Electrónico:</label>
-                    <input type="email" [(ngModel)]="editUser.correo_electronico" name="editUser.correo_electronico" (input)="eliminarEspaciosBlanco()" class="form-control" id="editarCorreo" placeholder="Correo Electrónico">
+                    <input type="email" [(ngModel)]="editUser.correo_electronico" name="editUser.correo_electronico" (input)="eliminarEspaciosBlanco($event, 'usuario')" class="form-control" id="editarCorreo" placeholder="Correo Electrónico">
                 </div>
                 <div class="form-group">
                   <label for="editarRol">Rol:</label>
@@ -147,7 +149,7 @@
                 </div>
                 <div class="modal-footer justify-content-between">
                   <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-                  <button type="submit" class="btn btn-success" (click)="editarUsuario(listRol)" data-dismiss="modal">Guardar</button>
+                  <button type="submit" class="btn btn-success" (click)="editarUsuario(editUser.id_rol)" data-dismiss="modal">Guardar</button>
               </div>
               </form>
           </div>
