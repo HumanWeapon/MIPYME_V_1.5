@@ -10,6 +10,7 @@ import { Observable, catchError } from 'rxjs';
 export class RolesService {
 
   public roles: Roles | undefined;
+  public rol: Roles | undefined;
   
   private myAppUrl: string;
   private myApiUrl: string;
@@ -50,15 +51,17 @@ export class RolesService {
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
     return this.http.get<Roles[]>(`${this.myAppUrl}${this.myApiUrl}/getAllRoles`, { headers: headers })
    }
-   inactivarRol(roles: Roles): Observable<Roles>{
+
+   inactivarRol(rol: Roles): Observable<Roles> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.post<Roles>(`${this.myAppUrl}${this.myApiUrl}/inactivateRol`, { rol }, { headers });
+  }
+  
+   activarRol(rol: Roles): Observable<Roles>{
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.post<Roles>(`${this.myAppUrl}${this.myApiUrl}/inactivateRol`, roles, { headers: headers })
-   }
-   activarRol(roles: Roles): Observable<Roles>{
-    const token = localStorage.getItem('token')
-    const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.post<Roles>(`${this.myAppUrl}${this.myApiUrl}/activateRol`, roles, { headers: headers })
+    return this.http.post<Roles>(`${this.myAppUrl}${this.myApiUrl}/activateRol`, rol, { headers: headers })
    }
   
    editarRol(roles: Roles): Observable<any> {

@@ -71,10 +71,11 @@ export class RolesComponent implements OnInit{
       responsive: true
     };
     this._rolService.getAllRoles()
-      .subscribe((res: any) => {
-        console.log(res)
-        this.listRoles = res;
+      .subscribe({
+        next: (data) =>{
+        this.listRoles = data;
         this.dtTrigger.next(0);
+        }
       });
   }
 
@@ -85,13 +86,13 @@ export class RolesComponent implements OnInit{
 
   // Variable de estado para alternar funciones
 
-toggleFunction(roles: any, i: number) {
+toggleFunction(rol: any, i: number) {
 
   // Ejecuta una función u otra según el estado
-  if (roles.estado_rol == 1 ) {
-    this.inactivarRol(roles, i); // Ejecuta la primera función
+  if (rol.estado_rol === 1 ) {
+    this.inactivarRol(rol, i); // Ejecuta la primera función
   } else {
-    this.activarRol(roles, i); // Ejecuta la segunda función
+    this.activarRol(rol, i); // Ejecuta la segunda función
   }
 }
 
@@ -102,33 +103,19 @@ convertirAMayusculas(event: any, field: string) {
   });
 }
 
+activarRol(rol: any, i: number){
+  this._rolService.activarRol(rol).subscribe(data => 
+    this._toastr.success('El Rol: '+ rol.rol+ ' ha sido activado')
+  );
+  this.listRoles[i].estado_rol = 1;
+}
 
-inactivarRol(roles: Roles, i: any){
-  const localuser = localStorage.getItem('usuario');
-  if (localuser){
-    roles.modificado_por = localuser;
-    console.log(roles)
-    this._rolService.inactivarRol(roles).subscribe(data => {
-      this._toastr.success('El Rol: '+ roles.rol+ ' ha sido inactivado')
-      console.log(data);
-    });
+inactivarRol(rol: any, i: number){
+    this._rolService.inactivarRol(rol).subscribe(data => 
+      this._toastr.success('El Rol: '+ rol.rol+ ' ha sido inactivado')
+    );
     this.listRoles[i].estado_rol = 2;
-    this.listRoles[i].modificado_por = localuser;
   }
-
-}
-activarRol(roles: Roles, i: any){
-  const localuser = localStorage.getItem('usuario');
-  if (localuser){
-    console.log(roles)
-    this._rolService.activarRol(roles).subscribe(data => {
-      console.log(data);
-      this._toastr.success('El Rol: '+ roles.rol+ ' ha sido activado')
-    });
-    this.listRoles[i].estado_rol = 1;
-    this.listRoles[i].modificado_por = localuser;
-  }
-}
 
   /*****************************************************************************************************/
 
@@ -230,11 +217,11 @@ getEstadoText(estado: number): string {
 
     this._rolService.editarRol(this.rolEditando).subscribe(data => {
       this._toastr.success('Rol editado con éxito');
-
-      if(this.listRoles[this.indice].rol = this.rolEditando.rol){
-        //no se puede editar el usuario
-      }else{
-    }
+      this.listRoles[this.indice].rol = this.rolEditando.rol
+      this.listRoles[this.indice].descripcion = this.rolEditando.descripcion
+        // Actualizar la vista
+        this._ngZone.run(() => {        
+        });
     });
   }
 
