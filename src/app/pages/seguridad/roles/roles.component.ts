@@ -83,36 +83,51 @@ export class RolesComponent implements OnInit{
     this.dtTrigger.unsubscribe();
   }
 
-  convertirAMayusculas(event: any, field: string) {
-    setTimeout(() => {
-      const inputValue = event.target.value;
-      event.target.value = inputValue.toUpperCase();
-    });
-  }
-  
   // Variable de estado para alternar funciones
 
 toggleFunction(roles: any, i: number) {
 
   // Ejecuta una función u otra según el estado
-  if (roles.estado_rol === 1 ) {
+  if (roles.estado_rol == 1 ) {
     this.inactivarRol(roles, i); // Ejecuta la primera función
   } else {
     this.activarRol(roles, i); // Ejecuta la segunda función
   }
 }
 
+convertirAMayusculas(event: any, field: string) {
+  setTimeout(() => {
+    const inputValue = event.target.value;
+    event.target.value = inputValue.toUpperCase();
+  });
+}
+
+
 inactivarRol(roles: Roles, i: any){
-  this._rolService.inactivarRol(roles).subscribe(data => 
-    this._toastr.success('El Rol: '+ roles.rol+ ' ha sido inactivado')
-    );
-  this.listRoles[i].estado_rol = 2;
+  const localuser = localStorage.getItem('usuario');
+  if (localuser){
+    roles.modificado_por = localuser;
+    console.log(roles)
+    this._rolService.inactivarRol(roles).subscribe(data => {
+      this._toastr.success('El Rol: '+ roles.rol+ ' ha sido inactivado')
+      console.log(data);
+    });
+    this.listRoles[i].estado_rol = 2;
+    this.listRoles[i].modificado_por = localuser;
+  }
+
 }
 activarRol(roles: Roles, i: any){
-  this._rolService.activarRol(roles).subscribe(data => 
-  this._toastr.success('El Rol: '+ roles.rol+ ' ha sido activado')
-  );
-  this.listRoles[i].estado_rol = 1;
+  const localuser = localStorage.getItem('usuario');
+  if (localuser){
+    console.log(roles)
+    this._rolService.activarRol(roles).subscribe(data => {
+      console.log(data);
+      this._toastr.success('El Rol: '+ roles.rol+ ' ha sido activado')
+    });
+    this.listRoles[i].estado_rol = 1;
+    this.listRoles[i].modificado_por = localuser;
+  }
 }
 
   /*****************************************************************************************************/
@@ -123,7 +138,7 @@ generatePDF() {
  
   const doc = new jsPDF();
   const data: any[][] =[]
-  const headers = ['Nombre del Rol', 'Estado', 'Descripcion', 'Fecha de Creacion', 'Fecha de Modificacion'];
+  const headers = ['Nombre del Rol', 'Estado', 'Descripcion', 'Creado por', 'Fecha de Creacion', 'Modificado por', 'Fecha de Modificacion'];
 
   // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
   this.listRoles.forEach((roles, index) => {
@@ -131,7 +146,9 @@ generatePDF() {
       roles.rol,
       this.getEstadoText(roles.estado_rol),
       roles.descripcion,
+      roles.creado_por,
       roles.fecha_creacion,
+      roles.modificado_por,
       roles.fecha_modificacion,
     ];
     data.push(row);
