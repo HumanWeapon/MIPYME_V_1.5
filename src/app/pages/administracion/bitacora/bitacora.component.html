@@ -13,18 +13,20 @@
                     <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover">
                         <thead>
                           <tr>
-                            <th>Fecha</th>
-                            <th>Usuario</th>
-                            <th>Objeto</th>
-                            <th>Acción</th>
-                            <th>Descripción</th>
+                            <th>FECHA</th>
+                            <th>USUARIO</th>
+                            <th>NOMBRE</th>
+                            <th>OBJETO</th>
+                            <th>ACCIÓN</th>
+                            <th>DESCRIPCIÓN</th>
                           </tr>
                         </thead>
                         <tbody>
                           <tr *ngFor="let item of bitacora; let i = index">
                             <td>{{ item.fecha }}</td>
-                            <td>{{ item.id_usuario }}</td>
-                            <td>{{ item.id_objeto}}</td>
+                            <td>{{ item.usuario.usuario }}</td>
+                            <td>{{ item.usuario.nombre_usuario}}</td>
+                            <td>{{ item.objeto.objeto}}</td>
                             <td>{{ item.accion }}</td>
                             <td>{{ item.descripcion}}</td>
                           </tr>

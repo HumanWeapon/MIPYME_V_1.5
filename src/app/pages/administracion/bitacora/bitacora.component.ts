@@ -14,7 +14,7 @@ import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
   styleUrls: ['./bitacora.component.css']
 })
 export class BitacoraComponent implements OnInit{
-  bitacora: Bitacora[] = [];
+  bitacora: any[] = [];
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
   
