@@ -22,7 +22,6 @@ export class ParametrosComponent implements OnInit{
   parametroEditando: Parametros = {
     id_parametro: 0,
     parametro: '',
-    estado_parametro: 0,
     valor: 0,
     id_usuario: 0,
     creado_por: '',
@@ -30,12 +29,12 @@ export class ParametrosComponent implements OnInit{
     modificado_por: '',
     fecha_modificacion: new Date(),
     alerta_busqueda: 0, 
+    estado_parametro: 0,
   };
 
   nuevoParametro: Parametros = {
     id_parametro: 0,
     parametro: '',
-    estado_parametro: 0,
     valor: 0,
     id_usuario: 0,
     creado_por: '',
@@ -43,6 +42,7 @@ export class ParametrosComponent implements OnInit{
     modificado_por: '',
     fecha_modificacion: new Date(),
     alerta_busqueda: 0, 
+    estado_parametro: 0,
     
   };
   indice: any;
@@ -75,10 +75,12 @@ export class ParametrosComponent implements OnInit{
       responsive: true
     };
     this._parametroService.getAllParametros()
-      .subscribe((res: any) => {
-        this.listParametros = res;
-        this.dtTrigger.next(null);
-      });
+      .subscribe({
+        next: (data) => {
+        this.listParametros = data;
+        this.dtTrigger.next(0);
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -95,6 +97,13 @@ export class ParametrosComponent implements OnInit{
     }
   }
 
+  convertirAMayusculas(event: any, field: string) {
+    setTimeout(() => {
+      const inputValue = event.target.value;
+      event.target.value = inputValue.toUpperCase();
+    });
+  }
+
 
 
    // Variable de estado para alternar funciones
@@ -103,23 +112,23 @@ toggleFunction(parametros: any, i: number) {
 
   // Ejecuta una función u otra según el estado
   if (parametros.estado_parametro === 1 ) {
-    this.inactivarParametro(parametros, i); // Ejecuta la primera función
+    this.inactivateParametro(parametros, i); // Ejecuta la primera función
   } else {
-    this.activarParametro(parametros, i); // Ejecuta la segunda función
+    this.activateParametro(parametros, i); // Ejecuta la segunda función
   }
 }
  
-inactivarParametro(parametros: any, i: number){
-    this._parametroService.inactivarParametro(parametros).subscribe(data => 
-    this.toastr.success('El parametro: '+ parametros.parametro+ ' ha sido inactivado')
-    );
-    this.listParametros[i].estado_parametro = 2;
-  }
-  activarParametro(parametros: any, i: number){
-    this._parametroService.activarParametro(parametros).subscribe(data => 
-    this.toastr.success('El parametro: '+ parametros.parametro+ ' ha sido activado')
+  activateParametro(parametro: any, i: number){
+    this._parametroService.activateParametro(parametro).subscribe(data => 
+    this.toastr.success('El parametro: '+ parametro.parametro+ ' ha sido activado')
     );
     this.listParametros[i].estado_parametro = 1;
+  }
+  inactivateParametro(parametro: any, i: number){
+    this._parametroService.inactivateParametro(parametro).subscribe(data => 
+    this.toastr.success('El parametro: '+ parametro.parametro+ ' ha sido inactivado')
+    );
+    this.listParametros[i].estado_parametro = 2;
   }
 
 
@@ -219,14 +228,14 @@ getEstadoText(estado: number): string {
 
 
   editarParametro(){
+    this.parametroEditando.parametro = this.parametroEditando.parametro.toUpperCase();
+    this.parametroEditando.creado_por = this.parametroEditando.creado_por.toUpperCase();
+    this.parametroEditando.modificado_por = this.parametroEditando.modificado_por.toUpperCase();
+
     this._parametroService.editarParametro(this.parametroEditando).subscribe(data => {
       this.toastr.success('Parametro editado con éxito');
       this.listParametros[this.indice].parametro = this.parametroEditando.parametro;
       this.listParametros[this.indice].valor = this.parametroEditando.valor;
-
-        // Recargar la página
-        location.reload();
-        // Actualizar la vista
         this.ngZone.run(() => {        
         });
       

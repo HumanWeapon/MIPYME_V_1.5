@@ -25,20 +25,20 @@
                           </tr>
                         </thead>
                         <tbody>
-                          <tr *ngFor="let parametro of listParametros; let i = index">
-                            <td>{{ parametro.id_parametro }}</td>
-                            <td>{{ parametro.parametro }}</td>
+                          <tr *ngFor="let parametros of listParametros; let i = index">
+                            <td>{{ parametros.id_parametro }}</td>
+                            <td>{{ parametros.parametro }}</td>
                             <td>
-                              <ng-container *ngIf="parametro.estado_parametro === 1">Activo</ng-container>
-                              <ng-container *ngIf="parametro.estado_parametro === 2">Inactivo</ng-container>
+                              <ng-container *ngIf="parametros.estado_parametro === 1">ACTIVO</ng-container>
+                              <ng-container *ngIf="parametros.estado_parametro === 2">INACTIVO</ng-container>
                             </td>
-                            <td>{{ parametro.valor }}</td>
-                            <td>{{ parametro.fecha_creacion }}</td>
-                            <td>{{ parametro.fecha_modificacion }}</td>
+                            <td>{{ parametros.valor }}</td>
+                            <td>{{ parametros.fecha_creacion }}</td>
+                            <td>{{ parametros.fecha_modificacion }}</td>
                             <td class="text-center">
                               <div class="btn-group">
-                                  <button type="button" (click)="obtenerIdParametro(parametro, i)" data-toggle="modal" data-target="#abrirModalEditarParametro"data-toggle="modal" data-target="#abrirModalEditarParametro" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
-                                  <button type="button" (click)="toggleFunction(parametro, i)" class="btna " [title]="parametro.estado_parametro === 1 ? 'Desactivar Parametro' : 'Activar Parametro'"><i class="fas" [ngClass]="parametro.estado_parametro === 1 ? 'fa-solid fa-lock' : 'fa-solid fa-lock-open'"></i> </button>
+                                  <button type="button" (click)="obtenerIdParametro(parametros, i)" data-toggle="modal" data-target="#abrirModalEditarParametro"data-toggle="modal" data-target="#abrirModalEditarParametro" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
+                                  <button type="button" (click)="toggleFunction(parametros, i)" class="btna " [title]="parametros.estado_parametro === 1 ? 'Desactivar Parametro' : 'Activar Parametro'"><i class="fas" [ngClass]="parametros.estado_parametro === 1 ? 'fa-solid fa-lock-open' : 'fa-solid fa-lock'"></i> </button>
                                 </div>
                             </td>
                           </tr>

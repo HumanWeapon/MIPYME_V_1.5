@@ -54,15 +54,15 @@ export class ParametrosService {
    }
 
 
-   inactivarParametro(parametros: Parametros): Observable<Parametros>{
+   inactivateParametro(parametro: Parametros): Observable<Parametros>{
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.post<Parametros>(`${this.myAppUrl}${this.myApiUrl}/inactivateParametro`, parametros, { headers: headers })
+    return this.http.post<Parametros>(`${this.myAppUrl}${this.myApiUrl}/inactivateParametro`, parametro, { headers: headers })
    }
-   activarParametro(parametros: Parametros): Observable<Parametros>{
+   activateParametro(parametro: Parametros): Observable<Parametros>{
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.post<Parametros>(`${this.myAppUrl}${this.myApiUrl}/activateParametro`, parametros, { headers: headers })
+    return this.http.post<Parametros>(`${this.myAppUrl}${this.myApiUrl}/activateParametro`, parametro, { headers: headers })
    }
    
   
