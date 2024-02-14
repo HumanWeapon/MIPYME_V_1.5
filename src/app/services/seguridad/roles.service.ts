@@ -10,7 +10,6 @@ import { Observable, catchError } from 'rxjs';
 export class RolesService {
 
   public roles: Roles | undefined;
-  public rol: Roles | undefined;
   
   private myAppUrl: string;
   private myApiUrl: string;
@@ -21,8 +20,6 @@ export class RolesService {
     // Asignar un valor a una clave en localStorage
 
    }
-
-
 
    addRol(roles: Roles): Observable<any> {
 
@@ -55,7 +52,7 @@ export class RolesService {
    inactivarRol(rol: Roles): Observable<Roles> {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.post<Roles>(`${this.myAppUrl}${this.myApiUrl}/inactivateRol`, { rol }, { headers });
+    return this.http.post<Roles>(`${this.myAppUrl}${this.myApiUrl}/inactivateRol`, rol , { headers });
   }
   
    activarRol(rol: Roles): Observable<Roles>{
