@@ -80,7 +80,6 @@ export class SidebarComponent implements OnInit{
         if (data) {
           // Asigna la lista ordenada a this.listMenu
           this.listMenu = data;
-          console.log(this.listMenu);
         }
       },
       error: (e: HttpErrorResponse) => {

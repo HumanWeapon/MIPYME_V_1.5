@@ -61,7 +61,6 @@ export class BitacoraComponent implements OnInit{
     },
     error => {
       this._toastr.error('Hubo un error al limpiar la bitácora');
-      console.error('Error al borrar bitácora:', error);
     }
   );
 }

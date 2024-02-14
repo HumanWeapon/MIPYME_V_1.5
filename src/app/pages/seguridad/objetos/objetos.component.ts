@@ -79,7 +79,6 @@ export class ObjetosComponent implements OnInit{
     };
     this._objService.getAllObjetos()
       .subscribe((res: any) => {
-        console.log(res);
         this.listObjetos = res;
         this.dtTrigger.next(0);
       });

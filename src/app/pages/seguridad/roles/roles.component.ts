@@ -77,6 +77,7 @@ export class RolesComponent implements OnInit{
         this.dtTrigger.next(0);
         }
       });
+    this.getUsuario();
   }
 
   ngOnDestroy(): void {
@@ -102,14 +103,17 @@ convertirAMayusculas(event: any, field: string) {
 }
   
 inactivarRol(rol: any, i: number){
-  this._rolService.inactivarRol(rol).subscribe(data => 
-  this._toastr.success('El rol: '+ rol.rol+ ' ha sido inactivado')
-  );
+  this._rolService.inactivarRol(rol).subscribe(data => {
+    this._toastr.success('El rol: '+ rol.rol+ ' ha sido inactivado');
+    this.inactivarBitacora(data);
+  });
   this.listRoles[i].estado_rol = 2;
 }
 activarRol(rol: any, i: number){
-  this._rolService.activarRol(rol).subscribe(data => 
-  this._toastr.success('El rol: '+ rol.rol+ ' ha sido activado'));
+  this._rolService.activarRol(rol).subscribe(data => {
+    this.activarBitacora(data);
+    this._toastr.success('El rol: '+ rol.rol+ ' ha sido activado')
+  });
   this.listRoles[i].estado_rol = 1;
 }
 
@@ -212,6 +216,7 @@ getEstadoText(estado: number): string {
     this.rolEditando.modificado_por = this.rolEditando.modificado_por.toUpperCase();
 
     this._rolService.editarRol(this.rolEditando).subscribe(data => {
+      this.updateBitacora(data);
       this._toastr.success('Rol editado con éxito');
       this.listRoles[this.indice].rol = this.rolEditando.rol
       this.listRoles[this.indice].descripcion = this.rolEditando.descripcion
@@ -265,6 +270,7 @@ getUsuario(){
 
  this._userService.getUsuario(this.getUser).subscribe({
    next: (data) => {
+    console.log(data);
      this.getUser = data;
    },
    error: (e: HttpErrorResponse) => {
@@ -273,57 +279,58 @@ getUsuario(){
  });
 }
 
-insertBitacora(dataUser: Usuario){
+insertBitacora(dataRoles: Roles){
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
-    id_objeto: 2,
+    id_objeto: 3,
     accion: 'INSERTAR',
-    descripcion: 'SE INSERTA EL REGISTRO CON EL ID: '+ dataUser.usuario
+    descripcion: 'SE INSERTA EL ROL: '+ dataRoles.rol
   }
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
   })
 }
-updateBitacora(dataUser: Usuario){
+updateBitacora(dataRoles: Roles){
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
-    id_objeto: 2,
-    accion: 'INSERTAR',
-    descripcion: 'SE INSERTA EL REGISTRO CON EL ID: '+ dataUser.usuario
+    id_objeto: 3,
+    accion: 'ACTUALIZA',
+    descripcion: 'SE ACTUALIZA EL ROL: '+ dataRoles.rol
   };
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
   })
 }
-activarBitacora(dataUser: Roles){
+activarBitacora(dataRoles: Roles){
+  console.log(dataRoles);
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
-    id_objeto: 2,
+    id_objeto: 3,
     accion: 'ACTIVAR',
-    descripcion: 'SE ACTIVA EL USUARIO CON EL ID: '+ dataUser.rol
+    descripcion: 'SE ACTIVA EL ROL: '+ dataRoles.rol
   }
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
   })
 }
-inactivarBitacora(dataRol: Roles){
+inactivarBitacora(dataRoles: Roles){
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
-    id_objeto: 2,
+    id_objeto: 3,
     accion: 'INACTIVAR',
-    descripcion: 'SE INACTIVA EL USUARIO CON EL ID: '+ dataRol.rol
+    descripcion: 'SE INACTIVA EL ROL: '+ dataRoles.rol
   }
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
   })
 }
-deleteBitacora(dataUser: Usuario){
+deleteBitacora(dataRoles: Roles){
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
-    id_objeto: 2,
-    accion: 'INSERTAR',
-    descripcion: 'SE INSERTA EL REGISTRO CON EL ID: '+ dataUser.usuario
+    id_objeto: 3,
+    accion: 'ELIMINAR',
+    descripcion: 'SE ELIMINA EL ROL: '+ dataRoles.rol
   }
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
   })

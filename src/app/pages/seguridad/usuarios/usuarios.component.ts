@@ -239,7 +239,6 @@ getEstadoText(estado_usuario: number): string {
       this._userService.addUsuario(this.newUser).subscribe({
         next: (data) => {
           this.insertBitacora(data);
-          console.log(data);
         },
         error: (e: HttpErrorResponse) => {
           this._errorService.msjError(e);
@@ -279,7 +278,6 @@ getEstadoText(estado_usuario: number): string {
     const rolSeleccionado = this.listRol.find(rol => rol.id_rol == Id_Rol_Selected);
     if (!rolSeleccionado) {
       // Maneja el caso cuando no se encuentra el rol seleccionado
-      console.error('Rol no encontrado, contacta al administrador del sistema');
       return;
     }
   

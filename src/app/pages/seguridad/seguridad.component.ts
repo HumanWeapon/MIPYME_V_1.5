@@ -34,7 +34,6 @@ export class SeguridadComponent implements OnInit {
     this._seguridadService.getAllObjetosMenu(this.tipo_objeto, this.estado_objeto).subscribe({
       next: (data: any) => {
         this.listObjetos = data;
-        console.log(this.listObjetos)
       },
       error: (e: HttpErrorResponse) => {
         this._errorService.msjError(e);
