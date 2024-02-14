@@ -283,6 +283,7 @@ getEstadoText(estado_usuario: number): string {
     }
   
     this._userService.editarUsuario(this.editUser).subscribe(data => {
+      this.updateBitacora(data)
       this._toastr.success('Usuario editado con éxito');
       if (this.usuariosAllRoles == null) {
         // No se puede editar el usuario
@@ -353,9 +354,9 @@ getEstadoText(estado_usuario: number): string {
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
-      id_objeto: 2,
+      id_objeto: 1,
       accion: 'INSERTAR',
-      descripcion: 'SE INSERTA EL REGISTRO CON EL ID: '+ dataUser.id_usuario
+      descripcion: 'AGREGA NUEVO USUARIO: '+ dataUser.usuario
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
@@ -364,9 +365,9 @@ getEstadoText(estado_usuario: number): string {
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
-      id_objeto: 2,
-      accion: 'INSERTAR',
-      descripcion: 'SE INSERTA EL REGISTRO CON EL ID: '+ dataUser.id_usuario
+      id_objeto: 1,
+      accion: 'ACTUALIZAR',
+      descripcion: 'ACTUALIZA EL USUARIO '+ dataUser.usuario
     };
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
@@ -375,9 +376,9 @@ getEstadoText(estado_usuario: number): string {
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
-      id_objeto: 2,
+      id_objeto: 1,
       accion: 'ACTIVAR',
-      descripcion: 'SE ACTIVA EL USUARIO CON EL ID: '+ dataUser.id_usuario
+      descripcion: 'ACTIVA EL USUARIO: '+ dataUser.usuario
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
@@ -386,9 +387,9 @@ getEstadoText(estado_usuario: number): string {
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
-      id_objeto: 2,
+      id_objeto: 1,
       accion: 'INACTIVAR',
-      descripcion: 'SE INACTIVA EL USUARIO CON EL ID: '+ dataUser.id_usuario
+      descripcion: 'INACTIVA EL USUARIO: '+ dataUser.usuario
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
@@ -397,9 +398,9 @@ getEstadoText(estado_usuario: number): string {
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
-      id_objeto: 2,
-      accion: 'INSERTAR',
-      descripcion: 'SE INSERTA EL REGISTRO CON EL ID: '+ dataUser.id_usuario
+      id_objeto: 1,
+      accion: 'ELIMINAR',
+      descripcion: 'SE ELIMINA EL REGISTRO CON EL ID: '+ dataUser.id_usuario
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
