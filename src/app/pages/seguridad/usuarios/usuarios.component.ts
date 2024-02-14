@@ -353,7 +353,7 @@ getEstadoText(estado_usuario: number): string {
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
-      id_objeto: 2,
+      id_objeto: 1,
       accion: 'INSERTAR',
       descripcion: 'SE INSERTA EL REGISTRO CON EL ID: '+ dataUser.id_usuario
     }
@@ -364,9 +364,9 @@ getEstadoText(estado_usuario: number): string {
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
-      id_objeto: 2,
-      accion: 'INSERTAR',
-      descripcion: 'SE INSERTA EL REGISTRO CON EL ID: '+ dataUser.id_usuario
+      id_objeto: 1,
+      accion: 'ACTUALIZAR',
+      descripcion: 'SE ACTUALIZA EL REGISTRO CON EL ID: '+ dataUser.id_usuario
     };
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
@@ -375,7 +375,7 @@ getEstadoText(estado_usuario: number): string {
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
-      id_objeto: 2,
+      id_objeto: 1,
       accion: 'ACTIVAR',
       descripcion: 'SE ACTIVA EL USUARIO CON EL ID: '+ dataUser.id_usuario
     }
@@ -386,7 +386,7 @@ getEstadoText(estado_usuario: number): string {
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
-      id_objeto: 2,
+      id_objeto: 1,
       accion: 'INACTIVAR',
       descripcion: 'SE INACTIVA EL USUARIO CON EL ID: '+ dataUser.id_usuario
     }
@@ -397,9 +397,9 @@ getEstadoText(estado_usuario: number): string {
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
-      id_objeto: 2,
-      accion: 'INSERTAR',
-      descripcion: 'SE INSERTA EL REGISTRO CON EL ID: '+ dataUser.id_usuario
+      id_objeto: 1,
+      accion: 'ELIMINAR',
+      descripcion: 'SE ELIMINA EL REGISTRO CON EL ID: '+ dataUser.id_usuario
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
