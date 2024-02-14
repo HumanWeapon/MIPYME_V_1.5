@@ -17,31 +17,30 @@
                           <tr>
                             <th>ROL</th>
                             <th>DESCRIPCIÓN</th>
-                            <th>ESTADO</th>
                             <th>CREADOR</th>
                             <th>FECHA CREACION</th>
                             <th>MODIFICADOR</th>
                             <th>FECHA MODIFICACION</th>
+                            <th>ESTADO</th>
                             <th>ACCIONES</th>
                           </tr>
                         </thead>
                         <tbody>
-                          <tr *ngFor="let rol of listRoles; let i = index">
-                            <td>{{ rol.rol }}</td>
-                            <td>{{ rol.descripcion }}</td>
+                          <tr *ngFor="let roles of listRoles; let i = index">
+                            <td>{{ roles.rol }}</td>
+                            <td>{{ roles.descripcion }}</td>
+                            <td>{{ roles.creado_por }}</td>
+                            <td>{{ roles.fecha_creacion }}</td>
+                            <td>{{ roles.modificado_por }}</td>
+                            <td>{{ roles.fecha_modificacion }}</td>
                             <td>
-                                <ng-container *ngIf="rol.estado_rol == 1">ACTIVO</ng-container>
-                                <ng-container *ngIf="rol.estado_rol == 2">INACTIVO</ng-container>
-                              </td>
-                            <td>{{ rol.creado_por }}</td>
-                            <td>{{ rol.fecha_creacion }}</td>
-                            <td>{{ rol.modificado_por }}</td>
-                            <td>{{ rol.fecha_modificacion }}</td>
-                           
+                              <ng-container *ngIf="roles.estado_rol == 1">ACTIVO</ng-container>
+                              <ng-container *ngIf="roles.estado_rol == 2">INACTIVO</ng-container>
+                            </td>
                             <td class="text-center">
                               <div class="btn-group">
-                                  <button type="button" (click)="obtenerIdRol(rol, i)"  title="Editar Rol" data-toggle="modal" data-target="#abrirModalEditarRol"data-toggle="modal" data-target="#abrirModalEditarRol" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
-                                  <button type="button" (click)="toggleFunction(rol, i)" class="btna " [title]="rol.estado_rol === 1 ? 'Desactivar Rol' : 'Activar Rol'"><i class="fas" [ngClass]="rol.estado_rol === 1 ? 'fa-solid fa-lock-open' : 'fa-solid fa-lock'"></i> </button>
+                                  <button type="button" (click)="obtenerIdRol(roles, i)"  title="Editar Rol" data-toggle="modal" data-target="#abrirModalEditarRol"data-toggle="modal" data-target="#abrirModalEditarRol" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
+                                  <button type="button" (click)="toggleFunction(roles, i)" class="btna " [title]="roles.estado_rol == 1 ? 'Desactivar Rol' : 'Activar Rol'"><i class="fas" [ngClass]="roles.estado_rol == 1 ? 'fa-solid fa-lock-open' : 'fa-solid fa-lock'"></i> </button>
                                 </div>
                             </td>
                           </tr>

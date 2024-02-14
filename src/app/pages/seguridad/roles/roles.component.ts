@@ -86,15 +86,13 @@ export class RolesComponent implements OnInit{
 
   // Variable de estado para alternar funciones
 
-toggleFunction(rol: any, i: number) {
-
-  // Ejecuta una función u otra según el estado
-  if (rol.estado_rol === 1 ) {
-    this.inactivarRol(rol, i); // Ejecuta la primera función
-  } else {
-    this.activarRol(rol, i); // Ejecuta la segunda función
+  toggleFunction(roles: any, i: number) {
+    if (roles.estado_rol == 1) {
+      this.inactivarRol(roles, i);
+    } else {
+      this.activarRol(roles, i);
+    }
   }
-}
 
 convertirAMayusculas(event: any, field: string) {
   setTimeout(() => {
@@ -102,20 +100,18 @@ convertirAMayusculas(event: any, field: string) {
     event.target.value = inputValue.toUpperCase();
   });
 }
-
+  
+inactivarRol(rol: any, i: number){
+  this._rolService.inactivarRol(rol).subscribe(data => 
+  this._toastr.success('El rol: '+ rol.rol+ ' ha sido inactivado')
+  );
+  this.listRoles[i].estado_rol = 2;
+}
 activarRol(rol: any, i: number){
   this._rolService.activarRol(rol).subscribe(data => 
-    this._toastr.success('El Rol: '+ rol.rol+ ' ha sido activado')
-  );
+  this._toastr.success('El rol: '+ rol.rol+ ' ha sido activado'));
   this.listRoles[i].estado_rol = 1;
 }
-
-inactivarRol(rol: any, i: number){
-    this._rolService.inactivarRol(rol).subscribe(data => 
-      this._toastr.success('El Rol: '+ rol.rol+ ' ha sido inactivado')
-    );
-    this.listRoles[i].estado_rol = 2;
-  }
 
   /*****************************************************************************************************/
 
