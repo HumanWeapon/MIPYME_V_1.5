@@ -111,8 +111,9 @@ inactivarRol(rol: any, i: number){
 }
 activarRol(rol: any, i: number){
   this._rolService.activarRol(rol).subscribe(data => {
+    this._toastr.success('El rol: '+ rol.rol+ ' ha sido activado');
     this.activarBitacora(data);
-    this._toastr.success('El rol: '+ rol.rol+ ' ha sido activado')
+    
   });
   this.listRoles[i].estado_rol = 1;
 }

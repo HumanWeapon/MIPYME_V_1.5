@@ -62,7 +62,7 @@ export class ObjetosComponent implements OnInit{
   constructor(
     private _objService: ObjetosService,
     private toastr: ToastrService,
-    private ngZone: NgZone,
+    private _ngZone: NgZone,
     private _bitacoraService: BitacoraService,
     private _errorService: ErrorService,
     private _userService: UsuariosService,
@@ -78,11 +78,15 @@ export class ObjetosComponent implements OnInit{
       responsive: true
     };
     this._objService.getAllObjetos()
-      .subscribe((res: any) => {
-        this.listObjetos = res;
+      .subscribe( 
+        {next: (data) =>{
+        this.listObjetos = data;
         this.dtTrigger.next(0);
+        }
       });
+    this.getUsuario();
   }
+
 
   ngOnDestroy(): void {
     // Do not forget to unsubscribe the event
@@ -106,26 +110,39 @@ export class ObjetosComponent implements OnInit{
 toggleFunction(obj: any, i: number) {
 
   // Ejecuta una función u otra según el estado
-  if (obj.estado_objeto === 1 ) {
+  if (obj.estado_objeto == 1 ) {
     this.inactivarObjeto(obj, i); // Ejecuta la primera función
   } else {
     this.activarObjeto(obj, i); // Ejecuta la segunda función
   }
 }
  
-  inactivarObjeto(objetos: any, i: number){
-    this._objService.inactivarObjeto(objetos).subscribe(data => 
-    this.toastr.success('El objeto: '+ objetos.objeto+ ' ha sido inactivado')
-    );
-    this.listObjetos[i].estado_objeto = 2;
-  }
-  activarObjeto(objetos: any, i: number){
-    this._objService.activarObjeto(objetos).subscribe(data => 
-    this.toastr.success('El objeto: '+ objetos.objeto+ ' ha sido activado')
-    );
-    this.listObjetos[i].estado_objeto = 1;
-  }
 
+convertirAMayusculas(event: any, field: string) {
+  setTimeout(() => {
+    const inputValue = event.target.value;
+    event.target.value = inputValue.toUpperCase();
+  });
+}
+
+
+inactivarObjeto(obj: any, i: number){
+  this._objService.inactivarObjeto(obj).subscribe(data => {
+    this.toastr.success('El Objeto: '+ obj.objeto+ ' ha sido inactivado');
+    this.inactivarBitacora(data);
+  });
+  this.listObjetos[i].estado_objeto = 2;
+}
+
+
+activarObjeto(obj: any, i: number){
+  this._objService.activarObjeto(obj).subscribe(data => {
+    this.toastr.success('El Objeto: '+ obj.objeto+ ' ha sido activado');
+    this.activarBitacora(data);
+    
+  });
+  this.listObjetos[i].estado_objeto = 1;
+}
   /*****************************************************************************************************/
 
 generatePDF() {
@@ -196,9 +213,10 @@ agregarNuevoObjeto() {
 
     this._objService.addObjeto(this.nuevoObjeto).subscribe({
       next: (data) => {
+        this.toastr.success(data, 'Objeto agregado con éxito');
         this.insertBitacora(data);
         this.listObjetos.push(this.nuevoObjeto);
-        this.toastr.success(data, 'Éxito');
+       
       },
       error: (e: HttpErrorResponse) => {
         this._errorService.msjError(e);
@@ -228,10 +246,14 @@ agregarNuevoObjeto() {
 
   editarObjeto(){
     this._objService.editarObjeto(this.objetoEditando).subscribe(data => {
+      this.updateBitacora(data);
       this.toastr.success('Objeto editado con éxito');
       this.listObjetos[this.indice].objeto = this.objetoEditando.objeto;
       this.listObjetos[this.indice].descripcion = this.objetoEditando.descripcion;
       this.listObjetos[this.indice].estado_objeto = this.objetoEditando.estado_objeto;
+      // Actualizar la vista
+      this._ngZone.run(() => {        
+      });
     });
   }
 
@@ -287,13 +309,14 @@ agregarNuevoObjeto() {
    });
  }
 
+
   insertBitacora(dataObjeto: Objetos){
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
-      id_objeto: 29,
+      id_objeto: 4,
       accion: 'INSERTAR',
-      descripcion: 'SE INSERTA EL OBJETO CON EL ID: '+ dataObjeto.id_objeto
+      descripcion: 'SE INSERTA EL OBJETO CON EL ID: '+ dataObjeto.objeto
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
@@ -301,21 +324,24 @@ agregarNuevoObjeto() {
   updateBitacora(dataObjeto: Objetos){
     const bitacora = {
       fecha: new Date(),
-      id_usuario: this.getUser.usuario,
-      id_objeto: 29,
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 4,
       accion: 'ACTUALIZAR',
-      descripcion: 'SE ACTUALIZA EL OBJETO CON EL ID: '+ dataObjeto.id_objeto
+      descripcion: 'SE ACTUALIZA EL OBJETO: '+ dataObjeto.objeto
     };
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
   }
+
+  
+
   activarBitacora(dataObjeto: Objetos){
     const bitacora = {
       fecha: new Date(),
-      id_usuario: this.getUser.usuario,
-      id_objeto: 29,
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 4,
       accion: 'ACTIVAR',
-      descripcion: 'SE ACTIVA EL OBJETO CON EL ID: '+ dataObjeto.id_objeto
+      descripcion: 'SE ACTIVA EL OBJETO: '+ dataObjeto.objeto
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
@@ -323,10 +349,10 @@ agregarNuevoObjeto() {
   inactivarBitacora(dataObjeto: Objetos){
     const bitacora = {
       fecha: new Date(),
-      id_usuario: this.getUser.usuario,
-      id_objeto: 29,
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 4,
       accion: 'INACTIVAR',
-      descripcion: 'SE INACTIVA EL OBJETO CON EL ID: '+ dataObjeto.id_objeto
+      descripcion: 'SE INACTIVA EL OBJETO: '+ dataObjeto.objeto
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
@@ -334,10 +360,10 @@ agregarNuevoObjeto() {
   deleteBitacora(dataObjeto: Objetos){
     const bitacora = {
       fecha: new Date(),
-      id_usuario: this.getUser.usuario,
-      id_objeto: 29,
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 4,
       accion: 'ELIMINAR',
-      descripcion: 'SE ELIMINA EL OBJETO CON EL ID: '+ dataObjeto.id_objeto
+      descripcion: 'SE ELIMINA EL OBJETO: '+ dataObjeto.objeto
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
