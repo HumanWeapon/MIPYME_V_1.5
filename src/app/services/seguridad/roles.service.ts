@@ -1,25 +1,20 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Roles } from 'src/app/interfaces/seguridad/roles';
 import { environment } from 'src/enviroments/enviromet';
-import { Roles } from '../../interfaces/seguridad/roles';
-import { Observable, catchError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RolesService {
-
-  public roles: Roles | undefined;
-  
   private myAppUrl: string;
   private myApiUrl: string;
 
   constructor(private http: HttpClient) {
     this.myAppUrl = environment.endpoint;
-    this.myApiUrl = 'api/roles'
-    // Asignar un valor a una clave en localStorage
-
-   }
+    this.myApiUrl = 'api/roles';
+  }
 
    addRol(roles: Roles): Observable<any> {
 
@@ -51,7 +46,7 @@ export class RolesService {
 
    inactivarRol(rol: Roles): Observable<Roles> {
     const token = localStorage.getItem('token');
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
     return this.http.post<Roles>(`${this.myAppUrl}${this.myApiUrl}/inactivateRol`, rol , { headers });
   }
   
@@ -61,10 +56,10 @@ export class RolesService {
     return this.http.post<Roles>(`${this.myAppUrl}${this.myApiUrl}/activateRol`, rol, { headers: headers })
    }
   
-   editarRol(roles: Roles): Observable<any> {
+   editarRol(rol: Roles): Observable<any> {
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.post<Roles>(`${this.myAppUrl}${this.myApiUrl}/updateRoles`, roles, { headers: headers })
+    return this.http.post<Roles>(`${this.myAppUrl}${this.myApiUrl}/updateRoles`, rol, { headers: headers })
   }
 }
 
