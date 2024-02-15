@@ -271,7 +271,6 @@ getUsuario(){
 
  this._userService.getUsuario(this.getUser).subscribe({
    next: (data) => {
-    console.log(data);
      this.getUser = data;
    },
    error: (e: HttpErrorResponse) => {
@@ -303,7 +302,6 @@ updateBitacora(dataRoles: Roles){
   })
 }
 activarBitacora(dataRoles: Roles){
-  console.log(dataRoles);
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
