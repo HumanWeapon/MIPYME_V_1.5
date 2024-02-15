@@ -29,8 +29,8 @@
                             <td>{{ parametros.id_parametro }}</td>
                             <td>{{ parametros.parametro }}</td>
                             <td>
-                              <ng-container *ngIf="parametros.estado_parametro === 1">ACTIVO</ng-container>
-                              <ng-container *ngIf="parametros.estado_parametro === 2">INACTIVO</ng-container>
+                              <ng-container *ngIf="parametros.estado_parametro == 1">ACTIVO</ng-container>
+                              <ng-container *ngIf="parametros.estado_parametro == 2">INACTIVO</ng-container>
                             </td>
                             <td>{{ parametros.valor }}</td>
                             <td>{{ parametros.fecha_creacion }}</td>

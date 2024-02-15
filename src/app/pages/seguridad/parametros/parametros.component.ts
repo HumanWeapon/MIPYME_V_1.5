@@ -81,6 +81,7 @@ export class ParametrosComponent implements OnInit{
         this.dtTrigger.next(0);
       }
     });
+    this.getUsuario();
   }
 
   ngOnDestroy(): void {
@@ -117,19 +118,24 @@ toggleFunction(parametros: any, i: number) {
     this.activateParametro(parametros, i); // Ejecuta la segunda función
   }
 }
+
+
+
+inactivateParametro(parametro: any, i: number){
+  this._parametroService.inactivateParametro(parametro).subscribe(data => {
+    this.toastr.success('El Parámetro: '+ parametro.parametro+ ' ha sido inactivado');
+    this.inactivarBitacora(data);
+  });
+  this.listParametros[i].estado_parametro = 2;
+}
+activateParametro(parametro: any, i: number){
+  this._parametroService.activateParametro(parametro).subscribe(data => {
+    this.activarBitacora(data);
+    this.toastr.success('El rol: '+ parametro.parametro+ ' ha sido activado')
+  });
+  this.listParametros[i].estado_parametro = 1;
+}
  
-  activateParametro(parametro: any, i: number){
-    this._parametroService.activateParametro(parametro).subscribe(data => 
-    this.toastr.success('El parametro: '+ parametro.parametro+ ' ha sido activado')
-    );
-    this.listParametros[i].estado_parametro = 1;
-  }
-  inactivateParametro(parametro: any, i: number){
-    this._parametroService.inactivateParametro(parametro).subscribe(data => 
-    this.toastr.success('El parametro: '+ parametro.parametro+ ' ha sido inactivado')
-    );
-    this.listParametros[i].estado_parametro = 2;
-  }
 
 
 
@@ -233,6 +239,7 @@ getEstadoText(estado: number): string {
     this.parametroEditando.modificado_por = this.parametroEditando.modificado_por.toUpperCase();
 
     this._parametroService.editarParametro(this.parametroEditando).subscribe(data => {
+      this.updateBitacora(data);
       this.toastr.success('Parametro editado con éxito');
       this.listParametros[this.indice].parametro = this.parametroEditando.parametro;
       this.listParametros[this.indice].valor = this.parametroEditando.valor;
@@ -301,9 +308,9 @@ getEstadoText(estado: number): string {
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
-      id_objeto: 29,
+      id_objeto: 2,
       accion: 'INSERTAR',
-      descripcion: 'SE INSERTA EL PARAMETRO CON EL ID: '+ dataParametro.parametro
+      descripcion: 'SE INSERTA EL PARAMETRO: '+ dataParametro.parametro
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
@@ -312,9 +319,9 @@ getEstadoText(estado: number): string {
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.usuario,
-      id_objeto: 29,
+      id_objeto: 2,
       accion: 'ACTUALIZAR',
-      descripcion: 'SE ACTUALIZA EL PARAMETRO CON EL ID: '+ dataParametro.parametro
+      descripcion: 'SE ACTUALIZA EL PARAMETRO: '+ dataParametro.parametro
     };
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
@@ -323,9 +330,9 @@ getEstadoText(estado: number): string {
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.usuario,
-      id_objeto: 29,
+      id_objeto: 2,
       accion: 'ACTIVAR',
-      descripcion: 'SE ACTIVA EL PARAMETRO CON EL ID: '+ dataParametro.parametro
+      descripcion: 'SE ACTIVA EL PARAMETRO: '+ dataParametro.parametro
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
@@ -334,9 +341,9 @@ getEstadoText(estado: number): string {
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.usuario,
-      id_objeto: 29,
+      id_objeto: 2,
       accion: 'INACTIVAR',
-      descripcion: 'SE INACTIVA EL PARAMETRO CON EL ID: '+ dataParametro.parametro
+      descripcion: 'SE INACTIVA EL PARAMETRO: '+ dataParametro.parametro
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
@@ -345,9 +352,9 @@ getEstadoText(estado: number): string {
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.usuario,
-      id_objeto: 29,
+      id_objeto: 2,
       accion: 'ELIMINAR',
-      descripcion: 'SE ELIMINA EL PARAMETRO CON EL ID: '+ dataParametro.parametro
+      descripcion: 'SE ELIMINA EL PARAMETRO: '+ dataParametro.parametro
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })

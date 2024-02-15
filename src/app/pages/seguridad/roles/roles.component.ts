@@ -111,8 +111,9 @@ inactivarRol(rol: any, i: number){
 }
 activarRol(rol: any, i: number){
   this._rolService.activarRol(rol).subscribe(data => {
+    this._toastr.success('El rol: '+ rol.rol+ ' ha sido activado');
     this.activarBitacora(data);
-    this._toastr.success('El rol: '+ rol.rol+ ' ha sido activado')
+    
   });
   this.listRoles[i].estado_rol = 1;
 }
@@ -270,7 +271,6 @@ getUsuario(){
 
  this._userService.getUsuario(this.getUser).subscribe({
    next: (data) => {
-    console.log(data);
      this.getUser = data;
    },
    error: (e: HttpErrorResponse) => {
@@ -302,7 +302,6 @@ updateBitacora(dataRoles: Roles){
   })
 }
 activarBitacora(dataRoles: Roles){
-  console.log(dataRoles);
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,

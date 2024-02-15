@@ -46,8 +46,8 @@ export class RolesService {
 
    inactivarRol(rol: Roles): Observable<Roles> {
     const token = localStorage.getItem('token');
-    const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.post<Roles>(`${this.myAppUrl}${this.myApiUrl}/inactivateRol`, rol , { headers });
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.post<Roles>(`${this.myAppUrl}${this.myApiUrl}/inactivateRol`, rol , { headers: headers });
   }
   
    activarRol(rol: Roles): Observable<Roles>{

@@ -39,9 +39,13 @@
                             </td>
                             <td class="text-center">
                               <div class="btn-group">
-                                  <button type="button" (click)="obtenerIdRol(roles, i)"  title="Editar Rol" data-toggle="modal" data-target="#abrirModalEditarRol"data-toggle="modal" data-target="#abrirModalEditarRol" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
-                                  <button type="button" (click)="toggleFunction(roles, i)" class="btna " [title]="roles.estado_rol == 1 ? 'Desactivar Rol' : 'Activar Rol'"><i class="fas" [ngClass]="roles.estado_rol == 1 ? 'fa-solid fa-lock-open' : 'fa-solid fa-lock'"></i> </button>
+                                <div class="form-check form-switch ml-4">
+                                  <input class="form-check-input" (click)="toggleFunction(roles, i)" [title]="roles.estado_rol == 1 ? 'Desactivar' : 'Activar'" type="checkbox" 
+                                    role="switch" id="flexSwitchCheckChecked" [checked]="roles.estado_rol == 1">
                                 </div>
+                                <button type="button" (click)="obtenerIdRol(roles, i)"  title="Editar Rol" data-toggle="modal" data-target="#abrirModalEditarRol"data-toggle="modal" data-target="#abrirModalEditarRol" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
+                              </div>
+
                             </td>
                           </tr>
                         </tbody>
