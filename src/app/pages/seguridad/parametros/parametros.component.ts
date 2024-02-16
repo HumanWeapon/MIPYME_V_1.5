@@ -112,7 +112,7 @@ export class ParametrosComponent implements OnInit{
 toggleFunction(parametros: any, i: number) {
 
   // Ejecuta una función u otra según el estado
-  if (parametros.estado_parametro === 1 ) {
+  if (parametros.estado_parametro == 1 ) {
     this.inactivateParametro(parametros, i); // Ejecuta la primera función
   } else {
     this.activateParametro(parametros, i); // Ejecuta la segunda función
@@ -124,14 +124,17 @@ toggleFunction(parametros: any, i: number) {
 inactivateParametro(parametro: any, i: number){
   this._parametroService.inactivateParametro(parametro).subscribe(data => {
     this.toastr.success('El Parámetro: '+ parametro.parametro+ ' ha sido inactivado');
+    
     this.inactivarBitacora(data);
   });
   this.listParametros[i].estado_parametro = 2;
 }
 activateParametro(parametro: any, i: number){
   this._parametroService.activateParametro(parametro).subscribe(data => {
+    this.toastr.success('El Parámetro: '+ parametro.parametro+ ' ha sido activado');
+
     this.activarBitacora(data);
-    this.toastr.success('El rol: '+ parametro.parametro+ ' ha sido activado')
+    
   });
   this.listParametros[i].estado_parametro = 1;
 }
@@ -318,7 +321,7 @@ getEstadoText(estado: number): string {
   updateBitacora(dataParametro: Parametros){
     const bitacora = {
       fecha: new Date(),
-      id_usuario: this.getUser.usuario,
+      id_usuario: this.getUser.id_usuario,
       id_objeto: 2,
       accion: 'ACTUALIZAR',
       descripcion: 'SE ACTUALIZA EL PARAMETRO: '+ dataParametro.parametro
@@ -327,31 +330,35 @@ getEstadoText(estado: number): string {
     })
   }
   activarBitacora(dataParametro: Parametros){
+    console.log(dataParametro);
     const bitacora = {
       fecha: new Date(),
-      id_usuario: this.getUser.usuario,
+      id_usuario: this.getUser.id_usuario,
       id_objeto: 2,
       accion: 'ACTIVAR',
       descripcion: 'SE ACTIVA EL PARAMETRO: '+ dataParametro.parametro
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+      
     })
   }
   inactivarBitacora(dataParametro: Parametros){
+    console.log(dataParametro);
     const bitacora = {
       fecha: new Date(),
-      id_usuario: this.getUser.usuario,
+      id_usuario: this.getUser.id_usuario,
       id_objeto: 2,
       accion: 'INACTIVAR',
       descripcion: 'SE INACTIVA EL PARAMETRO: '+ dataParametro.parametro
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+      
     })
   }
   deleteBitacora(dataParametro: Parametros){
     const bitacora = {
       fecha: new Date(),
-      id_usuario: this.getUser.usuario,
+      id_usuario: this.getUser.id_usuario,
       id_objeto: 2,
       accion: 'ELIMINAR',
       descripcion: 'SE ELIMINA EL PARAMETRO: '+ dataParametro.parametro

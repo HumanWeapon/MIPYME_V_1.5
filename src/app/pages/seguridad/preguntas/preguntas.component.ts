@@ -75,6 +75,7 @@ export class PreguntasComponent implements OnInit{
         this.listPreguntas = res;
         this.dtTrigger.next(null);
       });
+      this.getUsuario();
   }
 
   ngOnDestroy(): void {
@@ -88,23 +89,26 @@ export class PreguntasComponent implements OnInit{
 toggleFunction(pregunta: any, i: number) {
 
   // Ejecuta una función u otra según el estado
-  if (pregunta.estado_pregunta === 1 ) {
+  if (pregunta.estado_pregunta == 1 ) {
     this.inactivarPregunta(pregunta, i); // Ejecuta la primera función
   } else {
     this.activarPregunta(pregunta, i); // Ejecuta la segunda función
   }
 }
- 
+
+
 inactivarPregunta(pregunta: any, i: number){
-    this._questionService.inactivarPregunta(pregunta).subscribe(data => 
-    this.toastr.success('La pregunta: '+ pregunta.pregunta+ ' ha sido inactivado')
-    );
+    this._questionService.inactivarPregunta(pregunta).subscribe(data => {
+    this.toastr.success('La pregunta: '+ pregunta.pregunta+ ' ha sido inactivado');
+    this.inactivarBitacora(data);
+});
     this.listPreguntas[i].estado_pregunta = 2;
   }
   activarPregunta(pregunta: any, i: number){
-    this._questionService.activarPregunta(pregunta).subscribe(data => 
-    this.toastr.success('La pregunta: '+ pregunta.pregunta+ ' ha sido activado')
-    );
+    this._questionService.activarPregunta(pregunta).subscribe(data => {
+    this.toastr.success('La pregunta: '+ pregunta.pregunta+ ' ha sido activado');
+    this.activarBitacora(data);
+  });
     this.listPreguntas[i].estado_pregunta = 1;
   }
 
@@ -170,6 +174,7 @@ getEstadoText(estado: number): string {
     };
 
     this._questionService.addPregunta(this.nuevoPregunta).subscribe(data => {
+      this.insertBitacora(data);
       this.toastr.success('Pregunta agregado con éxito');
 
         // Recargar la página
@@ -200,13 +205,11 @@ getEstadoText(estado: number): string {
 
   editarPregunta(){
     this._questionService.editarPregunta(this.preguntaEditando).subscribe(data => {
+      this.updateBitacora(data);
       this.toastr.success('Pregunta editada con éxito');
       this.listPreguntas[this.indice].pregunta = this.preguntaEditando.pregunta;
 
-      
     });
-      // Recargar la página
-      location.reload();
       // Actualizar la vista
       this.ngZone.run(() => {        
       });
@@ -257,7 +260,7 @@ getEstadoText(estado: number): string {
 
    this._userService.getUsuario(this.getUser).subscribe({
      next: (data) => {
-       this.getUser = data;
+       this.getUser = data; 
      },
      error: (e: HttpErrorResponse) => {
        this._errorService.msjError(e);
@@ -269,9 +272,9 @@ getEstadoText(estado: number): string {
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
-      id_objeto: 29,
+      id_objeto: 27,
       accion: 'INSERTAR',
-      descripcion: 'SE INSERTA LA PREGUNTA CON EL ID: '+ dataPregunta.pregunta
+      descripcion: 'SE INSERTA LA PREGUNTA: '+ dataPregunta.pregunta
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
@@ -279,10 +282,10 @@ getEstadoText(estado: number): string {
   updateBitacora(dataPregunta: Preguntas){
     const bitacora = {
       fecha: new Date(),
-      id_usuario: this.getUser.usuario,
-      id_objeto: 29,
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 27,
       accion: 'ACTUALIZAR',
-      descripcion: 'SE ACTUALIZA LA PREGUNTA CON EL ID: '+ dataPregunta.pregunta
+      descripcion: 'SE ACTUALIZA LA PREGUNTA: '+ dataPregunta.pregunta
     };
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
@@ -290,10 +293,10 @@ getEstadoText(estado: number): string {
   activarBitacora(dataPregunta: Preguntas){
     const bitacora = {
       fecha: new Date(),
-      id_usuario: this.getUser.usuario,
-      id_objeto: 29,
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 27,
       accion: 'ACTIVAR',
-      descripcion: 'SE ACTIVA LA PREGUNTA CON EL ID: '+ dataPregunta.pregunta
+      descripcion: 'SE ACTIVA LA PREGUNTA: '+ dataPregunta.pregunta
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
@@ -301,10 +304,10 @@ getEstadoText(estado: number): string {
   inactivarBitacora(dataPregunta: Preguntas){
     const bitacora = {
       fecha: new Date(),
-      id_usuario: this.getUser.usuario,
-      id_objeto: 29,
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 27,
       accion: 'INACTIVAR',
-      descripcion: 'SE INACTIVA LA PREGUNTA CON EL ID: '+ dataPregunta.pregunta
+      descripcion: 'SE INACTIVA LA PREGUNTA: '+ dataPregunta.pregunta
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
@@ -312,10 +315,10 @@ getEstadoText(estado: number): string {
   deleteBitacora(dataPregunta: Preguntas){
     const bitacora = {
       fecha: new Date(),
-      id_usuario: this.getUser.usuario,
-      id_objeto: 29,
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 27,
       accion: 'ELIMINAR',
-      descripcion: 'SE ELIMINA LA PREGUNTA CON EL ID: '+ dataPregunta.pregunta
+      descripcion: 'SE ELIMINA LA PREGUNTA: '+ dataPregunta.pregunta
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })

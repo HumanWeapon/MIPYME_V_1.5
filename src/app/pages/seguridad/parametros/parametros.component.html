@@ -38,7 +38,7 @@
                             <td class="text-center">
                               <div class="btn-group">
                                   <button type="button" (click)="obtenerIdParametro(parametros, i)" data-toggle="modal" data-target="#abrirModalEditarParametro"data-toggle="modal" data-target="#abrirModalEditarParametro" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
-                                  <button type="button" (click)="toggleFunction(parametros, i)" class="btna " [title]="parametros.estado_parametro === 1 ? 'Desactivar Parametro' : 'Activar Parametro'"><i class="fas" [ngClass]="parametros.estado_parametro === 1 ? 'fa-solid fa-lock-open' : 'fa-solid fa-lock'"></i> </button>
+                                  <button type="button" (click)="toggleFunction(parametros, i)" class="btna " [title]="parametros.estado_parametro == 1 ? 'Desactivar Parametro' : 'Activar Parametro'"><i class="fas" [ngClass]="parametros.estado_parametro == 1 ? 'fa-solid fa-lock-open' : 'fa-solid fa-lock'"></i> </button>
                                 </div>
                             </td>
                           </tr>

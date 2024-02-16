@@ -302,6 +302,7 @@ updateBitacora(dataRoles: Roles){
   })
 }
 activarBitacora(dataRoles: Roles){
+  console.log(dataRoles);
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
