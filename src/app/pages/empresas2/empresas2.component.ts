@@ -52,8 +52,7 @@ export class Empresas2Component implements OnInit{
 
   //Direcion
   nuevaDireccion: ContactoDirecciones = {
-    id_direccion: 0, 
-    id_contacto: 0, 
+    id_direccion: 0,  
     id_tipo_direccion: 0,
     direccion:'', 
     descripcion: '', 
@@ -85,6 +84,7 @@ export class Empresas2Component implements OnInit{
     id_tipo_empresa:2,
     nombre_empresa: '',
     descripcion: '',
+    web: '',
     creado_por: '',
     fecha_creacion: new Date(),
     modificado_por: '',
@@ -121,6 +121,7 @@ export class Empresas2Component implements OnInit{
     nombre_empresa: '',
     descripcion: '',
     creado_por: '',
+    web: '',
     fecha_creacion: new Date(),
     modificado_por: '',
     fecha_modificacion: new Date(),
@@ -147,7 +148,6 @@ export class Empresas2Component implements OnInit{
 
   direccionEditando: ContactoDirecciones = {
     id_direccion: 0, 
-    id_contacto: 0, 
     id_tipo_direccion: 0,
     direccion:'', 
     descripcion: '', 
@@ -421,7 +421,6 @@ export class Empresas2Component implements OnInit{
     if(usuarioLocal){
       this.nuevaDireccion = {
         id_direccion: 0, 
-        id_contacto: this.nuevaDireccion.id_contacto,
         id_tipo_direccion: this.nuevaDireccion.id_tipo_direccion, 
         direccion: this.nuevaDireccion.direccion, 
         descripcion:this.nuevaDireccion.descripcion, 
@@ -454,7 +453,6 @@ export class Empresas2Component implements OnInit{
   obtenerIdDireccion(direccion: ContactoDirecciones, i: any){
     this.direccionEditando = {
     id_direccion: direccion.id_direccion,
-    id_contacto: direccion.id_contacto,
     id_tipo_direccion: this.nuevaDireccion.id_tipo_direccion, 
     direccion: direccion.direccion, 
     descripcion: direccion.descripcion,  
@@ -572,6 +570,7 @@ export class Empresas2Component implements OnInit{
       nombre_empresa: empresa.empresa.nombre_empresa,
       descripcion:empresa.empresa.descripcion,
       creado_por: empresa.empresa.creado_por,
+      web: '',
       fecha_creacion: empresa.empresa.fecha_creacion,
       modificado_por: empresa.empresa.modificado_por,
       fecha_modificacion: empresa.empresa.fecha_modificacion,
@@ -699,6 +698,7 @@ agregarNuevaEmpresa() {
     nombre_empresa: this.nuevaEmpresa.nombre_empresa,
     descripcion: this.nuevaEmpresa.descripcion,
     creado_por: userLocal,
+    web: '',
     fecha_creacion: new Date(),
     modificado_por: userLocal,
     fecha_modificacion: new Date(),

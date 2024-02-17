@@ -23,7 +23,6 @@ import { Usuario } from 'src/app/interfaces/seguridad/usuario';
 export class DireccionesComponent {
   direccionEditando: ContactoDirecciones = {
     id_direccion: 0, 
-    id_contacto: 0, 
     id_tipo_direccion: 0,
     direccion:'', 
     descripcion: '', 
@@ -37,7 +36,6 @@ export class DireccionesComponent {
 
   nuevaDireccion: ContactoDirecciones = {
     id_direccion: 0, 
-    id_contacto: 0, 
     id_tipo_direccion: 0,
     direccion:'', 
     descripcion: '', 
@@ -122,7 +120,6 @@ export class DireccionesComponent {
     if(usuarioLocal){
       this.nuevaDireccion = {
         id_direccion: 0, 
-        id_contacto: this.nuevaDireccion.id_contacto,
         id_tipo_direccion: this.nuevaDireccion.id_tipo_direccion, 
         direccion: this.nuevaDireccion.direccion, 
         descripcion:this.nuevaDireccion.descripcion, 
@@ -156,7 +153,6 @@ export class DireccionesComponent {
   obtenerIdDireccion(direccion: ContactoDirecciones, i: any){
     this.direccionEditando = {
     id_direccion: direccion.id_direccion,
-    id_contacto: direccion.id_contacto,
     id_tipo_direccion: this.nuevaDireccion.id_tipo_direccion, 
     direccion: direccion.direccion, 
     descripcion: direccion.descripcion,  

@@ -356,12 +356,6 @@
                       <input type="text" [(ngModel)]="nuevaDireccion.descripcion" name="nuevaDireccion.descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="nuevodescripcion" placeholder="Descripción">
                   </div>
     
-                <div class="form-group">
-                  <label for="editarTipoDireccion">Tipo_Direccion:</label>
-                  <select class="form-control" id="editarRol" [(ngModel)]="nuevaDireccion.id_tipo_direccion" name="id_tipo_direccion">
-                    <option *ngFor="let item of listTipoC" [ngValue]="item.id_tipo_direccion">{{ item.tipo_direccion }}</option>
-                  </select>
-                </div>
                               
               </form>
           </div>
@@ -393,12 +387,6 @@
                     <div class="form-group">
                         <label for="editarDescripcion">Descripción:</label>
                         <input type="text" [(ngModel)]="direccionEditando.descripcion" name="descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="editarDescripcion" placeholder="Descripción">
-                    </div>
-                    <div class="form-group">
-                      <label for="editarTipoContacto">Tipo Contacto:</label>
-                      <select class="form-control" id="editarTipoContacto" [(ngModel)]="direccionEditando.id_tipo_direccion" name="id_tipo_direccion">
-                        <option *ngFor="let item of listTipoC" [ngValue]="item.id_tipo_direccion">{{ item.tipo_direccion }}</option>
-                      </select>
                     </div>
     
                     <div class="modal-footer justify-content-between">

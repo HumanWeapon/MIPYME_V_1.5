@@ -1,6 +1,5 @@
 export interface ContactoDirecciones {
     id_direccion: number, 
-    id_contacto: number,
     id_tipo_direccion: number,
     direccion: string, 
     descripcion: string,
