@@ -78,6 +78,7 @@ export class CategoriaProductosComponent implements OnInit{
         this.listCate = res;
         this.dtTrigger.next(0);
       });
+      this.getUsuario();
   }
 
   ngOnDestroy(): void {
@@ -99,7 +100,7 @@ export class CategoriaProductosComponent implements OnInit{
 toggleFunction(cate: any, i: number) {
 
   // Ejecuta una función u otra según el estado
-  if (cate.estado === 1 ) {
+  if (cate.estado == 1 ) {
     this.inactivarCategoria(cate, i); // Ejecuta la primera función
   } else {
     this.activarCategoria(cate, i); // Ejecuta la segunda función
@@ -111,8 +112,7 @@ toggleFunction(cate: any, i: number) {
       next: (data) => {
         this.activarBitacora(data);
         this._toastr.success('La categoria: '+ categoria.categoria + ' ha sido activada')
-        console.log(data);
-        console.log(categoria);
+        
       },
       error: (e: HttpErrorResponse) => {
         this._errorService.msjError(e);
@@ -126,8 +126,7 @@ toggleFunction(cate: any, i: number) {
       next: (data) => {
         this.inactivarBitacora(data);
         this._toastr.success('La categoria: '+ categoria.categoria + ' ha sido inactivada')
-        console.log(data);
-        console.log(categoria);
+        
       },
       error: (e: HttpErrorResponse) => {
         this._errorService.msjError(e);
@@ -196,6 +195,7 @@ getEstadoText(estado: number): string {
         estado: 1,
       }
       this._categoriaService.addCategoriaProducto(catProducto).subscribe((data: Categoria) => {
+        this.insertBitacora(data);
         this._toastr.success('Categoría agregada exitosamente');
         location.reload();
       });
@@ -221,12 +221,11 @@ getEstadoText(estado: number): string {
 
   editarCategoriaProducto(){
     this._categoriaService.editarCategoriaProducto(this.CategoriaEditando).subscribe(data => {
+      this.updateBitacora(data);
       this._toastr.success('Categoria editada con éxito');
       this.listCate[this.indice].categoria = this.CategoriaEditando.categoria;
       this.listCate[this.indice].categoria = this.CategoriaEditando.descripcion;
-        // Recargar la página
-        location.reload();
-        // Actualizar la vista
+              // Actualizar la vista
         this.ngZone.run(() => {        
         });
     
@@ -289,9 +288,9 @@ getEstadoText(estado: number): string {
     const bitacora = {
       fecha: new Date().toISOString().split('T')[0],
       id_usuario: this.getUser.id_usuario,
-      id_objeto: 5,
+      id_objeto: 20,
       accion: 'INSERTAR',
-      descripcion: 'SE INSERTA LA EMPRESA CON EL ID: '+ dataCatProd.id_categoria
+      descripcion: 'SE INSERTA LA CATEGORIA: '+ dataCatProd.categoria
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
@@ -299,10 +298,10 @@ getEstadoText(estado: number): string {
   updateBitacora(dataCatProd: Categoria){
     const bitacora = {
       fecha: new Date().toISOString().split('T')[0],
-      id_usuario: this.getUser.usuario,
-      id_objeto: 5,
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 20,
       accion: 'ACTUALIZAR',
-      descripcion: 'SE ACTUALIZA EL PAIS CON EL ID: '+ dataCatProd.id_categoria
+      descripcion: 'SE ACTUALIZA EL PAIS CON EL ID: '+ dataCatProd.categoria
     };
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
@@ -310,10 +309,10 @@ getEstadoText(estado: number): string {
   activarBitacora(dataCatProd: Categoria){
     const bitacora = {
       fecha: new Date().toISOString().split('T')[0],
-      id_usuario: this.getUser.usuario,
-      id_objeto: 5,
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 20,
       accion: 'ACTIVAR',
-      descripcion: 'SE ACTIVA EL CONTACTO CON EL ID: '+ dataCatProd.id_categoria
+      descripcion: 'SE ACTIVA EL CONTACTO CON EL ID: '+ dataCatProd.categoria
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
@@ -321,10 +320,10 @@ getEstadoText(estado: number): string {
   inactivarBitacora(dataCatProd: Categoria){
     const bitacora = {
       fecha: new Date().toISOString().split('T')[0],
-      id_usuario: this.getUser.usuario,
-      id_objeto: 5,
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 20,
       accion: 'INACTIVAR',
-      descripcion: 'SE INACTIVA LA CATEGORÍA CON EL ID: '+ dataCatProd.id_categoria
+      descripcion: 'SE INACTIVA LA CATEGORÍA CON EL ID: '+ dataCatProd.categoria
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
@@ -332,10 +331,10 @@ getEstadoText(estado: number): string {
   deleteBitacora(dataCatProd: Categoria){
     const bitacora = {
       fecha: new Date().toISOString().split('T')[0],
-      id_usuario: this.getUser.usuario,
-      id_objeto: 5,
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 20,
       accion: 'ELIMINAR',
-      descripcion: 'SE ELIMINA EL CONTACTO CON EL ID: '+ dataCatProd.id_categoria
+      descripcion: 'SE ELIMINA EL CONTACTO CON EL ID: '+ dataCatProd.categoria
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })

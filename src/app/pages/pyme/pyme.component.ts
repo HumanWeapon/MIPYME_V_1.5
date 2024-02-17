@@ -86,6 +86,7 @@ export class PymeComponent {
         this.dtTrigger.next(0);
       }
     });
+    this.getUsuario();
   }
 
   ngOnDestroy(): void {
@@ -99,7 +100,7 @@ export class PymeComponent {
 toggleFunction(pyme: any, i: number) {
 
   // Ejecuta una función u otra según el estado
-  if (pyme.estado === 1 ) {
+  if (pyme.estado == 1 ) {
     this.inactivarPyme(pyme, i); // Ejecuta la primera función
   } else {
     this.activarPyme(pyme, i); // Ejecuta la segunda función
@@ -107,16 +108,18 @@ toggleFunction(pyme: any, i: number) {
 }
   
   activarPyme(nombre_pyme: any, i: number) {
-    this._pymesService.activarPyme(nombre_pyme).subscribe(data =>
-      this.toastr.success('La Pyme: ' + nombre_pyme.nombre_pyme + ' ha sido activada')
-    );
+    this._pymesService.activarPyme(nombre_pyme).subscribe(data => {
+      this.toastr.success('La Pyme: ' + nombre_pyme.nombre_pyme + ' ha sido activada');
+      this.activarBitacora(data);
+  });
     this.listPymes[i].estado = 1;
   }
 
   inactivarPyme(nombre_pyme: any, i: number) {
-    this._pymesService.inactivarPyme(nombre_pyme).subscribe(data =>
-      this.toastr.success('La Pyme: ' + nombre_pyme.nombre_pyme + ' ha sido inactivada')
-    );
+    this._pymesService.inactivarPyme(nombre_pyme).subscribe(data =>{
+      this.toastr.success('La Pyme: ' + nombre_pyme.nombre_pyme + ' ha sido inactivada');
+      this.inactivarBitacora(data);
+  });
     this.listPymes[i].estado = 2;
   }
 /*****************************************************************************************************/
@@ -261,6 +264,7 @@ agregarNuevaPyme() {
 
   editarPyme(){
     this._pymesService.editarPyme(this.editPyme).subscribe(data => {
+      this.updateBitacora(data);
       this.toastr.success('Pyme editada con éxito');
       this.listPymes[this.indice].nombre_pyme = this.editPyme.nombre_pyme
       this.listPymes[this.indice].descripcion = this.editPyme.descripcion
@@ -295,6 +299,7 @@ agregarNuevaPyme() {
                     this.listPymes.splice(index, 1);
                 }
                 this.toastr.success('La Pyme ha sido eliminada con éxito');
+                this.deleteBitacora(data)
                 this.ngZone.run(() => {        
                 });
             },
@@ -381,10 +386,10 @@ agregarNuevaPyme() {
   insertBitacora(dataPyme: Pyme){
     const bitacora = {
       fecha: new Date(),
-      id_usuario: this.getUser.nombre_usuario,
-      id_objeto: 15,
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 22,
       accion: 'INSERTAR',
-      descripcion: 'SE INSERTA LA PYME CON EL ID: '+  dataPyme.id_pyme
+      descripcion: 'SE INSERTA LA PYME: '+  dataPyme.nombre_pyme
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
@@ -392,21 +397,22 @@ agregarNuevaPyme() {
   updateBitacora(dataPyme: Pyme){
     const bitacora = {
       fecha: new Date(),
-      id_usuario: this.getUser.usuario,
-      id_objeto: 15,
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 22,
       accion: 'ACTUALIZAR',
-      descripcion: 'SE ACTUALIZA LA PYME CON EL ID: '+ dataPyme.id_pyme
+      descripcion: 'SE ACTUALIZA LA PYME: '+ dataPyme.nombre_pyme
     };
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
   }
+
   activarBitacora(dataPyme: Pyme){
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
-      id_objeto: 15,
+      id_objeto: 22,
       accion: 'ACTIVAR',
-      descripcion: 'SE ACTIVA LA PYME CON EL ID: '+ dataPyme.id_pyme
+      descripcion: 'SE ACTIVA LA PYME: '+ dataPyme.nombre_pyme
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
@@ -415,20 +421,20 @@ agregarNuevaPyme() {
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
-      id_objeto: 15,
+      id_objeto: 22,
       accion: 'INACTIVAR',
-      descripcion: 'SE INACTIVA LA PYME CON EL ID: '+ dataPyme.id_pyme
+      descripcion: 'SE INACTIVA LA PYME: '+ dataPyme.nombre_pyme
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
   }
   deleteBitacora(dataPyme: Pyme){
     const bitacora = {
-      fecha: new Date(),
-      id_usuario: this.getUser.usuario,
-      id_objeto: 15,
+      fecha: Date(),
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 22,
       accion: 'ELIMINAR',
-      descripcion: 'SE ELIMINA LA PYME CON EL ID: '+ dataPyme.id_pyme
+      descripcion: 'SE ELIMINA LA PYME CON EL ID: '+ dataPyme.nombre_pyme
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })

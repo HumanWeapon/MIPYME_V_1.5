@@ -36,8 +36,11 @@
                           <td>{{ question.fecha_modificacion }}</td>
                             <td class="text-center">
                               <div class="btn-group">
+                                <div class="form-check form-switch ml-4">
+                                  <input class="form-check-input" (click)="toggleFunction(question, i)" [title]="question.estado_pregunta == 1 ? 'Desactivar' : 'Activar'" type="checkbox" 
+                                    role="switch" id="flexSwitchCheckChecked" [checked]="question.estado_pregunta == 1">
+                                </div>
                                   <button type="button" (click)="obtenerIdPregunta(question, i)" data-toggle="modal" data-target="#abrirModalEditarPregunta"data-toggle="modal" data-target="#abrirModalEditarPregunta" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
-                                  <button type="button" (click)="toggleFunction(question, i)" class="btna " [title]="question.estado_pregunta == 1 ? 'Desactivar Pregunta' : 'Activar Pregunta'"><i class="fas" [ngClass]="question.estado_pregunta == 1 ? 'fa-solid fa-lock' : 'fa-solid fa-lock-open'"></i> </button>
                                 </div>
                             </td>
                           </tr>

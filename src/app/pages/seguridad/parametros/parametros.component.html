@@ -37,8 +37,11 @@
                             <td>{{ parametros.fecha_modificacion }}</td>
                             <td class="text-center">
                               <div class="btn-group">
+                                <div class="form-check form-switch ml-4">
+                                  <input class="form-check-input" (click)="toggleFunction(parametros, i)" [title]="parametros.estado_parametro == 1 ? 'Desactivar' : 'Activar'" type="checkbox" 
+                                    role="switch" id="flexSwitchCheckChecked" [checked]="parametros.estado_parametro == 1">
+                                </div>
                                   <button type="button" (click)="obtenerIdParametro(parametros, i)" data-toggle="modal" data-target="#abrirModalEditarParametro"data-toggle="modal" data-target="#abrirModalEditarParametro" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
-                                  <button type="button" (click)="toggleFunction(parametros, i)" class="btna " [title]="parametros.estado_parametro == 1 ? 'Desactivar Parametro' : 'Activar Parametro'"><i class="fas" [ngClass]="parametros.estado_parametro == 1 ? 'fa-solid fa-lock-open' : 'fa-solid fa-lock'"></i> </button>
                                 </div>
                             </td>
                           </tr>
