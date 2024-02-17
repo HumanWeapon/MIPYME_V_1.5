@@ -26,8 +26,6 @@ export class SearchComponent implements OnInit {
   productoEditando: Productos = {
     id_producto: 0, 
     id_categoria: 0,
-    id_contacto: 0,
-    id_pais: 0, 
     producto:'', 
     descripcion: '', 
     creado_por: '', 
@@ -285,16 +283,15 @@ export class SearchComponent implements OnInit {
   
     if (this.opcionSeleccionada === 20) {
       // Si la opción seleccionada es 20, mostrar todos los productos
-      this.listOpProductos = this._listProductos.filter(producto =>
+      /*this.listOpProductos = this._listProductos.filter(producto =>
         (this.opcionSeleccionadaPais === 99 || producto.id_pais === this.opcionSeleccionadaPais)
-      );
+      );*/
     } else {
       // Filtrar por la categoría y país seleccionados
       this.categoriaSeleccionada = this._listCategorias.find(categoria => categoria.id_categoria === this.opcionSeleccionada) || null;
   
       this.listOpProductos = this._listProductos.filter(producto =>
-        (this.opcionSeleccionada === 0 || producto.id_categoria === this.opcionSeleccionada) &&
-        (this.opcionSeleccionadaPais === 0 || producto.id_pais === this.opcionSeleccionadaPais)
+        (this.opcionSeleccionada === 0 || producto.id_categoria === this.opcionSeleccionada)
       );
     }
   }
@@ -314,8 +311,7 @@ export class SearchComponent implements OnInit {
         producto.producto.toLowerCase().includes(searchTerm) &&
         ((this.opcionSeleccionada === 0 && this.opcionSeleccionadaPais === 0) ||
           (this.opcionSeleccionada !== 0 && this.opcionSeleccionadaPais === 0 && producto.id_categoria === this.opcionSeleccionada) ||
-          (this.opcionSeleccionada === 0 && this.opcionSeleccionadaPais !== 0 && producto.id_pais === this.opcionSeleccionadaPais) ||
-          (this.opcionSeleccionada !== 0 && this.opcionSeleccionadaPais !== 0 && producto.id_categoria === this.opcionSeleccionada && producto.id_pais === this.opcionSeleccionadaPais))
+          (this.opcionSeleccionada !== 0 && this.opcionSeleccionadaPais !== 0 && producto.id_categoria === this.opcionSeleccionada))
       );
     }
   
@@ -337,8 +333,8 @@ export class SearchComponent implements OnInit {
       // Filtrar por término de búsqueda, categoría y país
       this.listOpProductos = this._listProductos.filter(producto =>
         producto.producto.toLowerCase().includes(searchTerm) &&
-        ((this.opcionSeleccionada === 0 || this.opcionSeleccionada === idTodosLosProductos) || producto.id_categoria === this.opcionSeleccionada) &&
-        ((this.opcionSeleccionadaPais === 0) || producto.id_pais === this.opcionSeleccionadaPais)
+        ((this.opcionSeleccionada === 0 || this.opcionSeleccionada === idTodosLosProductos) || producto.id_categoria === this.opcionSeleccionada)
+
       );
     }
   

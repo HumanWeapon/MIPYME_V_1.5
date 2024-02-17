@@ -16,21 +16,25 @@
                 <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover">
                     <thead>
                       <tr>
-                        <th>Producto</th>
-                        <th>Descripción</th>
-                        <th>Creado</th>
-                        <th>Fecha Creación</th>
-                        <th>Fecha Modificación</th>
-                        <th>Estado</th>
-                        <th>Aciones</th>
+                        <th>PRODUCTO</th>
+                        <th>DESCRIPCIÓN</th>
+                        <th>CATEGORÍA</th>
+                        <th>CREADOR</th>
+                        <th>FECHA</th>
+                        <th>MODIFICADOR</th>
+                        <th>FECHA</th>
+                        <th>ESTADO</th>
+                        <th>ACCIONES</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr *ngFor="let obj of listProductos; let i = index">
+                      <tr *ngFor="let obj of productos; let i = index">
                         <td>{{ obj.producto }}</td>
                         <td>{{ obj.descripcion }}</td>
+                        <td>{{ obj.categoria.categoria }}</td>
                         <td>{{ obj.creado_por }}</td>
                         <td>{{ obj.fecha_creacion}}</td>
+                        <td>{{ obj.modificado_por}}</td>
                         <td>{{ obj.fecha_modificacion}}</td>
                         <td>
                             <ng-container *ngIf="obj.estado === 1">ACTIVO</ng-container>
@@ -64,7 +68,7 @@
 
 
 
-<!-- Agregar Usuario Form -->
+<!-- Agregar producto Form -->
 <div class="modal fade" id="agregarProducto">
 <div class="modal-dialog">
   <div class="modal-content">
@@ -93,23 +97,6 @@
                 <option *ngFor="let item of listCategorias" [ngValue]="item.id_categoria">{{ item.categoria }}</option>
               </select>
             </div>
-
-            <div class="form-group">
-              <label for="nuevoPais">Pais:</label>
-              <select class="form-control" [(ngModel)]="nuevoProducto.id_pais" name="id_pais">
-                <option value="0">Seleccione el Pais</option>
-                <option *ngFor="let item of listPaises" [ngValue]="item.id_pais">{{ item.pais }}</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="nuevoContacto">Contacto:</label>
-              <select class="form-control" [(ngModel)]="nuevoProducto.id_contacto" name="id_contacto">
-                <option value="0">Seleccione el Contacto</option>
-                <option *ngFor="let item of listContactos" [ngValue]="item.id_contacto">{{ item.primer_nombre}} {{item.segundo_nombre}} {{ item.primer_apellido}} {{item.segundo_apellido}}</option>
-              </select>
-            </div>
-                          
           </form>
       </div>
       <div class="modal-footer justify-content-between">
@@ -121,7 +108,7 @@
 </div>
 <!-- /Agregar Usuario Form -->
 
-<!-- Actualizar Usuario Form -->
+<!-- Editar prodicto Form -->
 <div class="modal fade" id="abrirModalEditarObjeto">
   <div class="modal-dialog">
       <div class="modal-content">
@@ -147,23 +134,6 @@
                     <option *ngFor="let item of listCategorias" [ngValue]="item.id_categoria">{{ item.categoria }}</option>
                   </select>
                 </div>
-
-                <div class="form-group">
-                  <label for="editarPais">Pais:</label>
-                  <select class="form-control" [(ngModel)]="productoEditando.id_pais" name="id_pais">
-                    <option value="0">Seleccione el Pais</option>
-                    <option *ngFor="let item of listPaises" [ngValue]="item.id_pais">{{ item.pais }}</option>
-                  </select>
-                </div>
-    
-                <div class="form-group">
-                  <label for="editarContacto">Contacto:</label>
-                  <select class="form-control" [(ngModel)]="productoEditando.id_contacto" name="id_contacto">
-                    <option value="0">Seleccione el Contacto</option>
-                    <option *ngFor="let item of listContactos" [ngValue]="item.id_contacto">{{ item.primer_nombre}} {{item.segundo_nombre}} {{ item.primer_apellido}} {{item.segundo_apellido}}</option>
-                  </select>
-                </div>
-
                 <div class="modal-footer justify-content-between">
                   <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
                   <button type="submit" class="btn btn-success" (click)="editarProducto(cat)" data-dismiss="modal">Guardar</button>

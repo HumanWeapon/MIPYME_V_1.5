@@ -316,7 +316,7 @@ agregarNuevoObjeto() {
       id_usuario: this.getUser.id_usuario,
       id_objeto: 4,
       accion: 'INSERTAR',
-      descripcion: 'SE INSERTA EL OBJETO CON EL ID: '+ dataObjeto.objeto
+      descripcion: 'SE INSERTA EL OBJETO: '+ dataObjeto.objeto
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
@@ -347,6 +347,7 @@ agregarNuevoObjeto() {
     })
   }
   inactivarBitacora(dataObjeto: Objetos){
+    console.log(dataObjeto)
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,

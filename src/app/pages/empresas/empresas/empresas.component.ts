@@ -226,6 +226,7 @@ export class EmpresasComponent {
       this.listEmpresa = res;
       this.dtTrigger.next(null);
     });
+    this.getUsuario();
   }
 
   ocultarModal() {
@@ -464,7 +465,7 @@ handleError(error: HttpErrorResponse, errorMessage: string) {
   toggleFunction(empresa: any, i: number) {
 
     // Ejecuta una función u otra según el estado
-    if (empresa.estado === 1 ) {
+    if (empresa.estado == 1 ) {
       this.inactivarEmpresa(empresa, i); // Ejecuta la primera función
     } else {
       this.activarEmpresa(empresa, i); // Ejecuta la segunda función
@@ -472,16 +473,19 @@ handleError(error: HttpErrorResponse, errorMessage: string) {
   }
   
   activarEmpresa(nombre_empresa: any, i: number) {
-    this._empresaService.activarEmpresa(nombre_empresa).subscribe(data =>
-      this.toastr.success('La Empresa: ' + nombre_empresa.nombre_empresa + ' ha sido activada')
-    );
+    this._empresaService.activarEmpresa(nombre_empresa).subscribe(data => {
+      this.activarBitacora(this.data);
+      this.toastr.success('La Empresa: ' + nombre_empresa.nombre_empresa + ' ha sido activada');
+      
+  });
     this.listEmpresa[i].estado = 1;
   }
 
   inactivarEmpresa(nombre_empresa: any, i: number) {
-    this._empresaService.inactivarEmpresa(nombre_empresa).subscribe(data =>
+    this._empresaService.inactivarEmpresa(nombre_empresa).subscribe(data =>{
+      this.inactivarBitacora(this.data);
       this.toastr.success('La Empresa: ' + nombre_empresa.nombre_empresa + ' ha sido inactivada')
-    );
+  });
     this.listEmpresa[i].estado = 2;
   }
 /*****************************************************************************************************/
@@ -564,6 +568,7 @@ getEstadoText(estado: number): string {
 
   editarEmpresa(){
     this._empresaService.editarEmpresa(this.empresaEditando).subscribe(data => {
+      this.updateBitacora(data);
       this.toastr.success('Empresa editada con éxito');
       this.listEmpresa[this.indice].nombre_empresa = this.empresaEditando.nombre_empresa;
       this.listEmpresa[this.indice].descripcion = this.empresaEditando.descripcion;
@@ -671,7 +676,7 @@ getEstadoText(estado: number): string {
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
-      id_objeto: 10,
+      id_objeto: 9,
       accion: 'INSERTAR',
       descripcion: 'SE INSERTA LA EMPRESA CON EL ID: '+ dataEmpresa.id_empresa
     }
@@ -682,7 +687,7 @@ getEstadoText(estado: number): string {
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.usuario,
-      id_objeto: 10,
+      id_objeto: 9,
       accion: 'ACTUALIZAR',
       descripcion: 'SE ACTUALIZA LA EMPRESA CON EL ID: '+ dataEmpresa.id_empresa
     };
@@ -692,8 +697,8 @@ getEstadoText(estado: number): string {
   activarBitacora(dataEmpresa: Empresa){
     const bitacora = {
       fecha: new Date(),
-      id_usuario: this.getUser.usuario,
-      id_objeto: 10,
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 9,
       accion: 'ACTIVAR',
       descripcion: 'SE ACTIVA LA EMPRESA CON EL ID: '+ dataEmpresa.id_empresa
     }
@@ -703,8 +708,8 @@ getEstadoText(estado: number): string {
   inactivarBitacora(dataEmpresa: Empresa){
     const bitacora = {
       fecha: new Date(),
-      id_usuario: this.getUser.usuario,
-      id_objeto: 10,
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 9,
       accion: 'INACTIVAR',
       descripcion: 'SE INACTIVA LA EMPRESA CON EL ID: '+ dataEmpresa.id_empresa
     }
@@ -714,8 +719,8 @@ getEstadoText(estado: number): string {
   deleteBitacora(dataEmpresa: Empresa){
     const bitacora = {
       fecha: new Date(),
-      id_usuario: this.getUser.usuario,
-      id_objeto: 10,
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 9,
       accion: 'ELIMINAR',
       descripcion: 'SE ELIMINA LA EMPRESA CON EL ID: '+ dataEmpresa.id_empresa
     }

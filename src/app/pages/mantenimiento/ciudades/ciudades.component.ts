@@ -78,6 +78,7 @@ export class CiudadesComponent implements OnInit{
         this.listCiudades = res;
         this.dtTrigger.next(null);
       });
+      this.getUsuario();
   }
 
   ngOnDestroy(): void {
@@ -106,15 +107,17 @@ toggleFunction(ciu: any, i: number) {
 }
 
   inactivarCiudad(ciudades: Ciudades, i: any){
-    this._ciudadService.inactivarCiudad(ciudades).subscribe(data => 
-    this.toastr.success('La Ciudad: '+ ciudades.ciudad + ' ha sido inactivado')
-    );
+    this._ciudadService.inactivarCiudad(ciudades).subscribe(data => {
+    this.toastr.success('La Ciudad: '+ ciudades.ciudad + ' ha sido inactivado');
+    this.inactivarBitacora(data);
+  });
     this.listCiudades[i].estado = 2;
   }
   activarCiudad(ciudades: Ciudades, i: any){
-    this._ciudadService.activarCiudad(ciudades).subscribe(data => 
-    this.toastr.success('La ciudad: '+ ciudades.ciudad + ' ha sido activado')
-    );
+    this._ciudadService.activarCiudad(ciudades).subscribe(data => {
+    this.toastr.success('La ciudad: '+ ciudades.ciudad + ' ha sido activado');
+    this.activarBitacora(data);
+  });
     this.listCiudades[i].estado = 1;
   }
   
@@ -215,13 +218,11 @@ getEstadoText(estado: number): string {
 
   editarCiudad(){
     this._ciudadService.editarCiudad(this.ciudadEditando).subscribe(data => {
+      this.updateBitacora(data);
       this.toastr.success('Ciudad editada con éxito');
       this.listCiudades[this.indice].ciudad = this.ciudadEditando.ciudad;
       this.listCiudades[this.indice].descripcion = this.ciudadEditando.descripcion;
 
-      
-        // Recargar la página
-        location.reload();
         // Actualizar la vista
         this.ngZone.run(() => {        
         });
@@ -277,9 +278,9 @@ insertBitacora(dataCiudad: Ciudades) {
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
-    id_objeto: 2,
+    id_objeto: 18,
     accion: 'INSERTAR',
-    descripcion: 'SE INSERTA LA CIUDAD CON EL ID: ' + dataCiudad.id_ciudad
+    descripcion: 'SE INSERTA LA CIUDAD: ' + dataCiudad.ciudad
   };
 
   this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
@@ -291,10 +292,10 @@ insertBitacora(dataCiudad: Ciudades) {
 updateBitacora(dataCiudad: Ciudades) {
   const bitacora = {
     fecha: new Date(),
-    id_usuario: this.getUser.usuario,
-    id_objeto: 2,
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 18,
     accion: 'ACTUALIZAR',
-    descripcion: 'SE ACTUALIZA LA CIUDAD CON EL ID: ' + dataCiudad.id_ciudad
+    descripcion: 'SE ACTUALIZA LA CIUDAD: ' + dataCiudad.ciudad
   };
   this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
     // Puedes manejar el éxito aquí si es necesario
@@ -305,10 +306,10 @@ updateBitacora(dataCiudad: Ciudades) {
 activarBitacora(dataCiudad: Ciudades) {
   const bitacora = {
     fecha: new Date(),
-    id_usuario: this.getUser.usuario,
-    id_objeto: 2,
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 18,
     accion: 'ACTIVAR',
-    descripcion: 'SE ACTIVA LA CIUDAD CON EL ID: ' + dataCiudad.id_ciudad
+    descripcion: 'SE ACTIVA LA CIUDAD: ' + dataCiudad.ciudad
   };
   this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
     // Puedes manejar el éxito aquí si es necesario
@@ -319,10 +320,10 @@ activarBitacora(dataCiudad: Ciudades) {
 inactivarBitacora(dataCiudad: Ciudades) {
   const bitacora = {
     fecha: new Date(),
-    id_usuario: this.getUser.usuario,
-    id_objeto: 2,
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 18,
     accion: 'INACTIVAR',
-    descripcion: 'SE INACTIVA LA CIUDAD CON EL ID: ' + dataCiudad.id_ciudad
+    descripcion: 'SE INACTIVA LA CIUDAD: ' + dataCiudad.ciudad
   };
   this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
     // Puedes manejar el éxito aquí si es necesario
@@ -333,10 +334,10 @@ inactivarBitacora(dataCiudad: Ciudades) {
 deleteBitacora(dataCiudad: Ciudades) {
   const bitacora = {
     fecha: new Date(),
-    id_usuario: this.getUser.usuario,
-    id_objeto: 2,
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 18,
     accion: 'ELIMINAR',
-    descripcion: 'SE ELIMINA LA CIUDAD CON EL ID: ' + dataCiudad.id_ciudad
+    descripcion: 'SE ELIMINA LA CIUDAD: ' + dataCiudad.ciudad
   };
   this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
     // Puedes manejar el éxito aquí si es necesario

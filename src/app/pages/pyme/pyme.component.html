@@ -40,8 +40,11 @@
                         </td>
                         <td class="text-center">
                           <div class="btn-group">
+                            <div class="form-check form-switch ml-4">
+                              <input class="form-check-input" (click)="toggleFunction(pyme, i)" [title]="pyme.estado == 1 ? 'Desactivar' : 'Activar'" type="checkbox" 
+                                role="switch" id="flexSwitchCheckChecked" [checked]="pyme.estado == 1">
+                            </div>
                               <button type="button" (click)="obtenerIdPyme(pyme, i)" data-toggle="modal" title='Editar Pyme' data-target="#abrirModalEditarPyme"data-toggle="modal" data-target="#abrirModalEditarPyme" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
-                              <button type="button" (click)="toggleFunction(pyme, i)" class="btna " [title]="pyme.estado === 1 ? 'Desactivar Pyme' : 'Activar Pyme'"><i class="fas" [ngClass]="pyme.estado === 1 ? 'fa-solid fa-lock-open' : 'fa-solid fa-lock'"></i> </button>
                               <button type="button" (click)="deletePyme(pyme.id_pyme)" class="btna"  style="color: #E74C3C;" title="Eliminar Pyme"><i class=" fas fa-solid fa-trash"></i></button>
                             </div>
                         </td>

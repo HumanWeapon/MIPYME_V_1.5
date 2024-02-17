@@ -97,11 +97,22 @@ export class PermisosComponent implements OnInit, OnDestroy {
       responsive: true,
     };
 
-    this._permService.getAllPermisos().subscribe((res: any) => {
+    this._permService.getAllPermisos()
+    .subscribe({
+      next: (data) =>{
+      this.listPermisos = data;
+      this.dtTrigger.next(0);
+      }
+    });
+  this.getUsuario();
+}
+
+    /*this._permService.getAllPermisos().subscribe((res: any) => {
       this.listPermisos = res;
       this.dtTrigger.next(null);
     });
-  }
+    this.getUsuario();
+  }*/
 
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
@@ -124,25 +135,30 @@ export class PermisosComponent implements OnInit, OnDestroy {
 toggleFunction(perm: any, i: number) {
 
   // Ejecuta una función u otra según el estado
-  if (perm.estado_permiso === 1 ) {
+  if (perm.estado_permiso == 1 ) {
     this.inactivarPermiso(perm, i); // Ejecuta la primera función
   } else {
     this.activarPermiso(perm, i); // Ejecuta la segunda función
   }
 }
 
-  inactivarPermiso(permisos: Permisos, i: any){
-    this._permService.inactivarPermiso(permisos).subscribe(data => 
-    this.toastr.success('El permiso: ' + permisos.id_permisos+ ' ha sido inactivado')
-    );
-    this.listPermisos[i].estado_permiso = 2;
-  }
-  activarPermiso(permisos: Permisos, i: any){
-    this._permService.activarPermiso(permisos).subscribe(data => 
-    this.toastr.success('El permiso:' + permisos.id_permisos+ ' ha sido activado')
-    );
-    this.listPermisos[i].estado_permiso = 1;
-  }
+
+inactivarPermiso(permisos: any, i: number){
+  this._permService.inactivarPermiso(permisos).subscribe(data => {
+    this.toastr.success('El rol: '+ permisos.permiso+ ' ha sido inactivado');
+    this.inactivarBitacora(data);
+  });
+  this.listPermisos[i].estado_permiso = 2;
+}
+activarPermiso(permisos: any, i: number){
+  this._permService.activarPermiso(permisos).subscribe(data => {
+    this.toastr.success('El rol: '+ permisos.permiso+ ' ha sido activado');
+    this.activarBitacora(data);
+    
+  });
+  this.listPermisos[i].estado_permiso = 1;
+}
+
 
   /*****************************************************************************************************/
 
@@ -244,10 +260,9 @@ getEstadoText(estado: number): string {
 
   editarPermiso() {
     this._permService.editarPermiso(this.permisoeditando).subscribe(() => {
+      this.updateBitacora(this.data);
       this.toastr.success('Permiso editado con éxito');
       this.listPermisos[this.indice] = { ...this.permisoeditando };
-      // Recargar la página
-      location.reload();
       // Actualizar la vista
       this.ngZone.run(() => {        
       });
@@ -318,7 +333,7 @@ insertBitacora(dataPermisos: Permisos){
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
-    id_objeto: 27,
+    id_objeto: 28,
     accion: 'INSERTAR',
     descripcion: 'SE INSERTA EL PERMISO CON EL ID: '+ dataPermisos.id_permisos
   }
@@ -329,7 +344,7 @@ updateBitacora(dataPermisos: Permisos){
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.usuario,
-    id_objeto: 27,
+    id_objeto: 28,
     accion: 'ACTUALIZAR',
     descripcion: 'SE ACTUALIZA EL PERMISO CON EL ID: '+ dataPermisos.id_permisos
   };
@@ -339,8 +354,8 @@ updateBitacora(dataPermisos: Permisos){
 activarBitacora(dataPermisos: Permisos){
   const bitacora = {
     fecha: new Date(),
-    id_usuario: this.getUser.usuario,
-    id_objeto: 27,
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 28,
     accion: 'ACTIVAR',
     descripcion: 'SE ACTIVA EL PERMISO CON EL ID: '+ dataPermisos.id_permisos
   }
@@ -350,8 +365,8 @@ activarBitacora(dataPermisos: Permisos){
 inactivarBitacora(dataPermisos: Permisos){
   const bitacora = {
     fecha: new Date(),
-    id_usuario: this.getUser.usuario,
-    id_objeto: 27,
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 28,
     accion: 'INACTIVAR',
     descripcion: 'SE INACTIVA EL PERMISO CON EL ID: '+ dataPermisos.id_permisos
   }
@@ -361,8 +376,8 @@ inactivarBitacora(dataPermisos: Permisos){
 deleteBitacora(dataPermisos: Permisos){
   const bitacora = {
     fecha: new Date(),
-    id_usuario: this.getUser.usuario,
-    id_objeto: 27,
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 28,
     accion: 'ELIMINAR',
     descripcion: 'SE ELIMINA EL PERMISO CON EL ID: '+ dataPermisos.id_permisos
   }

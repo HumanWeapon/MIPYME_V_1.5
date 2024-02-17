@@ -24,11 +24,10 @@ import { ContactoService } from 'src/app/services/contacto/contacto.service';
 
 export class ProductosComponent implements OnInit{
 
+  productos: any[] = [];
   productoEditando: Productos = {
     id_producto: 0, 
     id_categoria: 0,
-    id_contacto: 0,
-    id_pais: 0, 
     producto:'', 
     descripcion: '', 
     creado_por: '', 
@@ -42,8 +41,6 @@ export class ProductosComponent implements OnInit{
   nuevoProducto: Productos = {
     id_producto: 0, 
     id_categoria: 0, 
-    id_contacto: 0,
-    id_pais: 0, 
     producto:'', 
     descripcion: '', 
     creado_por: '', 
@@ -59,8 +56,6 @@ export class ProductosComponent implements OnInit{
   listProductos: Productos[] = [];
   data: any;
   listCategorias: Categoria[] = [];
-  listPaises: Paises[] = [];
-  listContactos: Contacto[] = [];
 
   // We use this trigger because fetching the list of persons can be quite long,
   // thus we ensure the data is fetched before rendering
@@ -77,9 +72,7 @@ export class ProductosComponent implements OnInit{
     private _errorService: ErrorService,
     private _userService: UsuariosService,
     private _ngZone: NgZone,
-    private _categoriaProductos: CategoriaService,
-    private _paisesService: PaisesService,
-    private _contactoService: ContactoService
+    private _categoriaProductos: CategoriaService
     ) {}
 
   
@@ -93,24 +86,13 @@ export class ProductosComponent implements OnInit{
     };
     this._productoService.getAllProductos()
       .subscribe((res: any) => {
-        this.listProductos= res;
-        console.log(res)
+        this.productos = res;
+        console.log(res);
         this.dtTrigger.next(null);
       });
 
       this._categoriaProductos.getAllCategorias().subscribe(data => {
         this.listCategorias = data
-        console.log(this.listCategorias)
-      });
-
-      this._paisesService.getAllPaises().subscribe(data => {
-        this.listPaises = data
-        console.log(this.listPaises)
-      });
-
-      this._contactoService.getAllContactos().subscribe(data => {
-        this.listContactos = data
-        console.log(this.listContactos)
       });
   }
 
@@ -130,14 +112,11 @@ export class ProductosComponent implements OnInit{
   
 
   agregarNuevoProducto() {
-
     const usuarioLocal = localStorage.getItem('usuario')
     if(usuarioLocal){
       this.nuevoProducto = {
         id_producto: 0, 
-        id_categoria: this.nuevoProducto.id_categoria, 
-        id_contacto:this.nuevoProducto.id_categoria,
-        id_pais:this.nuevoProducto.id_pais,
+        id_categoria: this.nuevoProducto.id_categoria,
         producto: this.nuevoProducto.producto, 
         descripcion:this.nuevoProducto.descripcion, 
         estado: 1,
@@ -165,8 +144,6 @@ export class ProductosComponent implements OnInit{
     this.productoEditando = {
     id_producto: productos.id_producto,
     id_categoria: productos.id_categoria, 
-    id_contacto:productos.id_contacto,
-    id_pais:productos.id_pais,
     producto: productos.producto, 
     descripcion: productos.descripcion,  
     creado_por: productos.creado_por, 

@@ -45,11 +45,14 @@
                       <td>{{ user.fecha_vencimiento}}</td>
                       <td class="text-center">
                         <div class="btn-group">
+
                           <div class="form-check form-switch ml-4">
                             <input class="form-check-input" (click)="toggleFunction(user, i)" [title]="user.estado_usuario == 1 ? 'Desactivar' : 'Activar'" type="checkbox" 
                               role="switch" id="flexSwitchCheckChecked" [checked]="user.estado_usuario == 1">
                           </div>
+
                             <button type="button" (click)="obtenerIdUsuario(user, i)" title="Editar Usuario" class="btna" data-toggle="modal" data-target="#abrirModalEditar"data-toggle="modal" data-target="#abrirModalEditar"  ><i class="fas fa-solid fa-pen"></i></button>
+                          
                           </div>
                       </td>
                     </tr>
