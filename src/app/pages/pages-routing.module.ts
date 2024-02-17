@@ -31,7 +31,6 @@ import { BackupComponent } from './administracion/backup/backup.component';
 import { RestoreComponent } from './administracion/restore/restore.component';
 import { PymeComponent } from './pyme/pyme.component';
 import { ContactoEmpresasComponent } from './contacto/contacto-empresas/contacto-empresas.component';
-import { Empresas2Component } from './empresas2/empresas2.component';
 import { SeguridadComponent } from './seguridad/seguridad.component';
 import { AdministracionComponent } from './administracion/administracion.component';
 import { MantenimientoComponent } from './mantenimiento/mantenimiento.component';
@@ -81,7 +80,6 @@ const routes: Routes = [
     { path: 'contactos', component:ContactoComponent, data:{titulo: 'Contacto'}},
     { path: 'contacto_telefono', component:TelefonosComponent, data:{titulo: 'Contacto de teléfono'}},
     { path: 'contacto_direcciones', component:DireccionesComponent, data:{titulo: 'Contacto de direcciones'}},
-    { path: 'empresas2', component:Empresas2Component, data:{titulo: 'Empresas'}},
 
     //ABC grado C.
     //{ path: 'contactos', component:ContactoEmpresasComponent, data:{titulo: 'Contactos'}},

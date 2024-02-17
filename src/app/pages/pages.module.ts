@@ -34,7 +34,6 @@ import { BackupComponent } from './administracion/backup/backup.component';
 import { PymeComponent } from './pyme/pyme.component';
 import { PerfilComponent } from './perfil/perfil.component';
 import { ContactoEmpresasComponent } from './contacto/contacto-empresas/contacto-empresas.component';
-import { Empresas2Component } from './empresas2/empresas2.component';
 import { Permisos2Component } from './seguridad/permisos2/permisos2.component';
 import { SeguridadComponent } from './seguridad/seguridad.component';
 import { AdministracionComponent } from './administracion/administracion.component'
@@ -73,7 +72,6 @@ import { MantenimientoComponent } from './mantenimiento/mantenimiento.component'
     BackupComponent,
     PymeComponent,
     ContactoEmpresasComponent,
-    Empresas2Component,
     PerfilComponent,
     Permisos2Component,
     SeguridadComponent,

@@ -14,13 +14,14 @@
                 <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"class="table table-bordered table-striped row-border hover">
                     <thead>
                       <tr>
-                        <th>Nombre Empresa</th>
-                        <th>Descripcion</th>
-                        <th>Creado</th>
-                        <th>Fecha Creación</th>
-                        <th>Fecha Modificación</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
+                        <th>NOMBRE</th>
+                        <th>DESCRIPCION</th>
+                        <th>CREADOR</th>
+                        <th>FECHA</th>
+                        <th>MODIFICADOR</th>
+                        <th>FECHA</th>
+                        <th>ESTADO</th>
+                        <th>ACCIONES</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -29,10 +30,11 @@
                         <td>{{ empresa.descripcion }}</td>
                         <td>{{ empresa.creado_por}}</td>
                         <td>{{ empresa.fecha_creacion}}</td>
+                        <td>{{ empresa.modificado_por}}</td>
                         <td>{{ empresa.fecha_modificacion}}</td>
                         <td>
-                            <ng-container *ngIf="empresa.estado === 1">ACTIVO</ng-container>
-                            <ng-container *ngIf="empresa.estado === 2">INACTIVO</ng-container>
+                            <ng-container *ngIf="empresa.estado == 1">ACTIVO</ng-container>
+                            <ng-container *ngIf="empresa.estado == 2">INACTIVO</ng-container>
                           </td>
                         <td class="text-center">
                           <div class="btn-group">
@@ -82,21 +84,6 @@
         <div class="form-group">
           <label for="nuevaDescripcion">Descripcion:</label>
           <input type="text" [(ngModel)]="nuevaEmpresa.descripcion" name="descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="descripcion" placeholder="Descripción">
-        </div>
-        <div class="form-group">
-          <label for="nuevaDescripcion">Pagina Web:</label>
-          <input type="text" [(ngModel)]="nuevaEmpresa.web" name="web" (input)="onInputChange($event, 'web')" class="form-control" id="web" placeholder="Pagina Web">
-        </div>
-        <div class="form-group">
-          <label for="nuevaDescripcion">Telefono:</label>
-          <input type="text" [(ngModel)]="nuevoContactoT.telefono" name="telefono" (input)="onInputChange($event, 'telefono')" class="form-control" id="telefono" placeholder="Telefono">
-        </div>
-        <div class="form-group">
-          <label for="nuevoPais">Pais:</label>
-          <select [(ngModel)]="nuevoPais.pais" name="nuevoPais.pais"  class="form-control" id="categoria">
-            <option value="0">Selecciona el Pais</option>
-            <option *ngFor="let pais of listPaises" [ngValue]="pais.pais">{{ pais.pais }}</option>
-          </select>
         </div>
         <!-- Botones -->
         <div class="modal-footer justify-content-between">
@@ -225,16 +212,11 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form>
-                  <div class="form-group">
-                      <label for="empresaEditando">Nombre de Empresa</label>
-                      <input type="text" [(ngModel)]="empresaEditando.nombre_empresa" name="empresaEditando.nombre_empresa" (input)="onInputChange($event, 'nombre_empresa')" class="form-control" id="editarNombre" placeholder="Nombre de la Empresa">
-                  </div>  
-                <div class="form-group">
-                    <label for="empresaEditando">Descripción</label>
-                    <input type="text" [(ngModel)]="empresaEditando.descripcion" name="empresaEditando.descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="editarDescripcion" placeholder="Descripción">
-                </div>      
-              </form>
+
+
+
+
+              
             </div>
             <div class="modal-footer justify-content-between">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
