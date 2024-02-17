@@ -26,6 +26,8 @@ export class SearchComponent implements OnInit {
   productoEditando: Productos = {
     id_producto: 0, 
     id_categoria: 0,
+    id_pais:0,
+    id_contacto:0,
     producto:'', 
     descripcion: '', 
     creado_por: '', 

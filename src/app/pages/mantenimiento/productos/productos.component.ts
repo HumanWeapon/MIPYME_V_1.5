@@ -28,6 +28,8 @@ export class ProductosComponent implements OnInit{
   productoEditando: Productos = {
     id_producto: 0, 
     id_categoria: 0,
+    id_contacto:0,
+    id_pais:0,
     producto:'', 
     descripcion: '', 
     creado_por: '', 
@@ -41,6 +43,8 @@ export class ProductosComponent implements OnInit{
   nuevoProducto: Productos = {
     id_producto: 0, 
     id_categoria: 0, 
+    id_contacto:0,
+    id_pais:0,
     producto:'', 
     descripcion: '', 
     creado_por: '', 
@@ -116,6 +120,8 @@ export class ProductosComponent implements OnInit{
     if(usuarioLocal){
       this.nuevoProducto = {
         id_producto: 0, 
+        id_contacto:0,
+        id_pais:0,
         id_categoria: this.nuevoProducto.id_categoria,
         producto: this.nuevoProducto.producto, 
         descripcion:this.nuevoProducto.descripcion, 
@@ -142,6 +148,8 @@ export class ProductosComponent implements OnInit{
 
   obtenerIdProductos(productos: Productos, i: any){
     this.productoEditando = {
+    id_contacto:productos.id_contacto,
+    id_pais:productos.id_pais,
     id_producto: productos.id_producto,
     id_categoria: productos.id_categoria, 
     producto: productos.producto, 
