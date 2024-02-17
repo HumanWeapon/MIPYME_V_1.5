@@ -147,9 +147,7 @@ export class EmpresasComponent {
     /*******Producto************/
     productoEditando: Productos = {
       id_producto: 0, 
-      id_categoria: 0,
-      id_contacto: 0,
-      id_pais: 0, 
+      id_categoria: 0, 
       producto:'', 
       descripcion: '', 
       creado_por: '', 
@@ -162,8 +160,6 @@ export class EmpresasComponent {
     nuevoProducto: Productos = {
       id_producto: 0, 
       id_categoria: 0, 
-      id_contacto: 0,
-      id_pais: 0, 
       producto:'', 
       descripcion: '', 
       creado_por: '', 
@@ -391,8 +387,6 @@ agregarNuevoProducto() {
   this.nuevoProducto = {
     id_producto: 0, 
     id_categoria: this.nuevoProducto.id_categoria, 
-    id_contacto: this.nuevoProducto.id_categoria,
-    id_pais: this.nuevoProducto.id_pais,
     producto: this.nuevoProducto.producto, 
     descripcion: this.nuevoProducto.descripcion, 
     estado: 1,

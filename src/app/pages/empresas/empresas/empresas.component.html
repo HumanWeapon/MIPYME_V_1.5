@@ -31,8 +31,8 @@
                         <td>{{ empresa.fecha_creacion}}</td>
                         <td>{{ empresa.fecha_modificacion}}</td>
                         <td>
-                            <ng-container *ngIf="empresa.estado === 1">ACTIVO</ng-container>
-                            <ng-container *ngIf="empresa.estado === 2">INACTIVO</ng-container>
+                            <ng-container *ngIf="empresa.estado == 1">ACTIVO</ng-container>
+                            <ng-container *ngIf="empresa.estado == 2">INACTIVO</ng-container>
                           </td>
                         <td class="text-center">
                           <div class="btn-group">
@@ -184,22 +184,6 @@
         <select class="form-control" id="editarRol" [(ngModel)]="nuevoProducto.id_categoria" name="id_categoria">
           <option value="0">Seleccione la Categoria</option>
           <option *ngFor="let item of listCategorias" [ngValue]="item.id_categoria">{{ item.categoria }}</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label for="nuevoPais">Pais:</label>
-        <select class="form-control" [(ngModel)]="nuevoProducto.id_pais" name="id_pais">
-          <option value="0">Seleccione el Pais</option>
-          <option *ngFor="let item of listPaises" [ngValue]="item.id_pais">{{ item.pais }}</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label for="nuevoContacto">Contacto:</label>
-        <select class="form-control" [(ngModel)]="nuevoProducto.id_contacto" name="id_contacto">
-          <option value="0">Seleccione el Contacto</option>
-          <option *ngFor="let item of listContactos" [ngValue]="item.id_contacto">{{ item.primer_nombre}} {{item.segundo_nombre}} {{ item.primer_apellido}} {{item.segundo_apellido}}</option>
         </select>
       </div>
           </table>           
