@@ -78,6 +78,8 @@ export class PaisesComponent implements OnInit{
         console.log(res)
         this.dtTrigger.next(null);
       });
+      this.getUsuario();
+
   }
 
   ngOnDestroy(): void {
@@ -101,7 +103,7 @@ export class PaisesComponent implements OnInit{
 toggleFunction(paises: any, i: number) {
 
   // Ejecuta una función u otra según el estado
-  if (paises.estado === 1 ) {
+  if (paises.estado == 1 ) {
     this.inactivarPais(paises, i); // Ejecuta la primera función
   } else {
     this.activarPais(paises, i); // Ejecuta la segunda función
@@ -109,15 +111,17 @@ toggleFunction(paises: any, i: number) {
 }
  
   inactivarPais(paises: Paises, i: any){
-    this._objService.inactivarPais(paises).subscribe(data => 
-    this.toastr.success('El pais: '+ paises.pais+ ' ha sido inactivado')
-    );
+    this._objService.inactivarPais(paises).subscribe(data => {
+    this.toastr.success('El pais: '+ paises.pais+ ' ha sido inactivado');
+    this.inactivarBitacora(data);
+  });
     this.listPaises[i].estado = 2;
   }
   activarPais(paises: Paises, i: any){
-    this._objService.activarPais(paises).subscribe(data => 
-    this.toastr.success('El pais: '+ paises.pais+ ' ha sido activado')
-    );
+    this._objService.activarPais(paises).subscribe(data => {
+    this.toastr.success('El pais: '+ paises.pais+ ' ha sido activado');
+    this.activarBitacora(data);
+  });
     this.listPaises[i].estado = 1;
   }
 
@@ -220,6 +224,7 @@ getEstadoText(estado: number): string {
 
   editarPais(){
     this._objService.editarPais(this.paisEditando).subscribe(data => {
+      this.updateBitacora(data);
       this.toastr.success('Pais editado con éxito');
       this.listPaises[this.indice].pais = this.paisEditando.pais;
       this.listPaises[this.indice].pais = this.paisEditando.descripcion;
@@ -287,9 +292,9 @@ insertBitacora(dataPais: Paises){
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
-    id_objeto: 1,
+    id_objeto: 19,
     accion: 'INSERTAR',
-    descripcion: 'SE INSERTA EL PAIS CON EL ID: '+ dataPais.id_pais
+    descripcion: 'SE INSERTA EL PAIS: '+ dataPais.pais
   }
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
   })
@@ -297,10 +302,10 @@ insertBitacora(dataPais: Paises){
 updateBitacora(dataPais: Paises){
   const bitacora = {
     fecha: new Date(),
-    id_usuario: this.getUser.usuario,
-    id_objeto: 1,
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 19,
     accion: 'ACTUALIZAR',
-    descripcion: 'SE ACTUALIZA EL PAIS CON EL ID: '+ dataPais.id_pais
+    descripcion: 'SE ACTUALIZA EL PAIS: '+ dataPais.pais
   };
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
   })
@@ -308,10 +313,10 @@ updateBitacora(dataPais: Paises){
 activarBitacora(dataPais: Paises){
   const bitacora = {
     fecha: new Date(),
-    id_usuario: this.getUser.usuario,
-    id_objeto: 1,
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 19,
     accion: 'ACTIVAR',
-    descripcion: 'SE ACTIVA EL PAIS CON EL ID: '+ dataPais.id_pais
+    descripcion: 'SE ACTIVA EL PAIS: '+ dataPais.pais
   }
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
   })
@@ -319,10 +324,10 @@ activarBitacora(dataPais: Paises){
 inactivarBitacora(dataPais: Paises){
   const bitacora = {
     fecha: new Date(),
-    id_usuario: this.getUser.usuario,
-    id_objeto: 1,
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 19,
     accion: 'INACTIVAR',
-    descripcion: 'SE INACTIVA EL PAIS CON EL ID: '+ dataPais.id_pais
+    descripcion: 'SE INACTIVA EL PAIS: '+ dataPais.pais
   }
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
   })
@@ -330,10 +335,10 @@ inactivarBitacora(dataPais: Paises){
 deleteBitacora(dataPais: Paises){
   const bitacora = {
     fecha: new Date(),
-    id_usuario: this.getUser.usuario,
-    id_objeto: 1,
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 19,
     accion: 'ELIMINAR',
-    descripcion: 'SE ELIMINA EL PAIS CON EL ID: '+ dataPais.id_pais
+    descripcion: 'SE ELIMINA EL PAIS: '+ dataPais.pais
   }
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
   })

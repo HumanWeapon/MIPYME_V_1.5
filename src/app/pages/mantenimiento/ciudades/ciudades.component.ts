@@ -99,7 +99,7 @@ onInputChange(event: any, field: string) {
 toggleFunction(ciu: any, i: number) {
 
   // Ejecuta una función u otra según el estado
-  if (ciu.estado === 1 ) {
+  if (ciu.estado == 1 ) {
     this.inactivarCiudad(ciu, i); // Ejecuta la primera función
   } else {
     this.activarCiudad(ciu, i); // Ejecuta la segunda función

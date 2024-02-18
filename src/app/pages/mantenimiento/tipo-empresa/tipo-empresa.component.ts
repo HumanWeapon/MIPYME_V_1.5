@@ -71,6 +71,7 @@ export class TipoEmpresaComponent implements OnInit{
             this.listTipoE = res;
             this.dtTrigger.next(null);
           });
+          this.getUsuario();
       }
       ngOnDestroy(): void {
         // Do not forget to unsubscribe the event
@@ -90,7 +91,7 @@ export class TipoEmpresaComponent implements OnInit{
  toggleFunction(Tempre: any, i: number) {
 
   // Ejecuta una función u otra según el estado
-  if (Tempre.estado === 1 ) {
+  if (Tempre.estado == 1 ) {
     this.inactivarTipoEmpresa(Tempre, i); // Ejecuta la primera función
   } else {
     this.activarTipoEmpresa(Tempre, i); // Ejecuta la segunda función
@@ -98,16 +99,18 @@ export class TipoEmpresaComponent implements OnInit{
  }
     
       inactivarTipoEmpresa(tipoEmpresa: TipoEmpresa, i: any){
-        this.tipoempresaService.inactivarTipoEmpresa(tipoEmpresa).subscribe(data => 
-        this.toastr.success('El tipo de empresa: '+ tipoEmpresa.tipo_empresa + ' ha sido inactivado')
-        );
+        this.tipoempresaService.inactivarTipoEmpresa(tipoEmpresa).subscribe(data => {
+        this.toastr.success('El tipo de empresa: '+ tipoEmpresa.tipo_empresa + ' ha sido inactivado');
+        this.inactivarBitacora(data);
+      });
         this.listTipoE[i].estado = 2; 
       }
 
       activarTipoEmpresa(tipoEmpresa: TipoEmpresa, i: any){
-        this.tipoempresaService.activarTipoEmpresa(tipoEmpresa).subscribe(data => 
-        this.toastr.success('El tipo de empresa: '+ tipoEmpresa.tipo_empresa + ' ha sido activado')
-        );
+        this.tipoempresaService.activarTipoEmpresa(tipoEmpresa).subscribe(data => {
+        this.toastr.success('El tipo de empresa: '+ tipoEmpresa.tipo_empresa + ' ha sido activado');
+        this.activarBitacora(data);
+      });
         this.listTipoE[i].estado = 1;
       }
     
@@ -210,13 +213,11 @@ getEstadoText(estado: number): string {
     
       editarTipoEmpresa(){
         this.tipoempresaService.editarTipoEmpresa(this.tipoEmpresaEditando).subscribe(data => {
+          this.updateBitacora(data);
           this.toastr.success('Tipo de empresa editado con éxito');
           this.listTipoE[this.indice].tipo_empresa = this.tipoEmpresaEditando.tipo_empresa;
           this.listTipoE[this.indice].descripcion = this.tipoEmpresaEditando.descripcion;
     
-          
-            // Recargar la página
-            location.reload();
             // Actualizar la vista
             this.ngZone.run(() => {        
             });
@@ -280,7 +281,7 @@ getEstadoText(estado: number): string {
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
-      id_objeto: 3,
+      id_objeto: 13,
       accion: 'INSERTAR',
       descripcion: 'SE INSERTA EL TIPO DE EMPRESA CON EL ID: '+ dataTipEmpresa.id_tipo_empresa
     }
@@ -290,8 +291,8 @@ getEstadoText(estado: number): string {
   updateBitacora(dataTipEmpresa: TipoEmpresa){
     const bitacora = {
       fecha: new Date(),
-      id_usuario: this.getUser.usuario,
-      id_objeto: 3,
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 13,
       accion: 'ACTUALIZAR',
       descripcion: 'SE ACTUALIZA EL TIPO DE EMPRESA CON EL ID: '+ dataTipEmpresa.id_tipo_empresa
     };
@@ -301,8 +302,8 @@ getEstadoText(estado: number): string {
   activarBitacora(dataTipEmpresa: TipoEmpresa){
     const bitacora = {
       fecha: new Date(),
-      id_usuario: this.getUser.usuario,
-      id_objeto: 3,
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 13,
       accion: 'ACTIVAR',
       descripcion: 'SE ACTIVA EL TIPO DE EMPRESA CON EL ID: '+ dataTipEmpresa.id_tipo_empresa
     }
@@ -312,8 +313,8 @@ getEstadoText(estado: number): string {
   inactivarBitacora(dataTipEmpresa: TipoEmpresa){
     const bitacora = {
       fecha: new Date(),
-      id_usuario: this.getUser.usuario,
-      id_objeto: 3,
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 13,
       accion: 'INACTIVAR',
       descripcion: 'SE INACTIVA EL TIPO DE EMPRESA CON EL ID: '+ dataTipEmpresa.id_tipo_empresa
     }
@@ -323,8 +324,8 @@ getEstadoText(estado: number): string {
   deleteBitacora(dataTipEmpresa: TipoEmpresa){
     const bitacora = {
       fecha: new Date(),
-      id_usuario: this.getUser.usuario,
-      id_objeto: 3,
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 13,
       accion: 'ELIMINAR',
       descripcion: 'SE ELIMINA EL TIPO DE EMPRESA CON EL ID: '+ dataTipEmpresa.id_tipo_empresa
     }

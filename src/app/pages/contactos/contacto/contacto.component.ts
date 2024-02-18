@@ -89,6 +89,7 @@ export class ContactoComponent implements OnInit{
         this.listContacto = res;
         this.dtTrigger.next(null);
       });
+      this.getUsuario();
   }
 
   ngOnDestroy(): void {
@@ -117,7 +118,7 @@ onInputChange(event: any, field: string) {
 toggleFunction(contac: any, i: number) {
 
   // Ejecuta una función u otra según el estado
-  if (contac.estado === 1 ) {
+  if (contac.estado == 1 ) {
     this.inactivarContacto(contac, i); // Ejecuta la primera función
   } else {
     this.activarContacto(contac, i); // Ejecuta la segunda función
@@ -125,15 +126,17 @@ toggleFunction(contac: any, i: number) {
 }
 
   inactivarContacto(contacto: Contacto, i: any){
-    this._contactoService.inactivarContacto(contacto).subscribe(data => 
-    this.toastr.success('El contacto: '+ contacto.primer_nombre + ' ha sido inactivado')
-    );
+    this._contactoService.inactivarContacto(contacto).subscribe(data => {
+    this.toastr.success('El contacto: '+ contacto.primer_nombre + ' ha sido inactivado');
+    this.inactivarBitacora(data);
+  });
     this.listContacto[i].estado = 2; 
   }
   activarContacto(contacto: Contacto, i: any){
-    this._contactoService.activarContacto(contacto).subscribe(data => 
-    this.toastr.success('El contacto: '+ contacto.primer_nombre + ' ha sido activado')
-    );
+    this._contactoService.activarContacto(contacto).subscribe(data => {
+    this.toastr.success('El contacto: '+ contacto.primer_nombre + ' ha sido activado');
+    this.activarBitacora(data);
+  });
     this.listContacto[i].estado = 1;
   }
 
@@ -243,6 +246,7 @@ getEstadoText(estado: number): string {
 
   editarContacto(){
     this._contactoService.editarContacto(this.contactoEditando).subscribe(data => {
+      this.updateBitacora(data);
       this.toastr.success('contacto editado con éxito');
       this.listContacto[this.indice].dni = this.contactoEditando.dni;
       this.listContacto[this.indice].primer_nombre = this.contactoEditando.primer_nombre;
@@ -252,9 +256,6 @@ getEstadoText(estado: number): string {
       this.listContacto[this.indice].correo = this.contactoEditando.correo;
       this.listContacto[this.indice].descripcion = this.contactoEditando.descripcion;
 
-     
-        // Recargar la página
-        location.reload();
         // Actualizar la vista
         this.ngZone.run(() => {        
         });
@@ -318,7 +319,7 @@ getEstadoText(estado: number): string {
       const bitacora = {
         fecha: new Date(),
         id_usuario: this.getUser.id_usuario,
-        id_objeto: 13,
+        id_objeto: 17,
         accion: 'INSERTAR',
         descripcion: 'SE INSERTA EL CONTACTO CON EL ID: '+ dataContacto.id_contacto
       }
@@ -329,7 +330,7 @@ getEstadoText(estado: number): string {
       const bitacora = {
         fecha: new Date(),
         id_usuario: this.getUser.id_usuario,
-        id_objeto: 13,
+        id_objeto: 17,
         accion: 'ACTUALIZAR',
         descripcion: 'SE ACTUALIZA EL CONTACTO CON EL ID: '+ dataContacto.id_contacto
       };
@@ -340,7 +341,7 @@ getEstadoText(estado: number): string {
       const bitacora = {
         fecha: new Date(),
         id_usuario: this.getUser.id_usuario,
-        id_objeto: 13,
+        id_objeto: 17,
         accion: 'ACTIVAR',
         descripcion: 'SE ACTIVA EL CONTACTO CON EL ID: '+ dataContacto.id_contacto
       }
@@ -351,7 +352,7 @@ getEstadoText(estado: number): string {
       const bitacora = {
         fecha: new Date(),
         id_usuario: this.getUser.id_usuario,
-        id_objeto: 13,
+        id_objeto: 17,
         accion: 'INACTIVAR',
         descripcion: 'SE INACTIVA EL CONTACTO CON EL ID: '+ dataContacto.id_contacto
       }
@@ -362,7 +363,7 @@ getEstadoText(estado: number): string {
       const bitacora = {
         fecha: new Date(),
         id_usuario: this.getUser.id_usuario,
-        id_objeto: 13,
+        id_objeto: 17,
         accion: 'ELIMINAR',
         descripcion: 'SE ELIMINA EL CONTACTO CON EL ID: '+ dataContacto.id_contacto
       }

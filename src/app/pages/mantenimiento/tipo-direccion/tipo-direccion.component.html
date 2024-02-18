@@ -40,8 +40,11 @@
                             </td>
                             <td class="text-center">
                               <div class="btn-group">
+                                <div class="form-check form-switch ml-4">
+                                  <input class="form-check-input" (click)="toggleFunction(Tdirec, i)" [title]="Tdirec.estado == 1 ? 'Desactivar' : 'Activar'" type="checkbox" 
+                                    role="switch" id="flexSwitchCheckChecked" [checked]="Tdirec.estado == 1">
+                                </div>
                                   <button type="button" (click)="obtenerIdTipoDireccion(Tdirec, i)" title="Editar Tipo Direccion"  data-toggle="modal" data-target="#abrirModalEditarTipoDireccion"data-toggle="modal" data-target="#abrirModalEditarTipoDireccion" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
-                                  <button type="button" (click)="toggleFunction(Tdirec, i)" class="btna " [title]="Tdirec.estado === 1 ? 'Desactivar Tipo Direccion' : 'Activar Tipo Direccion'"><i class="fas" [ngClass]="Tdirec.estado === 1 ? 'fa-solid fa-lock' : 'fa-solid fa-lock-open'"></i> </button>
                                 </div>
                             </td>
                           </tr>

@@ -75,6 +75,7 @@ export class TipoContactoComponent implements OnInit{
         this.listTipoC = res;
         this.dtTrigger.next(null);
       });
+      this.getUsuario();
   }
 
   ngOnDestroy(): void {
@@ -95,7 +96,7 @@ onInputChange(event: any, field: string) {
 toggleFunction(Tconta: any, i: number) {
 
   // Ejecuta una función u otra según el estado
-  if (Tconta.estado === 1 ) {
+  if (Tconta.estado == 1 ) {
     this.inactivarTipoContacto(Tconta, i); // Ejecuta la primera función
   } else {
     this.activarTipoContacto(Tconta, i); // Ejecuta la segunda función
@@ -104,17 +105,24 @@ toggleFunction(Tconta: any, i: number) {
   
 
   inactivarTipoContacto(tipoContacto: TipoContacto, i: any){
-    this._tipoCService.inactivarTipoContacto(tipoContacto).subscribe(data => 
-    this.toastr.success('El contacto: '+ tipoContacto.tipo_contacto + ' ha sido inactivado')
-    );
+    this._tipoCService.inactivarTipoContacto(tipoContacto).subscribe(data => {
+    this.toastr.success('El contacto: '+ tipoContacto.tipo_contacto + ' ha sido inactivado');
+    this.inactivarBitacora(data);
+  });
     this.listTipoC[i].estado = 2; 
   }
   activarTipoContacto(tipoContacto: TipoContacto, i: any){
-    this._tipoCService.activarTipoContacto(tipoContacto).subscribe(data => 
-    this.toastr.success('El contacto: '+ tipoContacto.tipo_contacto + ' ha sido activado')
-    );
+    this._tipoCService.activarTipoContacto(tipoContacto).subscribe(data => {
+    this.toastr.success('El contacto: '+ tipoContacto.tipo_contacto + ' ha sido activado');
+    this.activarBitacora(data);
+  });
     this.listTipoC[i].estado = 1;
   }
+
+
+
+
+  /*******************GENERAR PDF*******************************************/
 
   generatePDF() {
 
@@ -212,13 +220,11 @@ toggleFunction(Tconta: any, i: number) {
 
   editarTipoContacto(){
     this._tipoCService.editarTipoContacto(this.tipoContactoEditando).subscribe(data => {
+      this.updateBitacora(data);
       this.toastr.success('contacto editada con éxito');
       this.listTipoC[this.indice].tipo_contacto = this.tipoContactoEditando.tipo_contacto;
       this.listTipoC[this.indice].descripcion = this.tipoContactoEditando.descripcion;
 
-      
-        // Recargar la página
-        location.reload();
         // Actualizar la vista
         this.ngZone.run(() => {        
         });
@@ -282,7 +288,7 @@ insertBitacora(dataTipContacto: TipoContacto){
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
-    id_objeto: 9,
+    id_objeto: 12,
     accion: 'INSERTAR',
     descripcion: 'SE INSERTA EL TIPO DE CONTACTO CON EL ID: '+ dataTipContacto.id_tipo_contacto
   }
@@ -292,8 +298,8 @@ insertBitacora(dataTipContacto: TipoContacto){
 updateBitacora(dataTipContacto: TipoContacto){
   const bitacora = {
     fecha: new Date(),
-    id_usuario: this.getUser.usuario,
-    id_objeto: 9,
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 12,
     accion: 'ACTUALIZAR',
     descripcion: 'SE ACTUALIZA EL TIPO DE CONTACTO CON EL ID: '+ dataTipContacto.id_tipo_contacto
   };
@@ -303,8 +309,8 @@ updateBitacora(dataTipContacto: TipoContacto){
 activarBitacora(dataTipContacto: TipoContacto){
   const bitacora = {
     fecha: new Date(),
-    id_usuario: this.getUser.usuario,
-    id_objeto: 9,
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 12,
     accion: 'ACTIVAR',
     descripcion: 'SE ACTIVA EL TIPO DE CONTACTO CON EL ID: '+ dataTipContacto.id_tipo_contacto
   }
@@ -314,8 +320,8 @@ activarBitacora(dataTipContacto: TipoContacto){
 inactivarBitacora(dataTipContacto: TipoContacto){
   const bitacora = {
     fecha: new Date(),
-    id_usuario: this.getUser.usuario,
-    id_objeto: 9,
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 12,
     accion: 'INACTIVAR',
     descripcion: 'SE INACTIVA EL TIPO DE CONTACTO CON EL ID: '+ dataTipContacto.id_tipo_contacto
   }
@@ -325,8 +331,8 @@ inactivarBitacora(dataTipContacto: TipoContacto){
 deleteBitacora(dataTipContacto: TipoContacto){
   const bitacora = {
     fecha: new Date(),
-    id_usuario: this.getUser.usuario,
-    id_objeto: 9,
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 12,
     accion: 'ELIMINAR',
     descripcion: 'SE ELIMINA EL TIPO DE CONTACTO CON EL ID: '+ dataTipContacto.id_tipo_contacto
   }

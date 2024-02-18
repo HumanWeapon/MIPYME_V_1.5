@@ -98,6 +98,7 @@ export class ProductosComponent implements OnInit{
       this._categoriaProductos.getAllCategorias().subscribe(data => {
         this.listCategorias = data
       });
+      this.getUsuario();
   }
 
   ngOnDestroy(): void {
@@ -172,6 +173,7 @@ export class ProductosComponent implements OnInit{
     this.productoEditando.descripcion = this.productoEditando.descripcion.toUpperCase();
 
     this._productoService.editarProducto(this.productoEditando).subscribe(data => {
+      this.updateBitacora(data);
       this.toastr.success('Producto editado con éxito');
       if(this.productoAllCategoria == null){
         //no se puede editar el usuario
@@ -194,7 +196,7 @@ export class ProductosComponent implements OnInit{
 toggleFunction(obj: any, i: number) {
 
   // Ejecuta una función u otra según el estado
-  if (obj.estado === 1 ) {
+  if (obj.estado == 1 ) {
     this.inactivarProducto(obj, i); // Ejecuta la primera función
   } else {
     this.activarProductos(obj, i); // Ejecuta la segunda función
@@ -202,15 +204,17 @@ toggleFunction(obj: any, i: number) {
 }
   
 inactivarProducto(productos: Productos, i: any){
-  this._productoService.inactivarProductos(productos).subscribe(data => 
-    this.toastr.success('El producto: '+ productos.producto+ ' ha sido inactivado')
-    );
+  this._productoService.inactivarProductos(productos).subscribe(data => {
+    this.toastr.success('El producto: '+ productos.producto+ ' ha sido inactivado');
+    this.inactivarBitacora(data);
+  });
   this.listProductos[i].estado = 2;
 }
 activarProductos(productos: Productos, i: any){
-  this._productoService.activarProductos(productos).subscribe(data => 
-  this.toastr.success('El producto: '+ productos.producto+ ' ha sido activado')
-  );
+  this._productoService.activarProductos(productos).subscribe(data => {
+  this.toastr.success('El producto: '+ productos.producto+ ' ha sido activado');
+  this.activarBitacora(data);
+});
   this.listProductos[i].estado = 1;
 }
 
@@ -317,9 +321,9 @@ insertBitacora(dataProductos: Productos){
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
-    id_objeto: 6,
+    id_objeto: 16,
     accion: 'INSERTAR',
-    descripcion: 'SE INSERTA EL PRODUCTO CON EL ID: '+ dataProductos.id_producto
+    descripcion: 'SE INSERTA EL PRODUCTO: '+ dataProductos.producto
   }
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
   })
@@ -327,10 +331,10 @@ insertBitacora(dataProductos: Productos){
 updateBitacora(dataProductos: Productos){
   const bitacora = {
     fecha: new Date(),
-    id_usuario: this.getUser.usuario,
-    id_objeto: 6,
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 16,
     accion: 'ACTUALIZAR',
-    descripcion: 'SE ACTUALIZA EL PRODUCTO CON EL ID: '+ dataProductos.id_producto
+    descripcion: 'SE ACTUALIZA EL PRODUCTO: '+ dataProductos.producto
   };
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
   })
@@ -338,10 +342,10 @@ updateBitacora(dataProductos: Productos){
 activarBitacora(dataProductos: Productos){
   const bitacora = {
     fecha: new Date(),
-    id_usuario: this.getUser.usuario,
-    id_objeto: 6,
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 16,
     accion: 'ACTIVAR',
-    descripcion: 'SE ACTIVA EL PRODUCTO CON EL ID: '+ dataProductos.id_producto
+    descripcion: 'SE ACTIVA EL PRODUCTO CON EL ID: '+ dataProductos.producto
   }
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
   })
@@ -349,10 +353,10 @@ activarBitacora(dataProductos: Productos){
 inactivarBitacora(dataProductos: Productos){
   const bitacora = {
     fecha: new Date(),
-    id_usuario: this.getUser.usuario,
-    id_objeto: 6,
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 16,
     accion: 'INACTIVAR',
-    descripcion: 'SE INACTIVA EL PRODUCTO CON EL ID: '+ dataProductos.id_producto
+    descripcion: 'SE INACTIVA EL PRODUCTO: '+ dataProductos.producto
   }
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
   })
@@ -360,10 +364,10 @@ inactivarBitacora(dataProductos: Productos){
 deleteBitacora(dataProductos: Productos){
   const bitacora = {
     fecha: new Date(),
-    id_usuario: this.getUser.usuario,
-    id_objeto: 6,
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 16,
     accion: 'ELIMINAR',
-    descripcion: 'SE ELIMINA EL PRODUCTO CON EL ID: '+ dataProductos.id_producto
+    descripcion: 'SE ELIMINA EL PRODUCTO CON EL ID: '+ dataProductos.producto
   }
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
   })
