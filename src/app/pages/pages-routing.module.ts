@@ -30,11 +30,11 @@ import { RequisitosExportacionComponent } from './empresas/requisitos-exportacio
 import { BackupComponent } from './administracion/backup/backup.component';
 import { RestoreComponent } from './administracion/restore/restore.component';
 import { PymeComponent } from './pyme/pyme.component';
-import { ContactoEmpresasComponent } from './contacto/contacto-empresas/contacto-empresas.component';
 import { SeguridadComponent } from './seguridad/seguridad.component';
 import { AdministracionComponent } from './administracion/administracion.component';
 import { MantenimientoComponent } from './mantenimiento/mantenimiento.component';
-import { PreguntasUsuarioComponent } from '../auth/login/preguntas-usuario/preguntas-usuario.component';
+import { OperacionesEmpresasComponent } from './empresas/operaciones-empresas/operaciones-empresas.component';
+
 
 const routes: Routes = [
   {path:'dashboard',component:PagesComponent, 
@@ -75,6 +75,7 @@ const routes: Routes = [
     //ABC grado B.
     { path: 'pymes', component:PymeComponent, data:{titulo:'Pyme'}},
     { path: 'empresas', component:EmpresasComponent, data:{titulo:'Empresas'}},
+    { path: 'operaciones_empresas', component:OperacionesEmpresasComponent, data:{titulo:'Operaciones Empresas'}},
     { path: 'requisitos_exportacion', component:RequisitosExportacionComponent, data:{titulo: 'Requisitos de exportación'}},
     { path: 'empresas_productos', component:EmpresasProductosComponent, data:{titulo: 'Productos de empresas'}},
     { path: 'contactos', component:ContactoComponent, data:{titulo: 'Contacto'}},

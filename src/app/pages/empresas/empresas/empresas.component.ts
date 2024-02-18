@@ -25,6 +25,7 @@ import { TipoDireccion } from 'src/app/interfaces/mantenimiento/tipoDireccion';
 import { TipoDireccionService } from 'src/app/services/mantenimiento/tipoDireccion.service';
 import { Contacto } from 'src/app/interfaces/contacto/contacto';
 import { ContactoService } from 'src/app/services/contacto/contacto.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-empresas',
@@ -204,6 +205,7 @@ export class EmpresasComponent {
     private _tipoCategoriaService: CategoriaService,
     private _contactoService: ContactoService,
     private el: ElementRef,
+    private _router: Router
   ) {}
 
   ngOnInit(): void {
@@ -225,6 +227,10 @@ export class EmpresasComponent {
       this.dtTrigger.next(null);
     });
     this.getUsuario();
+  }
+
+  navigateToOperacionesEmpresas() {
+    this._router.navigate(['/dashboard/operaciones_empresas']);
   }
 
   ocultarModal() {

@@ -37,7 +37,8 @@ import { ContactoEmpresasComponent } from './contacto/contacto-empresas/contacto
 import { Permisos2Component } from './seguridad/permisos2/permisos2.component';
 import { SeguridadComponent } from './seguridad/seguridad.component';
 import { AdministracionComponent } from './administracion/administracion.component'
-import { MantenimientoComponent } from './mantenimiento/mantenimiento.component'
+import { MantenimientoComponent } from './mantenimiento/mantenimiento.component';
+import { OperacionesEmpresasComponent } from './empresas/operaciones-empresas/operaciones-empresas.component';
 
 
 
@@ -76,7 +77,8 @@ import { MantenimientoComponent } from './mantenimiento/mantenimiento.component'
     Permisos2Component,
     SeguridadComponent,
     AdministracionComponent,
-    MantenimientoComponent
+    MantenimientoComponent,
+    OperacionesEmpresasComponent
   ],
   imports: [
     CommonModule,

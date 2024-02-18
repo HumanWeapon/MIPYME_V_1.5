@@ -4,8 +4,10 @@
         <div class="col-12">
           <div class="card">
             <div class="card-header">
-              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarEmpresa">
-                <i class="fas fa-plus"></i> Nuevo</button>
+              <button type="button" (click)="navigateToOperacionesEmpresas()" class="btn btn-primary" >
+                <i class="fas fa-plus"></i> NUEVO
+              </button>
+            
               <button type="button" class="btn btn-primary custom-print-button btn-danger" title="Generar el Reporte" data-toggle="modal" data-target="#PDFEmpresa">
                 <i class="fas fa-file-pdf mr-2"></i>PDF</button>
             </div>
@@ -68,7 +70,7 @@
 <div class="modal-dialog">
   <div class="modal-content">
     <div class="modal-header">
-      <h4 class="modal-title">Agregar Empresa</h4>
+      <h4 class="modal-title">AGREGAR EMPRESAS</h4>
       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
