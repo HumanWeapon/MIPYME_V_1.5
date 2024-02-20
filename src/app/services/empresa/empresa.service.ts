@@ -22,10 +22,10 @@ export class EmpresaService {
    }
 
 
-   addEmpresa(nombre_empresa: Empresa): Observable<any> {
-      const token = localStorage.getItem('token')
-      const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-      return this.http.post<Empresa>(`${this.myAppUrl}${this.myApiUrl}/postEmpresa`, nombre_empresa, { headers: headers })
+  addEmpresa(empresa: any): Observable<any> {
+    const token = localStorage.getItem('token')
+    const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
+    return this.http.post<any>(`${this.myAppUrl}${this.myApiUrl}/postEmpresa`, empresa, { headers: headers })
   }
 
   loginPyme(nombre_empresa: Empresa): Observable<string> {
