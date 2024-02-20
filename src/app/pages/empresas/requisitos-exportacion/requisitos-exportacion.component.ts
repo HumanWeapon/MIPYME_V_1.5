@@ -76,6 +76,7 @@ export class RequisitosExportacionComponent implements OnInit{
         this.listrequisito = res;
         this.dtTrigger.next(null);
       });
+      this.getUsuario();
   }
 
   ngOnDestroy(): void {
@@ -140,7 +141,7 @@ getEstadoText(estado: number): string {
 toggleFunction(Trequi: any, i: number) {
 
   // Ejecuta una función u otra según el estado
-  if (Trequi.estado === 1 ) {
+  if (Trequi.estado == 1 ) {
     this.inactivarRequisito(Trequi, i); // Ejecuta la primera función
   } else {
     this.activarRequisito(Trequi, i); // Ejecuta la segunda función
@@ -148,16 +149,18 @@ toggleFunction(Trequi: any, i: number) {
 }
 
 activarRequisito(tipo_requisito: any, i: number) {
-  this._requisitoService.activarRequisito(tipo_requisito).subscribe(data =>
-    this.toastr.success('El Requisito: ' + tipo_requisito.tipo_requisito + ' ha sido activado')
-  );
+  this._requisitoService.activarRequisito(tipo_requisito).subscribe(data =>{
+    this.toastr.success('El Requisito: ' + tipo_requisito.tipo_requisito + ' ha sido activado');
+    this.activarBitacora(data);
+});
   this.listrequisito[i].estado = 1;
 }
 
 inactivarRequisito(tipo_requisito: any, i: number) {
-  this._requisitoService.inactivarRequisito(tipo_requisito).subscribe(data =>
-    this.toastr.success('El Requisito: ' + tipo_requisito.tipo_requisito + ' ha sido Inactivado')
-  );
+  this._requisitoService.inactivarRequisito(tipo_requisito).subscribe(data =>{
+    this.toastr.success('El Requisito: ' + tipo_requisito.tipo_requisito + ' ha sido Inactivado');
+    this.inactivarBitacora(data);
+});
   this.listrequisito[i].estado = 2;
 }
 
@@ -214,6 +217,7 @@ inactivarRequisito(tipo_requisito: any, i: number) {
 
   editarRequisito(){
     this._requisitoService.editarRequisito(this.RequisitoEditando).subscribe(data => {
+      this.updateBitacora(data);
       this.toastr.success('Requisito editado con éxito');
       this.listrequisito[this.indice].tipo_requisito = this.RequisitoEditando.tipo_requisito;
       this.listrequisito[this.indice].descripcion = this.RequisitoEditando.descripcion;      
@@ -278,7 +282,7 @@ insertBitacora(dataRExportacion: Requisito){
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
-    id_objeto: 11,
+    id_objeto: 15,
     accion: 'INSERTAR',
     descripcion: 'SE INSERTA EL REQUISITO CON EL ID: '+ dataRExportacion.id_tipo_requisito
   }
@@ -288,8 +292,8 @@ insertBitacora(dataRExportacion: Requisito){
 updateBitacora(dataRExportacion: Requisito){
   const bitacora = {
     fecha: new Date(),
-    id_usuario: this.getUser.usuario,
-    id_objeto: 11,
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 15,
     accion: 'ACTUALIZAR',
     descripcion: 'SE ACTUALIZA EL REQUISITO CON EL ID: '+ dataRExportacion.id_tipo_requisito
   };
@@ -299,8 +303,8 @@ updateBitacora(dataRExportacion: Requisito){
 activarBitacora(dataRExportacion: Requisito){
   const bitacora = {
     fecha: new Date(),
-    id_usuario: this.getUser.usuario,
-    id_objeto: 11,
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 15,
     accion: 'ACTIVAR',
     descripcion: 'SE ACTIVA EL REQUISITO CON EL ID: '+ dataRExportacion.id_tipo_requisito
   }
@@ -310,8 +314,8 @@ activarBitacora(dataRExportacion: Requisito){
 inactivarBitacora(dataRExportacion: Requisito){
   const bitacora = {
     fecha: new Date(),
-    id_usuario: this.getUser.usuario,
-    id_objeto: 11,
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 15,
     accion: 'INACTIVAR',
     descripcion: 'SE INACTIVA EL REQUISITO CON EL ID: '+ dataRExportacion.id_tipo_requisito
   }
@@ -321,8 +325,8 @@ inactivarBitacora(dataRExportacion: Requisito){
 deleteBitacora(dataRExportacion: Requisito){
   const bitacora = {
     fecha: new Date(),
-    id_usuario: this.getUser.usuario,
-    id_objeto: 11,
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 15,
     accion: 'ELIMINAR',
     descripcion: 'SE ELIMINA EL REQUISITO CON EL ID: '+ dataRExportacion.id_tipo_requisito
   }

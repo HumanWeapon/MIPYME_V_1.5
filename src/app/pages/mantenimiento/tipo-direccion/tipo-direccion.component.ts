@@ -75,6 +75,7 @@ export class TipoDireccionComponent implements OnInit{
         this.listTipoD = res;
         this.dtTrigger.next(null);
       });
+      this.getUsuario();
   }
 
   ngOnDestroy(): void {
@@ -97,7 +98,7 @@ onInputChange(event: any, field: string) {
 toggleFunction(Tdirec: any, i: number) {
 
   // Ejecuta una función u otra según el estado
-  if (Tdirec.estado === 1 ) {
+  if (Tdirec.estado == 1 ) {
     this.inactivarTipoDireccion(Tdirec, i); // Ejecuta la primera función
   } else {
     this.activarTipoDireccion(Tdirec, i); // Ejecuta la segunda función
@@ -105,15 +106,17 @@ toggleFunction(Tdirec: any, i: number) {
 }
 
   inactivarTipoDireccion(tipoDireccion: TipoDireccion, i: any){
-    this._tipoDService.inactivarTipoDireccion(tipoDireccion).subscribe(data => 
-    this.toastr.success('La Dirección: '+ tipoDireccion.tipo_direccion + ' ha sido inactivado')
-    );
+    this._tipoDService.inactivarTipoDireccion(tipoDireccion).subscribe(data => {
+    this.toastr.success('La Dirección: '+ tipoDireccion.tipo_direccion + ' ha sido inactivado');
+    this.inactivarBitacora(data);
+  });
     this.listTipoD[i].estado = 2;
   }
   activarTipoDireccion(tipoDireccion: TipoDireccion, i: any){
-    this._tipoDService.activarTipoDireccion(tipoDireccion).subscribe(data => 
-    this.toastr.success('La Dirección: '+ tipoDireccion.tipo_direccion + ' ha sido activado')
-    );
+    this._tipoDService.activarTipoDireccion(tipoDireccion).subscribe(data => {
+    this.toastr.success('La Dirección: '+ tipoDireccion.tipo_direccion + ' ha sido activado');
+    this.activarBitacora(data);
+  });
     this.listTipoD[i].estado = 1;
   }
 
@@ -215,13 +218,11 @@ getEstadoText(estado: number): string {
 
   editarTipoDireccion(){
     this._tipoDService.editarTipoDireccion(this.tipoDireccionEditando).subscribe(data => {
+      this.updateBitacora(data);
       this.toastr.success('Direccion editada con éxito');
       this.listTipoD[this.indice].tipo_direccion = this.tipoDireccionEditando.tipo_direccion;
       this.listTipoD[this.indice].descripcion = this.tipoDireccionEditando.descripcion;
 
-      
-        // Recargar la página
-        location.reload();
         // Actualizar la vista
         this.ngZone.run(() => {        
         });
@@ -285,7 +286,7 @@ getEstadoText(estado: number): string {
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
-      id_objeto: 8,
+      id_objeto: 21,
       accion: 'INSERTAR',
       descripcion: 'SE INSERTA EL TIPO DE DIRECCION CON EL ID: '+ dataTipDirec.id_tipo_direccion
     }
@@ -295,8 +296,8 @@ getEstadoText(estado: number): string {
   updateBitacora(dataTipDirec: TipoDireccion){
     const bitacora = {
       fecha: new Date(),
-      id_usuario: this.getUser.usuario,
-      id_objeto: 8,
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 21,
       accion: 'ACTUALIZAR',
       descripcion: 'SE ACTUALIZA EL TIPO DE DIRECCION CON EL ID: '+ dataTipDirec.id_tipo_direccion
     };
@@ -306,8 +307,8 @@ getEstadoText(estado: number): string {
   activarBitacora(dataTipDirec: TipoDireccion){
     const bitacora = {
       fecha: new Date(),
-      id_usuario: this.getUser.usuario,
-      id_objeto: 8,
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 21,
       accion: 'ACTIVAR',
       descripcion: 'SE ACTIVA EL TIPO DE DIRECCION CON EL ID: '+ dataTipDirec.id_tipo_direccion
     }
@@ -317,8 +318,8 @@ getEstadoText(estado: number): string {
   inactivarBitacora(dataTipDirec: TipoDireccion){
     const bitacora = {
       fecha: new Date(),
-      id_usuario: this.getUser.usuario,
-      id_objeto: 8,
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 21,
       accion: 'INACTIVAR',
       descripcion: 'SE INACTIVA EL TIPO DE DIRECCION CON EL ID: '+ dataTipDirec.id_tipo_direccion
     }
@@ -328,8 +329,8 @@ getEstadoText(estado: number): string {
   deleteBitacora(dataTipDirec: TipoDireccion){
     const bitacora = {
       fecha: new Date(),
-      id_usuario: this.getUser.usuario,
-      id_objeto: 8,
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 21,
       accion: 'ELIMINAR',
       descripcion: 'SE ELIMINA EL TIPO DE DIRECCION CON EL ID: '+ dataTipDirec.id_tipo_direccion
     }

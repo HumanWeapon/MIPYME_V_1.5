@@ -42,8 +42,11 @@
                           </td>
                         <td class="text-center">
                           <div class="btn-group">
+                            <div class="form-check form-switch ml-4">
+                              <input class="form-check-input" (click)="toggleFunction(obj, i)" [title]="obj.estado == 1 ? 'Desactivar' : 'Activar'" type="checkbox" 
+                                role="switch" id="flexSwitchCheckChecked" [checked]="obj.estado == 1">
+                            </div>
                               <button type="button" (click)="obtenerIdProductos(obj, i)" data-toggle="modal" title='Editar Producto' data-target="#abrirModalEditarObjeto"data-toggle="modal" data-target="#abrirModalEditarObjeto" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
-                              <button type="button" (click)="toggleFunction(obj, i)" class="btna " [title]="obj.estado === 1 ? 'Desactivar Producto' : 'Activar Producto'"><i class="fas" [ngClass]="obj.estado === 1 ? 'fa-solid fa-lock' : 'fa-solid fa-lock-open'"></i> </button>
                             </div>
                         </td>
                       </tr>

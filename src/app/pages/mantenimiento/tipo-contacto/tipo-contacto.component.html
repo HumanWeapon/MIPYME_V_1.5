@@ -40,8 +40,11 @@
                             </td>
                             <td class="text-center">
                               <div class="btn-group">
+                                <div class="form-check form-switch ml-4">
+                                  <input class="form-check-input" (click)="toggleFunction(Tconta, i)" [title]="Tconta.estado == 1 ? 'Desactivar' : 'Activar'" type="checkbox" 
+                                    role="switch" id="flexSwitchCheckChecked" [checked]="Tconta.estado == 1">
+                                </div>
                                   <button type="button" (click)="obtenerIdTipoContacto(Tconta, i)"  title="Editar Tipo de Contacto"  data-toggle="modal" data-target="#abrirModalEditarTipoContacto"data-toggle="modal" data-target="#abrirModalEditarTipoContacto" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
-                                  <button type="button" (click)="toggleFunction(Tconta, i)" class="btna " [title]="Tconta.estado === 1 ? 'Desactivar Tipo de Contacto' : 'Activar Tipo de Contacto'"><i class="fas" [ngClass]="Tconta.estado === 1 ? 'fa-solid fa-lock' : 'fa-solid fa-lock-open'"></i> </button>
                                 </div>
                             </td>
                           </tr>
