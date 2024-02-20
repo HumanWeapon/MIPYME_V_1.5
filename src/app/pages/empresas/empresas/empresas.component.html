@@ -4,7 +4,7 @@
         <div class="col-12">
           <div class="card">
             <div class="card-header">
-              <button type="button" (click)="navigateToOperacionesEmpresas()" class="btn btn-primary" >
+              <button type="button"  data-toggle="modal" data-target="#agregarEmpresa" class="btn btn-primary" >
                 <i class="fas fa-plus"></i> NUEVO
               </button>
             
@@ -46,6 +46,7 @@
                             </div>
                               <button type="button" (click)="obtenerIdEmpresa(empresa, i)" title="Editar Empresa" data-toggle="modal" data-target="#abrirModalEditarEmpresa" data-toggle="modal" data-target="#abrirModalEditarEmpresa" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
                               <button type="button" (click)="deleteEmpresa(empresa.id_empresa)" class="btna" title="Eliminar Empresa"><i class=" fas fa-solid fa-trash" style="color: #E74C3C;"></i></button>
+                              <button type="button" (click)="navigateToOperacionesEmpresas()"class="btna" title="Gestionar"><i class="fas fa-solid fa-bars" style="color: #3c3fe7;"></i></button>
                             </div>
                         </td>
                       </tr>
@@ -78,22 +79,31 @@
     <div class="modal-body">
       <form (ngSubmit)="agregarNuevaEmpresa()">
         <table id="example" class="table table-striped" style="width:100%">
-        <!-- Campo: Nombre de la Pyme -->
-        <div class="form-group">
-          <label for="nuevaEmpresa">Nombre de la Empresa:</label>
-          <input type="text" [(ngModel)]="nuevaEmpresa.nombre_empresa" name="nombre_empresa" (input)="onInputChange($event, 'nombre_empresa')" class="form-control" id="nuevaEmpresa" placeholder="Nombre de la Empresa">
-        </div>
-        <div class="form-group">
-          <label for="nuevaDescripcion">Descripcion:</label>
-          <input type="text" [(ngModel)]="nuevaEmpresa.descripcion" name="descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="descripcion" placeholder="Descripción">
-        </div>
-        <!-- Botones -->
-        <div class="modal-footer justify-content-between">
-          <!-- Botón Cancelar -->
-          <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-          <!-- Botón Guardar -->
-          <button type="button" class="btn btn-primary" (click)="ocultarModal()" data-toggle="modal" data-target="#agregarDireccion">Siguiente</button>
-        </div>
+          <!-- Campo: Nombre de la Pyme -->
+          <div class="form-group">
+            <label for="nuevaEmpresa">Nombre de la Empresa:</label>
+            <input type="text" [(ngModel)]="nuevaEmpresa.nombre_empresa" name="nombre_empresa" (input)="onInputChange($event, 'nombre_empresa')" class="form-control" id="nuevaEmpresa" placeholder="Nombre de la Empresa">
+          </div>
+          <div class="form-group">
+            <label for="nuevaDescripcion">Descripcion:</label>
+            <input type="text" [(ngModel)]="nuevaEmpresa.descripcion" name="descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="descripcion" placeholder="Descripción">
+          </div>
+          <div class="form-group">
+            <label for="inputStatus">Tipo de Empresa</label>
+            <select id="inputStatus" class="form-control custom-select" (change)="tipoEmpresaSeleccionado($event)">
+              <option selected disabled>Seleccionar</option>
+              <option *ngFor="let tipo of list_tipoEmpresa" [value]="tipo.id_tipo_empresa">{{ tipo.tipo_empresa }}</option>
+            </select>
+          </div>
+          
+          
+          <!-- Botones -->
+          <div class="modal-footer justify-content-between">
+            <!-- Botón Cancelar -->
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+            <!-- Botón Guardar -->
+            <button type="button" class="btn btn-primary" (click)="agregarNuevaEmpresa()" data-dismiss="modal">Guardar</button>
+          </div>
         </table>
       </form>
     </div>
@@ -102,109 +112,12 @@
 </div> 
 <!-- /Agregar Empresa Form -->
 
-<!-- Agregar Direccion Form-->
-<div class="modal fade" id="agregarDireccion">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title">Agregar Direccion</h4>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form (ngSubmit)="agregarNuevaDireccion()">
-          <table id="example" class="table table-striped" style="width:100%">
-          <!-- Campo: Nombre de la Pyme -->
-          <div class="form-group">
-            <label for="nuevaEmpresa">Direccion:</label>
-            <input type="text" [(ngModel)]="nuevaDireccion.direccion" name="direccion" (input)="onInputChange($event, 'direccion')" class="form-control" id="direccion" placeholder="Direccion de la Empresa">
-          </div>
-        <div class="form-group">
-          <label for="nuevaEmpresa">Descripcion</label>
-          <input type="text" [(ngModel)]="nuevaDireccion.descripcion" name="descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="descripcion" placeholder="Direccion Exacta">
-        </div>
-        <div class="form-group">
-          <label for="nuevaTipoDireccion">Tipos de Direccion:</label>
-          <select [(ngModel)]="nuevaDireccion.id_tipo_direccion" name="nuevaTipoDireccion.tipoDireccion"  class="form-control" id="tipoDireccion">
-            <option value="0">Selecciona la Direccion</option>
-            <option *ngFor="let tipoDireccion of listTipoDireccion" [ngValue]="tipoDireccion.id_tipo_direccion">{{ tipoDireccion.tipo_direccion }}</option>
-          </select>
-        </div>
-          <div class="modal-footer justify-content-between">
-            <!-- Botón Cancelar -->
-            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-            <!-- Botón Guardar -->
-            <button type="button" class="btn btn-primary" (click)="ocultarModalDireccion()" data-toggle="modal" data-target="#agregarProducto">Siguiente</button>
-          </div>
-          </table>
-        </form>
-      </div>
-    </div>
-  </div>
-  </div> 
-  <!-- /Agregar Direccion Form -->
 
-  <!-- Agregar Producto Form-->
-<div class="modal fade" id="agregarProducto">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title">Agregar Producto</h4>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form (ngSubmit)="agregarNuevoProducto()">
-          <table id="example" class="table table-striped" style="width:100%">
-          <!-- Campo: Nombre de la Pyme -->
-          <div class="form-group">
-            <label for="nuevoProducto">Nombre del Producto:</label>
-            <input type="text" [(ngModel)]="nuevoProducto.producto" name="nuevoProducto.producto" (input)="onInputChange($event, 'producto')" class="form-control" id="nuevoProducto" placeholder="Nombre del producto">
-        </div>
-        <div class="form-group">
-            <label for="nuevoDescripcion">Descripción</label>
-            <input type="text" [(ngModel)]="nuevoProducto.descripcion" name="nuevoProducto.descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="nuevodescripcion" placeholder="Descripción">
-        </div>
 
-      <div class="form-group">
-        <label for="nuevaCategoria">Categoría:</label>
-        <select class="form-control" id="editarRol" [(ngModel)]="nuevoProducto.id_categoria" name="id_categoria">
-          <option value="0">Seleccione la Categoria</option>
-          <option *ngFor="let item of listCategorias" [ngValue]="item.id_categoria">{{ item.categoria }}</option>
-        </select>
-      </div>
 
-      <div class="form-group">
-        <label for="nuevoPais">Pais:</label>
-        <select class="form-control" [(ngModel)]="nuevoProducto.id_pais" name="id_pais">
-          <option value="0">Seleccione el Pais</option>
-          <option *ngFor="let item of listPaises" [ngValue]="item.id_pais">{{ item.pais }}</option>
-        </select>
-      </div>
 
-      <div class="form-group">
-        <label for="nuevoContacto">Contacto:</label>
-        <select class="form-control" [(ngModel)]="nuevoProducto.id_contacto" name="id_contacto">
-          <option value="0">Seleccione el Contacto</option>
-          <option *ngFor="let item of listContactos" [ngValue]="item.id_contacto">{{ item.primer_nombre}} {{item.segundo_nombre}} {{ item.primer_apellido}} {{item.segundo_apellido}}</option>
-        </select>
-      </div>
-          </table>           
-    </form>
-</div>
-<div class="modal-footer justify-content-between">
-    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-    <button type="button" (click)="agregarTodo()" class="btn btn-success" data-dismiss="modal">Guardar</button>
-</div>
-</div>
-</div>
-</div>
-  <!-- /Agregar Direccion Form -->
-
-<!-- Actualizar Empresa Form -->
-<div class="modal fade" id="abrirModalEditarEmpresa">
+  <!-- Actualizar Empresa Form -->
+  <div class="modal fade" id="abrirModalEditarEmpresa">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -226,11 +139,11 @@
             </div>
         </div>
     </div>
-    </div>
+  </div>
     <!-- /Actualizar Empresa Form -->
 
 <!-- Form Ver PDF-->
-<div class="modal fade" id="PDFEmpresa">
+  <div class="modal fade" id="PDFEmpresa">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
 

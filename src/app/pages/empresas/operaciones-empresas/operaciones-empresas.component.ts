@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { data } from 'jquery';
 import { ToastrService } from 'ngx-toastr';
+import { Empresa } from 'src/app/interfaces/empresa/empresas';
 import { BitacoraService } from 'src/app/services/administracion/bitacora.service';
 import { EmpresaService } from 'src/app/services/empresa/empresa.service';
 import { ErrorService } from 'src/app/services/error.service';
@@ -17,7 +18,8 @@ import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 export class OperacionesEmpresasComponent {
 
   listProductos: any[] = [];
-  nuevaEmpresa = {
+  nuevaEmpresa: Empresa = {
+    id_empresa: 0,
     id_tipo_empresa: 1,
     nombre_empresa: '',
     descripcion: '',
@@ -79,6 +81,7 @@ export class OperacionesEmpresasComponent {
     const userLocal = localStorage.getItem('usuario');
     if(userLocal){
       this.nuevaEmpresa = {
+        id_empresa: 0,
         id_tipo_empresa: this.nuevaEmpresa.id_tipo_empresa,
         nombre_empresa: this.nuevaEmpresa.nombre_empresa,
         descripcion: this.nuevaEmpresa.descripcion,
@@ -120,10 +123,7 @@ export class OperacionesEmpresasComponent {
   agregarTelefono(){};
 
   agregarTodo() {
-    //this.agregarDireccion();
     this.agregarEmpresa();
-    //this.agregarProducto();
-    //this.agregarTelefono();
   }
 
 }

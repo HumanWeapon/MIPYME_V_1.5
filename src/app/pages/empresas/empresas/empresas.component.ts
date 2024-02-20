@@ -11,21 +11,9 @@ import 'jspdf-autotable';
 import { BitacoraService } from 'src/app/services/administracion/bitacora.service';
 import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 import { Usuario } from 'src/app/interfaces/seguridad/usuario';
-import { Categoria } from 'src/app/interfaces/mantenimiento/categoria';
-import { CategoriaService } from 'src/app/services/mantenimiento/categoria.service';
-import { Paises } from 'src/app/interfaces/empresa/paises';
-import { ContactoDirecciones } from 'src/app/interfaces/contacto/contactoDirecciones';
-import { ContactoTelefono } from 'src/app/interfaces/contacto/contactoTelefono';
-import { Productos } from 'src/app/interfaces/mantenimiento/productos';
-import { PaisesService } from 'src/app/services/empresa/paises.service';
-import { ProductosService } from 'src/app/services/mantenimiento/producto.service';
-import { DireccionesService } from 'src/app/services/contacto/direcciones.service';
-import { ContactoTService } from 'src/app/services/contacto/contactoTelefono.service';
-import { TipoDireccion } from 'src/app/interfaces/mantenimiento/tipoDireccion';
-import { TipoDireccionService } from 'src/app/services/mantenimiento/tipoDireccion.service';
-import { Contacto } from 'src/app/interfaces/contacto/contacto';
-import { ContactoService } from 'src/app/services/contacto/contacto.service';
 import { Router } from '@angular/router';
+import { TipoEmpresa } from 'src/app/interfaces/mantenimiento/tipoEmpresa';
+import { TipoEmpresaService } from 'src/app/services/mantenimiento/tipoEmpresa.service';
 
 @Component({
   selector: 'app-empresas',
@@ -45,7 +33,6 @@ export class EmpresasComponent {
     modificado_por: '',
     fecha_modificacion: new Date(),
     estado: 0,
-    rtn:''
   };
 
   nuevaEmpresa: Empresa = {
@@ -58,137 +45,21 @@ export class EmpresasComponent {
     modificado_por: '',
     fecha_modificacion: new Date(),
     estado: 1,
-    rtn:''
-  };
-  /******* Fin Empresas************/
-
-  /*******Paises************/
-  paisEditando: Paises = {
-    id_pais: 0, 
-    id_contacto:0,
-    pais:'', 
-    descripcion: '', 
-    creado_por: '', 
-    fecha_creacion: new Date(), 
-    modificado_por: '', 
-    fecha_modificacion: new Date(), 
-    estado: 0
   };
 
-  nuevoPais: Paises = {
-    id_pais: 0,
-    id_contacto:0, 
-    pais:'', 
-    descripcion: '', 
-    creado_por: '', 
-    fecha_creacion: new Date(), 
-    modificado_por: '', 
-    fecha_modificacion: new Date(), 
-    estado: 1
-  };
-    /*******Fin Paises************/
+  list_tipoEmpresa: any[] = [];
+  id_tipo_empresa: number = 0;
 
-    /*******Direccion************/
-    direccionEditando: ContactoDirecciones = {
-      id_direccion: 0,  
-      id_tipo_direccion: 0,
-      direccion:'', 
-      descripcion: '', 
-      creado_por: '', 
-      fecha_creacion: new Date(), 
-      modificado_por: '', 
-      fecha_modificacion: new Date(), 
-      estado: 0
-    };
-    nuevaDireccion: ContactoDirecciones = {
-      id_direccion: 0, 
-      id_tipo_direccion: 0,
-      direccion:'', 
-      descripcion: '', 
-      creado_por: '', 
-      fecha_creacion: new Date(), 
-      modificado_por: '', 
-      fecha_modificacion: new Date(), 
-      estado: 1
-    };
-    /*******Fin Direccion************/
-
-    /*******Telefono************/
-    contactoTEditando: ContactoTelefono = {
-      id_telefono: 0, 
-      id_contacto: 0,
-      id_tipo_telefono: 0,
-      telefono: '', 
-      extencion: '',
-      descripcion:'',
-      creado_por: '', 
-      fecha_creacion: new Date(), 
-      modificado_por: '', 
-      fecha_modificacion: new Date(),
-      estado: 0,
-    };
-  
-    nuevoContactoT: ContactoTelefono = {
-      id_telefono: 0, 
-      id_contacto: 0,
-      id_tipo_telefono: 0,
-      telefono: '', 
-      extencion: '',
-      descripcion:'',
-      creado_por: '', 
-      fecha_creacion: new Date(), 
-      modificado_por: '', 
-      fecha_modificacion: new Date(),
-      estado: 0,
-    };
-    /*******Fin Telefono************/
-
-    /*******Producto************/
-    productoEditando: Productos = {
-      id_producto: 0, 
-      id_categoria: 0,
-      id_contacto: 0,
-      id_pais: 0, 
-      producto:'', 
-      descripcion: '', 
-      creado_por: '', 
-      fecha_creacion: new Date(), 
-      modificado_por: '', 
-      fecha_modificacion: new Date(), 
-      estado: 0
-    };
-  
-    nuevoProducto: Productos = {
-      id_producto: 0, 
-      id_categoria: 0, 
-      id_contacto: 0,
-      id_pais: 0, 
-      producto:'', 
-      descripcion: '', 
-      creado_por: '', 
-      fecha_creacion: new Date(), 
-      modificado_por: '', 
-      fecha_modificacion: new Date(), 
-      estado: 1
-    };
-    /*******Fin Producto************/
 
   indice: any;
 
   dtOptions: DataTables.Settings = {};
   listEmpresa: Empresa[] = [];
-  listPaises: Paises[] = [];
-  listProductos: Productos[] = [];
-  listTipoDireccion: TipoDireccion[] = [];
-  listCategorias: Categoria[] = [];
-  listContactos: Contacto[] = [];
   data: any; 
 
   // We use this trigger because fetching the list of persons can be quite long,
   // thus we ensure the data is fetched before rendering
   dtTrigger: Subject<any> = new Subject<any>();
-  private _categoriaProductos: any;
-
 
   constructor(
     private _empresaService: EmpresaService,
@@ -197,23 +68,14 @@ export class EmpresasComponent {
     private _bitacoraService: BitacoraService,
     private _errorService: ErrorService,
     private _userService: UsuariosService,
-    private _paisesService: PaisesService,
-    private _productoService: ProductosService,
-    private _direccionService: DireccionesService,
-    private _telefonoService: ContactoTService,
-    private _tipoDireccionService: TipoDireccionService,
-    private _tipoCategoriaService: CategoriaService,
-    private _contactoService: ContactoService,
+    private _tipoEmpresa: TipoEmpresaService,
     private el: ElementRef,
     private _router: Router
   ) {}
 
   ngOnInit(): void {
   this.getUsuario();
-  this.getPaises();
-  this.getTipoDireccion();
-  this.getContacto();
-  this.getTipoCategoria();
+  this.getTipoEmpresa();
   
   this.dtOptions = {
     pagingType: 'full_numbers',
@@ -229,192 +91,30 @@ export class EmpresasComponent {
     this.getUsuario();
   }
 
+  getTipoEmpresa(){
+    this._tipoEmpresa.getAllTipoEmpresa().subscribe({
+      next: (data) => {
+        this.list_tipoEmpresa = data;
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
+  }
+  tipoEmpresaSeleccionado(event: Event): void {
+    const idTipoEmpresa = (event.target as HTMLSelectElement).value;
+    this.id_tipo_empresa = Number(idTipoEmpresa);
+  }
   navigateToOperacionesEmpresas() {
     this._router.navigate(['/dashboard/operaciones_empresas']);
   }
-
-  ocultarModal() {
-    const modal = this.el.nativeElement.querySelector('#agregarEmpresa');
-    modal.classList.remove('show');
-    modal.style.display = 'none';
-    const modalBackdrop = document.querySelector('.modal-backdrop');
-    modalBackdrop?.parentNode?.removeChild(modalBackdrop);
-  }
-
-  ocultarModalDireccion() {
-    const modal = this.el.nativeElement.querySelector('#agregarDireccion');
-    modal.classList.remove('show');
-    modal.style.display = 'none';
-    const modalBackdrop = document.querySelector('.modal-backdrop');
-    modalBackdrop?.parentNode?.removeChild(modalBackdrop);
-  }
-
 
   ngOnDestroy(): void {
     // Do not forget to unsubscribe the event
     this.dtTrigger.unsubscribe();
   }
 
-/****************OBTENCION DE DATOS************************/
-
-getPaises(){
-  this._paisesService.getAllPaises().subscribe({
-    next: (data: any) => {
-      this.listPaises = data;
-    },
-    error: (e: HttpErrorResponse) => {
-      this._errorService.msjError(e);
-    }
-  });
-}
-
-getProductos(){
-  this._productoService.getAllProductos().subscribe({
-    next: (data: any) => {
-      this.listProductos = data;
-    },
-    error: (e: HttpErrorResponse) => {
-      this._errorService.msjError(e);
-    }
-  });
-}
-
-getTipoDireccion(){
-  this._tipoDireccionService.getAllTipoDirecciones().subscribe({
-    next: (data: any) => {
-      this.listTipoDireccion = data;
-    },
-    error: (e: HttpErrorResponse) => {
-      this._errorService.msjError(e);
-    }
-  });
-}
-
-getTipoCategoria(){
-  this._tipoCategoriaService.getAllCategorias().subscribe({
-    next: (data: any) => {
-      this.listCategorias = data;
-    },
-    error: (e: HttpErrorResponse) => {
-      this._errorService.msjError(e);
-    }
-  });
-}
-
-getContacto(){
-  this._contactoService.getAllContactos().subscribe({
-    next: (data: any) => {
-      this.listContactos = data;
-    },
-    error: (e: HttpErrorResponse) => {
-      this._errorService.msjError(e);
-    }
-  });
-}
-/**********************************************************/
-
 /*****************Insertar Datos****************************/
-
-agregarTodo() {
-  this.agregarNuevaDireccion();
-  this.agregarNuevaEmpresa();
-  this.agregarNuevoProducto();
-  this.agregarNuevoTelefono();
-}
-
-agregarNuevaDireccion() {
-  const usuarioLocal = localStorage.getItem('usuario');
-  
-  if (!usuarioLocal) {
-    // Manejar el caso en el que no hay usuario local
-    return;
-  }
-
-  this.nuevaDireccion = {
-    id_direccion: 0, 
-    id_tipo_direccion: this.nuevaDireccion.id_tipo_direccion, 
-    direccion: this.nuevaDireccion.direccion, 
-    descripcion: this.nuevaDireccion.descripcion, 
-    estado: 1,
-    creado_por: usuarioLocal, 
-    fecha_creacion: new Date(), 
-    modificado_por: usuarioLocal, 
-    fecha_modificacion: new Date()
-  };
-
-  this._direccionService.addDireccion(this.nuevaDireccion).subscribe({
-    next: (data) => {
-      this.toastr.success('Dirección agregada con éxito');
-    },
-    error: (e: HttpErrorResponse) => {
-      this.handleError(e, 'Error al agregar dirección');
-    }
-  });
-}
-
-agregarNuevoTelefono() {
-  const userLocal = localStorage.getItem('usuario');
-
-  if (!userLocal) {
-    // Manejar el caso en el que no hay usuario local
-    return;
-  }
-
-  this.nuevoContactoT = {
-    id_telefono: 0, 
-    id_contacto: 0,
-    id_tipo_telefono: 0,
-    telefono: this.nuevoContactoT.telefono, 
-    extencion: "504",
-    descripcion: "504",
-    creado_por: userLocal,
-    fecha_creacion: new Date(), 
-    modificado_por: userLocal,
-    fecha_modificacion: new Date(),
-    estado: 0,
-  };
-
-  this._telefonoService.addContactoT(this.nuevoContactoT).subscribe({
-    next: (data) => {
-      this.toastr.success('Contacto agregado con éxito');
-    },
-    error: (e: HttpErrorResponse) => {
-      this.handleError(e, 'Error al agregar contacto');
-    }
-  });
-}
-
-agregarNuevoProducto() {
-  const usuarioLocal = localStorage.getItem('usuario');
-  
-  if (!usuarioLocal) {
-    // Manejar el caso en el que no hay usuario local
-    return;
-  }
-
-  this.nuevoProducto = {
-    id_producto: 0, 
-    id_categoria: this.nuevoProducto.id_categoria, 
-    id_contacto: this.nuevoProducto.id_categoria,
-    id_pais: this.nuevoProducto.id_pais,
-    producto: this.nuevoProducto.producto, 
-    descripcion: this.nuevoProducto.descripcion, 
-    estado: 1,
-    creado_por: usuarioLocal, 
-    fecha_creacion: new Date(), 
-    modificado_por: usuarioLocal, 
-    fecha_modificacion: new Date()
-  };
-
-  this._productoService.addProducto(this.nuevoProducto).subscribe({
-    next: (data) => {
-      this.toastr.success('Producto agregado con éxito');
-    },
-    error: (e: HttpErrorResponse) => {
-      this.handleError(e, 'Error al agregar producto');
-    }
-  });
-}
 
 agregarNuevaEmpresa() {
   const userLocal = localStorage.getItem('usuario');
@@ -426,7 +126,7 @@ agregarNuevaEmpresa() {
 
   this.nuevaEmpresa = {
     id_empresa: 0,
-    id_tipo_empresa: 2,
+    id_tipo_empresa: this.id_tipo_empresa,
     nombre_empresa: this.nuevaEmpresa.nombre_empresa,
     descripcion: this.nuevaEmpresa.descripcion,
     creado_por: userLocal,
@@ -434,9 +134,7 @@ agregarNuevaEmpresa() {
     modificado_por: userLocal,
     fecha_modificacion: new Date(),
     estado: 1,
-    rtn: ''
   };
-
   this._empresaService.addEmpresa(this.nuevaEmpresa).subscribe({
     next: (data) => {
       this.toastr.success('Empresa agregada con éxito');
@@ -533,10 +231,6 @@ getEstadoText(estado: number): string {
       return 'Desconocido';
   }
 }
-
-/**************************************************************/
-
-
 /*******************************************************************************/
   onInputChange(event: any, field: string) {
     if (field === 'nombre_empresa' || field === 'descripcion') {
@@ -560,7 +254,6 @@ getEstadoText(estado: number): string {
       modificado_por: empresa.modificado_por,
       fecha_modificacion: empresa.fecha_modificacion,
       estado: empresa.estado,
-      rtn:empresa.rtn
     };
     this.indice = i;
   }
@@ -604,24 +297,6 @@ getEstadoText(estado: number): string {
     }
 }
 
-  /*********************************************************************************************/
-
-
-
-
-
-
-
-
-
-
-
-
-
-  /************************************************************************************************/
-
-
-
   /*************************************************************** Métodos de Bitácora ***************************************************************************/
 
   getUser: Usuario = {
@@ -663,7 +338,6 @@ getEstadoText(estado: number): string {
         intentos_fallidos: 0
     }
    }
-
    this._userService.getUsuario(this.getUser).subscribe({
      next: (data) => {
        this.getUser = data;
@@ -673,7 +347,6 @@ getEstadoText(estado: number): string {
      }
    });
  }
-
   insertBitacora(dataEmpresa: Empresa){
     const bitacora = {
       fecha: new Date(),

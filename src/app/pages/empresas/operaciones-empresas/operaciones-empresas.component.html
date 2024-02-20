@@ -1,77 +1,50 @@
 <div class="ml-3 mr-3 mb-3">
     <!-- Content Header (Page header) -->
-
-
-    <!-- Main content -->
-  <section class="content">
-    <div class="card-body" style="background-color: white;">
-      <!-- Datos generales de la empresa -->
-      <div class="">
-          <div class="card">
-            <div class="card-header" style="background-color: #1254a1; color:white;">
-              <h3 class="card-title">Datos generales de la empresa</h3>
-
-              <div class="card-tools">
-                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                  <i class="fas fa-minus"></i>
-                </button>
-              </div>
-            </div>
-            <div class="card-body">
-              <div class="form-group">
-                <label for="inputClientCompany">Nombre de la Empresa</label>
-                <input type="text" id="inputClientCompany" [(ngModel)]="nuevaEmpresa.nombre_empresa" class="form-control">
-              </div>
-              <div class="form-group">
-                <label for="inputDescription">Descripción</label>
-                <textarea id="inputDescription" [(ngModel)]="nuevaEmpresa.descripcion" class="form-control" rows="4"></textarea>
-              </div>
-            </div>
-            <!-- /.card-body -->
-          </div>
-          <!-- /.card -->
+    <div class="card">
+      <!-- /.Encabezado -->
+      <div class="card-header p-2">
+        <ul class="nav nav-pills">
+          <li class="nav-item"><a class="nav-link active" href="#EMPRESA" data-toggle="tab">EMPRESA</a></li>
+          <li class="nav-item"><a class="nav-link" href="#PRODUCTOS" data-toggle="tab">PRODUCTOS</a></li>
+          <li class="nav-item"><a class="nav-link" href="#CONTACTOS" data-toggle="tab">CONTACTOS</a></li>
+          <li class="nav-item"><a class="nav-link" href="#DIRECCIÓN" data-toggle="tab">DIRECCIÓN</a></li>
+          <li class="nav-item"><a class="nav-link" href="#REQUISITOS" data-toggle="tab">REQUISITOS DE EXPORTACIÓN</a></li>
+        </ul>
       </div>
-      <!-- Productos de la empresa -->
-      <div class="">
-          <div class="card card-primary">
-            <div class="card-header" style="background-color: #1254a1; color:white;">
-              <h3 class="card-title">Productos</h3>
-
-              <div class="card-tools">
-                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                  <i class="fas fa-minus"></i>
-                </button>
+      <!-- /.Cuerpo -->
+      <div class="card-body">
+        <!-- /.Contenido -->
+        <div class="tab-content">
+          <!-- Datos generales de la empresa -->
+          <div class="tab-pane active" id="EMPRESA">
+            <div class="">
+              <div class="card-body">
+                <div class="form-group">
+                  <label for="inputClientCompany">Nombre de la Empresa</label>
+                  <input type="text" id="inputClientCompany" [(ngModel)]="nuevaEmpresa.nombre_empresa" class="form-control">
+                </div>
+                <div class="form-group">
+                  <label for="inputDescription">Descripción</label>
+                  <textarea id="inputDescription" [(ngModel)]="nuevaEmpresa.descripcion" class="form-control" rows="4"></textarea>
+                </div>
               </div>
-            </div>
-            <div class="card-body">
-              <div class="form-group">
-                <label for="inputStatus">Seleccionar Producto</label>
-                <select id="inputStatus" [(ngModel)]="nuevoProducto.id_producto" class="form-control custom-select">
-                  <option selected="" disabled="">Seleccionar</option>
-                  <option *ngFor="let producto of listProductos">{{producto.producto}}</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <button type="button" class="btn btn-primary">Agregar</button>
-              </div>
-            </div>
-            <!-- /.card-body -->
-          </div>
-          <!-- /.card -->
-      </div>
-        <!-- Contactos de la empresa -->
-      <div class="">
-        <div class="card card-primary">
-          <div class="card-header" style="background-color: #1254a1; color:white;">
-            <h3 class="card-title">Contactos</h3>
-
-            <div class="card-tools">
-              <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                <i class="fas fa-minus"></i>
-              </button>
             </div>
           </div>
-          <div class="card-body">
+          <!-- Productos de la empresa -->
+          <div class="tab-pane" id="PRODUCTOS">
+            <div class="form-group">
+              <label for="inputStatus">Seleccionar Producto</label>
+              <select id="inputStatus" [(ngModel)]="nuevoProducto.id_producto" class="form-control custom-select">
+                <option selected="" disabled="">Seleccionar</option>
+                <option *ngFor="let producto of listProductos">{{producto.producto}}</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <button type="button" class="btn btn-primary">Agregar</button>
+            </div>
+          </div>
+          <!-- Contactos de la empresa -->
+          <div class="tab-pane" id="CONTACTOS">
             <div class="form-group">
               <label for="inputStatus">Tipo de Contacto</label>
               <select id="inputStatus" class="form-control custom-select">
@@ -110,87 +83,55 @@
               <textarea id="inputDescription" class="form-control" rows="4"></textarea>
             </div>
           </div>
-          <!-- /.card-body -->
-        </div>
-        <!-- /.card -->
-      </div>
-      <!-- Direcciones  de la empresa-->
-      <div class="">
-          <div class="card card-primary">
-            <div class="card-header" style="background-color: #1254a1; color:white;">
-              <h3 class="card-title">Dirección</h3>
-
-              <div class="card-tools">
-                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                  <i class="fas fa-minus"></i>
-                </button>
-              </div>
+          <!-- Direcciones  de la empresa-->
+          <div class="tab-pane" id="DIRECCIÓN">
+            <div class="form-group">
+              <label for="inputStatus">País</label>
+              <select id="inputStatus" class="form-control custom-select">
+                <option selected="" disabled="">Seleccionar</option>
+                <option>On Hold</option>
+                <option>Canceled</option>
+                <option>Success</option>
+              </select>
             </div>
-            
-            <div class="card-body">
-              <div class="form-group">
-                <label for="inputStatus">País</label>
-                <select id="inputStatus" class="form-control custom-select">
-                  <option selected="" disabled="">Seleccionar</option>
-                  <option>On Hold</option>
-                  <option>Canceled</option>
-                  <option>Success</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="inputStatus">Ciudad</label>
-                <select id="inputStatus" class="form-control custom-select">
-                  <option selected="" disabled="">Seleccionar</option>
-                  <option>On Hold</option>
-                  <option>Canceled</option>
-                  <option>Success</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="inputStatus">Contacto</label>
-                <select id="inputStatus" class="form-control custom-select">
-                  <option selected="" disabled="">Seleccionar</option>
-                  <option>On Hold</option>
-                  <option>Canceled</option>
-                  <option>Success</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="inputStatus">Tipo de Dirección</label>
-                <select id="inputStatus" class="form-control custom-select">
-                  <option selected="" disabled="">Seleccionar</option>
-                  <option>On Hold</option>
-                  <option>Canceled</option>
-                  <option>Success</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="inputName">Dirección</label>
-                <input type="text" id="inputName" class="form-control">
-              </div>
-              <div class="form-group">
-                <label for="inputDescription">Descripción</label>
-                <textarea id="inputDescription" class="form-control" rows="4"></textarea>
-              </div>
+            <div class="form-group">
+              <label for="inputStatus">Ciudad</label>
+              <select id="inputStatus" class="form-control custom-select">
+                <option selected="" disabled="">Seleccionar</option>
+                <option>On Hold</option>
+                <option>Canceled</option>
+                <option>Success</option>
+              </select>
             </div>
-            <!-- /.card-body -->
-          </div>
-          <!-- /.card -->
-      </div>
-      <!-- Requisitos de Exportación-->
-      <div class="">
-        <div class="card card-primary">
-          <div class="card-header" style="background-color: #1254a1; color:white;">
-            <h3 class="card-title">Requisitos de Exportación</h3>
-
-            <div class="card-tools">
-              <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
-                <i class="fas fa-minus"></i>
-              </button>
+            <div class="form-group">
+              <label for="inputStatus">Contacto</label>
+              <select id="inputStatus" class="form-control custom-select">
+                <option selected="" disabled="">Seleccionar</option>
+                <option>On Hold</option>
+                <option>Canceled</option>
+                <option>Success</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="inputStatus">Tipo de Dirección</label>
+              <select id="inputStatus" class="form-control custom-select">
+                <option selected="" disabled="">Seleccionar</option>
+                <option>On Hold</option>
+                <option>Canceled</option>
+                <option>Success</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="inputName">Dirección</label>
+              <input type="text" id="inputName" class="form-control">
+            </div>
+            <div class="form-group">
+              <label for="inputDescription">Descripción</label>
+              <textarea id="inputDescription" class="form-control" rows="4"></textarea>
             </div>
           </div>
-          <div class="card-body">
-
+          <!-- Requisitos de Exportación-->
+          <div class="tab-pane" id="REQUISITOS">
             <div class="form-group">
               <label for="inputName">Requisito</label>
               <input type="text" id="inputName" class="form-control">
@@ -227,15 +168,14 @@
               </select>
             </div>
           </div>
-          <!-- /.card-body -->
         </div>
-        <!-- /.card -->
+        <div class="card-footer" style="background-color: rgb(231, 230, 230);">
+          <button type="submit" class="btn btn-danger">Cancelar</button>
+          <button type="submit" (click)="agregarTodo()" class="btn btn-primary float-right">Guardar</button>
+        </div>
       </div>
     </div>
-    <div class="card-footer" style="background-color: rgb(231, 230, 230);">
-      <button type="submit" class="btn btn-danger">Cancelar</button>
-      <button type="submit" (click)="agregarTodo()" class="btn btn-primary float-right">Guardar</button>
-    </div>
-  </section>
     <!-- /.content -->
 </div>
+
+
