@@ -53,44 +53,31 @@
                     </div>
                   </div>
                 
-                <div class="card-body table-responsive p-0" style="height: 300px;">
-                  <table class="table table-head-fixed text-nowrap">
-                    <thead>
-                      <tr>
-                        <th>Producto</th>
-                        <th>Categoría</th>
-                        <th>Descripción</th>
-                        <th>Agregado por</th>
-                        <th>Fecha</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr *ngFor="let obj of productosEmpresa; let i = index">
-                        <td>{{ obj.producto.producto }}</td>
-                        <td>{{ obj.producto.categoria.categoria }}</td>
-                        <td>{{ obj.producto.descripcion }}</td>
-                        <td>{{ obj.creado_por }}</td>
-                        <td>{{ obj.fecha_creacion | date:'dd/MM/yyyy HH:mm'}}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-                
-                </div>
-                
+                  <div class="card-body table-responsive p-0" style="height: 300px;">
+                    <table class="table table-head-fixed text-nowrap">
+                      <thead>
+                        <tr>
+                          <th>Producto</th>
+                          <th>Categoría</th>
+                          <th>Descripción</th>
+                          <th>Agregado por</th>
+                          <th>Fecha</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let obj of productosEmpresa; let i = index">
+                          <td>{{ obj.producto.producto }}</td>
+                          <td>{{ obj.producto.categoria.categoria }}</td>
+                          <td>{{ obj.producto.descripcion }}</td>
+                          <td>{{ obj.creado_por }}</td>
+                          <td>{{ obj.fecha_creacion | date:'dd/MM/yyyy HH:mm'}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                </div> 
               </div>
-            </div>
-            
-            
-            <div class="form-group">
-              <label for="inputStatus">Seleccionar Producto</label>
-              <select id="inputStatus" [(ngModel)]="nuevoProducto.id_producto" class="form-control custom-select">
-                <option selected="" disabled="">Seleccionar</option>
-                <option *ngFor="let producto of listProductos">{{producto.producto}}</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <button type="button" class="btn btn-primary">Agregar</button>
             </div>
           </div>
           <!-- Contactos de la empresa -->
