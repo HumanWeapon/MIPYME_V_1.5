@@ -64,8 +64,8 @@ export class SearchComponent implements OnInit {
     fecha_creacion: new Date(), 
     modificado_por: '', 
     fecha_modificacion: new Date(), 
-    estado: 0
-
+    estado: 0,
+    cod_pais: ''
   };
   
   //DATATABLE

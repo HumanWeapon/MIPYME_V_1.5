@@ -72,7 +72,7 @@ export class EmpresasComponent {
     private el: ElementRef,
     private _router: Router
   ) {}
-
+  
   ngOnInit(): void {
   this.getUsuario();
   this.getTipoEmpresa();
@@ -105,7 +105,10 @@ export class EmpresasComponent {
     const idTipoEmpresa = (event.target as HTMLSelectElement).value;
     this.id_tipo_empresa = Number(idTipoEmpresa);
   }
-  navigateToOperacionesEmpresas() {
+  navigateToOperacionesEmpresas(idempresa: any ,empresa: string, descripcion: string) {
+    localStorage.setItem('idEmpresa', idempresa);
+    localStorage.setItem('nombreEmpresa', empresa);
+    localStorage.setItem('descripcionEmpresa', descripcion);
     this._router.navigate(['/dashboard/operaciones_empresas']);
   }
 

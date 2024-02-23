@@ -8,4 +8,5 @@ export interface Paises {
     modificado_por: string,
     fecha_modificacion: Date,
     estado: number,
+    cod_pais: string
 }
