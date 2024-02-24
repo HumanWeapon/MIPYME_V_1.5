@@ -14,6 +14,7 @@ import { Usuario } from 'src/app/interfaces/seguridad/usuario';
 import { Router } from '@angular/router';
 import { TipoEmpresa } from 'src/app/interfaces/mantenimiento/tipoEmpresa';
 import { TipoEmpresaService } from 'src/app/services/mantenimiento/tipoEmpresa.service';
+import { da } from 'date-fns/locale';
 
 @Component({
   selector: 'app-empresas',
@@ -141,6 +142,8 @@ agregarNuevaEmpresa() {
   this._empresaService.addEmpresa(this.nuevaEmpresa).subscribe({
     next: (data) => {
       this.toastr.success('Empresa agregada con éxito');
+      this.listEmpresa.push(data);
+
     },
     error: (e: HttpErrorResponse) => {
       this.handleError(e, 'Error al agregar empresa');
