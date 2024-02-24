@@ -7,6 +7,9 @@ import { Usuario } from 'src/app/interfaces/seguridad/usuario';
 import { BitacoraService } from 'src/app/services/administracion/bitacora.service';
 import { ErrorService } from 'src/app/services/error.service';
 import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
+import * as XLSX from 'xlsx';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale'; // Importa el idioma español
 
 @Component({
   selector: 'app-bitacora',
@@ -14,6 +17,14 @@ import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
   styleUrls: ['./bitacora.component.css']
 })
 export class BitacoraComponent implements OnInit{
+
+  getDate(): string {
+    // Obtener la fecha actual
+    const currentDate = new Date();
+    // Formatear la fecha en el formato deseado
+    return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
+}
+
   bitacora: any[] = [];
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
@@ -64,5 +75,124 @@ export class BitacoraComponent implements OnInit{
     }
   );
 }
+
+
+
+
+generateExcel() {
+  // Definir los encabezados de las columnas
+  const headers = ['Fecha', 'Usuario', 'Nombre', 'Objeto', 'Acción', 'Descripción'];
+
+  // Crear matriz para almacenar los datos
+  const data: any[][] = [];
+
+  // Recorrer los registros de la bitácora y agregarlos a la matriz 'data'
+  this.bitacora.forEach((registro) => {
+    const row = [
+      registro.fecha,
+      registro.usuario,
+      registro.nombre,
+      registro.objeto,
+      registro.accion,
+      registro.descripcion,
+    ];
+    data.push(row);
+  });
+
+  // Crear un nuevo libro de Excel
+  const workbook = XLSX.utils.book_new();
+  const worksheet = XLSX.utils.aoa_to_sheet([headers, ...data]);
+
+  // Agregar la hoja al libro de Excel
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Bitácora');
+
+  // Guardar el libro de Excel como un archivo binario
+  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+  const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+  // Crear un objeto URL para el blob
+  const url = window.URL.createObjectURL(blob);
+
+  // Crear un enlace para descargar el archivo Excel
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'Reporte_Bitacora.xlsx';
+
+  document.body.appendChild(a);
+  a.click();
+
+  // Limpiar el objeto URL creado
+  window.URL.revokeObjectURL(url);
+  document.body.removeChild(a);
+}
+
+
+
+generatePDF() {
+  const { jsPDF } = require("jspdf");
+  const doc = new jsPDF();
+  const data: any[][] = [];
+  const headers = ['Fecha', 'Usuario', 'Nombre', 'Objeto', 'Acción', 'Descripción'];
+
+  // Agregar el logo al PDF
+  const logoImg = new Image();
+  logoImg.onload = () => {
+    const logoWidth = 50; // Ancho del logo
+    const logoHeight = logoWidth * (logoImg.height / logoImg.width); // Calcular la altura proporcional al ancho
+
+    // Agregar el logo al PDF en la esquina superior izquierda
+    doc.addImage(logoImg, 'PNG', 10, 10, logoWidth, logoHeight);
+
+    // Calcular la posición central para la información
+    const centerX = doc.internal.pageSize.getWidth() / 2;
+
+    // Definir el texto para los comentarios
+    const commentText = [
+      "Utilidad Mi Pyme",
+      "Reporte de Bitácora",
+      "Fecha: " + this.getCurrentDate()
+    ];
+
+    // Agregar los comentarios al PDF centrados horizontalmente
+    doc.setFontSize(12);
+    doc.text(commentText[0], centerX, 10, { align: 'center' }); // Ajustar las coordenadas vertical y horizontalmente
+    doc.text(commentText[1], centerX, 20, { align: 'center' }); // Ajustar las coordenadas vertical y horizontalmente
+    doc.text(commentText[2], centerX, 30, { align: 'center' }); // Ajustar las coordenadas vertical y horizontalmente
+
+    // Calcular la posición de inicio para la tabla de datos debajo de los comentarios
+    const startY = 40;
+
+    // Recorrer los registros y agregarlos a la tabla de datos
+    this.bitacora.forEach((bitacora, index) => {
+      const row = [
+        bitacora.fecha,
+        bitacora.usuario,
+        bitacora.nombre_usuario,
+        bitacora.objeto,
+        bitacora.accion,
+        bitacora.descripcion,
+      ];
+      data.push(row);
+    });
+
+    // Agregar la tabla de datos al PDF
+    doc.autoTable({
+      head: [headers],
+      body: data,
+      startY: startY,
+    });
+
+    // Guardar el PDF
+    doc.save('Reporte Bítacora.pdf');
+  };
+  logoImg.src = '/assets/dist/img/pym.png'; // Ruta del logo
+}
+
+getCurrentDate(): string {
+  const currentDate = new Date();
+  return currentDate.toLocaleDateString(); // Retorna la fecha actual en formato local
+}
+
+
 
 }

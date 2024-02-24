@@ -10,6 +10,9 @@ import { RolesService } from 'src/app/services/seguridad/roles.service';
 import { BitacoraService } from 'src/app/services/administracion/bitacora.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ErrorService } from 'src/app/services/error.service';
+import * as XLSX from 'xlsx';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale'; // Importa el idioma español
 
 @Component({
   selector: 'app-usuarios',
@@ -17,6 +20,13 @@ import { ErrorService } from 'src/app/services/error.service';
   styleUrls: ['./usuarios.component.css']
 })
 export class UsuariosComponent {
+
+  getDate(): string {
+    // Obtener la fecha actual
+    const currentDate = new Date();
+    // Formatear la fecha en el formato deseado
+    return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
+}
   
 
   listUsuarios: Usuario[] = [];
@@ -162,54 +172,126 @@ toggleFunction(user: any, i: number) {
     this.usuariosAllRoles[i].estado_usuario = 1;
   }
 
+
+   /*****************************************************************************************************/
+   generateExcel() {
+    const headers = ['ID Usuario', 'Nombre Usuario', 'Correo Electronico', 'Rol', 'Creador', 'Ultima Conexion', 'Fecha de Vencimiento', 'Estado'];
+    const data: any[][] = [];
+
+    
+  
+    // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
+    this.usuariosAllRoles.forEach((user, index) => {
+      const row = [
+        user.usuario,
+        user.nombre_usuario,
+        user.correo_electronico,
+        user.roles.rol,
+        user.creado_por,
+        user.fecha_ultima_conexion,
+        user.fecha_vencimiento,
+        this.getEstadoText(user.estado_usuario) // Función para obtener el texto del estado
+      ];
+      data.push(row);
+    });
+  
+    // Crea un nuevo libro de Excel
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.aoa_to_sheet([headers, ...data]);
+    
+    // Agrega la hoja al libro de Excel
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Usuarios');
+  
+    // Guarda el libro de Excel como un archivo binario
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  
+    // Crea un objeto URL para el blob
+    const url = window.URL.createObjectURL(blob);
+  
+    // Crea un enlace para descargar el archivo Excel
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'My Pyme-Reporte Usuario.xlsx';
+  
+    document.body.appendChild(a);
+    a.click();
+  
+    // Limpia el objeto URL creado
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  }
+  
+  
   /*****************************************************************************************************/
 
-generatePDF() {
-
-  const {jsPDF} = require ("jspdf");
- 
-  const doc = new jsPDF();
-  const data: any[][] =[]
-  const headers = ['ID Usuario','Nombre Usuario', 'Correo Electronico','Rol','Creador', 'Ultima Conexion', 'Fecha de Vencimiento', 'Estado'];
-
-  // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
-  this.usuariosAllRoles.forEach((user, index) => {
-    const row = [
-       user.usuario, 
-       user.nombre_usuario,
-       user.correo_electronico,
-       user.roles.rol,
-       user.creado_por,
-       user.fecha_ultima_conexion,
-       user.fecha_vencimiento,
-      this.getEstadoText(user.estado_usuario) // Función para obtener el texto del estado
-    ];
-    data.push(row);
-  });
-
-  doc.autoTable({
-    head: [headers],
-    body: data,
-  });
-
-  doc.output('dataurlnewwindow', null, 'Pymes.pdf');
-}
-
-getEstadoText(estado_usuario: number): string {
-  switch (estado_usuario) {
-    case 1:
-      return 'ACTIVO';
-    case 2:
-      return 'INACTIVO';
+  generatePDF() {
+    const { jsPDF } = require("jspdf");
+    const doc = new jsPDF();
+    const data: any[][] = [];
+    const headers = ['ID Usuario', 'Nombre Usuario', 'Correo Electronico', 'Rol', 'Creador', 'Ultima Conexion', 'Fecha de Vencimiento', 'Estado'];
+  
+    // Agregar el logo al PDF
+    const logoImg = new Image();
+    logoImg.onload = () => {
+      // Dibujar el logo en el PDF
+      doc.addImage(logoImg, 'PNG', 10, 10, 50, 20); // Ajusta las coordenadas y dimensiones según tu diseño
+  
+      // Agregar los comentarios al PDF centrados horizontalmente
+      const centerX = doc.internal.pageSize.getWidth() / 2;
+      doc.setFontSize(12);
+      doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+      doc.text("Reporte de Usuarios", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+      doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+  
+      // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
+      this.usuariosAllRoles.forEach((user, index) => {
+        const row = [
+          user.usuario,
+          user.nombre_usuario,
+          user.correo_electronico,
+          user.roles.rol,
+          user.creado_por,
+          user.fecha_ultima_conexion,
+          user.fecha_vencimiento,
+          this.getEstadoText(user.estado_usuario) // Función para obtener el texto del estado
+        ];
+        data.push(row);
+      });
+  
+      // Agregar la tabla al PDF
+      doc.autoTable({
+        head: [headers],
+        body: data,
+        startY: 70 // Ajusta la posición inicial de la tabla según tu diseño
+      });
+  
+      // Guardar el PDF
+      doc.save('My Pyme-Reporte Usuario.pdf');
+    };
+    logoImg.src = '/assets/dist/img/pym.png'; // Ruta del logo
+  }
+  
+  getCurrentDate(): string {
+    const currentDate = new Date();
+    return currentDate.toLocaleDateString(); // Retorna la fecha actual en formato local
+  }
+  
+  getEstadoText(estado_usuario: number): string {
+    switch (estado_usuario) {
+      case 1:
+        return 'ACTIVO';
+      case 2:
+        return 'INACTIVO';
       case 3:
         return 'BLOQUEADO';
       case 4:
         return 'VENCIDO';
-    default:
-      return 'Desconocido';
+      default:
+        return 'Desconocido';
+    }
   }
-}
-
+  
 
 /**************************************************************/
 
@@ -355,22 +437,53 @@ getEstadoText(estado_usuario: number): string {
       id_usuario: this.getUser.id_usuario,
       id_objeto: 1,
       accion: 'INSERTAR',
-      descripcion: 'AGREGA NUEVO USUARIO: '+ dataUser.usuario
+      descripcion: 'SE AGREGO UN NUEVO USUARIO: '+ dataUser.usuario
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
   }
-  updateBitacora(dataUser: Usuario){
-    const bitacora = {
-      fecha: new Date(),
-      id_usuario: this.getUser.id_usuario,
-      id_objeto: 1,
-      accion: 'ACTUALIZAR',
-      descripcion: 'ACTUALIZA EL USUARIO '+ dataUser.usuario
-    };
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
+
+
+  updateBitacora(dataUser: Usuario) {
+    // Guardar el usuario actual antes de actualizarlo
+    const usuarioAnterior = { ...this.getUser };
+  
+    // Actualizar el usuario
+    this.getUser = dataUser;
+  
+    // Comparar los datos anteriores con los nuevos datos
+    const cambios = [];
+    if (usuarioAnterior.nombre_usuario !== dataUser.nombre_usuario) {
+      cambios.push(`Nombre de usuario anterior: ${usuarioAnterior.nombre_usuario} -> por nuevo nombre:  ${dataUser.nombre_usuario}`);
+    }
+    if (usuarioAnterior.correo_electronico !== dataUser.correo_electronico) {
+      cambios.push(`Correo electrónico anterior: ${usuarioAnterior.correo_electronico} -> por nuevo correo:  ${dataUser.correo_electronico}`);
+    }
+    // Puedes agregar más comparaciones para otros campos según tus necesidades
+  
+    // Si se realizaron cambios, registrar en la bitácora
+    if (cambios.length > 0) {
+      // Crear la descripción para la bitácora
+      const descripcion = `Se actualizaron los siguientes campos:\n${cambios.join('\n')}`;
+  
+      // Crear el objeto bitácora
+      const bitacora = {
+        fecha: new Date(),
+        id_usuario: this.getUser.id_usuario,
+        id_objeto: 1,
+        accion: 'ACTUALIZAR',
+        descripcion: descripcion
+      };
+  
+      // Insertar la bitácora
+      this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+        // Manejar la respuesta si es necesario
+      });
+    }
   }
+  
+  
+
   activarBitacora(dataUser: Usuario){
     const bitacora = {
       fecha: new Date(),

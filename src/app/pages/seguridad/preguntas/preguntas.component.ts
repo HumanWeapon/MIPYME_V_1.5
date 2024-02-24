@@ -11,6 +11,10 @@ import { ErrorService } from 'src/app/services/error.service';
 import { BitacoraService } from 'src/app/services/administracion/bitacora.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Usuario } from 'src/app/interfaces/seguridad/usuario';
+import * as XLSX from 'xlsx';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale'; // Importa el idioma español
+
 
 
 @Component({
@@ -19,6 +23,14 @@ import { Usuario } from 'src/app/interfaces/seguridad/usuario';
   styleUrls: ['./preguntas.component.css']
 })
 export class PreguntasComponent implements OnInit{
+  getPregunta: any;
+
+  getDate(): string {
+    // Obtener la fecha actual
+    const currentDate = new Date();
+    // Formatear la fecha en el formato deseado
+    return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
+}
 
   preguntaEditando: Preguntas = {
     id_pregunta: 0,
@@ -113,49 +125,114 @@ inactivarPregunta(pregunta: any, i: number){
   }
 
 
+     /*****************************************************************************************************/
+     generateExcel() {
+      const headers = ['Código', 'Pregunta', 'Estado', 'Fecha de Creación', 'Fecha de Modificación'];
+      const data: any[][] = [];
+    
+      // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
+      this.listPreguntas.forEach((question, index) => {
+        const row = [
+          question.id_pregunta,
+          question.pregunta,
+          this.getEstadoText(question.estado_pregunta),
+          question.fecha_creacion,
+          question.fecha_modificacion
+        ];
+        data.push(row);
+      });
+    
+      // Crea un nuevo libro de Excel
+      const workbook = XLSX.utils.book_new();
+      const worksheet = XLSX.utils.aoa_to_sheet([headers, ...data]);
+    
+      // Agrega la hoja al libro de Excel
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Preguntas');
+    
+      // Guarda el libro de Excel como un archivo binario
+      const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+      const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    
+      // Crea un objeto URL para el blob
+      const url = window.URL.createObjectURL(blob);
+    
+      // Crea un enlace para descargar el archivo Excel
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'My Pyme-Reporte Preguntas.xlsx';
+    
+      document.body.appendChild(a);
+      a.click();
+    
+      // Limpia el objeto URL creado
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    }
+    
+       
+
    /*****************************************************************************************************/
 
-generatePDF() {
-
-  const {jsPDF} = require ("jspdf");
- 
-  const doc = new jsPDF();
-  const data: any[][] =[]
-  const headers = ['ID', 'Pregunta', 'Creador', 'Fecha', 'Modificado por', 'Fecha', 'Estado'];
-
-  // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
-  this.listPreguntas.forEach((preg, index) => {
-    const row = [
-    preg.id_pregunta,
-    preg.pregunta,
-    preg.creado_por,
-    preg.fecha_creacion,
-    preg.modificado_por,
-    preg.fecha_modificacion, 
-      this.getEstadoText(preg.estado_pregunta) // Función para obtener el texto del estado
-    ];
-    data.push(row);
-  });
-
-  doc.autoTable({
-    head: [headers],
-    body: data,
-  });
-
-  doc.output('dataurlnewwindow', null, 'Pymes.pdf');
-}
-
-getEstadoText(estado: number): string {
-  switch (estado) {
-    case 1:
-      return 'ACTIVO';
-    case 2:
-      return 'INACTIVO';
-    default:
-      return 'Desconocido';
+   generatePDF() {
+    const { jsPDF } = require("jspdf");
+    const doc = new jsPDF();
+    const data: any[][] = [];
+    const headers = ['Código', 'Pregunta', 'Estado', 'Fecha de Creación', 'Fecha de Modificación'];
+  
+    // Agregar el logo al PDF
+    const logoImg = new Image();
+    logoImg.onload = () => {
+      // Dibujar el logo en el PDF
+      doc.addImage(logoImg, 'PNG', 10, 10, 50, 20); // Ajusta las coordenadas y dimensiones según tu diseño
+  
+      // Agregar los comentarios al PDF centrados horizontalmente
+      const centerX = doc.internal.pageSize.getWidth() / 2;
+      doc.setFontSize(12);
+      doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+      doc.text("Reporte de Preguntas", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+      doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+  
+      // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
+      this.listPreguntas.forEach((question, index) => {
+        const row = [
+          question.id_pregunta,
+          question.pregunta,
+          this.getEstadoText(question.estado_pregunta),
+          question.fecha_creacion,
+          question.fecha_modificacion
+        ];
+        data.push(row);
+      });
+  
+      // Agregar la tabla al PDF
+      doc.autoTable({
+        head: [headers],
+        body: data,
+        startY: 70 // Ajusta la posición inicial de la tabla según tu diseño
+      });
+  
+      // Guardar el PDF
+      doc.save('My Pyme-Reporte Preguntas.pdf');
+    };
+    logoImg.src = '/assets/dist/img/pym.png'; // Ruta del logo
   }
-}
-
+  
+  getCurrentDate(): string {
+    const currentDate = new Date();
+    return currentDate.toLocaleDateString(); // Retorna la fecha actual en formato local
+  }
+  
+  getEstadoText(estado_pregunta: number): string {
+    switch (estado_pregunta) {
+      case 1:
+        return 'Activo';
+      case 2:
+        return 'Inactivo';
+      default:
+        return 'Desconocido';
+    }
+  }
+  
 
 /**************************************************************/
  
@@ -279,17 +356,46 @@ getEstadoText(estado: number): string {
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
   }
-  updateBitacora(dataPregunta: Preguntas){
+
+
+  updateBitacora(dataPregunta: Preguntas) {
+  // Guardar la pregunta actual antes de actualizarla
+  const preguntaAnterior = { ...this.getPregunta };
+
+  // Actualizar la pregunta
+  this.getPregunta = dataPregunta;
+
+  // Comparar los datos anteriores con los nuevos datos
+  const cambios = [];
+  if (preguntaAnterior.pregunta !== dataPregunta.pregunta) {
+    cambios.push(`Pregunta anterior: ${preguntaAnterior.pregunta} -> por nueva pregunta:  ${dataPregunta.pregunta}`);
+  }
+  // Puedes agregar más comparaciones para otros campos según tus necesidades
+
+  // Si se realizaron cambios, registrar en la bitácora
+  if (cambios.length > 0) {
+    // Crear la descripción para la bitácora
+    const descripcion = `Se actualizaron los siguientes campos:\n${cambios.join('\n')}`;
+
+    // Crear el objeto bitácora
     const bitacora = {
       fecha: new Date(),
-      id_usuario: this.getUser.id_usuario,
-      id_objeto: 27,
+      id_usuario: this.getPregunta.id_usuario,
+      id_objeto: 27, // Aquí debes establecer el ID del objeto correspondiente
       accion: 'ACTUALIZAR',
-      descripcion: 'SE ACTUALIZA LA PREGUNTA: '+ dataPregunta.pregunta
+      descripcion: descripcion
     };
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
+
+    // Insertar la bitácora
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+      // Manejar la respuesta si es necesario
+    });
   }
+}
+
+
+
+
   activarBitacora(dataPregunta: Preguntas){
     const bitacora = {
       fecha: new Date(),
@@ -300,7 +406,10 @@ getEstadoText(estado: number): string {
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
-  }
+  
+}
+
+
   inactivarBitacora(dataPregunta: Preguntas){
     const bitacora = {
       fecha: new Date(),
@@ -312,6 +421,8 @@ getEstadoText(estado: number): string {
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
   }
+
+
   deleteBitacora(dataPregunta: Preguntas){
     const bitacora = {
       fecha: new Date(),

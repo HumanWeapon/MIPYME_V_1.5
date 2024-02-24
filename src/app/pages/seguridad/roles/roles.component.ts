@@ -11,6 +11,9 @@ import { BitacoraService } from 'src/app/services/administracion/bitacora.servic
 import { HttpErrorResponse } from '@angular/common/http';
 import { Usuario } from 'src/app/interfaces/seguridad/usuario';
 import { DatePipe } from '@angular/common';
+import * as XLSX from 'xlsx';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale'; 
 
 
 @Component({
@@ -19,6 +22,13 @@ import { DatePipe } from '@angular/common';
   styleUrls: ['./roles.component.css']
 })
 export class RolesComponent implements OnInit{
+
+  getDate(): string {
+    // Obtener la fecha actual
+    const currentDate = new Date();
+    // Formatear la fecha en el formato deseado
+    return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
+}
 
   rolEditando: Roles = {
     id_rol: 0, 
@@ -50,6 +60,7 @@ export class RolesComponent implements OnInit{
   // We use this trigger because fetching the list of persons can be quite long,
   // thus we ensure the data is fetched before rendering
   dtTrigger: Subject<any> = new Subject<any>();
+  getRol: any;
 
 
   constructor(
@@ -118,48 +129,117 @@ activarRol(rol: any, i: number){
   this.listRoles[i].estado_rol = 1;
 }
 
+
+  /*****************************************************************************************************/
+  generateExcel() {
+    const headers = ['Nombre del Rol', 'Estado', 'Descripción', 'Creador', 'Fecha de Creación', 'Modificado por', 'Fecha de Modificación'];
+    const data: any[][] = [];
+  
+    // Recorre los datos de tu lista de roles y agrégalo a la matriz 'data'
+    this.listRoles.forEach((role, index) => {
+      const row = [
+        role.rol,
+        this.getEstadoText(role.estado_rol),
+        role.descripcion,
+        role.creado_por,
+        role.fecha_creacion,
+        role.modificado_por,
+        role.fecha_modificacion,
+      ];
+      data.push(row);
+    });
+  
+    // Crea un nuevo libro de Excel
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.aoa_to_sheet([headers, ...data]);
+    
+    // Agrega la hoja al libro de Excel
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Roles');
+  
+    // Guarda el libro de Excel como un archivo binario
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  
+    // Crea un objeto URL para el blob
+    const url = window.URL.createObjectURL(blob);
+  
+    // Crea un enlace para descargar el archivo Excel
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'My Pyme-Reporte Roles.xlsx';
+  
+    document.body.appendChild(a);
+    a.click();
+  
+    // Limpia el objeto URL creado
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  }
+  
+
   /*****************************************************************************************************/
 
-generatePDF() {
-
-  const {jsPDF} = require ("jspdf");
- 
-  const doc = new jsPDF();
-  const data: any[][] =[]
-  const headers = ['Nombre del Rol', 'Estado', 'Descripcion', 'Creado por', 'Fecha de Creacion', 'Modificado por', 'Fecha de Modificacion'];
-
-  // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
-  this.listRoles.forEach((roles, index) => {
-    const row = [
-      roles.rol,
-      this.getEstadoText(roles.estado_rol),
-      roles.descripcion,
-      roles.creado_por,
-      roles.fecha_creacion,
-      roles.modificado_por,
-      roles.fecha_modificacion,
-    ];
-    data.push(row);
-  });
-
-  doc.autoTable({
-    head: [headers],
-    body: data,
-  });
-
-  doc.output('dataurlnewwindow', null, 'Pymes.pdf');
-}
-
-getEstadoText(estado: number): string {
-  switch (estado) {
-    case 1:
-      return 'ACTIVO';
-    case 2:
-      return 'INACTIVO';
-    default:
-      return 'DESCONOCIDO';
+  generatePDF() {
+    const { jsPDF } = require("jspdf");
+    const doc = new jsPDF();
+    const data: any[][] = [];
+    const headers = ['Nombre del Rol', 'Estado', 'Descripción', 'Creado por', 'Fecha de Creación', 'Modificado por', 'Fecha de Modificación'];
+  
+    // Agregar el logo al PDF
+    const logoImg = new Image();
+    logoImg.onload = () => {
+      // Dibujar el logo en el PDF
+      doc.addImage(logoImg, 'PNG', 10, 10, 50, 20); // Ajusta las coordenadas y dimensiones según tu diseño
+  
+      // Agregar los comentarios al PDF centrados horizontalmente
+      const centerX = doc.internal.pageSize.getWidth() / 2;
+      doc.setFontSize(12);
+      doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+      doc.text("Reporte de Roles", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+      doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+  
+      // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
+      this.listRoles.forEach((role, index) => {
+        const row = [
+          role.rol,
+          this.getEstadoText(role.estado_rol),
+          role.descripcion,
+          role.creado_por,
+          role.fecha_creacion,
+          role.modificado_por,
+          role.fecha_modificacion,
+        ];
+        data.push(row);
+      });
+  
+      // Agregar la tabla al PDF
+      doc.autoTable({
+        head: [headers],
+        body: data,
+        startY: 70 // Ajusta la posición inicial de la tabla según tu diseño
+      });
+  
+      // Guardar el PDF
+      doc.save('Reporte de Roles.pdf');
+    };
+    logoImg.src = '/assets/dist/img/pym.png'; // Ruta del logo
   }
-}
+  
+  getCurrentDate(): string {
+    const currentDate = new Date();
+    return currentDate.toLocaleDateString(); // Retorna la fecha actual en formato local
+  }
+  
+  getEstadoText(estado: number): string {
+    switch (estado) {
+      case 1:
+        return 'ACTIVO';
+      case 2:
+        return 'INACTIVO';
+      default:
+        return 'DESCONOCIDO';
+    }
+  }
 
 
 /**************************************************************/
@@ -290,17 +370,48 @@ insertBitacora(dataRoles: Roles){
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
   })
 }
-updateBitacora(dataRoles: Roles){
-  const bitacora = {
-    fecha: new Date(),
-    id_usuario: this.getUser.id_usuario,
-    id_objeto: 3,
-    accion: 'ACTUALIZA',
-    descripcion: 'SE ACTUALIZA EL ROL: '+ dataRoles.rol
-  };
-  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-  })
+
+
+updateBitacora(dataRoles: Roles) {
+  // Guardar el rol actual antes de actualizarlo
+  const rolAnterior = { ...this.getRol };
+
+  // Actualizar el rol
+  this.getRol = dataRoles;
+
+  // Comparar los datos anteriores con los nuevos datos
+  const cambios = [];
+  if (rolAnterior.rol !== dataRoles.rol) {
+    cambios.push(`Rol anterior: ${rolAnterior.rol} -> por nuevo rol:  ${dataRoles.rol}`);
+  }
+  if (rolAnterior.descripcion !== dataRoles.descripcion) {
+    cambios.push(`Descripción anterior: ${rolAnterior.descripcion} -> por nueva descripción:  ${dataRoles.descripcion}`);
+  }
+  // Puedes agregar más comparaciones para otros campos según tus necesidades
+
+  // Si se realizaron cambios, registrar en la bitácora
+  if (cambios.length > 0) {
+    // Crear la descripción para la bitácora
+    const descripcion = `Se actualizaron los siguientes campos:\n${cambios.join('\n')}`;
+
+    // Crear el objeto bitácora
+    const bitacora = {
+      fecha: new Date(),
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 3, // ID del objeto correspondiente a los roles
+      accion: 'ACTUALIZAR',
+      descripcion: descripcion
+    };
+
+    // Insertar la bitácora
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+      // Manejar la respuesta si es necesario
+    });
+  }
 }
+
+
+
 activarBitacora(dataRoles: Roles){
   console.log(dataRoles);
   const bitacora = {
@@ -313,6 +424,8 @@ activarBitacora(dataRoles: Roles){
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
   })
 }
+
+
 inactivarBitacora(dataRoles: Roles){
   const bitacora = {
     fecha: new Date(),
@@ -324,6 +437,8 @@ inactivarBitacora(dataRoles: Roles){
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
   })
 }
+
+
 deleteBitacora(dataRoles: Roles){
   const bitacora = {
     fecha: new Date(),
