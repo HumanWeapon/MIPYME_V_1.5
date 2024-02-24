@@ -1,8 +1,7 @@
 .custom-print-button {
-    position: absolute; /* Establece la posición absoluta */
-    right: 25px; /* Ajusta la distancia desde el borde derecho */
-    top: 10px; /* Ajusta la distancia desde el borde superior */
-  }
+  float: right; /* Alinea los botones a la derecha */
+  margin-left: 5px; /* Agrega un pequeño margen entre los botones */
+}
   /* Estilos para la tabla */
   .modal-content table {
     width: 100%; /* La tabla ocupa todo el ancho del contenedor */
@@ -16,7 +15,7 @@
     border: 1px solid #ddd; /* Establece un borde para las celdas */
   }
   
-  .fa-lock{
+  .fa-lock{ 
     color: #5D6D7E;
   }
   

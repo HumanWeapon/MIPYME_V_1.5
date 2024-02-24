@@ -10,6 +10,11 @@ import { Usuario } from 'src/app/interfaces/seguridad/usuario';
 import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 import { ErrorService } from 'src/app/services/error.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import * as XLSX from 'xlsx';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale'; // Importa el idioma español
+import jsPDF from 'jspdf';
+import 'jspdf-autotable'; 
 
 
 @Component({
@@ -18,6 +23,15 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrls: ['./parametros.component.css']
 })
 export class ParametrosComponent implements OnInit{
+  getUserId: any;
+  getParametro: any;
+
+  getDate(): string {
+    // Obtener la fecha actual
+    const currentDate = new Date();
+    // Formatear la fecha en el formato deseado
+    return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
+}
 
   parametroEditando: Parametros = {
     id_parametro: 0,
@@ -141,19 +155,14 @@ activateParametro(parametro: any, i: number){
  
 
 
-
    /*****************************************************************************************************/
 
-generatePDF() {
+generateExcel() {
+  const headers = ['ID', 'Parámetro', 'Valor', 'ID Usuario', 'Creador', 'Fecha', 'Modificado por', 'Fecha', 'Estado'];
+  const data: any[][] = [];
 
-  const {jsPDF} = require ("jspdf");
- 
-  const doc = new jsPDF();
-  const data: any[][] =[]
-  const headers = ['ID', 'Parametro', 'Valor', 'Id Usuario',  'Creador', 'Fecha', 'Modificado por', 'Fecha', 'Estado'];
-
-  // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
-  this.listParametros.forEach((parametro, index) => {
+  // Recorre los datos y agrégalos a la matriz 'data'
+  this.listParametros.forEach((parametro) => {
     const row = [
       parametro.id_parametro,
       parametro.parametro,
@@ -163,31 +172,100 @@ generatePDF() {
       parametro.fecha_creacion,
       parametro.modificado_por,
       parametro.fecha_modificacion,
-      parametro.alerta_busqueda, 
       this.getEstadoText(parametro.estado_parametro) // Función para obtener el texto del estado
     ];
     data.push(row);
   });
 
-  doc.autoTable({
-    head: [headers],
-    body: data,
-  });
+  // Crea un nuevo libro de Excel
+  const workbook = XLSX.utils.book_new();
+  const worksheet = XLSX.utils.aoa_to_sheet([headers, ...data]);
 
-  doc.output('dataurlnewwindow', null, 'Pymes.pdf');
+  // Agrega la hoja al libro de Excel
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Parámetros');
+
+  // Guarda el libro de Excel como un archivo binario
+  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+  const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+  // Crea un objeto URL para el blob
+  const url = window.URL.createObjectURL(blob);
+
+  // Crea un enlace para descargar el archivo Excel
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'My Pyme-Reporte Parámetros.xlsx';
+
+  document.body.appendChild(a);
+  a.click();
+
+  // Limpia el objeto URL creado
+  window.URL.revokeObjectURL(url);
+  document.body.removeChild(a);
 }
 
-getEstadoText(estado: number): string {
-  switch (estado) {
-    case 1:
-      return 'ACTIVO';
-    case 2:
-      return 'INACTIVO';
-    default:
-      return 'Desconocido';
+
+
+   /*****************************************************************************************************/
+
+   generatePDF() {
+    const doc = new jsPDF();
+    const data: any[][] = [];
+    const headers = ['ID', 'Parámetro', 'Valor', 'ID Usuario', 'Creador', 'Fecha', 'Modificado por', 'Fecha', 'Estado'];
+  
+    // Agregar el logo al PDF
+    const logoImg = new Image();
+    logoImg.onload = () => {
+      // Dibujar el logo en el PDF
+      doc.addImage(logoImg, 'PNG', 10, 10, 50, 20); // Ajusta las coordenadas y dimensiones según tu diseño
+  
+      // Agregar los comentarios al PDF centrados horizontalmente
+      const centerX = doc.internal.pageSize.getWidth() / 2;
+      doc.setFontSize(12);
+      doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+      doc.text("Reporte de Parámetros", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+      doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+  
+      // Recorre los datos y agrégalos a la matriz 'data'
+      this.listParametros.forEach((parametro, index) => {
+        const row = [
+          parametro.id_parametro,
+          parametro.parametro,
+          parametro.valor,
+          parametro.id_usuario,
+          parametro.creado_por,
+          parametro.fecha_creacion,
+          parametro.modificado_por,
+          parametro.fecha_modificacion,
+          parametro.alerta_busqueda,
+          this.getEstadoText(parametro.estado_parametro) // Función para obtener el texto del estado
+        ];
+        data.push(row);
+      });
+  
+        
+      // Guardar el PDF
+      doc.save('My Pyme-Reporte Parámetros.pdf');
+    };
+    logoImg.src = '/assets/dist/img/pym.png'; // Ruta del logo
   }
-}
-
+  
+  getCurrentDate(): string {
+    const currentDate = new Date();
+    return currentDate.toLocaleDateString(); // Retorna la fecha actual en formato local
+  }
+  
+  getEstadoText(estado: number): string {
+    switch (estado) {
+      case 1:
+        return 'ACTIVO';
+      case 2:
+        return 'INACTIVO';
+      default:
+        return 'Desconocido';
+    }
+  }
+  
 
 /**************************************************************/
 
@@ -318,17 +396,46 @@ getEstadoText(estado: number): string {
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
   }
-  updateBitacora(dataParametro: Parametros){
-    const bitacora = {
-      fecha: new Date(),
-      id_usuario: this.getUser.id_usuario,
-      id_objeto: 2,
-      accion: 'ACTUALIZAR',
-      descripcion: 'SE ACTUALIZA EL PARAMETRO: '+ dataParametro.parametro
-    };
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
+
+  
+  updateBitacora(dataParametro: Parametros) {
+    // Guardar el parámetro actual antes de actualizarlo
+    const parametroAnterior = { ...this.getParametro };
+  
+    // Actualizar el parámetro
+    this.getParametro = dataParametro;
+  
+    // Comparar los datos anteriores con los nuevos datos
+    const cambios = [];
+    if (parametroAnterior.parametro !== dataParametro.parametro) {
+      cambios.push(`Nombre de parámetro anterior: ${parametroAnterior.parametro} -> por nuevo nombre: ${dataParametro.parametro}`);
+    }
+    if (parametroAnterior.valor !== dataParametro.valor) {
+      cambios.push(`Valor anterior: ${parametroAnterior.valor} -> por nuevo valor: ${dataParametro.valor}`);
+    }
+    // Puedes agregar más comparaciones para otros campos según tus necesidades
+  
+    // Si se realizaron cambios, registrar en la bitácora
+    if (cambios.length > 0) {
+      // Crear la descripción para la bitácora
+      const descripcion = `Se actualizaron los siguientes campos:\n${cambios.join('\n')}`;
+  
+      // Crear el objeto bitácora
+      const bitacora = {
+        fecha: new Date(),
+        id_usuario: this.getUserId(), // Suponiendo que tengas un método para obtener el ID del usuario actual
+        id_objeto: 2, // Suponiendo que el ID del objeto de parámetros es 2
+        accion: 'ACTUALIZAR',
+        descripcion: descripcion
+      };
+  
+      // Insertar la bitácora
+      this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+        // Manejar la respuesta si es necesario
+      });
+    }
   }
+  
   activarBitacora(dataParametro: Parametros){
     console.log(dataParametro);
     const bitacora = {

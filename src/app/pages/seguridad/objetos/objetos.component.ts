@@ -10,6 +10,9 @@ import { BitacoraService } from 'src/app/services/administracion/bitacora.servic
 import { HttpErrorResponse } from '@angular/common/http';
 import { Usuario } from 'src/app/interfaces/seguridad/usuario';
 import { DatePipe } from '@angular/common';
+import * as XLSX from 'xlsx';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale'; 
 
 
 @Component({
@@ -18,6 +21,13 @@ import { DatePipe } from '@angular/common';
   styleUrls: ['./objetos.component.css']
 })
 export class ObjetosComponent implements OnInit{
+
+  getDate(): string {
+    // Obtener la fecha actual
+    const currentDate = new Date();
+    // Formatear la fecha en el formato deseado
+    return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
+}
 
   objetoEditando: Objetos = {
     id_objeto: 0, 
@@ -143,52 +153,124 @@ activarObjeto(obj: any, i: number){
   });
   this.listObjetos[i].estado_objeto = 1;
 }
+
+
+
+
+
   /*****************************************************************************************************/
 
-generatePDF() {
+  generateExcel(objects: any[], filename: string) {
+    const headers = ['Nombre', 'Descripción', 'Tipo Objeto', 'Creado', 'Fecha Creación', 'Fecha Modificación', 'Estado'];
+    const data: any[][] = [];
 
-  const {jsPDF} = require ("jspdf");
- 
-  const doc = new jsPDF();
-  const data: any[][] =[]
-  const headers = ['Nombre Empresa', 'Descripcion', 'Creador', 'Fecha', 'Modificado por', 'Fecha', 'Estado'];
+    // Convertir los objetos en una matriz de datos
+    objects.forEach(obj => {
+        const row = [
+            obj.objeto,
+            obj.descripcion,
+            obj.tipo_objeto,
+            obj.creado_por,
+            obj.fecha_creacion,
+            obj.fecha_modificacion,
+            this.getEstadoText(obj.estado_objeto) // Función para obtener el texto del estado
+        ];
+        data.push(row);
+    });
 
-  // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
-  this.listObjetos.forEach((obj, index) => {
-    const row = [
-      obj.objeto,
-      obj.descripcion,
-      obj.tipo_objeto,
-      obj.creado_por,
-      obj.fecha_creacion,
-      obj.modificado_por,
-      obj.fecha_modificacion,
-      this.getEstadoText(obj.estado_objeto) // Función para obtener el texto del estado
-    ];
-    data.push(row);
-  });
+    // Crear un nuevo libro de Excel
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.aoa_to_sheet([headers, ...data]);
 
-  doc.autoTable({
-    head: [headers],
-    body: data,
-  });
+    // Agregar la hoja al libro de Excel
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Objetos');
 
-  doc.output('dataurlnewwindow', null, 'Pymes.pdf');
+    // Guardar el libro de Excel como un archivo binario
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+    // Crear un objeto URL para el blob
+    const url = window.URL.createObjectURL(blob);
+
+    // Crear un enlace para descargar el archivo Excel
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+
+    document.body.appendChild(a);
+    a.click();
+
+    // Limpiar el objeto URL creado
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+}
+
+
+  /*****************************************************************************************************/
+
+  generatePDF() {
+    const { jsPDF } = require("jspdf");
+    const doc = new jsPDF();
+    const headers = ['Nombre', 'Descripción', 'Tipo', 'Creador', 'Fecha Creación', 'Modificado por', 'Fecha Modificación', 'Estado'];
+
+    // Agregar el logo al PDF
+    const logoImg = new Image();
+    logoImg.onload = () => {
+        // Dibujar el logo en el PDF
+        doc.addImage(logoImg, 'PNG', 10, 10, 50, 20); // Ajusta las coordenadas y dimensiones según tu diseño
+
+        // Agregar los comentarios al PDF centrados horizontalmente
+        const centerX = doc.internal.pageSize.getWidth() / 2;
+        doc.setFontSize(12);
+        doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+        doc.text("Reporte de Objetos", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+        doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+
+        // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
+        const data = this.listObjetos.map(obj => [
+            obj.objeto,
+            obj.descripcion,
+            obj.tipo_objeto,
+            obj.creado_por,
+            obj.fecha_creacion,
+            obj.modificado_por,
+            obj.fecha_modificacion,
+            this.getEstadoText(obj.estado_objeto) // Función para obtener el texto del estado
+        ]);
+
+        // Agregar la tabla al PDF
+        doc.autoTable({
+            head: [headers],
+            body: data,
+            startY: 70 // Ajusta la posición inicial de la tabla según tu diseño
+        });
+
+        // Guardar el PDF
+        doc.save('My Pyme-Reporte Objetos.pdf');
+    };
+    logoImg.src = '/assets/dist/img/pym.png'; // Ruta del logo
+}
+
+getCurrentDate(): string {
+    const currentDate = new Date();
+    return currentDate.toLocaleDateString(); // Retorna la fecha actual en formato local
 }
 
 getEstadoText(estado: number): string {
-  switch (estado) {
-    case 1:
-      return 'ACTIVO';
-    case 2:
-      return 'INACTIVO';
-    default:
-      return 'Desconocido';
-  }
+    switch (estado) {
+        case 1:
+            return 'ACTIVO';
+        case 2:
+            return 'INACTIVO';
+        default:
+            return 'Desconocido';
+    }
 }
 
 
 /**************************************************************/
+
+
 
 
 agregarNuevoObjeto() {
@@ -321,17 +403,36 @@ agregarNuevoObjeto() {
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
   }
-  updateBitacora(dataObjeto: Objetos){
-    const bitacora = {
-      fecha: new Date(),
-      id_usuario: this.getUser.id_usuario,
-      id_objeto: 4,
-      accion: 'ACTUALIZAR',
-      descripcion: 'SE ACTUALIZA EL OBJETO: '+ dataObjeto.objeto
-    };
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
-  }
+
+
+  updateBitacora(dataObjeto: {
+    nombreAnterior: string; nombre: string, descripcion: string, objeto: string, descripcionAnterior: string, descripcionNueva: string 
+}) {
+    let descripcionCambios = '';
+
+    if (dataObjeto.nombre !== dataObjeto.nombreAnterior) {
+        descripcionCambios += `Nombre modificado: ${dataObjeto.nombreAnterior} -> ${dataObjeto.nombre}. `;
+    }
+
+    if (dataObjeto.descripcion !== dataObjeto.descripcionAnterior) {
+        descripcionCambios += `Descripción modificada: ${dataObjeto.descripcionAnterior} -> ${dataObjeto.descripcion}. `;
+    }
+
+    if (descripcionCambios !== '') {
+        const bitacora = {
+            fecha: new Date(),
+            id_usuario: this.getUser.id_usuario,
+            id_objeto: 4,
+            accion: 'ACTUALIZAR',
+            descripcion: `SE ACTUALIZA EL OBJETO: ${dataObjeto.objeto}. ${descripcionCambios}`
+        };
+
+        this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+            // Aquí puedes agregar cualquier lógica adicional después de insertar la bitácora
+        });
+    }
+}
+
 
   
 

@@ -13,6 +13,9 @@ import { ErrorService } from 'src/app/services/error.service';
 import { BitacoraService } from 'src/app/services/administracion/bitacora.service';
 import { Usuario } from 'src/app/interfaces/seguridad/usuario';
 import { HttpErrorResponse } from '@angular/common/http';
+import * as XLSX from 'xlsx';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale'; // Importa el idioma español
 
 @Component({
   selector: 'app-permisos',
@@ -20,6 +23,16 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrls: ['./permisos.component.css']
 })
 export class PermisosComponent implements OnInit, OnDestroy {
+  permisos: Permisos | undefined; 
+
+  getDate(): string {
+    // Obtener la fecha actual
+    const currentDate = new Date();
+    // Formatear la fecha en el formato deseado
+    return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
+}
+  
+
   roles: Roles[] = [];
   objetos: Objetos[] = [];
 
@@ -160,52 +173,131 @@ activarPermiso(permisos: any, i: number){
 }
 
 
+
+
+
+
   /*****************************************************************************************************/
 
-generatePDF() {
 
-  const {jsPDF} = require ("jspdf");
- 
-  const doc = new jsPDF();
-  const data: any[][] =[]
-  const headers = ['ID Permiso','ID Rol','ID Objeto', 'Insercion', 'Eliminacion', 'Consultar', 'Actualizacion', 'Estado', 'Creador', 'Fecha Creacion', 'Fecha Modificacion'];
 
-  // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
-  this.listPermisos.forEach((perm, index) => {
-    const row = [
-      perm.id_permisos,
-      this.getRolNombre(perm.id_rol),                     
-      this.getObjetoNombre(perm.id_objeto), 
-      perm.permiso_insercion,
-      perm.permiso_eliminacion,
-      perm.permiso_consultar,
-      perm.permiso_actualizacion,
-      this.getEstadoText(perm.estado_permiso),
-      perm.creado_por,
-      perm.fecha_creacion,
-      perm.fecha_modificacion
-    ];
-    data.push(row);
-  });
-
-  doc.autoTable({
-    head: [headers],
-    body: data,
-  });
-
-  doc.output('dataurlnewwindow', null, 'Pymes.pdf');
-}
-
-getEstadoText(estado: number): string {
-  switch (estado) {
-    case 1:
-      return 'ACTIVO';
-    case 2:
-      return 'INACTIVO';
-    default:
-      return 'Desconocido';
+  generateExcel() {
+    const headers = ['ID Permiso', 'ID Rol', 'ID Objeto', 'Inserción', 'Eliminación', 'Consultar', 'Actualización', 'Estado', 'Creador', 'Fecha Creación', 'Fecha Modificación'];
+    const data: any[][] = [];
+  
+    // Recorre los datos y agrégalos a la matriz 'data'
+    this.listPermisos.forEach((perm, index) => {
+      const row = [
+        perm.id_permisos,
+        this.getRolNombre(perm.id_rol),
+        this.getObjetoNombre(perm.id_objeto),
+        perm.permiso_insercion,
+        perm.permiso_eliminacion,
+        perm.permiso_consultar,
+        perm.permiso_actualizacion,
+        this.getEstadoText(perm.estado_permiso),
+        perm.creado_por,
+        perm.fecha_creacion,
+        perm.fecha_modificacion
+      ];
+      data.push(row);
+    });
+  
+    // Crea un nuevo libro de Excel
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.aoa_to_sheet([headers, ...data]);
+  
+    // Agrega la hoja al libro de Excel
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Permisos');
+  
+    // Guarda el libro de Excel como un archivo binario
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  
+    // Crea un objeto URL para el blob
+    const url = window.URL.createObjectURL(blob);
+  
+    // Crea un enlace para descargar el archivo Excel
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'My Pyme-Reporte Permisos.xlsx';
+  
+    document.body.appendChild(a);
+    a.click();
+  
+    // Limpia el objeto URL creado
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
   }
-}
+  
+ /*****************************************************************************************************/
+
+  generatePDF() {
+    const { jsPDF } = require("jspdf");
+    const doc = new jsPDF();
+    const data: any[][] = [];
+    const headers = ['ID Permiso', 'ID Rol', 'ID Objeto', 'Insercion', 'Eliminacion', 'Consultar', 'Actualizacion', 'Estado', 'Creador', 'Fecha Creacion', 'Fecha Modificacion'];
+  
+    // Agregar el logo al PDF
+    const logoImg = new Image();
+    logoImg.onload = () => {
+      // Dibujar el logo en el PDF
+      doc.addImage(logoImg, 'PNG', 10, 10, 50, 20); // Ajusta las coordenadas y dimensiones según tu diseño
+  
+      // Agregar los comentarios al PDF centrados horizontalmente
+      const centerX = doc.internal.pageSize.getWidth() / 2;
+      doc.setFontSize(12);
+      doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+      doc.text("Reporte de Permisos", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+      doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+  
+      // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
+      this.listPermisos.forEach((perm, index) => {
+        const row = [
+          perm.id_permisos,
+          this.getRolNombre(perm.id_rol),
+          this.getObjetoNombre(perm.id_objeto),
+          perm.permiso_insercion,
+          perm.permiso_eliminacion,
+          perm.permiso_consultar,
+          perm.permiso_actualizacion,
+          this.getEstadoText(perm.estado_permiso),
+          perm.creado_por,
+          perm.fecha_creacion,
+          perm.fecha_modificacion
+        ];
+        data.push(row);
+      });
+  
+      // Agregar la tabla al PDF
+      doc.autoTable({
+        head: [headers],
+        body: data,
+        startY: 70 // Ajusta la posición inicial de la tabla según tu diseño
+      });
+  
+      // Guardar el PDF
+      doc.save('My Pyme-Reporte Permisos.pdf');
+    };
+    logoImg.src = '/assets/dist/img/pym.png'; // Ruta del logo
+  }
+  
+  getCurrentDate(): string {
+    const currentDate = new Date();
+    return currentDate.toLocaleDateString(); // Retorna la fecha actual en formato local
+  }
+  
+  getEstadoText(estado: number): string {
+    switch (estado) {
+      case 1:
+        return 'ACTIVO';
+      case 2:
+        return 'INACTIVO';
+      default:
+        return 'Desconocido';
+    }
+  }
+  
 
 
 /**************************************************************/
@@ -329,6 +421,7 @@ getUsuario(){
  });
 }
 
+
 insertBitacora(dataPermisos: Permisos){
   const bitacora = {
     fecha: new Date(),
@@ -340,17 +433,48 @@ insertBitacora(dataPermisos: Permisos){
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
   })
 }
-updateBitacora(dataPermisos: Permisos){
-  const bitacora = {
-    fecha: new Date(),
-    id_usuario: this.getUser.usuario,
-    id_objeto: 28,
-    accion: 'ACTUALIZAR',
-    descripcion: 'SE ACTUALIZA EL PERMISO CON EL ID: '+ dataPermisos.id_permisos
-  };
-  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-  })
+
+
+updateBitacora(dataPermisos: Permisos) {
+  // Guardar una copia de los permisos antes de actualizarlos
+  const permisosAnteriores = { ...this.permisos };
+
+  // Actualizar los permisos
+  this.permisos = dataPermisos;
+
+  // Comparar los datos anteriores con los nuevos datos
+  const cambios = [];
+
+  if (permisosAnteriores.id_rol !== dataPermisos.id_rol) {
+    cambios.push(`Rol anterior: ${permisosAnteriores.id_rol} -> Nuevo rol: ${dataPermisos.id_rol}`);
+  }
+
+  if (permisosAnteriores.id_objeto !== dataPermisos.id_objeto) {
+    cambios.push(`Objeto anterior: ${permisosAnteriores.id_objeto} -> Nuevo objeto: ${dataPermisos.id_objeto}`);
+  }
+
+  // Si se realizaron cambios, registrar en la bitácora
+  if (cambios.length > 0) {
+    // Crear la descripción para la bitácora
+    const descripcion = `Se actualizaron los siguientes campos:\n${cambios.join('\n')}`;
+
+    // Crear el objeto bitácora
+    const bitacora = {
+      fecha: new Date(),
+      id_usuario: this.getUser.usuario,
+      id_objeto: 28,
+      accion: 'ACTUALIZAR',
+      descripcion: descripcion
+    };
+
+    // Insertar la bitácora
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+      // Manejar la respuesta si es necesario
+    });
+  }
 }
+
+
 activarBitacora(dataPermisos: Permisos){
   const bitacora = {
     fecha: new Date(),
@@ -362,6 +486,8 @@ activarBitacora(dataPermisos: Permisos){
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
   })
 }
+
+
 inactivarBitacora(dataPermisos: Permisos){
   const bitacora = {
     fecha: new Date(),
@@ -373,6 +499,8 @@ inactivarBitacora(dataPermisos: Permisos){
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
   })
 }
+
+
 deleteBitacora(dataPermisos: Permisos){
   const bitacora = {
     fecha: new Date(),
@@ -384,6 +512,8 @@ deleteBitacora(dataPermisos: Permisos){
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
   })
 }
+
+
   /*************************************************************** Fin Métodos de Bitácora ***************************************************************************/
 
 }
