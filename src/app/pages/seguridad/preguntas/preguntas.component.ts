@@ -23,6 +23,7 @@ import { es } from 'date-fns/locale'; // Importa el idioma español
   styleUrls: ['./preguntas.component.css']
 })
 export class PreguntasComponent implements OnInit{
+  
   getPregunta: any;
 
   getDate(): string {
