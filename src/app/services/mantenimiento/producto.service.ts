@@ -40,6 +40,7 @@ export class ProductosService {
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
     return this.http.get<any[]>(`${this.myAppUrl}${this.myApiUrl}/getAllProductos`, { headers: headers })
    }
+
    inactivarProductos(productos: Productos): Observable<Productos>{
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
@@ -74,5 +75,11 @@ export class ProductosService {
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
     return this.http.get<any[]>(`${this.myAppUrl}${this.myApiUrl}/getAllOpProductos`, { headers: headers })
   }
+
+  getAllProductosActivos(): Observable<any[]> {
+    const token = localStorage.getItem('token')
+    const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
+    return this.http.get<any[]>(`${this.myAppUrl}${this.myApiUrl}/getAllProductosActivos`, { headers: headers })
+   }
 
 }

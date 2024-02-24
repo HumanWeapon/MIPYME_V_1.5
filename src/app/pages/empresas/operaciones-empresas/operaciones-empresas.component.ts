@@ -8,6 +8,7 @@ import { BitacoraService } from 'src/app/services/administracion/bitacora.servic
 import { EmpresaService } from 'src/app/services/empresa/empresa.service';
 import { ErrorService } from 'src/app/services/error.service';
 import { ProductosService } from 'src/app/services/mantenimiento/producto.service';
+import { EmpresasProdcutosService } from 'src/app/services/operaciones/empresas-prodcutos.service';
 import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 
 @Component({
@@ -16,8 +17,20 @@ import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
   styleUrls: ['./operaciones-empresas.component.css']
 })
 export class OperacionesEmpresasComponent {
+  // Variables obtenidas del Local Store, Información de la Empresa.
+  idEmpresa: any;
+  nombreEmpresa: string = '';
+  descripcionEmpresa: string = '';
+
+  //Obtiene los productos activos de la Empresa y los muestra en la tabla.
+  productosEmpresa: any[] = [];
+
+  //Obtiene la información del buscador de mi tabla productos
+  filtro: string = '';
+  todosLosProductos: any[] = [];
 
   listProductos: any[] = [];
+
   nuevaEmpresa: Empresa = {
     id_empresa: 0,
     id_tipo_empresa: 1,
@@ -58,6 +71,16 @@ export class OperacionesEmpresasComponent {
 
   ngOnInit(){
     this.getProductos();
+    //this.getEmpresasProductos();
+    const EmpresaId = localStorage.getItem('idEmpresa');
+    const EmpresaNombre = localStorage.getItem('nombreEmpresa');
+    const EmpresaDescripcion = localStorage.getItem('nombreEmpresa');
+    if(EmpresaNombre && EmpresaDescripcion && EmpresaId){
+      this.idEmpresa = EmpresaId;
+      this.nombreEmpresa = EmpresaNombre;
+      this.descripcionEmpresa = EmpresaDescripcion;
+    }
+    this.getEmpresasProductosPorId();
   }
 
   constructor(
@@ -68,14 +91,20 @@ export class OperacionesEmpresasComponent {
     private _bitacoraService: BitacoraService,
     private _userService: UsuariosService,
     private _productoService: ProductosService,
-    /*private _paisesService: PaisesService,
-    
-    private _direccionService: DireccionesService,
-    private _telefonoService: ContactoTService,
-    private _tipoDireccionService: TipoDireccionService,
-    private _tipoCategoriaService: CategoriaService,
-    private _contactoService: ContactoService,*/
+    private _empresasProductosService: EmpresasProdcutosService
   ) {}
+
+  buscarProductos() {
+    if (this.filtro.trim() === '') {
+      this.productosEmpresa = this.todosLosProductos; // Si el filtro está vacío, muestra todos los productos
+    } else {
+      this.productosEmpresa = this.todosLosProductos.filter(producto => {
+        // Filtrar por el nombre del producto
+        return producto.producto.producto.toLowerCase().includes(this.filtro.trim().toLowerCase());
+      });
+    }
+  }
+  
 
   agregarEmpresa(){
     const userLocal = localStorage.getItem('usuario');
@@ -91,7 +120,6 @@ export class OperacionesEmpresasComponent {
         fecha_modificacion: new Date(),
         estado: 1,
       };
-      console.log(this.nuevaEmpresa)
       this._empresaService.addEmpresa(this.nuevaEmpresa).subscribe({
         next: (data: any) => {
           this.operaciones_empresas.id_empresa = data.id_empresa;
@@ -104,7 +132,7 @@ export class OperacionesEmpresasComponent {
   };
 
   getProductos(){
-    this._productoService.getAllProductos().subscribe({
+    this._productoService.getAllProductosActivos().subscribe({
       next: (data: any) => {
         this.listProductos = data;
       },
@@ -113,17 +141,28 @@ export class OperacionesEmpresasComponent {
       }
     });
   }
-
-  agregarProducto(){
-    //this.operaciones_empresas.id_producto = this.listProductos.id_producto;
-    console.log(this.nuevoProducto);
-  };
-  agregarDireccion(){}
   
-  agregarTelefono(){};
-
-  agregarTodo() {
-    this.agregarEmpresa();
+  getEmpresasProductos() {
+    this._empresasProductosService.consultarOperacionesEmpresasProductos().subscribe({
+      next: (data: any) => {
+        this.productosEmpresa = data;
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
+  }
+  getEmpresasProductosPorId() {
+    this._empresasProductosService.consultarOperacionEmpresaProductoPorId(this.idEmpresa).subscribe({
+      next: (data: any) => {
+        this.productosEmpresa = data;
+        this.todosLosProductos = data;
+        console.log(data)
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
   }
 
 }

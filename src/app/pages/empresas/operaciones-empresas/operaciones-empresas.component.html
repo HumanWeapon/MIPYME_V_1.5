@@ -1,11 +1,19 @@
 <div class="ml-3 mr-3 mb-3">
     <!-- Content Header (Page header) -->
     <div class="card">
+      <div class="card-header">
+        <h2>{{ nombreEmpresa }}</h2>
+      </div>
+      <div class="card-body">
+        <p>{{descripcionEmpresa}}</p>
+      </div>
+
+    </div>
+    <div class="card">
       <!-- /.Encabezado -->
       <div class="card-header p-2">
         <ul class="nav nav-pills">
-          <li class="nav-item"><a class="nav-link active" href="#EMPRESA" data-toggle="tab">EMPRESA</a></li>
-          <li class="nav-item"><a class="nav-link" href="#PRODUCTOS" data-toggle="tab">PRODUCTOS</a></li>
+          <li class="nav-item"><a class="nav-link active" href="#PRODUCTOS" data-toggle="tab">PRODUCTOS</a></li>
           <li class="nav-item"><a class="nav-link" href="#CONTACTOS" data-toggle="tab">CONTACTOS</a></li>
           <li class="nav-item"><a class="nav-link" href="#DIRECCIÓN" data-toggle="tab">DIRECCIÓN</a></li>
           <li class="nav-item"><a class="nav-link" href="#REQUISITOS" data-toggle="tab">REQUISITOS DE EXPORTACIÓN</a></li>
@@ -15,32 +23,61 @@
       <div class="card-body">
         <!-- /.Contenido -->
         <div class="tab-content">
-          <!-- Datos generales de la empresa -->
-          <div class="tab-pane active" id="EMPRESA">
-            <div class="">
-              <div class="card-body">
-                <div class="form-group">
-                  <label for="inputClientCompany">Nombre de la Empresa</label>
-                  <input type="text" id="inputClientCompany" [(ngModel)]="nuevaEmpresa.nombre_empresa" class="form-control">
-                </div>
-                <div class="form-group">
-                  <label for="inputDescription">Descripción</label>
-                  <textarea id="inputDescription" [(ngModel)]="nuevaEmpresa.descripcion" class="form-control" rows="4"></textarea>
-                </div>
-              </div>
-            </div>
-          </div>
           <!-- Productos de la empresa -->
-          <div class="tab-pane" id="PRODUCTOS">
-            <div class="form-group">
-              <label for="inputStatus">Seleccionar Producto</label>
-              <select id="inputStatus" [(ngModel)]="nuevoProducto.id_producto" class="form-control custom-select">
-                <option selected="" disabled="">Seleccionar</option>
-                <option *ngFor="let producto of listProductos">{{producto.producto}}</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <button type="button" class="btn btn-primary">Agregar</button>
+          <div class="tab-pane active" id="PRODUCTOS">
+            
+            <div class="row">
+              <div class="col-12">
+                <div class="card">
+                  <div class="card-header">
+                    <h3 class="card-title">Lista de productos</h3>
+                    <div class="card-tools">
+                      <div class="row">
+                        <div class="input-group input-group-sm" style="width: 200px;">
+                        
+                          <input type="text" name="table_search" class="form-control float-right" placeholder="Buscar" [(ngModel)]="filtro" (input)="buscarProductos()">
+  
+                          <div class="input-group-append">
+                            <button type="button" class="btn btn-default" (click)="buscarProductos()">
+                              <i class="fas fa-search"></i>
+                            </button>
+                          </div>
+                        </div>
+                        <div class="input-group input-group-sm" style="width: 150px;">
+                          <button type="button" class="btn btn-primary form-control float-left" data-toggle="modal" data-target="#agregarProducto">
+                            <i class="fas fa-plus"><br></i> Producto
+                          </button>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                
+                  <div class="card-body table-responsive p-0" style="height: 300px;">
+                    <table class="table table-head-fixed text-nowrap">
+                      <thead>
+                        <tr>
+                          <th>Producto</th>
+                          <th>Categoría</th>
+                          <th>Descripción</th>
+                          <th>Agregado por</th>
+                          <th>Fecha</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let obj of productosEmpresa; let i = index">
+                          <td>{{ obj.producto.producto }}</td>
+                          <td>{{ obj.producto.categoria.categoria }}</td>
+                          <td>{{ obj.producto.descripcion }}</td>
+                          <td>{{ obj.creado_por }}</td>
+                          <td>{{ obj.fecha_creacion | date:'dd/MM/yyyy HH:mm'}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                </div> 
+              </div>
             </div>
           </div>
           <!-- Contactos de la empresa -->
@@ -169,13 +206,35 @@
             </div>
           </div>
         </div>
-        <div class="card-footer" style="background-color: rgb(231, 230, 230);">
-          <button type="submit" class="btn btn-danger">Cancelar</button>
-          <button type="submit" (click)="agregarTodo()" class="btn btn-primary float-right">Guardar</button>
-        </div>
       </div>
     </div>
     <!-- /.content -->
+
+
+  <!-- Modales -->
+  <!-- Agregar producto Form -->
+  <div class="modal fade" id="agregarProducto">
+    <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title">Agregar Producto</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+
+          </div>
+          <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+              <button type="button" class="btn btn-success" data-dismiss="modal">Guardar</button>
+          </div>
+      </div>
+    </div>
+  </div>
+  <!-- /Agregar Producto Form -->
+
+  <!-- /.Modales -->
 </div>
 
 

@@ -26,8 +26,8 @@ export class PaisesComponent implements OnInit{
     fecha_creacion: new Date(), 
     modificado_por: '', 
     fecha_modificacion: new Date(), 
-    estado: 0
-
+    estado: 0,
+    cod_pais: ''
   };
 
   nuevoPais: Paises = {
@@ -39,8 +39,8 @@ export class PaisesComponent implements OnInit{
     fecha_creacion: new Date(), 
     modificado_por: '', 
     fecha_modificacion: new Date(), 
-    estado: 0
-
+    estado: 0,
+    cod_pais: ''
   };
   indice: any;
 
@@ -55,7 +55,7 @@ export class PaisesComponent implements OnInit{
 
 
   constructor(
-    private _objService: PaisesService, 
+    private _paisService: PaisesService, 
     private toastr: ToastrService,
     private ngZone: NgZone,
     private _bitacoraService: BitacoraService,
@@ -72,7 +72,7 @@ export class PaisesComponent implements OnInit{
       language: {url:'//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'},
       responsive: true
     };
-    this._objService.getAllPaises()
+    this._paisService.getAllPaises()
       .subscribe((res: any) => {
         this.listPaises= res;
         console.log(res)
@@ -111,14 +111,14 @@ toggleFunction(paises: any, i: number) {
 }
  
   inactivarPais(paises: Paises, i: any){
-    this._objService.inactivarPais(paises).subscribe(data => {
+    this._paisService.inactivarPais(paises).subscribe(data => {
     this.toastr.success('El pais: '+ paises.pais+ ' ha sido inactivado');
     this.inactivarBitacora(data);
   });
     this.listPaises[i].estado = 2;
   }
   activarPais(paises: Paises, i: any){
-    this._objService.activarPais(paises).subscribe(data => {
+    this._paisService.activarPais(paises).subscribe(data => {
     this.toastr.success('El pais: '+ paises.pais+ ' ha sido activado');
     this.activarBitacora(data);
   });
@@ -184,11 +184,11 @@ getEstadoText(estado: number): string {
         creado_por: usuarioLocal, 
         fecha_creacion: new Date(), 
         modificado_por: usuarioLocal, 
-        fecha_modificacion: new Date()
-
+        fecha_modificacion: new Date(),
+        cod_pais: ''
       };
       console.log(this.nuevoPais);
-      this._objService.addPais(this.nuevoPais).subscribe({
+      this._paisService.addPais(this.nuevoPais).subscribe({
         next: (data) => {
           this.insertBitacora(data);
           this.toastr.success('Pais agregado con éxito')
@@ -214,8 +214,8 @@ getEstadoText(estado: number): string {
     fecha_creacion: paises.fecha_creacion, 
     modificado_por: paises.modificado_por, 
     fecha_modificacion: paises.fecha_modificacion,
-    estado: paises.estado
-
+    estado: paises.estado,
+    cod_pais: ''
     };
     this.indice = i;
   
@@ -223,7 +223,7 @@ getEstadoText(estado: number): string {
 
 
   editarPais(){
-    this._objService.editarPais(this.paisEditando).subscribe(data => {
+    this._paisService.editarPais(this.paisEditando).subscribe(data => {
       this.updateBitacora(data);
       this.toastr.success('Pais editado con éxito');
       this.listPaises[this.indice].pais = this.paisEditando.pais;
