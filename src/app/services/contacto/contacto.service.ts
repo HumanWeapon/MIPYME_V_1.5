@@ -41,10 +41,15 @@ export class ContactoService {
     return this.http.post<Contacto[]>(`${this.myAppUrl}${this.myApiUrl}/getContacto`, { dni: dni }, { headers: headers })
    }
 
-   getAllContactos(): Observable<Contacto[]> {
+   getAllContactos(): Observable<any[]> {
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.get<Contacto[]>(`${this.myAppUrl}${this.myApiUrl}/getAllContactos`, { headers: headers })
+    return this.http.get<any[]>(`${this.myAppUrl}${this.myApiUrl}/getAllContactos`, { headers: headers })
+   }
+   getAllContactosconTipoContacto(): Observable<Contacto[]> {
+    const token = localStorage.getItem('token')
+    const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
+    return this.http.get<Contacto[]>(`${this.myAppUrl}${this.myApiUrl}/getAllContactosconTipoContacto`, { headers: headers })
    }
    inactivarContacto(contacto: Contacto): Observable<Contacto>{
     const token = localStorage.getItem('token')

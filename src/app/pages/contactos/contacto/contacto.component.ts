@@ -10,6 +10,8 @@ import { Usuario } from 'src/app/interfaces/seguridad/usuario';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ErrorService } from 'src/app/services/error.service';
 import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
+import { TipoContactoService } from 'src/app/services/mantenimiento/tipoContacto.service';
+import { da } from 'date-fns/locale';
 
 
 
@@ -19,16 +21,16 @@ import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
   styleUrls: ['./contacto.component.css']
 })
 export class ContactoComponent implements OnInit{
-
+  usuario: string = '';
+  listContactosActivos: any[]=[];
+  contacteditar: any;
   contactoEditando: Contacto = {
     id_contacto: 0,
     id_tipo_contacto: 0,
-    dni: '',
     primer_nombre: '',
     segundo_nombre: '',
     primer_apellido: '',
     segundo_apellido: '',
-    correo: '',
     descripcion: '',
     creado_por: '',
     fecha_creacion: new Date(), 
@@ -40,12 +42,10 @@ export class ContactoComponent implements OnInit{
   nuevoContacto: Contacto = {
     id_contacto: 0,
     id_tipo_contacto: 0,
-    dni: '',
     primer_nombre: '',
     segundo_nombre: '',
     primer_apellido: '',
     segundo_apellido: '',
-    correo: '',
     descripcion: '',
     creado_por: '',
     fecha_creacion: new Date(), 
@@ -57,7 +57,7 @@ export class ContactoComponent implements OnInit{
   indice: any;
 
   dtOptions: DataTables.Settings = {};
-  listContacto: Contacto[] = [];
+  listContacto: any[] = [];
   data: any;
 
   // We use this trigger because fetching the list of persons can be quite long,
@@ -71,47 +71,65 @@ export class ContactoComponent implements OnInit{
     private _bitacoraService: BitacoraService,
     private _errorService: ErrorService,
     private _userService: UsuariosService,
+    private _tipoContacto: TipoContactoService,
     private toastr: ToastrService,
     private ngZone: NgZone
     ) { }
 
   
   ngOnInit(): void {
-    this.getUsuario()
+    this.variablesInicializadas();
+    this.getUsuario();
+    this.getTipoContactoActivos();
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 10,
       language: {url:'//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'},
       responsive: true
     };
-    this._contactoService.getAllContactos()
+    this._contactoService.getAllContactosconTipoContacto()
       .subscribe((res: any) => {
         this.listContacto = res;
         this.dtTrigger.next(null);
       });
       this.getUsuario();
   }
+  variablesInicializadas(){
+    const localUser = localStorage.getItem('usuario');
+    if (localUser) {
+      this.usuario = localUser;
+    }
+  }
 
   ngOnDestroy(): void {
     // Do not forget to unsubscribe the event
     this.dtTrigger.unsubscribe();
   }
-
-
-onInputChange(event: any, field: string) {
-  const inputValue = event.target.value; // Mueve esta línea fuera del condicional para definir inputValue independientemente del campo
-  
-  if (field === 'primer_nombre' || field === 'segundo_nombre'
-  || field === 'primer_apellido' || field === 'segundo_apellido'
-  || field === 'correo' || field === 'descripcion') {
-    const uppercaseValue = inputValue.toUpperCase();
-    event.target.value = uppercaseValue;
-  } else if (field === 'dni') {
-    // Convierte a mayúsculas y elimina espacios en blanco
-    const uppercaseValue = inputValue.replace(/\s/g, '');
-    event.target.value = uppercaseValue;
+  getTipoContactoActivos(){
+    this._tipoContacto.getAllTipoContactosActicvos().subscribe({
+      next: (data)=> {
+        this.listContactosActivos = data
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
   }
-}
+
+  onInputChange(event: any, field: string) {
+    const inputValue = event.target.value; // Mueve esta línea fuera del condicional para definir inputValue independientemente del campo
+    
+    if (field === 'primer_nombre' || field === 'segundo_nombre'
+    || field === 'primer_apellido' || field === 'segundo_apellido'
+    || field === 'correo' || field === 'descripcion') {
+      const uppercaseValue = inputValue.toUpperCase();
+      event.target.value = uppercaseValue;
+    } else if (field === 'dni') {
+      // Convierte a mayúsculas y elimina espacios en blanco
+      const uppercaseValue = inputValue.replace(/\s/g, '');
+      event.target.value = uppercaseValue;
+    }
+  }
 
 // Variable de estado para alternar funciones
 
@@ -153,9 +171,7 @@ generatePDF() {
   // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
   this.listContacto.forEach((contac, index) => {
     const row = [
-      contac.dni,
       contac.primer_nombre +" "+ contac.segundo_nombre+" "+ contac.primer_apellido +" "+contac.segundo_apellido,
-      contac.correo,
       contac.descripcion,
       contac.creado_por,
       contac.fecha_creacion,
@@ -193,13 +209,11 @@ getEstadoText(estado: number): string {
     if (userLocal){
     this.nuevoContacto = {
       id_contacto: 0,
-      id_tipo_contacto: 0, 
-      dni: this.nuevoContacto.dni,
+      id_tipo_contacto: this.nuevoContacto.id_tipo_contacto, 
       primer_nombre: this.nuevoContacto.primer_nombre,
       segundo_nombre: this.nuevoContacto.segundo_nombre, 
       primer_apellido: this.nuevoContacto.primer_apellido,
       segundo_apellido: this.nuevoContacto.segundo_apellido,   
-      correo:this.nuevoContacto.correo,
       descripcion:this.nuevoContacto.descripcion,
       creado_por: userLocal,
       fecha_creacion: new Date(), 
@@ -212,7 +226,8 @@ getEstadoText(estado: number): string {
     this._contactoService.addContacto(this.nuevoContacto).subscribe({
       next: (data) => {
         this.insertBitacora(data);
-        this.toastr.success('Contacto Agregado Exitosamente')
+        this.toastr.success('Contacto Agregado Exitosamente');
+        this.listContacto.push(data);
       },
       error: (e: HttpErrorResponse) => {
         this._errorService.msjError(e);
@@ -222,47 +237,50 @@ getEstadoText(estado: number): string {
   }
 
 
-  obtenerIdContacto(contac: Contacto, i: any){
+  obtenerIdContacto(contac: any, i: any){
     this.contactoEditando = {
       id_contacto: contac.id_contacto,
-      id_tipo_contacto: contac.id_tipo_contacto,
-      dni: contac.dni,
+      id_tipo_contacto: contac.tipo_contacto.id_tipo_contacto,
       primer_nombre: contac.primer_nombre,
       segundo_nombre: contac.segundo_nombre,
       primer_apellido: contac.primer_apellido,
       segundo_apellido: contac.segundo_nombre,
-      correo: contac.correo,
       descripcion: contac.descripcion,
       creado_por: contac.creado_por,
       fecha_creacion: contac.fecha_creacion, 
-      modificado_por: contac.modificado_por,
-      fecha_modificacion: contac.fecha_modificacion, 
+      modificado_por: this.usuario,
+      fecha_modificacion: new Date(), 
       estado: contac.estado,
 
     };
     this.indice = i;
   }
-
-
   editarContacto(){
-    this._contactoService.editarContacto(this.contactoEditando).subscribe(data => {
-      this.updateBitacora(data);
-      this.toastr.success('contacto editado con éxito');
-      this.listContacto[this.indice].dni = this.contactoEditando.dni;
-      this.listContacto[this.indice].primer_nombre = this.contactoEditando.primer_nombre;
-      this.listContacto[this.indice].segundo_nombre = this.contactoEditando.segundo_nombre;
-      this.listContacto[this.indice].primer_apellido = this.contactoEditando.primer_apellido;
-      this.listContacto[this.indice].segundo_apellido = this.contactoEditando.segundo_apellido;
-      this.listContacto[this.indice].correo = this.contactoEditando.correo;
-      this.listContacto[this.indice].descripcion = this.contactoEditando.descripcion;
-
-        // Actualizar la vista
-        this.ngZone.run(() => {        
-        });
-    
+    this._contactoService.editarContacto(this.contactoEditando).subscribe({
+      next: (data) => {
+        //this.listContacto[this.indice].tipo_contacto =
+        this.updateBitacora(data);
+        this.toastr.success('contacto editado con éxito');
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
     });
+    const tipoContacto = this.listContactosActivos.find(contacto => contacto.id_tipo_contacto == this.contactoEditando.id_tipo_contacto);
+    this.listContacto[this.indice].primer_nombre = this.contactoEditando.primer_nombre.toUpperCase();
+    this.listContacto[this.indice].segundo_nombre = this.contactoEditando.segundo_nombre.toUpperCase();
+    this.listContacto[this.indice].primer_apellido = this.contactoEditando.primer_apellido.toUpperCase();
+    this.listContacto[this.indice].segundo_apellido = this.contactoEditando.segundo_apellido.toUpperCase();
+    this.listContacto[this.indice].descripcion = this.contactoEditando.descripcion.toUpperCase();
+    this.listContacto[this.indice].modificado_por = this.contactoEditando.modificado_por.toUpperCase();
+    this.listContacto[this.indice].fecha_modificacion = this.contactoEditando.fecha_modificacion,
+    this.listContacto[this.indice].tipo_contacto = tipoContacto
   }
 
+  obtenerNombreTipoContacto(idTipoContacto: number): string {
+    const tipoContacto = this.listContactosActivos.find(contacto => contacto.id_tipo_contacto == idTipoContacto);
+    return tipoContacto.tipo_contacto;
+  }
     /*************************************************************** Métodos de Bitácora ***************************************************************************/
 
     getUser: Usuario = {

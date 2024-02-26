@@ -33,7 +33,6 @@ import { RestoreComponent } from './administracion/restore/restore.component';
 import { BackupComponent } from './administracion/backup/backup.component';
 import { PymeComponent } from './pyme/pyme.component';
 import { PerfilComponent } from './perfil/perfil.component';
-import { ContactoEmpresasComponent } from './contacto/contacto-empresas/contacto-empresas.component';
 import { SeguridadComponent } from './seguridad/seguridad.component';
 import { AdministracionComponent } from './administracion/administracion.component'
 import { MantenimientoComponent } from './mantenimiento/mantenimiento.component';
@@ -71,7 +70,6 @@ import { OperacionesEmpresasComponent } from './empresas/operaciones-empresas/op
     RestoreComponent,
     BackupComponent,
     PymeComponent,
-    ContactoEmpresasComponent,
     PerfilComponent,
     SeguridadComponent,
     AdministracionComponent,

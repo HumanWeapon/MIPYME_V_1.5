@@ -179,20 +179,29 @@ handleError(error: HttpErrorResponse, errorMessage: string) {
     }
   }
   
-  activarEmpresa(nombre_empresa: any, i: number) {
-    this._empresaService.activarEmpresa(nombre_empresa).subscribe(data => {
-      this.activarBitacora(this.data);
-      this.toastr.success('La Empresa: ' + nombre_empresa.nombre_empresa + ' ha sido activada');
-      
-  });
+  activarEmpresa(empresa: Empresa, i: number) {
+    this._empresaService.activarEmpresa(empresa).subscribe({
+      next: (data) => {
+        this.activarBitacora(data);
+        this.toastr.success('La Empresa: ' + empresa.nombre_empresa + ' ha sido activada');
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
     this.listEmpresa[i].estado = 1;
   }
 
-  inactivarEmpresa(nombre_empresa: any, i: number) {
-    this._empresaService.inactivarEmpresa(nombre_empresa).subscribe(data =>{
-      this.inactivarBitacora(this.data);
-      this.toastr.success('La Empresa: ' + nombre_empresa.nombre_empresa + ' ha sido inactivada')
-  });
+  inactivarEmpresa(empresa: Empresa, i: number) {
+    this._empresaService.inactivarEmpresa(empresa).subscribe({
+      next: (data) => {
+        this.inactivarBitacora(data);
+        this.toastr.success('La Empresa: ' + empresa.nombre_empresa + ' ha sido inactivada');
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    }); // Aquí se cierra correctamente el paréntesis de la suscripción
     this.listEmpresa[i].estado = 2;
   }
 /*****************************************************************************************************/
@@ -375,7 +384,7 @@ getEstadoText(estado: number): string {
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
   }
-  activarBitacora(dataEmpresa: Empresa){
+  activarBitacora(dataEmpresa: any){
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
@@ -386,7 +395,7 @@ getEstadoText(estado: number): string {
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
   }
-  inactivarBitacora(dataEmpresa: Empresa){
+  inactivarBitacora(dataEmpresa: any){
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,

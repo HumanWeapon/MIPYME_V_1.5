@@ -48,6 +48,12 @@ export class TipoContactoService {
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
     return this.http.get<TipoContacto[]>(`${this.myAppUrl}${this.myApiUrl}/getAllTipoContactos`, { headers: headers })
    }
+
+   getAllTipoContactosActicvos(): Observable<any[]> {
+    const token = localStorage.getItem('token')
+    const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
+    return this.http.get<any[]>(`${this.myAppUrl}${this.myApiUrl}/getAllTipoContactosActivos`, { headers: headers })
+   }
    inactivarTipoContacto(tipoContacto: TipoContacto): Observable<TipoContacto>{
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
