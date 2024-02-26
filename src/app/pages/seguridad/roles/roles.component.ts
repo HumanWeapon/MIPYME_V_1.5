@@ -296,6 +296,17 @@ activarRol(rol: any, i: number){
     this.rolEditando.creado_por = this.rolEditando.creado_por.toUpperCase();
     this.rolEditando.modificado_por = this.rolEditando.modificado_por.toUpperCase();
 
+    const esMismoRol = this.listRoles[this.indice].rol === this.rolEditando.rol;
+  
+    // Si el usuario no es el mismo, verifica si el nombre de usuario ya existe
+    if (!esMismoRol) {
+      const RolExistente = this.listRoles.some(user => user.rol === this.rolEditando.rol);
+      if (RolExistente) {
+        this._toastr.error('El Rol ya existe. Por favor, elige otro rol para el usuario.');
+        return;
+      }
+    }
+
     this._rolService.editarRol(this.rolEditando).subscribe(data => {
       this.updateBitacora(data);
       this._toastr.success('Rol editado con éxito');

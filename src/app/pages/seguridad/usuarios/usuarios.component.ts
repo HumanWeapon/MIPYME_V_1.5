@@ -92,7 +92,7 @@ export class UsuariosComponent {
 
   getAllRoles(){
     this._rolService.getAllRoles().subscribe(data => {
-      this.listRol = data;
+      this.listRol = data.filter(rol => rol.estado_rol == 1);
     });
 
   }
@@ -124,7 +124,12 @@ export class UsuariosComponent {
       event.target.value = inputValue.toUpperCase();
       this.editUser.usuario = this.editUser.usuario.replace(/\s/g, ''); // Elimina espacios en blanco para el cambo usuario
       this.editUser.usuario = this.editUser.usuario.toUpperCase(); // Convierte el texto a mayúsculas
+      this.editUser.correo_electronico = this.editUser.correo_electronico.replace(/\s/g, ''); // Elimina espacios en blanco para el campo Correo
       this.editUser.contrasena = this.editUser.contrasena.replace(/\s/g, ''); // Elimina espacios en blanco para el cambo contraseña
+      this.newUser.usuario = this.newUser.usuario.replace(/\s/g, ''); // Elimina espacios en blanco para el cambo usuario
+      this.newUser.correo_electronico = this.newUser.correo_electronico.replace(/\s/g, ''); // Elimina espacios en blanco para el campo Correo
+      this.newUser.usuario = this.newUser.usuario.toUpperCase(); // Convierte el texto a mayúsculas
+      this.newUser.contrasena = this.newUser.contrasena.replace(/\s/g, ''); // Elimina espacios en blanco para el cambo contraseña
     });
   }
 
@@ -355,29 +360,54 @@ toggleFunction(user: any, i: number) {
 
   
   editarUsuario(Id_Rol_Selected: any) {
-    // Busca el objeto de rol correspondiente en listRol
-    const modificador = localStorage.getItem('usuario')
-    const rolSeleccionado = this.listRol.find(rol => rol.id_rol == Id_Rol_Selected);
-    if (!rolSeleccionado) {
-      // Maneja el caso cuando no se encuentra el rol seleccionado
-      return;
+    // Verifica si el usuario actual es el mismo que el usuario que se está editando
+    const esMismoUsuario = this.usuariosAllRoles[this.indiceUser].usuario === this.editUser.usuario;
+  
+    // Verifica si el correo electrónico actual es el mismo que el correo electrónico que se está editando
+    const esMismoCorreo = this.usuariosAllRoles[this.indiceUser].correo_electronico === this.editUser.correo_electronico;
+  
+    // Si el usuario no es el mismo, verifica si el nombre de usuario ya existe
+    if (!esMismoUsuario) {
+      const usuarioExistente = this.usuariosAllRoles.some(user => user.usuario === this.editUser.usuario);
+      if (usuarioExistente) {
+        this._toastr.error('El nombre de usuario ya existe. Por favor, elige otro nombre de usuario.');
+        return;
+      }
     }
   
+    // Si el correo electrónico no es el mismo, verifica si el correo electrónico ya existe
+    if (!esMismoCorreo) {
+      const correoExistente = this.usuariosAllRoles.some(user => user.correo_electronico === this.editUser.correo_electronico);
+      if (correoExistente) {
+        this._toastr.error('El correo electrónico ya está en uso. Por favor, ingresa otro correo electrónico.');
+        return;
+      }
+    }
+  
+    // Continúa con la edición si no hay conflictos de nombres de usuario o correos electrónicos
+    const modificador = localStorage.getItem('usuario');
+    const rolSeleccionado = this.listRol.find(rol => rol.id_rol == Id_Rol_Selected);
+    
+    if (!rolSeleccionado) {
+      return;
+    }
+    
     this._userService.editarUsuario(this.editUser).subscribe(data => {
-      this.updateBitacora(data)
+      this.updateBitacora(data);
       this._toastr.success('Usuario editado con éxito');
-      if (this.usuariosAllRoles == null) {
-        // No se puede editar el usuario
-      } else {
+      if (this.usuariosAllRoles != null) {
         this.usuariosAllRoles[this.indiceUser].usuario = this.editUser.usuario;
         this.usuariosAllRoles[this.indiceUser].nombre_usuario = this.editUser.nombre_usuario;
         this.usuariosAllRoles[this.indiceUser].correo_electronico = this.editUser.correo_electronico;
-        this.usuariosAllRoles[this.indiceUser].roles = rolSeleccionado
+        this.usuariosAllRoles[this.indiceUser].roles = rolSeleccionado;
         this.usuariosAllRoles[this.indiceUser].fecha_vencimiento = this.editUser.fecha_vencimiento;
         this.usuariosAllRoles[this.indiceUser].modificado_por = modificador;
       }
     });
   }
+  
+  
+  
 
   /*************************************************************** Métodos de Bitácora ***************************************************************************/
 

@@ -27,6 +27,7 @@ export class PerfilComponent  implements OnInit{
 /*************************************************************/
   inputDeshabilitadoPassword: boolean = true; // input Deshabilitado/bloqueado Password
   inputDeshabilitado: boolean = true; // input Deshabilitado/bloqueado
+  inputDeshabilitadoU: boolean = true; // input Deshabilitado/bloqueado
   botonDeshabilitado: boolean = true;
   mostrarBoton: boolean = false; //Oculta el Boton de Cancelar
   mostrarCamposContrasena = false;
@@ -111,12 +112,30 @@ export class PerfilComponent  implements OnInit{
     });
   }
 
+  inputType: string = 'password';
+  inputTypeN: string = 'password';
+  inputTypeC: string = 'password';
+
+  toggleInputType(inputName: string) {
+    this.inputType = this.inputType === 'password' ? 'text' : 'password';
+  }
+
+  toggleInputTypeN(inputName: string) {
+    this.inputTypeN = this.inputTypeN === 'password' ? 'text' : 'password';
+  }
+
+  toggleInputTypeC(inputName: string) {
+    this.inputTypeC = this.inputTypeC === 'password' ? 'text' : 'password';
+  }
 
   //Bloqueo y Desbloqueo de Inputs
 habilitarInput() {
   this.mostrarEditarUsuario = false;
   this.inputDeshabilitado = false;
   this.mostrarCamposContrasena = true; // Mostrar campos al habilitar la edición
+  this.toggleInputType('password');
+  this.toggleInputTypeN('password');
+  this.toggleInputTypeC('password');
 }
 
 habilitarInputPassword() {
@@ -135,6 +154,13 @@ this.mostrarCamposContrasena = false; // Ocultar campos al cancelar la edición
 this.mostrarBoton=false;
 this.inputDeshabilitado = true;
 this.botonDeshabilitado=true;
+this.contrasenaActual='';
+this.confirmarContrasena='';
+this.nuevaContrasena='';
+  // Restablecer el tipo de entrada a 'password'
+  this.toggleInputType('password');
+  this.toggleInputTypeN('password');
+  this.toggleInputTypeC('password');
 const userLocal = localStorage.getItem('usuario');
     if(userLocal == null){
 
@@ -158,6 +184,9 @@ habilitarBoton() {
 mostrarboton() {
 this.mostrarBoton=true;
 this.botonDeshabilitado = false;
+this.toggleInputType('password');
+this.toggleInputTypeN('password');
+this.toggleInputTypeC('password');
 }
 //Fin Metodo de Ocultar/Mostrar Boton
 
@@ -169,11 +198,20 @@ validateEmailFormat(email: string): boolean {
 
 
 validarCambios() {
+  // Convierte los campos a mayúsculas
   this.usuario.usuario = this.usuario.usuario.toUpperCase();
   this.usuario.nombre_usuario = this.usuario.nombre_usuario.toUpperCase();
   this.usuario.correo_electronico = this.usuario.correo_electronico.toUpperCase();
 
-  // Validación de correo electrónico
+  // Verifica si se han realizado cambios
+  /*const cambiosRealizados = this.hanCambiadoLosDatos();
+
+  if (!cambiosRealizados) {
+    this.toastr.warning('No se han realizado cambios');
+    return; // No hace nada más si no se han realizado cambios
+  }*/
+
+  // Continúa con la validación y procesamiento si se han realizado cambios
   if (this.usuario.usuario === '' || this.usuario.nombre_usuario === '' || this.usuario.correo_electronico === '') {
     this.toastr.warning('Completa todos los campos');
   } else if (!this.validateEmailFormat(this.usuario.correo_electronico)) {
@@ -183,17 +221,7 @@ validarCambios() {
     this._userService.editarUsuario(this.usuario).subscribe((data) => {
       if (data) {
         this.toastr.success('Cambios guardados con éxito', 'Completado');
-        this.mostrarBoton = false; // Oculta el botón Cancelar
-        this.mostrarEditarUsuario = true; // Muestra el botón Editar Usuario
-        this.mostrarCamposContrasena = false; // Oculta los campos de contraseña
-        this.botonDeshabilitado = true; // Vuelve a deshabilitar el botón de Guardar Cambios
-        this.inputDeshabilitado = true; // Vuelve a deshabilitar los campos de edición
-        
-        // Redirige a la ruta de login solo si el usuario ha sido modificado
-        if (this.usuario.usuario !== this.usuarioOriginal.usuario) {
-          this.toastr.warning('Vuelve a iniciar sesión con el nuevo Usuario', 'Atención');
-          this.router.navigate(['/login']);
-        }
+        // Resto del código para ocultar botones, deshabilitar campos, etc.
       } else {
         this.toastr.error('Error al guardar los cambios', 'Error');
       }
@@ -201,10 +229,24 @@ validarCambios() {
   }
 
   // Restablece los campos después de procesar
-  this.contrasenaActual = '';
-  this.nuevaContrasena = '';
-  this.confirmarContrasena = '';
+  this.mostrarEditarUsuario = true;
+  this.mostrarCamposContrasena = false; // Ocultar campos al cancelar la edición
+  this.mostrarBoton=false;
+  this.inputDeshabilitado = true;
+  this.botonDeshabilitado=true;
+  this.contrasenaActual='';
+  this.confirmarContrasena='';
+  this.nuevaContrasena='';
+
 }
+
+// Función para verificar si se han realizado cambios en los datos
+/*hanCambiadoLosDatos() {
+  return this.usuario.usuario !== this.usuarioOriginal.usuario ||
+         this.usuario.nombre_usuario !== this.usuarioOriginal.nombre_usuario ||
+         this.usuario.correo_electronico !== this.usuarioOriginal.correo_electronico;
+}*/
+
 
 
 validarPassword() {
@@ -247,6 +289,9 @@ validarPassword() {
   this.contrasenaActual = '';
   this.nuevaContrasena = '';
   this.confirmarContrasena = '';
+  this.toggleInputType('password');
+  this.toggleInputTypeN('password');
+  this.toggleInputTypeC('password');
 }
 
 imagenPerfil(event: Event): any {
