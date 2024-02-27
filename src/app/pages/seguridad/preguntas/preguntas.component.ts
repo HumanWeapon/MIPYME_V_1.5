@@ -23,8 +23,8 @@ import { es } from 'date-fns/locale'; // Importa el idioma español
   styleUrls: ['./preguntas.component.css']
 })
 export class PreguntasComponent implements OnInit{
-  
   getPregunta: any;
+  
 
   getDate(): string {
     // Obtener la fecha actual
@@ -75,7 +75,7 @@ export class PreguntasComponent implements OnInit{
     private _userService: UsuariosService
     ) { }
 
-  
+
   ngOnInit(): void {
     this.dtOptions = {
       pagingType: 'full_numbers',
@@ -89,6 +89,7 @@ export class PreguntasComponent implements OnInit{
         this.dtTrigger.next(null);
       });
       this.getUsuario();
+      
   }
 
   ngOnDestroy(): void {
@@ -360,41 +361,38 @@ inactivarPregunta(pregunta: any, i: number){
 
 
   updateBitacora(dataPregunta: Preguntas) {
-  // Guardar la pregunta actual antes de actualizarla
-  const preguntaAnterior = { ...this.getPregunta };
-
-  // Actualizar la pregunta
-  this.getPregunta = dataPregunta;
-
-  // Comparar los datos anteriores con los nuevos datos
-  const cambios = [];
-  if (preguntaAnterior.pregunta !== dataPregunta.pregunta) {
-    cambios.push(`Pregunta anterior: ${preguntaAnterior.pregunta} -> por nueva pregunta:  ${dataPregunta.pregunta}`);
+    // Guardar la pregunta actual antes de actualizarla
+    const preguntaAnterior = { ...this.getPregunta };
+  
+    // Actualizar la pregunta
+    this.getPregunta = dataPregunta;
+  
+    // Comparar los datos anteriores con los nuevos datos
+    const cambios = [];
+    if (preguntaAnterior.pregunta !== dataPregunta.pregunta) {
+      cambios.push(`Pregunta anterior: ${preguntaAnterior.pregunta} -> Nueva pregunta: ${dataPregunta.pregunta}`);
+    }
+    // Puedes agregar más comparaciones para otros campos según tus necesidades
+  
+    // Si se realizaron cambios, registrar en la bitácora
+    if (cambios.length > 0) {
+      // Crear el objeto bitácora
+      const bitacora = {
+        fecha: new Date(),
+        id_usuario: this.getUser.id_usuario,
+        id_objeto: 27, // ID del objeto correspondiente a las preguntas
+        accion: 'ACTUALIZAR',
+        descripcion: `Se actualizaron los siguientes campos:\n${cambios.join('\n')}`
+      };
+  
+      // Insertar la bitácora
+      this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+        // Manejar la respuesta si es necesario
+      });
+    }
   }
-  // Puedes agregar más comparaciones para otros campos según tus necesidades
-
-  // Si se realizaron cambios, registrar en la bitácora
-  if (cambios.length > 0) {
-    // Crear la descripción para la bitácora
-    const descripcion = `Se actualizaron los siguientes campos:\n${cambios.join('\n')}`;
-
-    // Crear el objeto bitácora
-    const bitacora = {
-      fecha: new Date(),
-      id_usuario: this.getPregunta.id_usuario,
-      id_objeto: 27, // Aquí debes establecer el ID del objeto correspondiente
-      accion: 'ACTUALIZAR',
-      descripcion: descripcion
-    };
-
-    // Insertar la bitácora
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
-      // Manejar la respuesta si es necesario
-    });
-  }
-}
-
-
+  
+  
 
 
   activarBitacora(dataPregunta: Preguntas){

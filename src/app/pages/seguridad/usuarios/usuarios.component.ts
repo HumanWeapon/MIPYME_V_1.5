@@ -431,56 +431,71 @@ toggleFunction(user: any, i: number) {
    });
  }
 
-  insertBitacora(dataUser: Usuario){
+ insertBitacora(dataUser: Usuario) {
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 1,
+    accion: 'INSERTAR',
+    descripcion: `SE AGREGÓ UN NUEVO USUARIO:
+                  Usuario: ${dataUser.usuario},
+                  Nombre de usuario: ${dataUser.nombre_usuario},
+                  Correo electrónico: ${dataUser.correo_electronico},
+                  Rol: ${dataUser.id_rol},
+                  Fecha de vencimiento: ${dataUser.fecha_vencimiento}`
+  };
+
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+    // Manejar la respuesta si es necesario
+  });
+}
+
+
+
+updateBitacora(dataUser: Usuario) {
+  // Guardar el usuario actual antes de actualizarlo
+  const usuarioAnterior = { ...this.getUser };
+
+  // Actualizar el usuario
+  this.getUser = dataUser;
+
+  // Comparar los datos anteriores con los nuevos datos
+  const cambios = [];
+  if (usuarioAnterior.usuario !== dataUser.usuario) {
+    cambios.push(`Usuario anterior: ${usuarioAnterior.usuario} -> Nuevo Usuario: ${dataUser.usuario}`);
+  }
+  if (usuarioAnterior.nombre_usuario !== dataUser.nombre_usuario) {
+    cambios.push(`Nombre de usuario anterior: ${usuarioAnterior.nombre_usuario} -> Nuevo nombre de usuario: ${dataUser.nombre_usuario}`);
+  }
+  if (usuarioAnterior.correo_electronico !== dataUser.correo_electronico) {
+    cambios.push(`Correo electrónico anterior: ${usuarioAnterior.correo_electronico} -> Nuevo correo electrónico: ${dataUser.correo_electronico}`);
+  }
+  if (usuarioAnterior.fecha_vencimiento !== dataUser.fecha_vencimiento) {
+    cambios.push(`Fecha de vencimiento anterior: ${usuarioAnterior.fecha_vencimiento} -> Nueva fecha de vencimiento: ${dataUser.fecha_vencimiento}`);
+  }
+  // Puedes agregar más comparaciones para otros campos según tus necesidades
+
+  // Si se realizaron cambios, registrar en la bitácora
+  if (cambios.length > 0) {
+    // Crear la descripción para la bitácora
+    const descripcion = `Se actualizaron los siguientes campos:\n${cambios.join('\n')}`;
+
+    // Crear el objeto bitácora
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
       id_objeto: 1,
-      accion: 'INSERTAR',
-      descripcion: 'SE AGREGO UN NUEVO USUARIO: '+ dataUser.usuario
-    }
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
-  }
+      accion: 'ACTUALIZAR',
+      descripcion: descripcion
+    };
 
-
-  updateBitacora(dataUser: Usuario) {
-    // Guardar el usuario actual antes de actualizarlo
-    const usuarioAnterior = { ...this.getUser };
-  
-    // Actualizar el usuario
-    this.getUser = dataUser;
-  
-    // Comparar los datos anteriores con los nuevos datos
-    const cambios = [];
-    if (usuarioAnterior.nombre_usuario !== dataUser.nombre_usuario) {
-      cambios.push(`Nombre de usuario anterior: ${usuarioAnterior.nombre_usuario} -> por nuevo nombre:  ${dataUser.nombre_usuario}`);
-    }
-    if (usuarioAnterior.correo_electronico !== dataUser.correo_electronico) {
-      cambios.push(`Correo electrónico anterior: ${usuarioAnterior.correo_electronico} -> por nuevo correo:  ${dataUser.correo_electronico}`);
-    }
-    // Puedes agregar más comparaciones para otros campos según tus necesidades
-  
-    // Si se realizaron cambios, registrar en la bitácora
-    if (cambios.length > 0) {
-      // Crear la descripción para la bitácora
-      const descripcion = `Se actualizaron los siguientes campos:\n${cambios.join('\n')}`;
-  
-      // Crear el objeto bitácora
-      const bitacora = {
-        fecha: new Date(),
-        id_usuario: this.getUser.id_usuario,
-        id_objeto: 1,
-        accion: 'ACTUALIZAR',
-        descripcion: descripcion
-      };
-  
-      // Insertar la bitácora
-      this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
-        // Manejar la respuesta si es necesario
-      });
-    }
+    // Insertar la bitácora
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+      // Manejar la respuesta si es necesario
+    });
   }
+}
+
   
   
 

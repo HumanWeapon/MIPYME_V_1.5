@@ -385,17 +385,22 @@ generateExcel() {
    });
  }
 
-  insertBitacora(dataParametro: Parametros){
-    const bitacora = {
-      fecha: new Date(),
-      id_usuario: this.getUser.id_usuario,
-      id_objeto: 2,
-      accion: 'INSERTAR',
-      descripcion: 'SE INSERTA EL PARAMETRO: '+ dataParametro.parametro
-    }
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
-  }
+ insertBitacora(dataParametro: Parametros) {
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 2,
+    accion: 'INSERTAR',
+    descripcion: `SE INSERTA EL PARÁMETRO:
+                  Parámetro: ${dataParametro.parametro},
+                  Valor: ${dataParametro.valor}`
+  };
+
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+    // Manejar la respuesta si es necesario
+  });
+}
+
 
   
   updateBitacora(dataParametro: Parametros) {

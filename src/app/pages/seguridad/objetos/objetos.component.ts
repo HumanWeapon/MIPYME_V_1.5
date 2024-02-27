@@ -392,17 +392,19 @@ agregarNuevoObjeto() {
  }
 
 
-  insertBitacora(dataObjeto: Objetos){
-    const bitacora = {
-      fecha: new Date(),
-      id_usuario: this.getUser.id_usuario,
-      id_objeto: 4,
-      accion: 'INSERTAR',
-      descripcion: 'SE INSERTA EL OBJETO: '+ dataObjeto.objeto
-    }
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
-  }
+ insertBitacora(dataObjeto: Objetos) {
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 4,
+    accion: 'INSERTAR',
+    descripcion: `SE INSERTA EL OBJETO: ${dataObjeto.objeto}. Descripción: ${dataObjeto.descripcion}. Tipo de objeto: ${dataObjeto.tipo_objeto}`
+  };
+
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+    // Manejar la respuesta si es necesario
+  });
+}
 
 
   updateBitacora(dataObjeto: {

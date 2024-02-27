@@ -422,16 +422,22 @@ getUsuario(){
 }
 
 
-insertBitacora(dataPermisos: Permisos){
+insertBitacora(dataPermisos: Permisos) {
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 28,
     accion: 'INSERTAR',
-    descripcion: 'SE INSERTA EL PERMISO CON EL ID: '+ dataPermisos.id_permisos
-  }
-  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-  })
+    descripcion: `SE INSERTA EL PERMISO:
+                  ID: ${dataPermisos.id_permisos},
+                  Rol: ${dataPermisos.id_rol},
+                  Objeto: ${dataPermisos.id_objeto},
+                  }`
+  };
+
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+    // Manejar la respuesta si es necesario
+  });
 }
 
 

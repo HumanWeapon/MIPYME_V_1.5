@@ -60,6 +60,7 @@ export class RolesComponent implements OnInit{
   // We use this trigger because fetching the list of persons can be quite long,
   // thus we ensure the data is fetched before rendering
   dtTrigger: Subject<any> = new Subject<any>();
+
   getRol: any;
 
 
@@ -359,17 +360,20 @@ getUsuario(){
  });
 }
 
-insertBitacora(dataRoles: Roles){
+insertBitacora(dataRoles: Roles) {
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 3,
     accion: 'INSERTAR',
-    descripcion: 'SE INSERTA EL ROL: '+ dataRoles.rol
-  }
-  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-  })
+    descripcion: `SE INSERTA EL ROL: ${dataRoles.rol}. Descripción: ${dataRoles.descripcion}`
+  };
+
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+    // Manejar la respuesta si es necesario
+  });
 }
+
 
 
 updateBitacora(dataRoles: Roles) {
