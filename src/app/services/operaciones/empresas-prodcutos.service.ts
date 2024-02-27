@@ -31,7 +31,14 @@ export class EmpresasProdcutosService {
     return this.http.get<any[]>(`${this.apiUrl}/consultarOperacionEmpresaProductoPorId/${id}`, { headers });
   }
 
-  eliminarOperacionEmpresaProducto(id: number): Observable<any> {
+  consultarProductosNoRegistradosPorId(id: number): Observable<any[]> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<any[]>(`${this.apiUrl}/consultarProductosNoRegistradosPorId/${id}`, { headers });
+  }
+
+
+  eliminarOperacionEmpresaProducto(id: any): Observable<any> {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.delete(`${this.apiUrl}/eliminarOperacionEmpresaProducto/${id}`, { headers });

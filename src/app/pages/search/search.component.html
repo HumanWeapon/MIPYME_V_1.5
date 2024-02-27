@@ -114,13 +114,11 @@
                                 <thead>
                                 <tr>
                                     <th>NOMBRE</th> 
-                                    <th>CORREO</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr *ngFor="let contacto of listContactos; let i = index">
                                     <td>{{ contacto.primer_nombre +" "+ contacto.segundo_nombre+" "+ contacto.primer_apellido +" "+contacto.segundo_apellido }}</td>
-                                    <td>{{ contacto.correo }}</td>
                                 </tr>
                                 </tbody>
                             </table>

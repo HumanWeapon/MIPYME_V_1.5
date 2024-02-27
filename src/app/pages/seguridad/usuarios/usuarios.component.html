@@ -35,20 +35,20 @@
                   </thead>
                   <tbody>
                     <tr *ngFor="let user of usuariosAllRoles; let i = index">
-                      <td>{{ user.usuario }}</td>
-                      <td>{{ user.nombre_usuario }}</td>
-                      <td>{{ user.correo_electronico }}</td>
-                      <td>{{ user.roles.rol }}</td>
+                      <td>{{ user.usuario | uppercase }}</td>
+                      <td>{{ user.nombre_usuario | uppercase }}</td>
+                      <td>{{ user.correo_electronico | uppercase }}</td>
+                      <td>{{ user.roles.rol | uppercase }}</td>
                       <td>
                           <ng-container *ngIf="user.estado_usuario === 1">ACTIVO</ng-container>
                           <ng-container *ngIf="user.estado_usuario === 2">INACTIVO</ng-container>
                           <ng-container *ngIf="user.estado_usuario === 3">VENCIDO</ng-container>
                           <ng-container *ngIf="user.estado_usuario === 3">BLOQUEADO</ng-container>
-                        </td>
-                      <td>{{ user.creado_por}}</td>
-                      <td>{{ user.modificado_por}}</td>
-                      <td>{{ user.fecha_ultima_conexion }}</td>
-                      <td>{{ user.fecha_vencimiento}}</td>
+                      </td>
+                      <td>{{ user.creado_por | uppercase }}</td>
+                      <td>{{ user.modificado_por | uppercase }}</td>
+                      <td>{{ user.fecha_ultima_conexion | uppercase }}</td>
+                      <td>{{ user.fecha_vencimiento | uppercase }}</td>
                       <td class="text-center">
                         <div class="btn-group">
 
@@ -90,7 +90,7 @@
       <div class="modal-body">
         <form (ngSubmit)="agregarNuevoUsuario()">
           <div class="form-group">
-            <label for="nuevoUsuario">Nombre de usuario:</label>
+            <label for="nuevoUsuario">Usuario:</label>
             <input type="text" [(ngModel)]="newUser.usuario" name="nuevoUsuario.usuario" (input)="eliminarEspaciosBlanco($event, 'usuario')" class="form-control" id="nuevoUsuario" placeholder="Nombre de usuario">
           </div>
           <div class="form-group">
@@ -105,6 +105,7 @@
             <label for="nuevoRol">Rol:</label>
             <select [(ngModel)]="newUser.id_rol" name="newUser.id_rol" class="form-control" id="editarRol">
               <option value="0">Selecciona un rol</option>
+              <!-- Utiliza *ngFor para iterar sobre los roles filtrados -->
               <option *ngFor="let rol of listRol" [value]="rol.id_rol">{{ rol.rol }}</option>
             </select>
           </div>
@@ -137,7 +138,7 @@
           <div class="modal-body">
               <form>
                 <div class="form-group">
-                    <label for="editarUsuario">Nombre de usuario:</label>
+                    <label for="editarUsuario">Usuario:</label>
                     <input type="text" [(ngModel)]="editUser.usuario" name="editUser.usuario" (input)="eliminarEspaciosBlanco($event, 'usuario')" class="form-control" id="editarUsuario" placeholder="Nombre de usuario">
                 </div>
                 <div class="form-group">

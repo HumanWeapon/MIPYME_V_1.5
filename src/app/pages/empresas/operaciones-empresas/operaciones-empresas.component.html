@@ -2,7 +2,7 @@
     <!-- Content Header (Page header) -->
     <div class="card">
       <div class="card-header">
-        <h2>{{ nombreEmpresa }}</h2>
+        <h2><strong>{{ nombreEmpresa }}</strong></h2>
       </div>
       <div class="card-body">
         <p>{{descripcionEmpresa}}</p>
@@ -28,6 +28,16 @@
             
             <div class="row">
               <div class="col-12">
+                <div class="mb-2 mt-0">
+                  <div class="input-group input-group-sm" >
+                    <div class="ml-auto"> <!-- Agrega la clase ml-auto aquí -->
+                      <button type="button" class="btn btn-primary form-control float-righ" data-toggle="modal" data-target="#agregarProducto">
+                        Gestionar Productos
+                      </button>
+                  </div>
+                  </div>
+                </div>
+
                 <div class="card">
                   <div class="card-header">
                     <h3 class="card-title">Lista de productos</h3>
@@ -42,11 +52,6 @@
                               <i class="fas fa-search"></i>
                             </button>
                           </div>
-                        </div>
-                        <div class="input-group input-group-sm" style="width: 150px;">
-                          <button type="button" class="btn btn-primary form-control float-left" data-toggle="modal" data-target="#agregarProducto">
-                            <i class="fas fa-plus"><br></i> Producto
-                          </button>
                         </div>
                       </div>
 
@@ -80,131 +85,23 @@
               </div>
             </div>
           </div>
+          <!-- /Productos de la empresa -->
+
           <!-- Contactos de la empresa -->
           <div class="tab-pane" id="CONTACTOS">
-            <div class="form-group">
-              <label for="inputStatus">Tipo de Contacto</label>
-              <select id="inputStatus" class="form-control custom-select">
-                <option selected="" disabled="">Seleccionar</option>
-                <option>On Hold</option>
-                <option>Canceled</option>
-                <option>Success</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="inputProjectLeader">DNI</label>
-              <input type="text" id="inputProjectLeader" class="form-control">
-            </div>
-            <div class="form-group">
-              <label for="inputProjectLeader">Primer Nombre</label>
-              <input type="text" id="inputProjectLeader" class="form-control">
-            </div>
-            <div class="form-group">
-              <label for="inputProjectLeader">Segundo Nombre</label>
-              <input type="text" id="inputProjectLeader" class="form-control">
-            </div>
-            <div class="form-group">
-              <label for="inputProjectLeader">Primer Apellido</label>
-              <input type="text" id="inputProjectLeader" class="form-control">
-            </div>
-            <div class="form-group">
-              <label for="inputProjectLeader">Segundo Apellido</label>
-              <input type="text" id="inputProjectLeader" class="form-control">
-            </div>
-            <div class="form-group">
-              <label for="inputName">Correo Electrónico</label>
-              <input type="text" id="inputName" class="form-control">
-            </div>
-            <div class="form-group">
-              <label for="inputDescription">Descripción</label>
-              <textarea id="inputDescription" class="form-control" rows="4"></textarea>
-            </div>
+            
           </div>
+          <!-- /Contactos de la empresa -->
+
           <!-- Direcciones  de la empresa-->
           <div class="tab-pane" id="DIRECCIÓN">
-            <div class="form-group">
-              <label for="inputStatus">País</label>
-              <select id="inputStatus" class="form-control custom-select">
-                <option selected="" disabled="">Seleccionar</option>
-                <option>On Hold</option>
-                <option>Canceled</option>
-                <option>Success</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="inputStatus">Ciudad</label>
-              <select id="inputStatus" class="form-control custom-select">
-                <option selected="" disabled="">Seleccionar</option>
-                <option>On Hold</option>
-                <option>Canceled</option>
-                <option>Success</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="inputStatus">Contacto</label>
-              <select id="inputStatus" class="form-control custom-select">
-                <option selected="" disabled="">Seleccionar</option>
-                <option>On Hold</option>
-                <option>Canceled</option>
-                <option>Success</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="inputStatus">Tipo de Dirección</label>
-              <select id="inputStatus" class="form-control custom-select">
-                <option selected="" disabled="">Seleccionar</option>
-                <option>On Hold</option>
-                <option>Canceled</option>
-                <option>Success</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="inputName">Dirección</label>
-              <input type="text" id="inputName" class="form-control">
-            </div>
-            <div class="form-group">
-              <label for="inputDescription">Descripción</label>
-              <textarea id="inputDescription" class="form-control" rows="4"></textarea>
-            </div>
           </div>
+          <!-- /Direcciones  de la empresa-->
+
           <!-- Requisitos de Exportación-->
           <div class="tab-pane" id="REQUISITOS">
-            <div class="form-group">
-              <label for="inputName">Requisito</label>
-              <input type="text" id="inputName" class="form-control">
-            </div>
-            <div class="form-group">
-              <label for="inputDescription">Descripción</label>
-              <textarea id="inputDescription" class="form-control" rows="4"></textarea>
-            </div>
-            <div class="form-group">
-              <label for="inputStatus">País Origen</label>
-              <select id="inputStatus" class="form-control custom-select">
-                <option selected="" disabled="">Seleccionar</option>
-                <option>On Hold</option>
-                <option>Canceled</option>
-                <option>Success</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="inputStatus">País Destino</label>
-              <select id="inputStatus" class="form-control custom-select">
-                <option selected="" disabled="">Seleccionar</option>
-                <option>On Hold</option>
-                <option>Canceled</option>
-                <option>Success</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="inputStatus">Tipo de Requisito</label>
-              <select id="inputStatus" class="form-control custom-select">
-                <option selected="" disabled="">Seleccionar</option>
-                <option>On Hold</option>
-                <option>Canceled</option>
-                <option>Success</option>
-              </select>
-            </div>
           </div>
+          <!-- /Requisitos de Exportación-->
         </div>
       </div>
     </div>
@@ -217,17 +114,58 @@
     <div class="modal-dialog">
       <div class="modal-content">
           <div class="modal-header">
-              <h4 class="modal-title">Agregar Producto</h4>
+              <h4 class="modal-title">Agregar Productos</h4>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
               </button>
           </div>
           <div class="modal-body">
 
+            <div class="container mt-0 pt-0 bt-0">
+              <div class="row">
+                <div class="card-tools">
+                  <div class="input-group input-group-sm mb-2">
+                    <input type="text" name="table_search" class="form-control float-right" placeholder="Buscar" [(ngModel)]="filtroModal" (input)="buscarProductosModal()">
+                    <div class="input-group-append">
+                      <button type="button" class="btn btn-default" (click)="buscarProductosModal()">
+                        <i class="fas fa-search"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="card-body table-responsive p-0" style="height: 300px;">
+                    <table class="table table-head-fixed text-nowrap">
+                      <thead>
+                          <tr>
+                              <th scope="col">Seleccionar</th>
+                              <th scope="col">Producto</th>
+                              <th scope="col">Categoría</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr *ngFor="let producto of listNuevosProductos">
+                              <td>
+                                  <div class="custom-control custom-checkbox">
+                                      <input type="checkbox" class="custom-control-input" id="customCheck{{producto.id_producto}}" [checked]="producto.posee_producto" (change)="producto.posee_producto ? desmarcarProducto(producto) : marcarProducto(producto)">
+                                      <label class="custom-control-label" for="customCheck{{producto.id_producto}}"></label>
+                                  </div>
+                              </td>
+                              <td>{{producto.producto}}</td>
+                              <td>{{producto.categoria}}</td>
+                          </tr>
+                      </tbody>
+                    </table>
+                  
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </div>
           <div class="modal-footer justify-content-between">
               <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-              <button type="button" class="btn btn-success" data-dismiss="modal">Guardar</button>
+              <button type="button" class="btn btn-success" (click)="guardarCambios()" data-dismiss="modal">Guardar</button>
           </div>
       </div>
     </div>

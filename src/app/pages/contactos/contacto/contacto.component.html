@@ -15,9 +15,8 @@
                     <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover"> 
                         <thead>
                           <tr>
-                            <th>DNI</th>
-                            <th>Nombre Completo</th> 
-                            <th>Correo</th>
+                            <th>Nombre Completo</th>
+                            <th>Tipo de contacto</th>
                             <th>Descripción</th>
                             <th>Creado</th>
                             <th>Fecha Creación</th>
@@ -28,13 +27,12 @@
                         </thead>
                         <tbody>
                           <tr *ngFor="let contac of listContacto; let i = index">
-                            <td>{{ contac.dni }}</td>
                             <td>{{ contac.primer_nombre +" "+ contac.segundo_nombre+" "+ contac.primer_apellido +" "+contac.segundo_apellido }}</td>
-                            <td>{{ contac.correo }}</td>
+                            <td>{{ contac.tipo_contacto.tipo_contacto}}</td>
                             <td>{{ contac.descripcion}}</td>
                             <td>{{ contac.creado_por}}</td>
                             <td>{{ contac.fecha_creacion }}</td>
-                            <td>{{ contac.fecha_modificacion}}</td>
+                            <td>{{ contac.fecha_modificacion | date: 'yyyy-MM-dd'}}</td>
                             <td>
                               <ng-container *ngIf="contac.estado === 1">Activo</ng-container>
                               <ng-container *ngIf="contac.estado === 2">Inactivo</ng-container>
@@ -71,7 +69,7 @@
   
   
    
-  <!-- Agregar Usuario Form -->
+  <!-- Agregar Contacto Form -->
   <div class="modal fade" id="agregarContacto">
   <div class="modal-dialog">
       <div class="modal-content">
@@ -83,10 +81,6 @@
           </div>
           <div class="modal-body">
               <form (submit)="agregarNuevoContacto()">
-                  <div class="form-group">
-                      <label for="nuevoContacto">DNI:</label>
-                      <input type="text" [(ngModel)]="nuevoContacto.dni" name="nuevoContacto.dni" (input)="onInputChange($event, 'dni')"  class="form-control" id="nuevoDNI" placeholder="DNI">
-                  </div>
                   <div class="form-group">
                       <label for="nuevoContacto">Primer Nombre</label>
                       <input type="text" [(ngModel)]="nuevoContacto.primer_nombre" name="nuevoContacto.primer_nombre" (input)="onInputChange($event, 'primer_nombre')" class="form-control" id="nuevoPN" placeholder="Primer Nombre">
@@ -104,13 +98,15 @@
                     <input type="text" [(ngModel)]="nuevoContacto.segundo_apellido" name="nuevoContacto.segundo_apellido" (input)="onInputChange($event, 'segundo_apellido')"  class="form-control" id="nuevoSA" placeholder="Segundo Apellido">
                 </div>
                 <div class="form-group">
-                    <label for="nuevoContacto">Correo Electrónico</label>
-                    <input type="text" [(ngModel)]="nuevoContacto.correo" name="nuevoContacto.correo" (input)="onInputChange($event, 'correo')" class="form-control" id="nuevoCorreo" placeholder="Correo">
-                </div> 
-                <div class="form-group">
                     <label for="nuevoContacto">Descripción</label>
                     <input type="text" [(ngModel)]="nuevoContacto.descripcion" name="nuevoContacto.descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="nuevoDescripcion" placeholder="Descripción">
-                </div>      
+                </div>   
+                <div class="form-group">
+                  <label>Tipo de contacto</label>
+                  <select class="form-control" [(ngModel)]="nuevoContacto.id_tipo_contacto" name="id_tipo_contacto">
+                    <option *ngFor="let obj of listContactosActivos" [value]="obj.id_tipo_contacto">{{obj.tipo_contacto}}</option>
+                  </select>
+                </div>
               </form>
           </div>
           <div class="modal-footer justify-content-between">
@@ -136,10 +132,6 @@
           <div class="modal-body">
               <form>
                 <div class="form-group">
-                    <label for="contactoEditando">DNI:</label>
-                    <input type="text" [(ngModel)]="contactoEditando.dni" name="contactoEditando.dni" (input)="onInputChange($event, 'dni')"  class="form-control" id="editarDNI" placeholder="DNI">
-                </div>
-                <div class="form-group">
                     <label for="contactoEditando">Primer Nombre</label>
                     <input type="text" [(ngModel)]="contactoEditando.primer_nombre" name="contactoEditando.primer_nombre" (input)="onInputChange($event, 'primer_nombre')" class="form-control" id="editarPN" placeholder="Primer Nombre">
                 </div>  
@@ -156,13 +148,15 @@
                   <input type="text" [(ngModel)]="contactoEditando.segundo_apellido" name="contactoEditando.segundo_apellido" (input)="onInputChange($event, 'segundo_apellido')"  class="form-control" id="editarSA" placeholder="Tipo Contacto">
               </div>
               <div class="form-group">
-                  <label for="contactoEditando">Correo Electrónico</label>
-                  <input type="text" [(ngModel)]="contactoEditando.correo" name="contactoEditando.correo" (input)="onInputChange($event, 'correo')" class="form-control" id="editarCorreo" placeholder="Correo">
-              </div> 
-              <div class="form-group">
                   <label for="contactoEditando">Descripción</label>
                   <input type="text" [(ngModel)]="contactoEditando.descripcion" name="contactoEditando.descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="editarDescripcion" placeholder="Descripción">
-              </div>      
+              </div>
+              <div class="form-group">
+                <label>Tipo de contacto</label>
+                <select class="form-control" [(ngModel)]="contactoEditando.id_tipo_contacto" name="id_tipo_contacto">
+                  <option *ngFor="let obj of listContactosActivos" [value]="obj.id_tipo_contacto">{{obj.tipo_contacto}}</option>
+                </select>
+              </div>
             </form>
           </div>
           <div class="modal-footer justify-content-between">
@@ -191,9 +185,7 @@
           <table class="table table-striped">
             <thead class="thead-dark">
               <tr>
-                <th>DNI</th>
                 <th>Nombre Completo</th> 
-                <th>Correo</th>
                 <th>Descripcion</th>
                 <th>Creador</th>
                 <th>Fecha</th>
@@ -204,9 +196,7 @@
             </thead>
             <tbody>
                 <tr *ngFor="let contac of listContacto; let i = index">
-                    <td>{{ contac.dni }}</td>
                     <td>{{ contac.primer_nombre +" "+ contac.segundo_nombre+" "+ contac.primer_apellido +" "+contac.segundo_apellido }}</td>
-                    <td>{{ contac.correo }}</td>
                     <td>{{ contac.descripcion}}</td>
                     <td>{{ contac.creado_por}}</td>
                     <td>{{ contac.fecha_creacion }}</td>
@@ -227,43 +217,8 @@
     </div>
   </div>
   </div>
-  
-  
-
-
-
-
-
-
-
 
   <!-- 
                                                  FRANKLIN ALEXANDER MURILLO CRUZ
                                                     CUENTA: 20151021932
 -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

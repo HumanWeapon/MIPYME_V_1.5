@@ -53,13 +53,13 @@ export class EmpresaService {
   inactivarEmpresa(id_empresa: Empresa): Observable<string>{
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.post<string>(`${this.myAppUrl}${this.myApiUrl}/inactivateEmpresa`, { id_empresa: id_empresa }, { headers: headers })
+    return this.http.post<string>(`${this.myAppUrl}${this.myApiUrl}/inactivateEmpresa`, { id_empresa: id_empresa.id_empresa } , { headers: headers })
   }
 
   activarEmpresa(id_empresa: Empresa): Observable<string>{
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.post<string>(`${this.myAppUrl}${this.myApiUrl}/activateEmpresa`, { id_empresa: id_empresa }, { headers: headers })
+    return this.http.post<string>(`${this.myAppUrl}${this.myApiUrl}/activateEmpresa`,  { id_empresa: id_empresa.id_empresa } , { headers: headers })
   }
 
   deleteEmpresa(id_empresa: number): Observable<any> {
