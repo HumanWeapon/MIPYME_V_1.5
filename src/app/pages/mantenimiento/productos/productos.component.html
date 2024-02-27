@@ -28,25 +28,26 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr *ngFor="let obj of productos; let i = index">
-                        <td>{{ obj.producto }}</td>
-                        <td>{{ obj.descripcion }}</td>
-                        <td>{{ obj.categoria.categoria }}</td>
-                        <td>{{ obj.creado_por }}</td>
-                        <td>{{ obj.fecha_creacion}}</td>
-                        <td>{{ obj.modificado_por}}</td>
-                        <td>{{ obj.fecha_modificacion}}</td>
+                      <tr *ngFor="let produc of productos; let i = index">
+                        <td>{{ produc.producto }}</td>
+                        <td>{{ produc.descripcion }}</td>
+                        <td>{{ produc.categoria.categoria }}</td>
+                        <td>{{ produc.creado_por }}</td>
+                        <td>{{ produc.fecha_creacion}}</td>
+                        <td>{{ produc.modificado_por}}</td>
+                        <td>{{ produc.fecha_modificacion}}</td>
                         <td>
-                            <ng-container *ngIf="obj.estado === 1">ACTIVO</ng-container>
-                            <ng-container *ngIf="obj.estado === 2">INACTIVO</ng-container>
+                            <ng-container *ngIf="produc.estado === 1">ACTIVO</ng-container>
+                            <ng-container *ngIf="produc.estado === 2">INACTIVO</ng-container>
                           </td>
                         <td class="text-center">
                           <div class="btn-group">
                             <div class="form-check form-switch ml-4">
-                              <input class="form-check-input" (click)="toggleFunction(obj, i)" [title]="obj.estado == 1 ? 'Desactivar' : 'Activar'" type="checkbox" 
-                                role="switch" id="flexSwitchCheckChecked" [checked]="obj.estado == 1">
+                              <input class="form-check-input" (click)="toggleFunction(produc, i)" [title]="produc.estado == 1 ? 'Desactivar' : 'Activar'" type="checkbox" 
+                                role="switch" id="flexSwitchCheckChecked" [checked]="produc.estado == 1">
+                                
                             </div>
-                              <button type="button" (click)="obtenerIdProductos(obj, i)" data-toggle="modal" title='Editar Producto' data-target="#abrirModalEditarObjeto"data-toggle="modal" data-target="#abrirModalEditarObjeto" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
+                              <button type="button" (click)="obtenerIdProductos(produc, i)" data-toggle="modal" title='Editar Producto' data-target="#abrirModalEditarObjeto"data-toggle="modal" data-target="#abrirModalEditarObjeto" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
                             </div>
                         </td>
                       </tr>
@@ -175,15 +176,15 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let obj of listProductos">
-              <td>{{ obj.producto }}</td>
-              <td>{{ obj.descripcion }}</td>
-              <td>{{ obj.creado_por }}</td>
-              <td>{{ obj.fecha_creacion}}</td>
-              <td>{{ obj.fecha_modificacion}}</td>
+            <tr *ngFor="let produc of listProductos">
+              <td>{{ produc.producto }}</td>
+              <td>{{ produc.descripcion }}</td>
+              <td>{{ produc.creado_por }}</td>
+              <td>{{ produc.fecha_creacion}}</td>
+              <td>{{ produc.fecha_modificacion}}</td>
               <td>
-                <ng-container *ngIf="obj.estado === 1">ACTIVO</ng-container>
-                <ng-container *ngIf="obj.estado === 2">INACTIVO</ng-container>
+                <ng-container *ngIf="produc.estado === 1">ACTIVO</ng-container>
+                <ng-container *ngIf="produc.estado === 2">INACTIVO</ng-container>
               </td>
             </tr>
           </tbody>

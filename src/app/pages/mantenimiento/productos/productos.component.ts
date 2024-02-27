@@ -25,6 +25,8 @@ import { ContactoService } from 'src/app/services/contacto/contacto.service';
 export class ProductosComponent implements OnInit{
 
   productos: any[] = [];
+
+
   productoEditando: Productos = {
     id_producto: 0, 
     id_categoria: 0,
@@ -69,6 +71,7 @@ export class ProductosComponent implements OnInit{
   cat: Categoria[] = [];
   productoAllCategoria: any[] = []
 
+
   constructor(
     private _productoService: ProductosService, 
     private toastr: ToastrService,
@@ -91,7 +94,6 @@ export class ProductosComponent implements OnInit{
     this._productoService.getAllProductos()
       .subscribe((res: any) => {
         this.productos = res;
-        console.log(res);
         this.dtTrigger.next(null);
       });
 
@@ -108,7 +110,7 @@ export class ProductosComponent implements OnInit{
 
 
   onInputChange(event: any, field: string) {
-    if (field === 'producto') {
+    if (field == 'producto') {
       const inputValue = event.target.value;
       const uppercaseValue = inputValue.toUpperCase();
       event.target.value = uppercaseValue;
@@ -193,29 +195,30 @@ export class ProductosComponent implements OnInit{
   /**********************************************************/
 // Variable de estado para alternar funciones
 
-toggleFunction(obj: any, i: number) {
-
+toggleFunction(productos: Productos, i: number) {
   // Ejecuta una función u otra según el estado
-  if (obj.estado == 1 ) {
-    this.inactivarProducto(obj, i); // Ejecuta la primera función
+  if (productos.estado == 1) {
+    this.inactivarProducto(productos, i); // Ejecuta la primera función
   } else {
-    this.activarProductos(obj, i); // Ejecuta la segunda función
+    this.activarProductos(productos, i); // Ejecuta la segunda función
   }
 }
+
   
-inactivarProducto(productos: Productos, i: any){
-  this._productoService.inactivarProductos(productos).subscribe(data => {
-    this.toastr.success('El producto: '+ productos.producto+ ' ha sido inactivado');
-    this.inactivarBitacora(data);
-  });
-  this.listProductos[i].estado = 2;
-}
-activarProductos(productos: Productos, i: any){
+activarProductos(productos: Productos, i: any) {
   this._productoService.activarProductos(productos).subscribe(data => {
-  this.toastr.success('El producto: '+ productos.producto+ ' ha sido activado');
-  this.activarBitacora(data);
-});
-  this.listProductos[i].estado = 1;
+    this.toastr.success('El producto: ' + productos.producto + ' ha sido activado');
+    this.activarBitacora(data);
+    this.productos[i].estado = 1; // Actualizar el estado localmente
+  });
+}
+
+inactivarProducto(productos: Productos, i: any) {
+   this._productoService.inactivarProductos(productos).subscribe(data => {
+    this.toastr.success('El producto: ' + productos.producto + ' ha sido inactivado');
+    this.inactivarBitacora(data);
+    this.productos[i].estado = 2; // Actualizar el estado localmente
+  });
 }
 
 /*****************************************************************************************************/
