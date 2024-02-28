@@ -185,13 +185,8 @@ getEstadoText(estado: number): string {
             this._errorService.msjError(e);
           }
         });
-        location.reload();
-        this.ngZone.run(() => {        
-        });
       }
     }
-    
-    
     
       obtenerIdTipoEmpresa(tipoE: TipoEmpresa, i: any){
     

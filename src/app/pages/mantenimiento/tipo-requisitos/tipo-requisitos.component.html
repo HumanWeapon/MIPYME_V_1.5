@@ -1,1 +1,255 @@
-<p>tipo-requisitos works!</p>
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header">
+                  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarRequisito">
+                    <i class="fas fa-plus"></i> Nuevo</button>
+                    <button type="button" class="btn btn-primary custom-print-button btn-danger" title="Generar el Reporte" data-toggle="modal" data-target="#PDFRequisitos">
+                      <i class="fas fa-file-pdf mr-2"></i>PDF</button>
+                      <button type="button" class="btn btn-primary custom-print-button btn-success" title="Generar el Reporte en Excel" data-toggle="modal" data-target="#ExcelRequisitos">
+                        <i class="fas fa-file-excel mr-2"></i>Excel
+                    </button>
+                </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover">
+                    <thead>
+                        <tr>
+                          <th>Tipo Requisito</th>
+                          <th>Descripción</th>
+                          <th>Creado</th>
+                          <th>Fecha Creación</th>
+                          <th>Modificado</th>
+                          <th>Fecha Modificación</th>
+                          <th>Estado</th>
+                          <th>Aciones</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let TRequi of listTipoR; let i = index">
+                          <td>{{ TRequi.tipo_requisito | uppercase }}</td>
+                          <td>{{ TRequi.descripcion | uppercase }}</td>
+                          <td>{{ TRequi.creado_por | uppercase }}</td>
+                          <td>{{ TRequi.fecha_creacion }}</td>
+                          <td>{{ TRequi.modificado_por | uppercase}}</td>
+                          <td>{{ TRequi.fecha_modificacion}}</td>
+                          <td>
+                            <ng-container *ngIf="TRequi.estado === 1">ACTIVO</ng-container>
+                            <ng-container *ngIf="TRequi.estado === 2">INACTIVO</ng-container>
+                            
+                          </td>
+                          <td class="text-center">
+                            <div class="btn-group">
+                              <div class="form-check form-switch ml-4">
+                                <input class="form-check-input" (click)="toggleFunction(TRequi, i)" [title]="TRequi.estado == 1 ? 'Desactivar' : 'Activar'" type="checkbox" 
+                                  role="switch" id="flexSwitchCheckChecked" [checked]="TRequi.estado == 1">
+                              </div>
+                                <button type="button" (click)="obtenerIdTipoRequisito(TRequi, i)" title="Editar Tipo de Requisito" data-toggle="modal" data-target="#abrirModalEditarTipoRequisito"data-toggle="modal" data-target="#abrirModalEditarTipoRequisito" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
+                              </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                  </table>
+  
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+  </section>
+    <!-- /.content -->
+
+
+
+
+
+ 
+<!-- Agregar Usuario Form -->
+<div class="modal fade" id="agregarRequisito">
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">Agregar Tipo Requisito</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form (submit)="agregarNuevoTipoRequisito()">
+                <div class="form-group">
+                    <label for="nuevoTipoRequisito">Tipo Requisito:</label>
+                    <input type="text" [(ngModel)]="nuevoTipoRequisito.tipo_requisito" name="nuevoTipoRequisito.tipo_requisito" (input)="eliminarEspaciosBlanco($event, 'tipo_requisito')" (input)="convertirAMayusculas($event, 'tipo_requisito')"  class="form-control" id="nuevoTipoRequisito" placeholder="Tipo Requisito">
+                </div>
+                <div class="form-group">
+                    <label for="nuevoTipoRequisito">Descripción</label>
+                    <input type="text" [(ngModel)]="nuevoTipoRequisito.descripcion" name="nuevoTipoRequisito.descripcion" (input)="eliminarEspaciosBlanco($event, 'descripcion')" (input)="convertirAMayusculas($event, 'descripcion')" class="form-control" id="nuevoTipoRequisito" placeholder="Descripción">
+                </div>    
+            </form>
+        </div>
+        <div class="modal-footer justify-content-between">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+            <button type="button" (click)="agregarNuevoTipoRequisito()" class="btn btn-success" data-dismiss="modal">Guardar</button>
+        </div>
+    </div>
+</div>
+</div>
+<!-- /Agregar ciudad Form -->
+
+
+<!-- Actualizar Usuario Form -->
+<div class="modal fade" id="abrirModalEditarTipoRequisito">
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">Editar Tipo Requisito</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form>
+              <div class="form-group">
+                  <label for="tipoRequisitoEditando">Tipo Requisito:</label>
+                  <input type="text" [(ngModel)]="tipoRequisitoEditando.tipo_requisito" name="tipoRequisitoEditando.tipo_requisito" class="form-control" id="editartipoRequisito" placeholder="Nombre de la ciudad" (input)="convertirAMayusculas($event, 'tipo_requisito')" (input)="eliminarEspaciosBlanco($event, 'tipo_requisito')" >
+              </div>
+              <div class="form-group">
+                  <label for="tipoRequisitoEditando">Descripción:</label>
+                  <input type="text" [(ngModel)]="tipoRequisitoEditando.descripcion" name="tipoRequisitoEditando.descripcion"  class="form-control" id="editartipoRequisito" placeholder="Descripción" (input)="convertirAMayusculas($event, 'descripcion')" (input)="eliminarEspaciosBlanco($event, 'descripcion')" >
+              </div>
+        
+             
+            </form>
+        </div>
+        <div class="modal-footer justify-content-between">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+            <button type="button" (click)="editarTipoRequisito()" class="btn btn-success" data-dismiss="modal">Guardar</button>
+        </div>
+    </div>
+</div>
+</div>
+
+<!-- Form Ver PDF para Requisitos -->
+<div class="modal fade" id="PDFRequisitos">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+  
+        <!-- Cabecera del modal -->
+        <div class="modal-header" style="display: flex; align-items: center;">
+          <div style="flex: 1; text-align: left; margin-right: 20px;">
+              <h1>Utilidad Mi Pyme</h1>
+              <h4>Reporte de Requisitos</h4> 
+              <!-- Puedes agregar más detalles del reporte aquí si es necesario -->
+              <p>Fecha: {{ getCurrentDate() }}</p>
+          </div>
+          <div style="flex: 0;">
+              <img src="\assets\dist\img\pym.png" alt="Logo de Mi Pyme" style="width: 200px; height: auto;">
+          </div>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        
+        <!-- Pie del modal -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary customn-print-button btn-danger" (click)="generatePDF()">
+            <i class="fas fa-file-pdf"></i>  Generar PDF</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        </div>
+
+  <!-- Contenido del modal -->
+  <div class="modal-body">
+    <!-- Aquí puedes colocar tu DataTable o cualquier otro contenido que desees mostrar -->
+    <table class="table table-striped">
+      <thead class="thead-dark">
+        <tr>
+          <th>Tipo Requisito</th>
+          <th>Descripcion</th>
+          <th>Creador</th>
+          <th>Fecha</th>
+          <th>Modificado por</th>
+          <th>Fecha</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let TRequi of listTipoR; let i = index">
+          <td>{{ TRequi.tipo_requisito }}</td>
+          <td>{{ TRequi.descripcion }}</td>
+          <td>{{ TRequi.creado_por}}</td>
+          <td>{{ TRequi.fecha_creacion }}</td>
+          <td>{{ TRequi.modificado_por}}</td>
+          <td>{{ TRequi.fecha_modificacion}}</td>
+          <td>{{ getEstadoText(TRequi.estado) }}</td>
+        </tr>
+      </tbody>
+    </table>
+</div>
+</div>
+</div>
+
+<!-- Form Ver Excel para Roles -->
+<div class="modal fade" id="ExcelRequisitos">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+  
+        <!-- Cabecera del modal -->
+        <div class="modal-header" style="display: flex; align-items: center;">
+          <div style="flex: 1; text-align: left; margin-right: 20px;">
+              <h1>Utilidad Mi Pyme</h1>
+              <h4>Reporte de Requisitos</h4> 
+              <!-- Puedes agregar más detalles del reporte aquí si es necesario -->
+              <p>Fecha: {{ getCurrentDate() }}</p>
+          </div>
+          <div style="flex: 0;">
+              <img src="\assets\dist\img\pym.png" alt="Logo de Mi Pyme" style="width: 200px; height: auto;">
+          </div>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+  
+        <!-- Pie del modal -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary customn-print-button btn-success" (click)="generateExcel()">
+            <i class="fas fa-file-excel"></i>  Generar Excel</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        </div>
+  
+        <!-- Contenido del modal -->
+        <div class="modal-body">
+          <!-- Aquí puedes colocar tu DataTable o cualquier otro contenido que desees mostrar -->
+          <table class="table table-striped">
+            <thead class="thead-dark">
+              <tr>
+                <th>Tipo Requisito</th>
+                <th>Descripcion</th>
+                <th>Creador</th>
+                <th>Fecha</th>
+                <th>Modificado por</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let TRequi of listTipoR; let i = index">
+                <td>{{ TRequi.tipo_requisito }}</td>
+                <td>{{ TRequi.descripcion }}</td>
+                <td>{{ TRequi.creado_por}}</td>
+                <td>{{ TRequi.fecha_creacion }}</td>
+                <td>{{ TRequi.modificado_por}}</td>
+                <td>{{ TRequi.fecha_modificacion}}</td>
+                <td>{{ getEstadoText(TRequi.estado) }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+  
+      </div>
+    </div>
+  </div>
+  
+  

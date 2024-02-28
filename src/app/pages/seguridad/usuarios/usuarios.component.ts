@@ -326,6 +326,7 @@ toggleFunction(user: any, i: number) {
       this._userService.addUsuario(this.newUser).subscribe({
         next: (data) => {
           this.insertBitacora(data);
+          this._toastr.success('Usuario agregado con éxito')
         },
         error: (e: HttpErrorResponse) => {
           this._errorService.msjError(e);
