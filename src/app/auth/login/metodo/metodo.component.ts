@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { Usuario } from 'src/app/interfaces/seguridad/usuario';
 import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 
@@ -29,25 +30,47 @@ export class MetodoComponent {
   };
   selectedOption: string = 'correo'; // Valor predeterminado
 
-  constructor(private router: Router, private _usuarioService: UsuariosService){
+  constructor(private router: Router, private _usuarioService: UsuariosService,
+    private _toastr: ToastrService,){
   }
 
 
   // ...
 
   onSubmit() {
-    this.usuario = this.usuario;
-    this._usuarioService.usuario = this.usuario;
-    localStorage.setItem("usuario" , this.usuario.usuario);
-
-    // Aquí puedes acceder a this.selectedOption para determinar cuál opción se seleccionó
-    if (this.selectedOption === 'correo') {
-      // Navegar al método de restablecer contraseña por correo electrónico
-    } else if (this.selectedOption === 'preguntas') {
-      // Navegar al método de restablecer contraseña por preguntas de seguridad
-      this.navigatePreguntas();
+    // Verificar si el campo de usuario está vacío
+    if (!this.usuario.usuario.trim()) {
+      // Si está vacío, muestra un mensaje de error
+      this._toastr.warning('Por favor, escriba un nombre de usuario.');
+      return; // Detener la ejecución del método
     }
+  
+    // Continuar con el resto del código si hay un usuario en el campo
+  
+    // Verificar si el usuario existe
+    this._usuarioService.getOneUsuario(this.usuario.usuario).subscribe(
+      (usuario: Usuario) => {
+        // Si se encontró el usuario, continuar con el proceso de recuperación de contraseña
+        this.usuario = usuario;
+        this._usuarioService.usuario = this.usuario;
+        localStorage.setItem("usuario", this.usuario.usuario);
+  
+        // Aquí puedes acceder a this.selectedOption para determinar cuál opción se seleccionó
+        if (this.selectedOption === 'correo') {
+          this.navigateCorreo();
+          // Navegar al método de restablecer contraseña por correo electrónico
+        } else if (this.selectedOption === 'preguntas') {
+          // Navegar al método de restablecer contraseña por preguntas de seguridad
+          this.navigatePreguntas();
+        }
+      },
+      () => {
+        // Si no se encontró el usuario, mostrar un mensaje de error
+        this._toastr.error('El usuario no existe.');
+      }
+    );
   }
+  
 
   
 
@@ -57,5 +80,9 @@ export class MetodoComponent {
 
   navigatePreguntas() {
     this.router.navigate(['/preguntas'])
+  }
+
+  navigateCorreo() {
+    this.router.navigate(['/password-email'])
   }
 }

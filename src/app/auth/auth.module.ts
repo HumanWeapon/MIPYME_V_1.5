@@ -11,6 +11,7 @@ import { PreguntasUsuarioComponent } from './login/preguntas-usuario/preguntas-u
 import { SpinnerComponent } from '../shared/spinner/spinner.component';
 import { LoginPymeComponent } from './login-pyme/login-pyme.component';
 import { RegisterPymeComponent } from './register-pyme/register-pyme.component';
+import { PasswordEmailComponent } from './login/password-email/password-email.component';
 
 
 
@@ -26,7 +27,8 @@ import { RegisterPymeComponent } from './register-pyme/register-pyme.component';
     PreguntasUsuarioComponent,
     SpinnerComponent,
     LoginPymeComponent,
-    RegisterPymeComponent
+    RegisterPymeComponent,
+    PasswordEmailComponent
   ],
   imports: [
     CommonModule,

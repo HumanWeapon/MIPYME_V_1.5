@@ -8,6 +8,7 @@ import { RecuperarComponent } from './login/recuperar/recuperar.component';
 import { FirstLoginComponent } from './login/first-login/first-login.component';
 import { PreguntasUsuarioComponent } from './login/preguntas-usuario/preguntas-usuario.component';
 import { LoginPymeComponent } from './login-pyme/login-pyme.component';
+import { PasswordEmailComponent } from './login/password-email/password-email.component';
 
 
 const routes: Routes =[
@@ -18,6 +19,7 @@ const routes: Routes =[
   {path: 'recuperar', component: RecuperarComponent},
   {path: 'firstlogin', component: FirstLoginComponent},
   {path: 'login-pyme', component: LoginPymeComponent},
+  {path: 'password-email', component: PasswordEmailComponent},
 ];
 
 @NgModule({
