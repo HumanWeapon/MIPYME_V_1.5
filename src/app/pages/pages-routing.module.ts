@@ -79,7 +79,7 @@ const routes: Routes = [
     { path: 'requisitos_exportacion', component:RequisitosExportacionComponent, data:{titulo: 'Requisitos de exportación'}},
     { path: 'empresas_productos', component:EmpresasProductosComponent, data:{titulo: 'Productos de empresas'}},
     { path: 'contactos', component:ContactoComponent, data:{titulo: 'Contacto'}},
-    { path: 'contacto_telefono', component:TelefonosComponent, data:{titulo: 'Contacto de teléfono'}},
+    { path: 'telefonos', component:TelefonosComponent, data:{titulo: 'Contacto de teléfono'}},
     { path: 'contacto_direcciones', component:DireccionesComponent, data:{titulo: 'Contacto de direcciones'}},
 
     //ABC grado C.

@@ -32,7 +32,7 @@
                   <div class="input-group input-group-sm" >
                     <div class="ml-auto"> <!-- Agrega la clase ml-auto aquí -->
                       <button type="button" class="btn btn-primary form-control float-righ" data-toggle="modal" data-target="#agregarProducto">
-                        Gestionar Productos
+                        Editar Productos
                       </button>
                   </div>
                   </div>
@@ -45,7 +45,7 @@
                       <div class="row">
                         <div class="input-group input-group-sm" style="width: 200px;">
                         
-                          <input type="text" name="table_search" class="form-control float-right" placeholder="Buscar" [(ngModel)]="filtro" (input)="buscarProductos()">
+                          <input type="text" name="table_search" class="form-control float-right" placeholder="Buscar" [(ngModel)]="filtro_prod" (input)="buscarProductos()">
   
                           <div class="input-group-append">
                             <button type="button" class="btn btn-default" (click)="buscarProductos()">
@@ -89,7 +89,67 @@
 
           <!-- Contactos de la empresa -->
           <div class="tab-pane" id="CONTACTOS">
+            <div class="tab-pane active" id="PRODUCTOS">
             
+              <div class="row">
+                <div class="col-12">
+                  <div class="mb-2 mt-0">
+                    <div class="input-group input-group-sm" >
+                      <div class="ml-auto"> <!-- Agrega la clase ml-auto aquí -->
+                        <button type="button" class="btn btn-primary form-control float-righ" data-toggle="modal" data-target="#agregarContacto">
+                          Editar Contactos
+                        </button>
+                    </div>
+                    </div>
+                  </div>
+  
+                  <div class="card">
+                    <div class="card-header">
+                      <h3 class="card-title">Lista de contactos</h3>
+                      <div class="card-tools">
+                        <div class="row">
+                          <div class="input-group input-group-sm" style="width: 200px;">
+                          
+                            <input type="text" name="table_search" class="form-control float-right" placeholder="Buscar" [(ngModel)]="filtro_contact" (input)="buscarContactos()">
+    
+                            <div class="input-group-append">
+                              <button type="button" class="btn btn-default" (click)="buscarContactos()">
+                                <i class="fas fa-search"></i>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+  
+                      </div>
+                    </div>
+                  
+                    <div class="card-body table-responsive p-0" style="height: 300px;">
+                      <table class="table table-head-fixed text-nowrap">
+                        <thead>
+                          <tr>
+                            <th>Nombre</th>
+                            <th>Tipo de contacto</th>
+                            <th>Descripción</th>
+                            <th>Agregado por</th>
+                            <th>Fecha</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let obj of productosContactos; let i = index">
+                            <td>{{ obj.nombre_completo }}</td>
+                            <td>{{ obj.tipo_contacto }}</td>
+                            <td>{{ obj.descripcion }}</td>
+                            <td>{{ obj.creado_por }}</td>
+                            <td>{{ obj.fecha_creacion | date:'dd/MM/yyyy HH:mm'}}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+  
+                  </div> 
+                </div>
+              </div>
+            </div>
           </div>
           <!-- /Contactos de la empresa -->
 
@@ -125,7 +185,7 @@
               <div class="row">
                 <div class="card-tools">
                   <div class="input-group input-group-sm mb-2">
-                    <input type="text" name="table_search" class="form-control float-right" placeholder="Buscar" [(ngModel)]="filtroModal" (input)="buscarProductosModal()">
+                    <input type="text" name="table_search" class="form-control float-right" placeholder="Buscar" [(ngModel)]="filtroModalProd" (input)="buscarProductosModal()">
                     <div class="input-group-append">
                       <button type="button" class="btn btn-default" (click)="buscarProductosModal()">
                         <i class="fas fa-search"></i>
@@ -165,12 +225,78 @@
           </div>
           <div class="modal-footer justify-content-between">
               <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-              <button type="button" class="btn btn-success" (click)="guardarCambios()" data-dismiss="modal">Guardar</button>
+              <button type="button" class="btn btn-success" (click)="EditarProductos()" data-dismiss="modal">Guardar</button>
           </div>
       </div>
     </div>
   </div>
   <!-- /Agregar Producto Form -->
+
+
+
+  <!-- Agregar contacto Form -->
+  <div class="modal fade" id="agregarContacto" >
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title">Agregar Contactos</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+
+            <div class="container mt-0 pt-0 bt-0">
+              <div class="row">
+                <div class="card-tools">
+                  <div class="input-group input-group-sm mb-2">
+                    <input type="text" name="table_search" class="form-control float-right" placeholder="Buscar" [(ngModel)]="filtroModalCont" (input)="buscarContactosModal()">
+                    <div class="input-group-append">
+                      <button type="button" class="btn btn-default" (click)="buscarContactosModal()">
+                        <i class="fas fa-search"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="card-body table-responsive p-0" style="height: 300px;">
+                    <table class="table table-head-fixed text-nowrap">
+                      <thead>
+                          <tr>
+                              <th scope="col">Seleccionar</th>
+                              <th scope="col">Contacto</th>
+                              <th scope="col">Tipo de contacto</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr *ngFor="let contacto of listNuevosContactos">
+                              <td>
+                                  <div class="custom-control custom-checkbox">
+                                      <input type="checkbox" class="custom-control-input" id="customCheck{{contacto.id_contacto}}" [checked]="contacto.posee_contacto" (change)="contacto.posee_contacto ? desmarcarContacto(contacto) : marcarContacto(contacto)">
+                                      <label class="custom-control-label" for="customCheck{{contacto.id_contacto}}"></label>
+                                  </div>
+                              </td>
+                              <td>{{contacto.nombre_completo}}</td>
+                              <td>{{contacto.tipo_contacto}}</td>
+                          </tr>
+                      </tbody>
+                    </table>
+                  
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+              <button type="button" class="btn btn-success" (click)="EditarContactos()" data-dismiss="modal">Guardar</button>
+          </div>
+      </div>
+    </div>
+  </div>
+  <!-- /Agregar Producto Form -->
+
 
   <!-- /.Modales -->
 </div>

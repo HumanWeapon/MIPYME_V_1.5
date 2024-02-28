@@ -25,7 +25,6 @@ export class ContactoTService {
    addContactoT(contactoT: ContactoTelefono): Observable<any> {
     const nuevoContactoT = {
         id_telefono: contactoT.id_telefono, 
-        id_contacto: contactoT.id_contacto,
         id_tipo_telefono: contactoT. id_tipo_telefono,
         telefono: contactoT.telefono, 
         extencion: contactoT.extencion,

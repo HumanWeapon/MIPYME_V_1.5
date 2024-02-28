@@ -9,6 +9,7 @@ import { BitacoraService } from 'src/app/services/administracion/bitacora.servic
 import { EmpresaService } from 'src/app/services/empresa/empresa.service';
 import { ErrorService } from 'src/app/services/error.service';
 import { ProductosService } from 'src/app/services/mantenimiento/producto.service';
+import { EmpresasContactosService } from 'src/app/services/operaciones/empresas-contactos.service';
 import { EmpresasProdcutosService } from 'src/app/services/operaciones/empresas-prodcutos.service';
 import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 
@@ -24,18 +25,30 @@ export class OperacionesEmpresasComponent {
   descripcionEmpresa: string = '';
   usuario: string = '';
 
-  //Obtiene los productos activos de la Empresa y los muestra en la tabla.
-  productosEmpresa: any[] = [];
   
+  productosEmpresa: any[] = [];//Obtiene los productos registrados de la Empresa y los muestra en la tabla.
+  productosContactos: any[] = [];//Obtiene los contactos registrados de la Empresa y los muestra en la tabla.
+  contactosActivos: any[] = []; //Obtiene los contactos activos de la Empresa y los muestra en la tabla.
+
+
   //Obtiene los productos no registrados para la empresa y mostrarlos en el modal de agregar productos.
   listNuevosProductos: any[] = []; //guarda los registros de mi consulta a la api
   listEditandoProductos: any[] = []; //Guardan la misma información, luego se comparan 
   posee_producto = true;
 
+  //Obtiene los contactos no registrados para la empresa y mostrarlos en el modal de agregar productos.
+  listNuevosContactos: any[] = []; //guarda los registros de mi consulta a la api
+  listEditandoContactos: any[] = []; //Guardan la misma información, luego se comparan 
+  posee_contacto = true;
+
   //Obtiene la información del buscador de mi tabla productos
-  filtro: string = '';
+  filtro_prod: string = '';
+  filtro_contact: string = '';
   todosLosProductos: any[] = [];
-  filtroModal: string = '';
+  todosLosContactos: any[] = [];
+  filtroModalProd: string = '';
+  filtroModalCont: string = '';
+
 
   listProductos: any[] = [];
 
@@ -92,6 +105,8 @@ export class OperacionesEmpresasComponent {
     }
     this.getEmpresasProductosPorId();
     this.getProductosNoRegistradosPorId();
+    this.getEmpresasContactosPorId();
+    this.getContactosNoRegistradosPorId();
   }
 
   constructor(
@@ -102,26 +117,51 @@ export class OperacionesEmpresasComponent {
     private _bitacoraService: BitacoraService,
     private _userService: UsuariosService,
     private _productoService: ProductosService,
-    private _empresasProductosService: EmpresasProdcutosService
+    private _empresasProductosService: EmpresasProdcutosService,
+    private _empresasContactosService: EmpresasContactosService
   ) {}
 
+  //busca los productos de la tabla principal de los productos
   buscarProductos() {
-    if (this.filtro.trim() === '') {
+    if (this.filtro_prod.trim() === '') {
       this.productosEmpresa = this.todosLosProductos; // Si el filtro está vacío, muestra todos los productos
     } else {
       this.productosEmpresa = this.todosLosProductos.filter(producto => {
         // Filtrar por el nombre del producto
-        return producto.producto.producto.toLowerCase().includes(this.filtro.trim().toLowerCase());
+        return producto.producto.producto.toLowerCase().includes(this.filtro_prod.trim().toLowerCase());
       });
     }
   }
+  //busca los productos de la tabla de productos en el modal
   buscarProductosModal() {
-    if (this.filtroModal.trim() === '') {
+    if (this.filtroModalProd.trim() === '') {
       this.listNuevosProductos = this.listEditandoProductos; // Si el filtro está vacío, muestra todos los productos
     } else {
       this.listNuevosProductos = this.listEditandoProductos.filter(producto => {
         // Filtrar por el nombre del producto
-        return producto.producto.toLowerCase().includes(this.filtroModal.trim().toLowerCase());
+        return producto.producto.toLowerCase().includes(this.filtroModalProd.trim().toLowerCase());
+      });
+    }
+  }
+  //busca los productos de la tabla principal de los contactos
+  buscarContactos() {
+    if (this.filtro_contact.trim() === '') {
+      this.productosContactos = this.todosLosContactos; // Si el filtro está vacío, muestra todos los productos
+    } else {
+      this.productosContactos = this.todosLosContactos.filter(contacto => {
+        // Filtrar por el nombre del producto
+        return contacto.nombre_completo.toLowerCase().includes(this.filtro_contact.trim().toLowerCase());
+      });
+    }
+  }
+  //busca los productos de la tabla de contactos en el modal
+  buscarContactosModal() {
+    if (this.filtroModalCont.trim() === '') {
+      this.listNuevosContactos = this.listEditandoContactos; // Si el filtro está vacío, muestra todos los productos
+    } else {
+      this.listNuevosContactos = this.listEditandoContactos.filter(contacto => {
+        // Filtrar por el nombre del producto
+        return contacto.nombre_completo.toLowerCase().includes(this.filtroModalCont.trim().toLowerCase());
       });
     }
   }
@@ -169,6 +209,7 @@ export class OperacionesEmpresasComponent {
       }
     });
   }
+  //Obtiene todos los productos registrados a una empresa
   getEmpresasProductosPorId() {
     this._empresasProductosService.consultarOperacionEmpresaProductoPorId(this.idEmpresa).subscribe({
       next: (data: any) => {
@@ -180,6 +221,20 @@ export class OperacionesEmpresasComponent {
       }
     });
   }
+  //Obtiene todos los contactos registrados a una empresa
+  getEmpresasContactosPorId() {
+    this._empresasContactosService.consultarContactosPorId(this.idEmpresa).subscribe({
+      next: (data: any) => {
+        console.log(data);
+        this.productosContactos = data;
+        this.todosLosContactos = data;
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
+  }
+  //Obtiene todos los productos registrados y no registrados de una empresa
   getProductosNoRegistradosPorId() {
     this._empresasProductosService.consultarProductosNoRegistradosPorId(this.idEmpresa).subscribe({
       next: (data: any) => {
@@ -191,14 +246,39 @@ export class OperacionesEmpresasComponent {
       }
     });
   }
+  //Obtiene todos los contactos registrados y no registrados de una empresa
+  getContactosNoRegistradosPorId() {
+    this._empresasContactosService.consultarContactosNoRegistradosPorId(this.idEmpresa).subscribe({
+      next: (data: any) => {
+        console.log(data);
+        this.listNuevosContactos = data;
+        this.listEditandoContactos = data;
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
+  }
+
+
+  //Funciones para marcar o desmarcar en el modal
   marcarProducto(producto: any) {
     producto.posee_producto = true; // Marcar el producto
   }
-  
   desmarcarProducto(producto: any) {
     producto.posee_producto = false; // Desmarcar el producto
   }
-  guardarCambios() {
+  marcarContacto(contacto: any) {
+    contacto.posee_contacto = true; // Marcar el contacto
+  }
+  
+  desmarcarContacto(contacto: any) {
+    contacto.posee_contacto = false; // Desmarcar el contacto
+  }
+
+
+
+  EditarProductos() {
     const productosMarcados = this.listNuevosProductos.filter(producto => producto.posee_producto);
     const productosDesmarcados = this.listNuevosProductos.filter(producto => !producto.posee_producto);
     
@@ -257,9 +337,75 @@ export class OperacionesEmpresasComponent {
       }
     });
   }
+  EditarContactos() {
+    const contactosMarcados = this.listNuevosContactos.filter(contacto => contacto.posee_contacto);
+    const contactosDesmarcados = this.listNuevosContactos.filter(contacto => !contacto.posee_contacto);
+    console.log(contactosDesmarcados);
+    contactosMarcados.forEach(contacto => {
+      if (!contacto.id_empresa) {
+        // Si el producto no tiene un ID de empresa, significa que no estaba registrado anteriormente,
+        // así que debemos insertarlo en la base de datos.
+        this.insertarContacto(contacto);
+      }
+    });
+  
+    contactosDesmarcados.forEach(contacto => {
+      if (contacto.id_empresa) {
+        // Si el producto tenía un ID de empresa (estaba activo anteriormente),
+        // entonces debemos eliminarlo de la base de datos.
+        this.eliminarContacto(contacto);
+      }
+    });
+  }
+
+  // Método para enviar una solicitud para insertar el registro en la base de datos
+  insertarContacto(contacto: any) {
+    // Realizar una solicitud HTTP POST a la API para insertar el registro
+    const contactoAgregado = {
+      id_empresa: this.idEmpresa,
+      id_contacto: contacto.id_contacto,
+      descripcion: this.descripcionEmpresa,
+      creado_por:  this.usuario,
+      fecha_creacion: new Date(),
+      modificado_por: this.usuario,
+      fecha_modificacion: new Date(),
+      estado: 1
+    }
+    this._empresasContactosService.agregarOperacionEmpresaContacto(contactoAgregado).subscribe({
+      next: (data: any) =>{
+        this._toastr.success('Producto agregado exitosamente');
+        // Después de agregar el nuevo producto a la base de datos
+        // Llamar a los métodos para obtener los datos actualizados
+        this.actualizarTabla();
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
+  }
+  eliminarContacto(contacto: any) {
+    // Realizar una solicitud HTTP DELETE a la API para eliminar el registro
+    console.log(contacto)
+    this._empresasContactosService.eliminarOperacionEmpresaContacto(contacto.id_emp_contactos).subscribe({
+      next: (data: any) =>{
+        this._toastr.success('Contacto eliminado exitosamente');
+        // Llamar a los métodos para obtener los datos actualizados
+        this.actualizarTabla();
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
+  }
+
+
+
+
   actualizarTabla() {
     // Llamar a los métodos para obtener los datos actualizados
     this.getEmpresasProductosPorId();
     this.getProductosNoRegistradosPorId();
+    this.getEmpresasContactosPorId();
+    this.getContactosNoRegistradosPorId();
   }
 }
