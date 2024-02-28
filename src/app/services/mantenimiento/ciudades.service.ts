@@ -43,10 +43,10 @@ export class CiudadesService {
     return this.http.post<Ciudades>(`${this.myAppUrl}${this.myApiUrl}/getCiudad`, ciudades, { headers: headers })
    }
 
-   getAllCiudades(): Observable<Ciudades[]> {
+   getAllCiudades(): Observable<any[]> {
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.get<Ciudades[]>(`${this.myAppUrl}${this.myApiUrl}/getAllCiudades`, { headers: headers })
+    return this.http.get<any[]>(`${this.myAppUrl}${this.myApiUrl}/getAllCiudades`, { headers: headers })
    }
    inactivarCiudad(ciudades: Ciudades): Observable<Ciudades>{
     const token = localStorage.getItem('token')
@@ -64,6 +64,11 @@ export class CiudadesService {
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
     return this.http.post<Ciudades>(`${this.myAppUrl}${this.myApiUrl}/updateCiudad`, ciudades, { headers: headers })
   }
+  getCiudades(): Observable<any[]> {
+    const token = localStorage.getItem('token')
+    const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
+    return this.http.get<any[]>(`${this.myAppUrl}${this.myApiUrl}/getCiudades`, { headers: headers })
+   }
 }
 
 

@@ -16,6 +16,7 @@
                         <thead>
                           <tr>
                             <th>Ciudad</th>
+                            <th>Pais</th>
                             <th>Descripción</th>
                             <th>Creado</th>
                             <th>Fecha Creación</th>
@@ -28,6 +29,7 @@
                         <tbody>
                           <tr *ngFor="let ciu of listCiudades; let i = index">
                             <td>{{ ciu.ciudad }}</td>
+                            <td>{{ ciu.pais.pais }}</td>
                             <td>{{ ciu.descripcion }}</td>
                             <td>{{ ciu.creado_por}}</td>
                             <td>{{ ciu.fecha_creacion }}</td>
@@ -41,8 +43,8 @@
                             <td class="text-center">
                               <div class="btn-group">
                                 <div class="form-check form-switch ml-4">
-                                  <input class="form-check-input" (click)="toggleFunction(ciu, i)" [title]="ciu.estado == 1 ? 'Desactivar' : 'Activar'" type="checkbox" 
-                                    role="switch" id="flexSwitchCheckChecked" [checked]="ciu.estado == 1">
+                                  <input class="form-check-input" (click)="toggleFunction(ciu, i)" [title]="ciu.estado === 1 ? 'Desactivar' : 'Activar'" type="checkbox" 
+                                    role="switch" id="flexSwitchCheckChecked" [checked]="ciu.estado === 1">
                                 </div>
                                   <button type="button" (click)="obtenerIdCiudad(ciu, i)" title="Editar Ciudad" data-toggle="modal" data-target="#abrirModalEditarCiudad"data-toggle="modal" data-target="#abrirModalEditarCiudad" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
                                 </div>
@@ -88,7 +90,14 @@
                   <div class="form-group">
                       <label for="nuevoCiudad">Descripción</label>
                       <input type="text" [(ngModel)]="nuevoCiudad.descripcion" name="nuevoCiudad.descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="nuevoCiudad" placeholder="Descripción">
-                  </div>    
+                  </div>   
+                  <div class="form-group">
+                    <label for="inputStatus">Tipo de Empresa</label>
+                    <select id="inputStatus" class="form-control custom-select" (change)="tipoEmpresaSeleccionado($event)">
+                      <option selected disabled>Seleccionar</option>
+                      <option *ngFor="let tipo of listPaises" [value]="tipo.cod_pais">{{ tipo.pais }}</option>
+                    </select>
+                  </div> 
               </form>
           </div>
           <div class="modal-footer justify-content-between">

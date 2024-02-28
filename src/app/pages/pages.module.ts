@@ -7,7 +7,6 @@ import { RolesComponent } from './seguridad/roles/roles.component';
 import { ParametrosComponent } from './seguridad/parametros/parametros.component';
 import { BitacoraComponent } from './administracion/bitacora/bitacora.component';
 import { PaisesComponent } from './mantenimiento/paises/paises.component';
-import { TipoDireccionComponent } from './mantenimiento/tipo-direccion/tipo-direccion.component';
 import { TipoContactoComponent } from './mantenimiento/tipo-contacto/tipo-contacto.component';
 import { TipoRequisitosComponent } from './mantenimiento/tipo-requisitos/tipo-requisitos.component';
 import { CiudadesComponent } from './mantenimiento/ciudades/ciudades.component';
@@ -49,7 +48,6 @@ import { OperacionesEmpresasComponent } from './empresas/operaciones-empresas/op
     ParametrosComponent,
     BitacoraComponent,
     PaisesComponent,
-    TipoDireccionComponent,
     TipoContactoComponent,
     TipoRequisitosComponent,
     CiudadesComponent,

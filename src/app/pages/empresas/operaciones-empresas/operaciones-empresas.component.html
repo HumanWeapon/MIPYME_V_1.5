@@ -15,7 +15,7 @@
         <ul class="nav nav-pills">
           <li class="nav-item"><a class="nav-link active" href="#PRODUCTOS" data-toggle="tab">PRODUCTOS</a></li>
           <li class="nav-item"><a class="nav-link" href="#CONTACTOS" data-toggle="tab">CONTACTOS</a></li>
-          <li class="nav-item"><a class="nav-link" href="#DIRECCIÓN" data-toggle="tab">DIRECCIÓN</a></li>
+          <li class="nav-item"><a class="nav-link" href="#DIRECCIÓN" data-toggle="tab">TELEFONOS Y DIRECCIONES</a></li>
           <li class="nav-item"><a class="nav-link" href="#REQUISITOS" data-toggle="tab">REQUISITOS DE EXPORTACIÓN</a></li>
         </ul>
       </div>
@@ -89,8 +89,7 @@
 
           <!-- Contactos de la empresa -->
           <div class="tab-pane" id="CONTACTOS">
-            <div class="tab-pane active" id="PRODUCTOS">
-            
+            <div class="tab-pane active" id="CONTACTOS">
               <div class="row">
                 <div class="col-12">
                   <div class="mb-2 mt-0">
@@ -155,6 +154,66 @@
 
           <!-- Direcciones  de la empresa-->
           <div class="tab-pane" id="DIRECCIÓN">
+            <div class="tab-pane active" id="DIRECCIÓN">
+              <div class="row">
+                <div class="col-12">
+                  <div class="mb-2 mt-0">
+                    <div class="input-group input-group-sm" >
+                      <div class="ml-auto"> <!-- Agrega la clase ml-auto aquí -->
+                        <button type="button" class="btn btn-primary form-control float-righ" data-toggle="modal" data-target="#agregarContacto">
+                          Editar Contactos
+                        </button>
+                    </div>
+                    </div>
+                  </div>
+  
+                  <div class="card">
+                    <div class="card-header">
+                      <h3 class="card-title">Lista de contactos</h3>
+                      <div class="card-tools">
+                        <div class="row">
+                          <div class="input-group input-group-sm" style="width: 200px;">
+                          
+                            <input type="text" name="table_search" class="form-control float-right" placeholder="Buscar" [(ngModel)]="filtro_contact" (input)="buscarContactos()">
+    
+                            <div class="input-group-append">
+                              <button type="button" class="btn btn-default" (click)="buscarContactos()">
+                                <i class="fas fa-search"></i>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+  
+                      </div>
+                    </div>
+                  
+                    <div class="card-body table-responsive p-0" style="height: 300px;">
+                      <table class="table table-head-fixed text-nowrap">
+                        <thead>
+                          <tr>
+                            <th>Nombre</th>
+                            <th>Tipo de contacto</th>
+                            <th>Descripción</th>
+                            <th>Agregado por</th>
+                            <th>Fecha</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let obj of productosContactos; let i = index">
+                            <td>{{ obj.nombre_completo }}</td>
+                            <td>{{ obj.tipo_contacto }}</td>
+                            <td>{{ obj.descripcion }}</td>
+                            <td>{{ obj.creado_por }}</td>
+                            <td>{{ obj.fecha_creacion | date:'dd/MM/yyyy HH:mm'}}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+  
+                  </div> 
+                </div>
+              </div>
+            </div>
           </div>
           <!-- /Direcciones  de la empresa-->
 

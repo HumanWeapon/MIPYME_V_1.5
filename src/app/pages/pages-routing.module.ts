@@ -13,7 +13,6 @@ import { PerfilComponent } from './perfil/perfil.component';
 import { ProductosComponent } from './mantenimiento/productos/productos.component';
 import { TipoRequisitosComponent } from './mantenimiento/tipo-requisitos/tipo-requisitos.component';
 import { CiudadesComponent } from './mantenimiento/ciudades/ciudades.component';
-import { TipoDireccionComponent } from './mantenimiento/tipo-direccion/tipo-direccion.component';
 import { TipoContactoComponent } from './mantenimiento/tipo-contacto/tipo-contacto.component';
 import { TipoEmpresaComponent } from './mantenimiento/tipo-empresa/tipo-empresa.component';
 import { ContactoComponent } from './contactos/contacto/contacto.component';
@@ -58,11 +57,10 @@ const routes: Routes = [
     //ABC modulo mantenimiento.
     { path: 'mantenimiento', component: MantenimientoComponent, data:{titulo: 'COMPONENTES DE MANTENIMIENTO'}},
     { path: 'paises', component: PaisesComponent, data:{titulo: 'Países'}},
-    { path: 'ciudades', component:CiudadesComponent, data:{titulo: 'Ciudades'}},
+    { path: 'ciudades', component:CiudadesComponent, data:{titulo: 'ciudades'}},
     { path: 'Categoria_productos', component:CategoriaProductosComponent, data:{titulo: 'Categorías de productos'}},
     { path: 'productos', component:ProductosComponent, data:{titulo: 'Productos'}},
     { path: 'tipo_telefono', component:TipoTelefonoComponent, data:{titulo: 'Tipos de teléfono'}},
-    { path: 'tipo_direccion', component:TipoDireccionComponent, data:{titulo: 'Tipos de Direccion'}},
     { path: 'tipo_contacto', component:TipoContactoComponent, data:{titulo: 'Tipos de Contacto'}},
     { path: 'tipo_empresa', component:TipoEmpresaComponent, data:{titulo: 'Tipos de Empresa'}},
     { path: 'tipo_requisito', component:TipoRequisitosComponent, data:{titulo: 'Tipos de requisitos'}},
@@ -79,7 +77,7 @@ const routes: Routes = [
     { path: 'requisitos_exportacion', component:RequisitosExportacionComponent, data:{titulo: 'Requisitos de exportación'}},
     { path: 'empresas_productos', component:EmpresasProductosComponent, data:{titulo: 'Productos de empresas'}},
     { path: 'contactos', component:ContactoComponent, data:{titulo: 'Contacto'}},
-    { path: 'telefonos', component:TelefonosComponent, data:{titulo: 'Contacto de teléfono'}},
+    { path: 'telefonos', component:TelefonosComponent, data:{titulo: 'Teléfonos'}},
     { path: 'contacto_direcciones', component:DireccionesComponent, data:{titulo: 'Contacto de direcciones'}},
 
     //ABC grado C.

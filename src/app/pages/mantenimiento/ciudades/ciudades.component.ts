@@ -10,6 +10,9 @@ import { ErrorService } from 'src/app/services/error.service';
 import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Usuario } from 'src/app/interfaces/seguridad/usuario';
+import { PaisesService } from 'src/app/services/empresa/paises.service';
+import { Paises } from 'src/app/interfaces/empresa/paises';
+import { da } from 'date-fns/locale';
 
 
 
@@ -20,6 +23,8 @@ import { Usuario } from 'src/app/interfaces/seguridad/usuario';
 })
 export class CiudadesComponent implements OnInit{
 
+  listPaises: Paises[] = [];
+  id_pais: number = 0;
   ciudadEditando: Ciudades = {
     id_ciudad: 0, 
     ciudad: '', 
@@ -29,7 +34,7 @@ export class CiudadesComponent implements OnInit{
     modificado_por: '', 
     fecha_modificacion: new Date(),
     estado: 0,
-    
+    id_pais: 0
 
   };
 
@@ -42,12 +47,12 @@ export class CiudadesComponent implements OnInit{
     modificado_por: 'SYSTEM', 
     fecha_modificacion: new Date(),
     estado: 0,
-
+    id_pais: 0
   };
   indice: any;
 
   dtOptions: DataTables.Settings = {};
-  listCiudades: Ciudades[] = [];
+  listCiudades: any[] = [];
   data: any;
 
   // We use this trigger because fetching the list of persons can be quite long,
@@ -62,11 +67,13 @@ export class CiudadesComponent implements OnInit{
     private _bitacoraService: BitacoraService,
     private _errorService: ErrorService,
     private _userService: UsuariosService,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private _paisService: PaisesService
     ) {}
 
   
   ngOnInit(): void {
+    this.getPais();
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 10,
@@ -75,6 +82,7 @@ export class CiudadesComponent implements OnInit{
     };
     this._ciudadService.getAllCiudades()
       .subscribe((res: any) => {
+        console.log(res);
         this.listCiudades = res;
         this.dtTrigger.next(null);
       });
@@ -99,22 +107,48 @@ onInputChange(event: any, field: string) {
 toggleFunction(ciu: any, i: number) {
 
   // Ejecuta una función u otra según el estado
-  if (ciu.estado == 1 ) {
+  if (ciu.estado === 1 ) {
+    console.log(ciu);
+
     this.inactivarCiudad(ciu, i); // Ejecuta la primera función
   } else {
     this.activarCiudad(ciu, i); // Ejecuta la segunda función
   }
 }
 
-  inactivarCiudad(ciudades: Ciudades, i: any){
-    this._ciudadService.inactivarCiudad(ciudades).subscribe(data => {
+  inactivarCiudad(ciudades: any, i: any){
+    const inactivarCiudad : Ciudades = {
+      id_ciudad: ciudades.id_ciudad, 
+      ciudad: ciudades.ciudad, 
+      descripcion: ciudades.descripcion,
+      creado_por: ciudades.creado_por, 
+      fecha_creacion: ciudades.fecha_creacion, 
+      modificado_por: ciudades.modificado_por, 
+      fecha_modificacion: ciudades.fecha_modificacion,
+      estado: ciudades.estado,
+      id_pais: ciudades.id_pais
+    };
+    console.log(inactivarCiudad);
+    this._ciudadService.inactivarCiudad(inactivarCiudad).subscribe(data => {
     this.toastr.success('La Ciudad: '+ ciudades.ciudad + ' ha sido inactivado');
     this.inactivarBitacora(data);
   });
     this.listCiudades[i].estado = 2;
   }
-  activarCiudad(ciudades: Ciudades, i: any){
-    this._ciudadService.activarCiudad(ciudades).subscribe(data => {
+  activarCiudad(ciudades: any, i: any){
+    const activarCiudad : Ciudades = {
+      id_ciudad: ciudades.id_ciudad, 
+      ciudad: ciudades.ciudad, 
+      descripcion: ciudades.descripcion,
+      creado_por: ciudades.creado_por, 
+      fecha_creacion: ciudades.fecha_creacion, 
+      modificado_por: ciudades.modificado_por, 
+      fecha_modificacion: ciudades.fecha_modificacion,
+      estado: ciudades.estado,
+      id_pais: ciudades.id_pais
+    };
+    console.log(activarCiudad);
+    this._ciudadService.activarCiudad(activarCiudad).subscribe(data => {
     this.toastr.success('La ciudad: '+ ciudades.ciudad + ' ha sido activado');
     this.activarBitacora(data);
   });
@@ -167,7 +201,20 @@ getEstadoText(estado: number): string {
 
 /**************************************************************/
 
-
+  getPais(){
+    this._paisService.getAllPaises().subscribe({
+      next: (data) => {
+        this.listPaises = data;
+      },
+      error: (e: HttpErrorResponse)=> {
+        this._errorService.msjError(e);
+      }
+    });
+  }
+  tipoEmpresaSeleccionado(event: Event): void {
+    const idPais = (event.target as HTMLSelectElement).value;
+    this.id_pais = Number(idPais);
+  }
   agregarNuevoCiudad() {
 
     const userLocal = localStorage.getItem('usuario');
@@ -181,7 +228,7 @@ getEstadoText(estado: number): string {
       modificado_por: userLocal, 
       fecha_modificacion: new Date(),
       estado: 1,
-
+      id_pais: this.id_pais
     };
 
     this._ciudadService.addCiudad(this.nuevoCiudad).subscribe({
@@ -193,24 +240,21 @@ getEstadoText(estado: number): string {
       this._errorService.msjError(e);
     }
   });
-  location.reload();
-  this.ngZone.run(() => {        
-  });
  }
 }
 
 
   obtenerIdCiudad(ciudades: Ciudades, i: any){
     this.ciudadEditando = {
-    id_ciudad: ciudades.id_ciudad, 
-    ciudad: ciudades.ciudad, 
-    descripcion: ciudades.descripcion,
-    creado_por: ciudades.creado_por, 
-    fecha_creacion: ciudades.fecha_creacion, 
-    modificado_por: ciudades.modificado_por, 
-    fecha_modificacion: ciudades.fecha_modificacion,
-    estado: ciudades.estado,
-
+      id_ciudad: ciudades.id_ciudad, 
+      ciudad: ciudades.ciudad, 
+      descripcion: ciudades.descripcion,
+      creado_por: ciudades.creado_por, 
+      fecha_creacion: ciudades.fecha_creacion, 
+      modificado_por: ciudades.modificado_por, 
+      fecha_modificacion: ciudades.fecha_modificacion,
+      estado: ciudades.estado,
+      id_pais: ciudades.id_pais
     };
     this.indice = i;
   }

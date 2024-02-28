@@ -7,4 +7,5 @@ export interface Ciudades {
     modificado_por: string,
     fecha_modificacion: Date,
     estado: number,
+    id_pais: number,
 }
