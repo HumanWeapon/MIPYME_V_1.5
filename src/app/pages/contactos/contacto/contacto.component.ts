@@ -203,10 +203,9 @@ getEstadoText(estado: number): string {
 
 /**************************************************************/
 
-  agregarNuevoContacto() {
-    
-    const userLocal = localStorage.getItem('usuario');
-    if (userLocal){
+agregarNuevoContacto() {
+  const userLocal = localStorage.getItem('usuario');
+  if (userLocal){
     this.nuevoContacto = {
       id_contacto: 0,
       id_tipo_contacto: this.nuevoContacto.id_tipo_contacto, 
@@ -222,19 +221,24 @@ getEstadoText(estado: number): string {
       estado: 1,
 
     };
-  
-    this._contactoService.addContacto(this.nuevoContacto).subscribe({
-      next: (data) => {
-        this.insertBitacora(data);
-        this.toastr.success('Contacto Agregado Exitosamente');
-        this.listContacto.push(data);
-      },
-      error: (e: HttpErrorResponse) => {
-        this._errorService.msjError(e);
-      }
-    });
+    if (!this.nuevoContacto.primer_nombre || !this.nuevoContacto.primer_apellido || !this.nuevoContacto.descripcion || !this.nuevoContacto.descripcion) {
+      this.toastr.warning('Campos vacíos');
+    }
+    else{
+      this._contactoService.addContacto(this.nuevoContacto).subscribe({
+        next: (data) => {
+          console.log(data);
+          //this.insertBitacora(data);
+          this.toastr.success('Contacto Agregado Exitosamente');
+          this.listContacto.push(data);
+        },
+        error: (e: HttpErrorResponse) => {
+          this._errorService.msjError(e);
+        }
+      });
+    }
   }
-  }
+}
 
 
   obtenerIdContacto(contac: any, i: any){
