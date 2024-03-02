@@ -22,9 +22,14 @@
                   name="respuesta"
                 />
                 </div>
+                <div class="row mb-3">
+                  <div class="col-6" >
                 <button type="submit" class="btn btn-block btn-primary mt-4 mb-4">
                   {{ mostrarBotonEnviar ? 'Enviar' : 'Validar' }}
                 </button>
+                  <button type="submit" (click)="navigateMetodo()" class="btn btn-secondary btn-block">Volver</button>
+                  </div>
+                </div>
               </form>
             </div>
             <!-- /.card-body -->

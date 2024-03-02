@@ -53,11 +53,10 @@ export class MetodoComponent {
         // Si se encontró el usuario, continuar con el proceso de recuperación de contraseña
         this.usuario = usuario;
         this._usuarioService.usuario = this.usuario;
-        localStorage.setItem("usuario", this.usuario.usuario);
   
         // Aquí puedes acceder a this.selectedOption para determinar cuál opción se seleccionó
         if (this.selectedOption === 'correo') {
-          this.navigateCorreo();
+          this.navigateCorreo(usuario);
           // Navegar al método de restablecer contraseña por correo electrónico
         } else if (this.selectedOption === 'preguntas') {
           // Navegar al método de restablecer contraseña por preguntas de seguridad
@@ -71,9 +70,20 @@ export class MetodoComponent {
     );
   }
   
+  convertirAMayusculas(event: any, field: string) {
+    const inputValue = event.target.value;
+    event.target.value = inputValue.toUpperCase();
+  }
 
+  eliminarEspaciosBlanco(event: any, field: string) {
+    setTimeout(() => {
+      const inputValue = event.target.value;
+      event.target.value = inputValue.toUpperCase();
+      this.usuario.usuario = this.usuario.usuario.toUpperCase();
+      this.usuario.usuario = this.usuario.usuario.replace(/\s/g, '');
+    });
+  }
   
-
   navigateLogin() {
     this.router.navigate(['/login'])
   }
@@ -82,7 +92,7 @@ export class MetodoComponent {
     this.router.navigate(['/preguntas'])
   }
 
-  navigateCorreo() {
-    this.router.navigate(['/password-email'])
+  navigateCorreo(usuario: Usuario) {
+    this.router.navigate(['/password-email'], { state: { usuario } });
   }
 }

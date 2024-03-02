@@ -130,4 +130,8 @@ export class PreguntasUsuarioComponent implements OnInit {
   navigateRecuperar(){
     this.router.navigate(['/recuperar'])
   }
+
+  navigateMetodo() {
+    this.router.navigate(['/metodo'])
+  }
 }

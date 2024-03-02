@@ -71,4 +71,10 @@ export class UsuariosService {
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
     return this.http.get<Usuario[]>(`${this.myAppUrl}${this.myApiUrl}/usuariosAllRoles`, { headers: headers })
   }
+
+  getCorreoElectronicoPorUsuario(usuario: string): Observable<string> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.post<string>(`${this.myAppUrl}${this.myApiUrl}/getCorreoElectronicoPorUsuario`, { usuario }, { headers: headers });
+  }
 }
