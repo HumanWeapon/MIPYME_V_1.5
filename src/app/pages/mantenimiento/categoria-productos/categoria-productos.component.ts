@@ -11,6 +11,9 @@ import { BitacoraService } from 'src/app/services/administracion/bitacora.servic
 import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 import { Usuario } from 'src/app/interfaces/seguridad/usuario';
 import { HttpErrorResponse } from '@angular/common/http';
+import * as XLSX from 'xlsx';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale'; // Importa el idioma español
 
                        
 
@@ -54,6 +57,7 @@ export class CategoriaProductosComponent implements OnInit{
   // We use this trigger because fetching the list of persons can be quite long,
   // thus we ensure the data is fetched before rendering
   dtTrigger: Subject<any> = new Subject<any>();
+  getCate: any;
 
 
   constructor(
@@ -107,6 +111,15 @@ toggleFunction(cate: any, i: number) {
   }
 }
 
+
+getDate(): string {
+  // Obtener la fecha actual
+  const currentDate = new Date();
+  // Formatear la fecha en el formato deseado
+  return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
+}
+
+
   activarCategoria(categoria: Categoria, i: any){
     this._categoriaService.activarCategoria(categoria).subscribe({
       next: (data) => {
@@ -134,49 +147,117 @@ toggleFunction(cate: any, i: number) {
     });
     this.listCate[i].estado = 2;
   }
+
+
+  /*****************************************************************************************************/
+
+  generateExcel() {
+    const headers = ['Categoría', 'Descripción', 'Creado por', 'Fecha de Creación', 'Estado'];
+    const data: any[][] = [];
+  
+    // Recorre los datos de tu lista de categorías y agrégalos a la matriz 'data'
+    this.listCate.forEach((cate, index) => {
+      const row = [
+        cate.categoria,
+        cate.descripcion,
+        cate.creado_por,
+        cate.fecha_creacion,
+        this.getEstadoText(cate.estado) // Función para obtener el texto del estado
+      ];
+      data.push(row);
+    });
+  
+    // Crea un nuevo libro de Excel
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.aoa_to_sheet([headers, ...data]);
+  
+    // Agrega la hoja al libro de Excel
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Categorías');
+  
+    // Guarda el libro de Excel como un archivo binario
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  
+    // Crea un objeto URL para el blob
+    const url = window.URL.createObjectURL(blob);
+  
+    // Crea un enlace para descargar el archivo Excel
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'Reporte de Categorías.xlsx';
+  
+    document.body.appendChild(a);
+    a.click();
+  
+    // Limpia el objeto URL creado
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  }
+  
+ 
   
   /*****************************************************************************************************/
 
-generatePDF() {
-
-  const {jsPDF} = require ("jspdf");
- 
-  const doc = new jsPDF();
-  const data: any[][] =[]
-  const headers = ['Nombre Categoria', 'Descripcion', 'Creador', 'Fecha', 'Modificado por', 'Fecha', 'Estado'];
-
-  // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
-  this.listCate.forEach((cate, index) => {
-    const row = [
-      cate.categoria,
-      cate.descripcion,
-      cate.creado_por,
-      cate.fecha_creacion,
-      cate.modificado_por,
-      cate.fecha_modificacion,
-      this.getEstadoText(cate.estado) // Función para obtener el texto del estado
-    ];
-    data.push(row);
-  });
-
-  doc.autoTable({
-    head: [headers],
-    body: data,
-  });
-
-  doc.output('dataurlnewwindow', null, 'Pymes.pdf');
-}
-
-getEstadoText(estado: number): string {
-  switch (estado) {
-    case 1:
-      return 'ACTIVO';
-    case 2:
-      return 'INACTIVO';
-    default:
-      return 'Desconocido';
+  generatePDF() {
+    const { jsPDF } = require("jspdf");
+    const doc = new jsPDF();
+    const data: any[][] = [];
+    const headers = ['Categoría', 'Descripción', 'Creado por', 'Fecha de Creación', 'Estado'];
+  
+    // Agregar el logo al PDF
+    const logoImg = new Image();
+    logoImg.onload = () => {
+      // Dibujar el logo en el PDF
+      doc.addImage(logoImg, 'PNG', 10, 10, 50, 20); // Ajusta las coordenadas y dimensiones según tu diseño
+  
+      // Agregar los comentarios al PDF centrados horizontalmente
+      const centerX = doc.internal.pageSize.getWidth() / 2;
+      doc.setFontSize(12);
+      doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+      doc.text("Reporte de Categorías", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+      doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+  
+      // Recorre los datos de la lista de categorías y agrégalo a la matriz 'data'
+      this.listCate.forEach((cate, index) => {
+        const row = [
+          cate.categoria,
+          cate.descripcion,
+          cate.creado_por,
+          cate.fecha_creacion,
+          this.getEstadoText(cate.estado) // Función para obtener el texto del estado
+        ];
+        data.push(row);
+      });
+  
+      // Agregar la tabla al PDF
+      doc.autoTable({
+        head: [headers],
+        body: data,
+        startY: 70 // Ajusta la posición inicial de la tabla según tu diseño
+      });
+  
+      // Guardar el PDF
+      doc.save('My Pyme-Reporte Categorías.pdf');
+    };
+    logoImg.src = '/assets/dist/img/pym.png'; // Ruta del logo
   }
-}
+  
+  getCurrentDate(): string {
+    const currentDate = new Date();
+    return currentDate.toLocaleDateString(); // Retorna la fecha actual en formato local
+  }
+  
+  getEstadoText(estado: number): string {
+    switch (estado) {
+      case 1:
+        return 'Activo';
+      case 2:
+        return 'Inactivo';
+      default:
+        return 'Desconocido';
+    }
+  }
+  
 
 
 /**************************************************************/
@@ -284,28 +365,65 @@ getEstadoText(estado: number): string {
    });
  }
 
-  insertBitacora(dataCatProd: Categoria){
+  insertBitacora(dataCatProd: Categoria) {
     const bitacora = {
       fecha: new Date().toISOString().split('T')[0],
       id_usuario: this.getUser.id_usuario,
       id_objeto: 20,
       accion: 'INSERTAR',
-      descripcion: 'SE INSERTA LA CATEGORIA: '+ dataCatProd.categoria
-    }
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
-  }
-  updateBitacora(dataCatProd: Categoria){
-    const bitacora = {
-      fecha: new Date().toISOString().split('T')[0],
-      id_usuario: this.getUser.id_usuario,
-      id_objeto: 20,
-      accion: 'ACTUALIZAR',
-      descripcion: 'SE ACTUALIZA EL PAIS CON EL ID: '+ dataCatProd.categoria
+      descripcion: `SE AGREGÓ UNA NUEVA CATEGORÍA:
+                    Categoría: ${dataCatProd.categoria},
+                    Descripción: ${dataCatProd.descripcion}`
     };
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
+  
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+      // Manejar la respuesta si es necesario
+    });
   }
+  
+
+
+
+  updateBitacora(dataCatProd: Categoria) {
+    // Guardar la categoría actual antes de actualizarla
+    const categoriaAnterior = { ...this.getCate };
+  
+    // Actualizar la categoría
+    this.getCate = dataCatProd;
+  
+    // Comparar los datos anteriores con los nuevos datos
+    const cambios = [];
+    if (categoriaAnterior.categoria !== dataCatProd.categoria) {
+      cambios.push(`Categoría anterior: ${categoriaAnterior.categoria} -> Nueva Categoría: ${dataCatProd.categoria}`);
+    }
+    if (categoriaAnterior.descripcion !== dataCatProd.descripcion) {
+      cambios.push(`Descripción anterior: ${categoriaAnterior.descripcion} -> Nueva Descripción: ${dataCatProd.descripcion}`);
+    }
+    // Puedes agregar más comparaciones para otros campos según tus necesidades
+  
+    // Si se realizaron cambios, registrar en la bitácora
+    if (cambios.length > 0) {
+      // Crear la descripción para la bitácora
+      const descripcion = `Se actualizaron los siguientes campos:\n${cambios.join('\n')}`;
+  
+      // Crear el objeto bitácora
+      const bitacora = {
+        fecha: new Date(),
+        id_usuario: this.getUser.id_usuario,
+        id_objeto: 20, // Ajusta el ID del objeto según corresponda en tu sistema
+        accion: 'ACTUALIZAR',
+        descripcion: descripcion
+      };
+  
+      // Insertar la bitácora
+      this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+        // Manejar la respuesta si es necesario
+      });
+    }
+  }
+  
+  
+
   activarBitacora(dataCatProd: Categoria){
     const bitacora = {
       fecha: new Date().toISOString().split('T')[0],
@@ -317,6 +435,7 @@ getEstadoText(estado: number): string {
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
   }
+
   inactivarBitacora(dataCatProd: Categoria){
     const bitacora = {
       fecha: new Date().toISOString().split('T')[0],
@@ -328,6 +447,7 @@ getEstadoText(estado: number): string {
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
   }
+
   deleteBitacora(dataCatProd: Categoria){
     const bitacora = {
       fecha: new Date().toISOString().split('T')[0],

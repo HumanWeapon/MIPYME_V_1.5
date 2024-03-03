@@ -1,197 +1,271 @@
     <!-- Main content -->
     <section class="content">
-        <div class="container-fluid">
-          <div class="row">
-            <div class="col-12">
-              <div class="card">
-                <div class="card-header">
-                  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarContactoT">
-                    <i class="fas fa-plus"></i> Nuevo</button>
-                    <button type="button" class="btn btn-primary custom-print-button btn-danger" title="Generar el Reporte" data-toggle="modal" data-target="#PDFTelefonos">
-                      <i class="fas fa-file-pdf mr-2"></i>PDF</button>
-                </div>
-                <!-- /.card-header -->
-                <div class="card-body">
-                    <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover">
-                        <thead>
-                          <tr>
-                            <th>Teléfono</th>
-                            <th>Extención</th>
-                            <th>Descripción</th>
-                            <th>Creado</th>
-                            <th>Fecha Creación</th>
-                            <th>Modificado</th>
-                            <th>Fecha Modificación</th>
-                            <th>Estado</th>
-                            <th>Aciones</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr *ngFor="let conT of listContactoT; let i = index">
-                            <td>{{ conT.telefono }}</td>
-                            <td>{{ conT.extencion }}</td>
-                            <td>{{ conT.descripcion }}</td>
-                            <td>{{ conT.creado_por}}</td>
-                            <td>{{ conT.fecha_creacion }}</td>
-                            <td>{{ conT.modificado_por}}</td>
-                            <td>{{ conT.fecha_modificacion}}</td>
-                            <td>
-                              <ng-container *ngIf="conT.estado === 1">ACTIVADO</ng-container>
-                              <ng-container *ngIf="conT.estado === 2">INACTIVO</ng-container>
-                              
-                            </td>
-                            <td class="text-center">
-                              <div class="btn-group">
-                                  <button type="button" (click)="obtenerIdContactoT(conT, i)" title="Editar Telefono" data-toggle="modal" data-target="#abrirModalEditarContactoT"data-toggle="modal" data-target="#abrirModalEditarContactoT" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
-                                  <button type="button" (click)="toggleFunction(conT, i)" class="btna " [title]="conT.estado === 1 ? 'Desactivar Telefono' : 'Activar Telefono'"><i class="fas" [ngClass]="conT.estado === 1 ? 'fa-solid fa-lock' : 'fa-solid fa-lock-open'"></i> </button>
-                                </div>
-                            </td>
-                          </tr>
-                        </tbody>
-                    </table>
-    
-                </div>
-                <!-- /.card-body -->
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarContactoT">
+                  <i class="fas fa-plus"></i> Nuevo</button>
+                  <button type="button" class="btn btn-primary custom-print-button btn-danger" title="Generar el Reporte" data-toggle="modal" data-target="#PDFTelefono">
+                    <i class="fas fa-file-pdf mr-2"></i>PDF</button>
+                    <button type="button" class="btn btn-primary custom-print-button btn-success" title="Generar el Reporte en Excel" data-toggle="modal" data-target="#ExcelTelefono">
+                      <i class="fas fa-file-excel mr-2"></i>Excel
+                  </button>
               </div>
-              <!-- /.card -->
+              <!-- /.card-header -->
+              <div class="card-body">
+                  <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover">
+                      <thead>
+                        <tr>
+                          <th>Teléfono</th>
+                          <th>Extención</th>
+                          <th>Descripción</th>
+                          <th>Creado</th>
+                          <th>Fecha Creación</th>
+                          <th>Modificado</th>
+                          <th>Fecha Modificación</th>
+                          <th>Estado</th>
+                          <th>Aciones</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let conT of listContactoT; let i = index">
+                          <td>{{ conT.telefono }}</td>
+                          <td>{{ conT.extencion }}</td>
+                          <td>{{ conT.descripcion }}</td>
+                          <td>{{ conT.creado_por}}</td>
+                          <td>{{ conT.fecha_creacion }}</td>
+                          <td>{{ conT.modificado_por}}</td>
+                          <td>{{ conT.fecha_modificacion}}</td>
+                          <td>
+                            <ng-container *ngIf="conT.estado === 1">ACTIVADO</ng-container>
+                            <ng-container *ngIf="conT.estado === 2">INACTIVO</ng-container>
+                            
+                          </td>
+                          <td class="text-center">
+                            <div class="btn-group">
+                                <button type="button" (click)="obtenerIdContactoT(conT, i)" title="Editar Telefono" data-toggle="modal" data-target="#abrirModalEditarContactoT"data-toggle="modal" data-target="#abrirModalEditarContactoT" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
+                                <div class="form-check form-switch ml-4">
+                                  <input class="form-check-input" (click)="toggleFunction(conT, i)" [title]="conT.estado == 1 ? 'Desactivar' : 'Activar'" type="checkbox" 
+                                    role="switch" id="flexSwitchCheckChecked" [checked]="conT.estado == 1">
+                                </div>
+                              </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                  </table>
+  
+              </div>
+              <!-- /.card-body -->
             </div>
-            <!-- /.col -->
+            <!-- /.card -->
           </div>
-          <!-- /.row -->
+          <!-- /.col -->
         </div>
-        <!-- /.container-fluid -->
-    </section>
-      <!-- /.content -->
-  
-  
-  
-  
-  
-   
-  <!-- Agregar Telefono Form -->
-  <div class="modal fade" id="agregarContactoT">
-  <div class="modal-dialog">
-      <div class="modal-content">
-          <div class="modal-header">
-              <h4 class="modal-title">Agregar Contacto Telefono</h4>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-              </button>
-          </div>
-          <div class="modal-body">
-              <form (submit)="agregarNuevoContactoT()">
-                  <div class="form-group">
-                      <label for="nuevoContactoT">Teléfono:</label>
-                      <input type="text" [(ngModel)]="nuevoContactoT.telefono" name="nuevoContactoT.telefono" class="form-control" id="nuevoContactoT" placeholder="Teléfono">
-                  </div>
-                  <div class="form-group">
-                    <label for="nuevoContactoT">Extención</label>
-                    <input type="text" [(ngModel)]="nuevoContactoT.extencion" name="nuevoContactoT.extencion"  class="form-control" id="nuevoContactoT" placeholder="Extención">
-                </div>  
-                  <div class="form-group">
-                      <label for="nuevoContactoT">Descripción</label>
-                      <input type="text" [(ngModel)]="nuevoContactoT.descripcion" name="nuevoContactoT.descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="nuevoContactoT" placeholder="Descripción">
-                  </div>    
-              </form>
-          </div>
-          <div class="modal-footer justify-content-between">
-              <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-              <button type="button" (click)="agregarNuevoContactoT()" class="btn btn-success" data-dismiss="modal">Guardar</button>
-          </div>
+        <!-- /.row -->
       </div>
-  </div>
-  </div>
-  <!-- /Agregar contacto Form -->
-  
-  
-  <!-- Actualizar Telefono Form -->
-  <div class="modal fade" id="abrirModalEditarContactoT">
-  <div class="modal-dialog">
-      <div class="modal-content">
-          <div class="modal-header">
-              <h4 class="modal-title">Editar Contacto Telefono</h4>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-              </button>
-          </div>
-          <div class="modal-body">
-              <form>
+      <!-- /.container-fluid -->
+  </section>
+    <!-- /.content -->
+
+
+
+
+
+ 
+<!-- Agregar Telefono Form -->
+<div class="modal fade" id="agregarContactoT">
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">Agregar Contacto Telefono</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form (submit)="agregarNuevoContactoT()">
                 <div class="form-group">
-                    <label for="contactoTEditando">Teléfono</label>
-                    <input type="text" [(ngModel)]="contactoTEditando.telefono" name="contactoTEditando.telefono" class="form-control" id="editarTelefono" placeholder="Teléfono" >
+                    <label for="nuevoContactoT">Teléfono:</label>
+                    <input type="text" [(ngModel)]="nuevoContactoT.telefono" name="nuevoContactoT.telefono" class="form-control" id="nuevoContactoT" placeholder="Teléfono">
                 </div>
                 <div class="form-group">
-                    <label for="contactoTEditando">Extención</label>
-                    <input type="text" [(ngModel)]="contactoTEditando.extencion" name="contactoTEditando.extencion" class="form-control" id="editarExtencion" placeholder="Extención" >
-                </div>
+                  <label for="nuevoContactoT">Extención</label>
+                  <input type="text" [(ngModel)]="nuevoContactoT.extencion" name="nuevoContactoT.extencion"  class="form-control" id="nuevoContactoT" placeholder="Extención">
+              </div>  
                 <div class="form-group">
-                    <label for="contactoTEditando">Descripción:</label>
-                    <input type="text" [(ngModel)]="contactoTEditando.descripcion" name="contactoTEditando.descripcion"  class="form-control" id="editarDescripcion" placeholder="Descripción" (input)="onInputChange($event, 'descripcion')" >
-                </div>
-          
-               
-              </form>
-          </div>
-          <div class="modal-footer justify-content-between">
-              <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-              <button type="button" (click)="editarContactoTelefono()" class="btn btn-success" data-dismiss="modal">Guardar</button>
-          </div>
-      </div>
-  </div>
-  </div>
-  <!-- /Actualizar contacto Form -->
+                    <label for="nuevoContactoT">Descripción</label>
+                    <input type="text" [(ngModel)]="nuevoContactoT.descripcion" name="nuevoContactoT.descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="nuevoContactoT" placeholder="Descripción">
+                </div>    
+            </form>
+        </div>
+        <div class="modal-footer justify-content-between">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+            <button type="button" (click)="agregarNuevoContactoT()" class="btn btn-success" data-dismiss="modal">Guardar</button>
+        </div>
+    </div>
+</div>
+</div>
+<!-- /Agregar contacto Form -->
+
+
+<!-- Actualizar Telefono Form -->
+<div class="modal fade" id="abrirModalEditarContactoT">
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">Editar Contacto Telefono</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form>
+              <div class="form-group">
+                  <label for="contactoTEditando">Teléfono</label>
+                  <input type="text" [(ngModel)]="contactoTEditando.telefono" name="contactoTEditando.telefono" class="form-control" id="editarTelefono" placeholder="Teléfono" >
+              </div>
+              <div class="form-group">
+                  <label for="contactoTEditando">Extención</label>
+                  <input type="text" [(ngModel)]="contactoTEditando.extencion" name="contactoTEditando.extencion" class="form-control" id="editarExtencion" placeholder="Extención" >
+              </div>
+              <div class="form-group">
+                  <label for="contactoTEditando">Descripción:</label>
+                  <input type="text" [(ngModel)]="contactoTEditando.descripcion" name="contactoTEditando.descripcion"  class="form-control" id="editarDescripcion" placeholder="Descripción" (input)="onInputChange($event, 'descripcion')" >
+              </div>
+        
+             
+            </form>
+        </div>
+        <div class="modal-footer justify-content-between">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+            <button type="button" (click)="editarContactoTelefono()" class="btn btn-success" data-dismiss="modal">Guardar</button>
+        </div>
+    </div>
+</div>
+</div>
+<!-- /Actualizar contacto Form -->
 
 <!-- Form Ver PDF-->
-<div class="modal fade" id="PDFTelefonos">
+<div class="modal fade" id="PDFTelefono">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
 
-      <!-- Cabecera del modal -->
-      <div class="modal-header">
-        <h4 class="modal-title" >Reporte Telefonos</h4>
+      <div class="modal-header" style="display: flex; align-items: center;">
+        <div style="flex: 1; text-align: left; margin-right: 20px;">
+            <h1>Utilidad Mi Pyme</h1>
+            <h4>Reporte de Teléfonos</h4> 
+            <!-- Puedes agregar más detalles del reporte aquí si es necesario -->
+            <p>Fecha: {{ getDate() }}</p>
+        </div>
+        <div style="flex: 0;">
+            <img src="\assets\dist\img\pym.png" alt="Logo de Mi Pyme" style="width: 200px; height: auto;">
+        </div>
         <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
-
-      <!-- Contenido del modal -->
-      <div class="modal-body">
-        <!-- Aquí puedes colocar tu DataTable o cualquier otro contenido que desees mostrar -->
-        <table class="table table-striped">
-          <thead class="thead-dark">
-            <tr>
-              <th>Teléfono</th>
-              <th>Extención</th>
-              <th>Descripcion</th>
-              <th>Creador</th>
-              <th>Fecha</th>
-              <th>Modificado por</th>
-              <th>Fecha</th>
-              <th>Estado</th>
-            </tr>
-          </thead>
-          <tbody>
-              <tr *ngFor="let conT of listContactoT; let i = index">
-                <td>{{ conT.telefono }}</td>
-                <td>{{ conT.extencion }}</td>
-                <td>{{ conT.descripcion }}</td>
-                <td>{{ conT.creado_por}}</td>
-                <td>{{ conT.fecha_creacion }}</td>
-                <td>{{ conT.modificado_por}}</td>
-                <td>{{ conT.fecha_modificacion}}</td>
-              <td>{{ getEstadoText(conT.estado) }}</td>
-            </tr>
-          </tbody>
-        </table>
-
-      <!-- Pie del modal -->
+      
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary customn-print-button btn-danger" (click)="generatePDF()">
           <i class="fas fa-file-pdf"></i>  Generar PDF</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
       </div>
-    </div>
+
+    <!-- Contenido del modal -->
+    <div class="modal-body">
+      <!-- Aquí puedes colocar tu DataTable o cualquier otro contenido que desees mostrar -->
+      <table class="table table-striped">
+        <thead class="thead-dark">
+          <tr>
+            <th>Teléfono</th>
+            <th>Extención</th>
+            <th>Descripcion</th>
+            <th>Creador</th>
+            <th>Fecha Creación</th>
+           
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let conT of listContactoT; let i = index">
+              <td>{{ conT.telefono }}</td>
+              <td>{{ conT.extencion }}</td>
+              <td>{{ conT.descripcion }}</td>
+              <td>{{ conT.creado_por}}</td>
+              <td>{{ conT.fecha_creacion }}</td>
+              
+            <td>{{ getEstadoText(conT.estado) }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+
   </div>
 </div>
 </div>
+</div>
+
+
+
+<!-- Form Ver Excel-->
+<div class="modal fade" id="ExcelTelefono">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+
+      <!-- Cabecera del modal -->
+      <div class="modal-header" style="display: flex; align-items: center;">
+        <div style="flex: 1; text-align: left; margin-right: 20px;">
+            <h1>Utilidad Mi Pyme</h1>
+            <h4>Reporte de Teléfonos</h4> 
+            <!-- Puedes agregar más detalles del reporte aquí si es necesario -->
+            <p>Fecha: {{ getDate() }}</p>
+        </div>
+        <div style="flex: 0;">
+            <img src="\assets\dist\img\pym.png" alt="Logo de Mi Pyme" style="width: 200px; height: auto;">
+        </div>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary customn-print-button btn-success" (click)="generateExcel()">
+        <i class="fas fa-file-excel"></i>  Generar Excel</button>
+      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+    </div>
+
+        <!-- Contenido del modal -->
+        <div class="modal-body">
+          <!-- Aquí puedes colocar tu DataTable o cualquier otro contenido que desees mostrar -->
+          <table class="table table-striped">
+            <thead class="thead-dark">
+              <tr>
+                <th>Teléfono</th>
+                <th>Extención</th>
+                <th>Descripcion</th>
+                <th>Creador</th>
+                <th>Fecha Creación</th>
+               
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let conT of listContactoT; let i = index">
+                  <td>{{ conT.telefono }}</td>
+                  <td>{{ conT.extencion }}</td>
+                  <td>{{ conT.descripcion }}</td>
+                  <td>{{ conT.creado_por}}</td>
+                  <td>{{ conT.fecha_creacion }}</td>
+                  
+                <td>{{ getEstadoText(conT.estado) }}</td>
+              </tr>
+            </tbody>
+          </table>
+  
+    
+      </div>
+    </div>
+  </div>
+  </div>
+  
 
 
 
@@ -203,10 +277,35 @@
 
 
 
-
-
-
-    <!-- 
-                                                 FRANKLIN ALEXANDER MURILLO CRUZ
-                                                    CUENTA: 20151021932
+  <!-- 
+                                               FRANKLIN ALEXANDER MURILLO CRUZ
+                                                  CUENTA: 20151021932
 -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

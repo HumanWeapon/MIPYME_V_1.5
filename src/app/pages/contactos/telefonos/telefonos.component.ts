@@ -10,6 +10,9 @@ import { ErrorService } from 'src/app/services/error.service';
 import { BitacoraService } from 'src/app/services/administracion/bitacora.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Usuario } from 'src/app/interfaces/seguridad/usuario';
+import * as XLSX from 'xlsx';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale'; // Importa el idioma español
 
 
 
@@ -19,6 +22,17 @@ import { Usuario } from 'src/app/interfaces/seguridad/usuario';
   styleUrls: ['./telefonos.component.css']
 })
 export class TelefonosComponent implements OnInit{
+
+  getTelefono: any;
+
+
+  getDate(): string {
+    // Obtener la fecha actual
+    const currentDate = new Date();
+    // Formatear la fecha en el formato deseado
+    return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
+}
+
 
   contactoTEditando: ContactoTelefono = {
     id_telefono: 0, 
@@ -82,6 +96,8 @@ export class TelefonosComponent implements OnInit{
         this.listContactoT = res;
         this.dtTrigger.next(null);
       });
+
+      this.getUsuario();
   }
 
   ngOnDestroy(): void {
@@ -103,37 +119,98 @@ onInputChange(event: any, field: string) {
 toggleFunction(conT: any, i: number) {
 
   // Ejecuta una función u otra según el estado
-  if (conT.estado === 1 ) {
+  if (conT.estado == 1 ) {
     this.inactivarContactoTelefono(conT, i); // Ejecuta la primera función
   } else {
     this.activarContactoTelefono(conT, i); // Ejecuta la segunda función
   }
 }
 
-  inactivarContactoTelefono(contactoTelefono: ContactoTelefono, i: any){
-    this._contactoTService.inactivarContactoTelefono(contactoTelefono).subscribe(data => 
-    this.toastr.success('El telefono: '+ contactoTelefono.telefono + ' ha sido inactivado')
-    );
-    this.listContactoT[i].estado = 2;
-  }
-  activarContactoTelefono(contactoTelefono: ContactoTelefono, i: any){
-    this._contactoTService.activarContactoTelefono(contactoTelefono).subscribe(data => 
-      this.toastr.success('La telefono: '+ contactoTelefono.telefono  + ' ha sido activado')
-      );
-    this.listContactoT[i].estado = 1;
-  }
+inactivarContactoTelefono(contactoTelefono: ContactoTelefono, i: any){
+  this._contactoTService.inactivarContactoTelefono(contactoTelefono).subscribe(data => {
+    this.inactivarBitacora(data);
+  this.toastr.success('El telefono: '+ contactoTelefono.telefono + ' ha sido inactivado')
+});
+  this.listContactoT[i].estado = 2;
+}
+
+activarContactoTelefono(contactoTelefono: ContactoTelefono, i: any){
+  this._contactoTService.activarContactoTelefono(contactoTelefono).subscribe(data => {
+    this.activarBitacora(data);
+    this.toastr.success('La telefono: '+ contactoTelefono.telefono  + ' ha sido activado')
+  });
+  this.listContactoT[i].estado = 1;
+}
+
+
+/*****************************************************************************************************/
+
+generateExcel() {
+  const headers = ['Telefono', 'Extensión', 'Descripción', 'Creador', 'Fecha de Creación', 'Estado'];
+  const data: any[][] = [];
+
+  // Recorre los datos y agrégalos a la matriz 'data'
+  this.listContactoT.forEach((conT, index) => {
+      const row = [
+          conT.telefono,
+          conT.extencion,
+          conT.descripcion,
+          conT.creado_por,
+          conT.fecha_creacion,
+          this.getEstadoText(conT.estado)
+      ];
+      data.push(row);
+  });
+
+  // Crea un nuevo libro de Excel
+  const workbook = XLSX.utils.book_new();
+  const worksheet = XLSX.utils.aoa_to_sheet([headers, ...data]);
+
+  // Agrega la hoja al libro de Excel
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Contactos');
+
+  // Guarda el libro de Excel como un archivo binario
+  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+  const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+  // Crea un objeto URL para el blob
+  const url = window.URL.createObjectURL(blob);
+
+  // Crea un enlace para descargar el archivo Excel
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'My Pyme-Reporte Telefonos.xlsx';
+
+  document.body.appendChild(a);
+  a.click();
+
+  // Limpia el objeto URL creado
+  window.URL.revokeObjectURL(url);
+  document.body.removeChild(a);
+}
 
 /*****************************************************************************************************/
 
 generatePDF() {
+const { jsPDF } = require("jspdf");
+const doc = new jsPDF();
+const data: any[][] = [];
+const headers = ['Telefono', 'Extensión', 'Descripción', 'Creador', 'Fecha de Creación', 'Estado'];
 
-  const {jsPDF} = require ("jspdf");
- 
-  const doc = new jsPDF();
-  const data: any[][] =[]
-  const headers = ['Telefono','Extencion', 'Descripcion', 'Creador', 'Fecha', 'Modificado por', 'Fecha', 'Estado'];
+// Agregar el logo al PDF
+const logoImg = new Image();
+logoImg.onload = () => {
+  // Dibujar el logo en el PDF
+  doc.addImage(logoImg, 'PNG', 10, 10, 50, 20); // Ajusta las coordenadas y dimensiones según tu diseño
 
-  // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
+  // Agregar los comentarios al PDF centrados horizontalmente
+  const centerX = doc.internal.pageSize.getWidth() / 2;
+  doc.setFontSize(12);
+  doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+  doc.text("Reporte de Telefonos", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+  doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+
+  // Recorre los datos y agrégalos a la matriz 'data'
   this.listContactoT.forEach((conT, index) => {
     const row = [
       conT.telefono,
@@ -141,34 +218,46 @@ generatePDF() {
       conT.descripcion,
       conT.creado_por,
       conT.fecha_creacion,
-      conT.modificado_por,
-      conT.fecha_modificacion,
-      this.getEstadoText(conT.estado) // Función para obtener el texto del estado
+      this.getEstadoText(conT.estado)
     ];
     data.push(row);
   });
 
+  // Agregar la tabla al PDF
   doc.autoTable({
     head: [headers],
     body: data,
+    startY: 70 // Ajusta la posición inicial de la tabla según tu diseño
   });
 
-  doc.output('dataurlnewwindow', null, 'Pymes.pdf');
+  // Guardar el PDF
+  doc.save('My Pyme-Reporte Contactos.pdf');
+};
+logoImg.src = '/assets/dist/img/pym.png'; // Ruta del logo
+}
+
+getCurrentDate(): string {
+const currentDate = new Date();
+return currentDate.toLocaleDateString(); // Retorna la fecha actual en formato local
 }
 
 getEstadoText(estado: number): string {
-  switch (estado) {
-    case 1:
-      return 'ACTIVO';
-    case 2:
-      return 'INACTIVO';
-    default:
-      return 'Desconocido';
-  }
+switch (estado) {
+  case 1:
+    return 'ACTIVO';
+  case 2:
+    return 'INACTIVO';
+  case 3:
+    return 'BLOQUEADO';
+  case 4:
+    return 'VENCIDO';
+  default:
+    return 'Desconocido';
+}
 }
 
-
 /**************************************************************/
+
 
   agregarNuevoContactoT() {
 
@@ -212,7 +301,7 @@ getEstadoText(estado: number): string {
       creado_por: contactoT.creado_por, 
       fecha_creacion: contactoT.fecha_creacion, 
       modificado_por: contactoT.modificado_por, 
-      fecha_modificacion: contactoT.fecha_modificacion,
+      fecha_modificacion: contactoT.fecha_modificacion, 
       estado: contactoT.estado,
     
 
@@ -296,51 +385,90 @@ insertBitacora(dataTelefonos: ContactoTelefono){
     id_usuario: this.getUser.id_usuario,
     id_objeto: 7,
     accion: 'INSERTAR',
-    descripcion: 'SE INSERTA EL TELEFONO CON EL ID: '+ dataTelefonos.id_telefono
+    descripcion: `SE INSERTA EL TELEFONO:
+                  Teléfono: ${dataTelefonos.telefono},
+                  Extensión: ${dataTelefonos.extencion},
+                  Descripción: ${dataTelefonos.descripcion}`
   }
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-  })
+    // Manejar la respuesta si es necesario
+  });
 }
-updateBitacora(dataTelefonos: ContactoTelefono){
-  const bitacora = {
-    fecha: new Date(),
-    id_usuario: this.getUser.usuario,
-    id_objeto: 7,
-    accion: 'ACTUALIZAR',
-    descripcion: 'SE ACTUALIZA EL TELEFONO CON EL ID: '+ dataTelefonos.id_telefono
-  };
-  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-  })
+
+
+updateBitacora(dataTelefono: ContactoTelefono) {
+  // Guardar el teléfono actual antes de actualizarlo
+  const telefonoAnterior = { ...this.getTelefono };
+
+  // Actualizar el teléfono
+  this.getTelefono = dataTelefono;
+
+  // Comparar los datos anteriores con los nuevos datos
+  const cambios = [];
+  if (telefonoAnterior.telefono !== dataTelefono.telefono) {
+    cambios.push(`Teléfono anterior: ${telefonoAnterior.telefono} -> Nuevo Teléfono: ${dataTelefono.telefono}`);
+  }
+  if (telefonoAnterior.extencion !== dataTelefono.extencion) {
+    cambios.push(`Extensión anterior: ${telefonoAnterior.extencion} -> Nueva extensión: ${dataTelefono.extencion}`);
+  }
+  if (telefonoAnterior.descripcion !== dataTelefono.descripcion) {
+    cambios.push(`Descripción anterior: ${telefonoAnterior.descripcion} -> Nueva descripción: ${dataTelefono.descripcion}`);
+  }
+  // Puedes agregar más comparaciones para otros campos según tus necesidades
+
+  // Si se realizaron cambios, registrar en la bitácora
+  if (cambios.length > 0) {
+    // Crear la descripción para la bitácora
+    const descripcion = `Se actualizaron los siguientes campos:\n${cambios.join('\n')}`;
+
+    // Crear el objeto bitácora
+    const bitacora = {
+      fecha: new Date(),
+      id_usuario: this.getTelefono.id_usuario,
+      id_objeto: 7,
+      accion: 'ACTUALIZAR',
+      descripcion: descripcion
+    };
+
+    // Insertar la bitácora
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+      // Manejar la respuesta si es necesario
+    });
+  }
 }
+
+
 activarBitacora(dataTelefonos: ContactoTelefono){
   const bitacora = {
     fecha: new Date(),
-    id_usuario: this.getUser.usuario,
+    id_usuario: this.getUser.id_usuario,
     id_objeto: 7,
     accion: 'ACTIVAR',
-    descripcion: 'SE ACTIVA EL TELEFONO CON EL ID: '+ dataTelefonos.id_telefono
+    descripcion: 'SE ACTIVA EL NUMERO DE TELEFONO: '+ dataTelefonos.telefono
   }
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
   })
 }
+
 inactivarBitacora(dataTelefonos: ContactoTelefono){
   const bitacora = {
     fecha: new Date(),
-    id_usuario: this.getUser.usuario,
+    id_usuario: this.getUser.id_usuario,
     id_objeto: 7,
     accion: 'INACTIVAR',
-    descripcion: 'SE INACTIVA EL TELEFONO CON EL ID: '+ dataTelefonos.id_telefono
+    descripcion: 'SE INACTIVA EL NUMERO DE TELEFONO: '+ dataTelefonos.telefono
   }
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
   })
 }
+
 deleteBitacora(dataTelefonos: ContactoTelefono){
   const bitacora = {
     fecha: new Date(),
-    id_usuario: this.getUser.usuario,
+    id_usuario: this.getUser.id_usuario,
     id_objeto: 7,
     accion: 'ELIMINAR',
-    descripcion: 'SE ELIMINA EL TELEFONO CON EL ID: '+ dataTelefonos.id_telefono
+    descripcion: 'SE ELIMINA EL NUMERO DE TELEFONO: '+ dataTelefonos.telefono
   }
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
   })

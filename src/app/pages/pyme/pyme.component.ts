@@ -13,6 +13,9 @@ import { Usuario } from 'src/app/interfaces/seguridad/usuario';
 import { PymeService } from 'src/app/services/pyme/pyme.service';
 import { Categoria } from 'src/app/interfaces/mantenimiento/categoria';
 import { CategoriaService } from 'src/app/services/mantenimiento/categoria.service';
+import * as XLSX from 'xlsx';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale'; // Importa el idioma español
 
 @Component({
   selector: 'app-pyme',
@@ -20,6 +23,19 @@ import { CategoriaService } from 'src/app/services/mantenimiento/categoria.servi
   styleUrls: ['./pyme.component.css']
 })
 export class PymeComponent {
+
+  getEstadoText: any;
+  getPyme: any;
+
+  getDate(): string {
+    // Obtener la fecha actual
+    const currentDate = new Date();
+    // Formatear la fecha en el formato deseado
+    return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
+}
+
+
+
   editPyme: Pyme = {
     id_pyme: 0,
     id_tipo_empresa: 1,
@@ -58,7 +74,6 @@ export class PymeComponent {
   // thus we ensure the data is fetched before rendering
   dtTrigger: Subject<any> = new Subject<any>();
 
-
   constructor(
     private categoriasService: CategoriaService,
     private toastr: ToastrService,
@@ -68,7 +83,6 @@ export class PymeComponent {
     private _userService: UsuariosService,
     private _pymesService: PymeService,
   ) {}
-
 
   ngOnInit(): void {
   this.getUsuario()
@@ -122,39 +136,16 @@ toggleFunction(pyme: any, i: number) {
   });
     this.listPymes[i].estado = 2;
   }
+
+
 /*****************************************************************************************************/
 
-generatePDF() {
-  const { jsPDF } = require("jspdf");
-  const doc = new jsPDF();
+generateExcel() {
+  const headers = ['Nombre Pyme', 'Descripción', 'Categoría', 'Creador', 'Fecha Creación', 'Modificado por', 'Fecha Modificación', 'Estado'];
   const data: any[][] = [];
-  const headers = ['Nombre Pyme', 'Descripcion', 'Categoria', 'Creador', 'Fecha', 'Modificado por', 'Fecha', 'Estado'];
-  const usuario = localStorage.getItem('usuario');
 
-  // Obtiene la fecha actual y la formatea
-  const fechaActual = new Date();
-  const fechaFormateada = fechaActual.toLocaleDateString();
-
-  // Título del PDF centrado
-  doc.setFontSize(16);
-  doc.text('Reporte de Pymes', 105, 10, null, null, 'center');
-
-  // Agrega una línea horizontal para separar el título y la descripción
-  doc.line(10, 20, 200, 20);
-
-  // Descripción
-  doc.setFontSize(12);
-  doc.text(`Reporte donde se muestran las Pymes registradas en la plataforma MYPIME`, 10, 30);
-
-  // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
+  // Recorre los datos de tus Pymes y agrégalos a la matriz 'data'
   this.listPymes.forEach((pyme, index) => {
-    let estadoResult: any = '';
-    if (pyme.estado === 1) {
-      estadoResult = 'ACTIVO';
-    } else {
-      estadoResult = 'INACTIVO';
-    }
-
     const row = [
       pyme.nombre_pyme,
       pyme.descripcion,
@@ -163,36 +154,101 @@ generatePDF() {
       pyme.fecha_creacion,
       pyme.modificado_por,
       pyme.fecha_modificacion,
-      estadoResult
+      this.getEstadoText(pyme.estado) // Función para obtener el texto del estado
     ];
     data.push(row);
   });
 
-  // Genera la tabla
-  const table = doc.autoTable({
-    head: [headers],
-    body: data,
-    startY: 40
-  });
+  // Crea un nuevo libro de Excel
+  const workbook = XLSX.utils.book_new();
+  const worksheet = XLSX.utils.aoa_to_sheet([headers, ...data]);
 
-  // Calcula la posición de la línea horizontal después de la tabla
-  const tableBottomLine = table.lastAutoTable.finalY + 10;
+  // Agrega la hoja al libro de Excel
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Pymes');
 
-  // Agrega una línea horizontal para separar la tabla y la información del usuario
-  doc.line(10, tableBottomLine, 200, tableBottomLine);
+  // Guarda el libro de Excel como un archivo binario
+  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+  const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
 
-  // Fecha en la parte inferior izquierda
-  doc.setFontSize(12);
-  doc.text(`Fecha de Reporte: ${fechaFormateada}`, 10, tableBottomLine + 10);
+  // Crea un objeto URL para el blob
+  const url = window.URL.createObjectURL(blob);
 
-  // Usuario en la parte inferior izquierda, debajo de la fecha
-  doc.setFontSize(12);
-  doc.text(`Reporte Generado por el Usuario: ${usuario}`, 10, tableBottomLine + 20);
+  // Crea un enlace para descargar el archivo Excel
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'Reporte de Pymes.xlsx';
 
-  // Muestra el Documento
-  doc.output('dataurlnewwindow', null, 'Pymes.pdf');
+  document.body.appendChild(a);
+  a.click();
+
+  // Limpia el objeto URL creado
+  window.URL.revokeObjectURL(url);
+  document.body.removeChild(a);
 }
 
+/*****************************************************************************************************/
+
+generatePDF() {
+  const { jsPDF } = require("jspdf");
+  const doc = new jsPDF();
+  const data: any[][] = [];
+  const headers = ['Nombre Pyme', 'Descripción', 'Categoría', 'Creador', 'Fecha Creación',  'Estado'];
+  const usuario = localStorage.getItem('usuario');
+
+  // Obtiene la fecha actual y la formatea
+  const fechaActual = new Date();
+  const fechaFormateada = fechaActual.toLocaleDateString();
+
+  // Agregar el logo al PDF
+  const logoImg = new Image();
+  logoImg.onload = () => {
+    // Dibujar el logo en el PDF
+    doc.addImage(logoImg, 'PNG', 10, 10, 50, 20); // Ajusta las coordenadas y dimensiones según tu diseño
+
+    // Agregar los comentarios al PDF centrados horizontalmente
+    const centerX = doc.internal.pageSize.getWidth() / 2;
+    doc.setFontSize(12);
+    doc.text("Reporte de Pymes", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+    doc.text("Fecha: " + fechaFormateada, centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+
+    // Recorre los datos de tu Pymes y agrégalos a la matriz 'data'
+    this.listPymes.forEach((pyme, index) => {
+      let estadoResult: any = '';
+      if (pyme.estado === 1) {
+        estadoResult = 'ACTIVO';
+      } else {
+        estadoResult = 'INACTIVO';
+      }
+
+      const row = [
+        pyme.nombre_pyme,
+        pyme.descripcion,
+        pyme.categoria,
+        pyme.creado_por,
+        pyme.fecha_creacion,
+        pyme.modificado_por,
+        pyme.fecha_modificacion,
+        estadoResult
+      ];
+      data.push(row);
+    });
+
+    // Agregar la tabla al PDF
+    doc.autoTable({
+      head: [headers],
+      body: data,
+      startY: 40 // Ajusta la posición inicial de la tabla según tu diseño
+    });
+
+    // Usuario en la parte inferior izquierda, debajo de la tabla
+    doc.setFontSize(12);
+    doc.text(`Reporte Generado por el Usuario: ${usuario}`, 10, doc.autoTable.previous.finalY + 10);
+
+    // Guardar el PDF
+    doc.save('Reporte de Pymes.pdf');
+  };
+  logoImg.src = '/assets/dist/img/pym.png'; // Ruta del logo
+}
 
 
 /**************************************************************/
@@ -231,7 +287,6 @@ agregarNuevaPyme() {
   }
 }
     
-
 
 /*******************************************************************************/
   onInputChange(event: any, field: string) {
@@ -326,9 +381,7 @@ agregarNuevaPyme() {
 
 
 
-
   /************************************************************************************************/
-
 
 
   /*************************************************************** Métodos de Bitácora ***************************************************************************/
@@ -383,28 +436,69 @@ agregarNuevaPyme() {
    });
  }
 
-  insertBitacora(dataPyme: Pyme){
-    const bitacora = {
-      fecha: new Date(),
-      id_usuario: this.getUser.id_usuario,
-      id_objeto: 22,
-      accion: 'INSERTAR',
-      descripcion: 'SE INSERTA LA PYME: '+  dataPyme.nombre_pyme
-    }
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
+ insertBitacora(dataPyme: Pyme){
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 22,
+    accion: 'INSERTAR',
+    descripcion: `SE INSERTA LA PYME:
+                  Nombre Pyme: ${dataPyme.nombre_pyme},
+                  Descripción: ${dataPyme.descripcion},
+                  Categoría: ${dataPyme.categoria},
+                  Estado: ${this.getEstadoText(dataPyme.estado)}`
+  };
+
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+    // Manejar la respuesta si es necesario
+  });
+}
+
+
+updateBitacora(dataPyme: Pyme) {
+  // Guardar la pyme actual antes de actualizarla
+  const pymeAnterior = { ...this.getPyme };
+
+  // Actualizar la pyme
+  this.getPyme = dataPyme;
+
+  // Comparar los datos anteriores con los nuevos datos
+  const cambios = [];
+  if (pymeAnterior.nombre_pyme !== dataPyme.nombre_pyme) {
+    cambios.push(`Nombre de Pyme anterior: ${pymeAnterior.nombre_pyme} -> Nuevo Nombre de Pyme: ${dataPyme.nombre_pyme}`);
   }
-  updateBitacora(dataPyme: Pyme){
+  if (pymeAnterior.descripcion !== dataPyme.descripcion) {
+    cambios.push(`Descripción anterior: ${pymeAnterior.descripcion} -> Nueva Descripción: ${dataPyme.descripcion}`);
+  }
+  if (pymeAnterior.categoria !== dataPyme.categoria) {
+    cambios.push(`Categoría anterior: ${pymeAnterior.categoria} -> Nueva Categoría: ${dataPyme.categoria}`);
+  }
+  if (pymeAnterior.estado !== dataPyme.estado) {
+    cambios.push(`Estado anterior: ${this.getEstadoText(pymeAnterior.estado)} -> Nuevo Estado: ${this.getEstadoText(dataPyme.estado)}`);
+  }
+  // Puedes agregar más comparaciones para otros campos según tus necesidades
+
+  // Si se realizaron cambios, registrar en la bitácora
+  if (cambios.length > 0) {
+    // Crear la descripción para la bitácora
+    const descripcion = `Se actualizaron los siguientes campos:\n${cambios.join('\n')}`;
+
+    // Crear el objeto bitácora
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
       id_objeto: 22,
       accion: 'ACTUALIZAR',
-      descripcion: 'SE ACTUALIZA LA PYME: '+ dataPyme.nombre_pyme
+      descripcion: descripcion
     };
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
+
+    // Insertar la bitácora
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+      // Manejar la respuesta si es necesario
+    });
   }
+}
+
 
   activarBitacora(dataPyme: Pyme){
     const bitacora = {
@@ -466,6 +560,12 @@ agregarNuevaPyme() {
 
 
 
-
 }
+
+
+
+
+
+
+
 
