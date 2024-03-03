@@ -151,20 +151,16 @@ eliminarEspaciosBlanco(event: any, field: string) {
 
 /*****************************************************************************************************/
 generateExcel() {
-  const headers = ['Tipo Requisito', 'Descripcion', 'Creador', 'Fecha Creacion', 'Modificado por', 'Fecha Modificacion', 'Estado'];
+  const headers = ['Tipo de Requisito', 'Descripción', 'Creado Por', 'Fecha de Creación'];
   const data: any[][] = [];
 
-  
-
-  // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
+  // Recorre los datos de tipoRequisitoAll y agrégalo a la matriz 'data'
   this.tipoRequisitoAll.forEach((TipoR, index) => {
     const row = [
       TipoR.tipo_requisito,
       TipoR.descripcion,
       TipoR.creado_por,
       TipoR.fecha_creacion,
-      TipoR.modificado_por,
-      TipoR.fecha_modificacion,
 
       this.getEstadoText(TipoR.estado) // Función para obtener el texto del estado
     ];
@@ -174,7 +170,7 @@ generateExcel() {
   // Crea un nuevo libro de Excel
   const workbook = XLSX.utils.book_new();
   const worksheet = XLSX.utils.aoa_to_sheet([headers, ...data]);
-  
+
   // Agrega la hoja al libro de Excel
   XLSX.utils.book_append_sheet(workbook, worksheet, 'Tipo de Requisitos');
 
@@ -188,7 +184,7 @@ generateExcel() {
   // Crea un enlace para descargar el archivo Excel
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'My Pyme-Reporte Tipo Requisitos.xlsx';
+  a.download = 'My Pyme-Reporte Tipo de Requisitos.xlsx';
 
   document.body.appendChild(a);
   a.click();
@@ -205,7 +201,7 @@ generatePDF() {
   const { jsPDF } = require("jspdf");
   const doc = new jsPDF();
   const data: any[][] = [];
-  const headers = ['Tipo Requisito', 'Descripcion', 'Creador', 'Fecha Creacion', 'Modificado por', 'Fecha Modificacion', 'Estado'];
+  const headers = ['Tipo Requisito', 'Descripcion', 'Creador', 'Fecha Creacion',  'Estado'];
 
   // Agregar el logo al PDF
   const logoImg = new Image();
@@ -227,8 +223,6 @@ generatePDF() {
         TipoR.descripcion,
         TipoR.creado_por,
         TipoR.fecha_creacion,
-        TipoR.modificado_por,
-        TipoR.fecha_modificacion,
   
         this.getEstadoText(TipoR.estado) // Función para obtener el texto del estado
       ];

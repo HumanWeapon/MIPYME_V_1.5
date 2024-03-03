@@ -12,6 +12,10 @@ import { BitacoraService } from 'src/app/services/administracion/bitacora.servic
 import { ErrorService } from 'src/app/services/error.service';
 import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 import { Usuario } from 'src/app/interfaces/seguridad/usuario';
+import { da } from 'date-fns/locale';
+import * as XLSX from 'xlsx';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale'; // Importa el idioma español
 
 
 
@@ -21,6 +25,20 @@ import { Usuario } from 'src/app/interfaces/seguridad/usuario';
   styleUrls: ['./direcciones.component.css']
 })
 export class DireccionesComponent {
+  
+  getDireccion: any;
+
+  getDate(): string {
+    // Obtener la fecha actual
+    const currentDate = new Date();
+    // Formatear la fecha en el formato deseado
+    return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
+}
+
+
+
+
+
   direccionEditando: ContactoDirecciones = {
     id_direccion: 0, 
     id_tipo_direccion: 0,
@@ -97,6 +115,7 @@ export class DireccionesComponent {
 
       
       });
+      this.getUsuario();
   }
 
   ngOnDestroy(): void {
@@ -191,7 +210,7 @@ export class DireccionesComponent {
 toggleFunction(obj: any, i: number) {
 
   // Ejecuta una función u otra según el estado
-  if (obj.estado === 1 ) {
+  if (obj.estado == 1 ) {
     this.inactivarDireccion(obj, i); // Ejecuta la primera función
   } else {
     this.activarDireccion(obj, i); // Ejecuta la segunda función
@@ -199,60 +218,131 @@ toggleFunction(obj: any, i: number) {
 }
   
 inactivarDireccion(direccion: ContactoDirecciones, i: any){
-  this._objService.inactivarDireccion(direccion).subscribe(data => 
-    this.toastr.success('La Direccion: '+ direccion.direccion+ ' ha sido inactivada')
-    );
+  this._objService.inactivarDireccion(direccion).subscribe(data => {
+    this.toastr.success('La Direccion: '+ direccion.direccion+ ' ha sido inactivada');
+    this.inactivarBitacora(data);
+
+   } );
   this.listDirecciones[i].estado = 2;
 }
 activarDireccion(direccion: ContactoDirecciones, i: any){
-  this._objService.activarDireccion(direccion).subscribe(data => 
-  this.toastr.success('La Direccion: '+ direccion.direccion+ ' ha sido activada')
-  );
+  this._objService.activarDireccion(direccion).subscribe(data => {
+  this.toastr.success('La Direccion: '+ direccion.direccion+ ' ha sido activada');
+  this.activarBitacora(data);
+});
   this.listDirecciones[i].estado = 1;
 }
 
+
 /*****************************************************************************************************/
 
-generatePDF() {
 
-  const {jsPDF} = require ("jspdf");
- 
-  const doc = new jsPDF();
-  const data: any[][] =[]
-  const headers = ['Direccion', 'Descripcion', 'Creador', 'Fecha', 'Modificado por', 'Fecha', 'Estado'];
+generateExcel() {
+  const headers = ['Direccion', 'Descripcion', 'Creado Por', 'Fecha de Creacion', 'Estado'];
+  const data: any[][] = [];
 
-  // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
+  // Recorre los datos de tu lista de direcciones y agrégalo a la matriz 'data'
   this.listDirecciones.forEach((obj, index) => {
     const row = [
       obj.direccion,
       obj.descripcion,
       obj.creado_por,
       obj.fecha_creacion,
-      obj.modificado_por,
-      obj.fecha_modificacion,
       this.getEstadoText(obj.estado) // Función para obtener el texto del estado
     ];
     data.push(row);
   });
 
-  doc.autoTable({
-    head: [headers],
-    body: data,
-  });
+  // Crea un nuevo libro de Excel
+  const workbook = XLSX.utils.book_new();
+  const worksheet = XLSX.utils.aoa_to_sheet([headers, ...data]);
 
-  doc.output('dataurlnewwindow', null, 'Productos.pdf');
+  // Agrega la hoja al libro de Excel
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Direcciones');
+
+  // Guarda el libro de Excel como un archivo binario
+  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+  const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+  // Crea un objeto URL para el blob
+  const url = window.URL.createObjectURL(blob);
+
+  // Crea un enlace para descargar el archivo Excel
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'My Pyme-Reporte Direcciones.xlsx';
+
+  document.body.appendChild(a);
+  a.click();
+
+  // Limpia el objeto URL creado
+  window.URL.revokeObjectURL(url);
+  document.body.removeChild(a);
+}
+
+
+/*****************************************************************************************************/
+
+generatePDF() {
+  const { jsPDF } = require("jspdf");
+  const doc = new jsPDF();
+  const data: any[][] = [];
+  const headers = ['Direccion', 'Descripcion', 'Creado Por', 'Fecha de Creacion', 'Estado'];
+
+  // Agregar el logo al PDF
+  const logoImg = new Image();
+  logoImg.onload = () => {
+    // Dibujar el logo en el PDF
+    doc.addImage(logoImg, 'PNG', 10, 10, 50, 20); // Ajusta las coordenadas y dimensiones según tu diseño
+
+    // Agregar los comentarios al PDF centrados horizontalmente
+    const centerX = doc.internal.pageSize.getWidth() / 2;
+    doc.setFontSize(12);
+    doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+    doc.text("Reporte de Direcciones", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+    doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+
+    // Recorre los datos de direcciones y agrégalo a la matriz 'data'
+    this.listDirecciones.forEach((obj, index) => {
+      const row = [
+        obj.direccion,
+        obj.descripcion,
+        obj.creado_por,
+        obj.fecha_creacion,
+        this.getEstadoText(obj.estado)
+      ];
+      data.push(row);
+    });
+
+    // Agregar la tabla al PDF
+    doc.autoTable({
+      head: [headers],
+      body: data,
+      startY: 70 // Ajusta la posición inicial de la tabla según tu diseño
+    });
+
+    // Guardar el PDF
+    doc.save('My Pyme-Reporte Direcciones.pdf');
+  };
+  logoImg.src = '/assets/dist/img/pym.png'; // Ruta del logo
+}
+
+getCurrentDate(): string {
+  const currentDate = new Date();
+  return currentDate.toLocaleDateString(); // Retorna la fecha actual en formato local
 }
 
 getEstadoText(estado: number): string {
   switch (estado) {
     case 1:
-      return 'ACTIVO';
+      return 'Activo';
     case 2:
-      return 'INACTIVO';
+      return 'Inactivo';
     default:
       return 'Desconocido';
   }
-}
+} 
+
 
 
 /**************************************************************/
@@ -310,35 +400,69 @@ getUsuario(){
  });
 }
 
-insertBitacora(dataDireccion: ContactoDirecciones){
+insertBitacora(dataDireccion: ContactoDirecciones) {
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 6,
     accion: 'INSERTAR',
-    descripcion: 'SE INSERTA LA DIRECCION CON EL ID: '+ dataDireccion.id_direccion
-  }
-  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-  })
-}
-updateBitacora(dataDireccion: ContactoDirecciones){
-  const bitacora = {
-    fecha: new Date(),
-    id_usuario: this.getUser.usuario,
-    id_objeto: 6,
-    accion: 'ACTUALIZAR',
-    descripcion: 'SE ACTUALIZA LA DIRECCION CON EL ID: '+ dataDireccion.id_direccion
+    descripcion: `SE AGREGÓ UNA NUEVA DIRECCIÓN:
+                  Direccion: ${dataDireccion.direccion},
+                  Descripción: ${dataDireccion.descripcion}`
   };
-  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-  })
+
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+    // Manejar la respuesta si es necesario
+  });
 }
+
+
+
+updateBitacora(dataDireccion: ContactoDirecciones) {
+  // Guardar la dirección actual antes de actualizarla
+  const direccionAnterior = { ...this.getDireccion };
+
+  // Actualizar la dirección
+  this.getDireccion = dataDireccion;
+
+  // Comparar los datos anteriores con los nuevos datos
+  const cambios = [];
+  if (direccionAnterior.direccion !== dataDireccion.direccion) {
+    cambios.push(`Dirección anterior: ${direccionAnterior.direccion} -> Nueva dirección: ${dataDireccion.direccion}`);
+  }
+  if (direccionAnterior.descripcion !== dataDireccion.descripcion) {
+    cambios.push(`Descripción anterior: ${direccionAnterior.descripcion} -> Nueva descripción: ${dataDireccion.descripcion}`);
+  }
+
+  // Si se realizaron cambios, registrar en la bitácora
+  if (cambios.length > 0) {
+    // Crear la descripción para la bitácora
+    const descripcion = `Se actualizaron los siguientes campos:\n${cambios.join('\n')}`;
+
+    // Crear el objeto bitácora
+    const bitacora = {
+      fecha: new Date(),
+      id_usuario: this.getUser.usuario,
+      id_objeto: 6,
+      accion: 'ACTUALIZAR',
+      descripcion: descripcion
+    };
+
+    // Insertar la bitácora
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+      // Manejar la respuesta si es necesario
+    });
+  }
+}
+
+
 activarBitacora(dataDireccion: ContactoDirecciones){
   const bitacora = {
     fecha: new Date(),
-    id_usuario: this.getUser.usuario,
+    id_usuario: this.getUser.id_usuario,
     id_objeto: 6,
     accion: 'ACTIVAR',
-    descripcion: 'SE ACTIVA LA DIRECCION CON EL ID: '+ dataDireccion.id_direccion
+    descripcion: 'SE ACTIVA LA DIRECCION: '+ dataDireccion.direccion
   }
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
   })
@@ -346,10 +470,10 @@ activarBitacora(dataDireccion: ContactoDirecciones){
 inactivarBitacora(dataDireccion: ContactoDirecciones){
   const bitacora = {
     fecha: new Date(),
-    id_usuario: this.getUser.usuario,
+    id_usuario: this.getUser.id_usuario,
     id_objeto: 6,
     accion: 'INACTIVAR',
-    descripcion: 'SE INACTIVA LA DIRECCION CON EL ID: '+ dataDireccion.id_direccion
+    descripcion: 'SE INACTIVA LA DIRECCION: '+ dataDireccion.direccion
   }
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
   })
@@ -357,10 +481,10 @@ inactivarBitacora(dataDireccion: ContactoDirecciones){
 deleteBitacora(dataDireccion: ContactoDirecciones){
   const bitacora = {
     fecha: new Date(),
-    id_usuario: this.getUser.usuario,
+    id_usuario: this.getUser.id_usuario,
     id_objeto: 6,
     accion: 'ELIMINAR',
-    descripcion: 'SE ELIMINA LA DIRECCION CON EL ID: '+ dataDireccion.id_direccion
+    descripcion: 'SE ELIMINA LA DIRECCION CON EL ID: '+ dataDireccion.direccion
   }
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
   })

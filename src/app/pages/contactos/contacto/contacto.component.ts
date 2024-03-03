@@ -12,6 +12,9 @@ import { ErrorService } from 'src/app/services/error.service';
 import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 import { TipoContactoService } from 'src/app/services/mantenimiento/tipoContacto.service';
 import { da } from 'date-fns/locale';
+import * as XLSX from 'xlsx';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale'; // Importa el idioma español
 
 
 
@@ -21,6 +24,17 @@ import { da } from 'date-fns/locale';
   styleUrls: ['./contacto.component.css']
 })
 export class ContactoComponent implements OnInit{
+  getContacto: any;
+
+
+  getDate(): string {
+    // Obtener la fecha actual
+    const currentDate = new Date();
+    // Formatear la fecha en el formato deseado
+    return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
+}
+
+
   usuario: string = '';
   listContactosActivos: any[]=[];
   contacteditar: any;
@@ -158,48 +172,117 @@ toggleFunction(contac: any, i: number) {
     this.listContacto[i].estado = 1;
   }
 
+
+
+/*****************************************************************************************************/
+
+
+  generateExcel() {
+    const headers = ['Nombre', 'Descripción', 'Creado Por', 'Fecha de Creación', 'Estado'];
+    const data: any[][] = [];
+  
+    // Recorre los datos de tu lista de contactos y agrégalo a la matriz 'data'
+    this.listContacto.forEach((contac, index) => {
+      const row = [
+        `${contac.primer_nombre} ${contac.segundo_nombre} ${contac.primer_apellido} ${contac.segundo_apellido}`,
+        contac.descripcion,
+        contac.creado_por,
+        contac.fecha_creacion,
+        this.getEstadoText(contac.estado)
+      ];
+      data.push(row);
+    });
+  
+    // Crea un nuevo libro de Excel
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.aoa_to_sheet([headers, ...data]);
+  
+    // Agrega la hoja al libro de Excel
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Contactos');
+  
+    // Guarda el libro de Excel como un archivo binario
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  
+    // Crea un objeto URL para el blob
+    const url = window.URL.createObjectURL(blob);
+  
+    // Crea un enlace para descargar el archivo Excel
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'My Pyme-Reporte Contactos.xlsx';
+  
+    document.body.appendChild(a);
+    a.click();
+  
+    // Limpia el objeto URL creado
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  }
+
+
+
 /*****************************************************************************************************/
 
 generatePDF() {
-
-  const {jsPDF} = require ("jspdf");
- 
+  const { jsPDF } = require("jspdf");
   const doc = new jsPDF();
-  const data: any[][] =[]
-  const headers = ['DNI','Nombre Contacto','Correo' ,'Descripcion', 'Creador', 'Fecha', 'Modificado por', 'Fecha', 'Estado'];
+  const data: any[][] = [];
+  const headers = ['Nombre', 'Descripción', 'Creado Por', 'Fecha de Creación', 'Estado'];
 
-  // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
-  this.listContacto.forEach((contac, index) => {
-    const row = [
-      contac.primer_nombre +" "+ contac.segundo_nombre+" "+ contac.primer_apellido +" "+contac.segundo_apellido,
-      contac.descripcion,
-      contac.creado_por,
-      contac.fecha_creacion,
-      contac.fecha_modificacion,
-      this.getEstadoText(contac.estado) // Función para obtener el texto del estado
-    ];
-    data.push(row);
-  });
+  // Agregar el logo al PDF
+  const logoImg = new Image();
+  logoImg.onload = () => {
+    // Dibujar el logo en el PDF
+    doc.addImage(logoImg, 'PNG', 10, 10, 50, 20); // Ajusta las coordenadas y dimensiones según tu diseño
 
-  doc.autoTable({
-    head: [headers],
-    body: data,
-  });
+    // Agregar los comentarios al PDF centrados horizontalmente
+    const centerX = doc.internal.pageSize.getWidth() / 2;
+    doc.setFontSize(12);
+    doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+    doc.text("Reporte de Contactos", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+    doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
 
-  doc.output('dataurlnewwindow', null, 'Pymes.pdf');
+    // Recorre los datos de usuarios y agrégalo a la matriz 'data'
+    this.listContacto.forEach((contac, index) => {
+      const row = [
+        `${contac.primer_nombre} ${contac.segundo_nombre} ${contac.primer_apellido} ${contac.segundo_apellido}`,
+        contac.descripcion,
+        contac.creado_por,
+        contac.fecha_creacion,
+        this.getEstadoText(contac.estado)
+      ];
+      data.push(row);
+    });
+
+    // Agregar la tabla al PDF
+    doc.autoTable({
+      head: [headers],
+      body: data,
+      startY: 70 // Ajusta la posición inicial de la tabla según tu diseño
+    });
+
+    // Guardar el PDF
+    doc.save('My Pyme-Reporte Contactos.pdf');
+  };
+  logoImg.src = '/assets/dist/img/pym.png'; // Ruta del logo
+}
+
+getCurrentDate(): string {
+  const currentDate = new Date();
+  return currentDate.toLocaleDateString(); // Retorna la fecha actual en formato local
 }
 
 getEstadoText(estado: number): string {
   switch (estado) {
     case 1:
-      return 'ACTIVO';
+      return 'Activo';
     case 2:
-      return 'INACTIVO';
+      return 'Inactivo';
     default:
       return 'Desconocido';
   }
 }
-
 
 /**************************************************************/
 
@@ -337,46 +420,93 @@ agregarNuevoContacto() {
      });
    }
   
-    insertBitacora(dataContacto: Contacto){
-      const bitacora = {
-        fecha: new Date(),
-        id_usuario: this.getUser.id_usuario,
-        id_objeto: 17,
-        accion: 'INSERTAR',
-        descripcion: 'SE INSERTA EL CONTACTO CON EL ID: '+ dataContacto.id_contacto
-      }
-      this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-      })
+   insertBitacora(dataContacto: Contacto) {
+    const bitacora = {
+      fecha: new Date(),
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 17,
+      accion: 'INSERTAR',
+      descripcion: `SE AGREGÓ UN NUEVO CONTACTO:
+                    Primer Nombre: ${dataContacto.primer_nombre},
+                    Segundo Nombre: ${dataContacto.segundo_nombre},
+                    Primer Apellido: ${dataContacto.primer_apellido},
+                    Segundo Apellido: ${dataContacto.segundo_apellido},
+                    Descripción: ${dataContacto.descripcion},
+                    }`
+    };
+  
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+      // Manejar la respuesta si es necesario
+    });
+  }
+  
+  updateBitacora(dataContacto: Contacto) {
+    // Guardar el contacto actual antes de actualizarlo
+    const contactoAnterior = { ...this.getContacto };
+  
+    // Actualizar el contacto
+    this.getContacto = dataContacto;
+  
+    // Comparar los datos anteriores con los nuevos datos
+    const cambios = [];
+    if (contactoAnterior.primer_nombre !== dataContacto.primer_nombre) {
+      cambios.push(`Primer nombre anterior: ${contactoAnterior.primer_nombre} -> Nuevo primer nombre: ${dataContacto.primer_nombre}`);
     }
-    updateBitacora(dataContacto: Contacto){
+    if (contactoAnterior.segundo_nombre !== dataContacto.segundo_nombre) {
+      cambios.push(`Segundo nombre anterior: ${contactoAnterior.segundo_nombre} -> Nuevo segundo nombre: ${dataContacto.segundo_nombre}`);
+    }
+    if (contactoAnterior.primer_apellido !== dataContacto.primer_apellido) {
+      cambios.push(`Primer apellido anterior: ${contactoAnterior.primer_apellido} -> Nuevo primer apellido: ${dataContacto.primer_apellido}`);
+    }
+    if (contactoAnterior.segundo_apellido !== dataContacto.segundo_apellido) {
+      cambios.push(`Segundo apellido anterior: ${contactoAnterior.segundo_apellido} -> Nuevo segundo apellido: ${dataContacto.segundo_apellido}`);
+    }
+    if (contactoAnterior.descripcion !== dataContacto.descripcion) {
+      cambios.push(`Descripción anterior: ${contactoAnterior.descripcion} -> Nueva descripción: ${dataContacto.descripcion}`);
+    }
+   
+    // Puedes agregar más comparaciones para otros campos según tus necesidades
+  
+    // Si se realizaron cambios, registrar en la bitácora
+    if (cambios.length > 0) {
+      // Crear la descripción para la bitácora
+      const descripcion = `Se actualizaron los siguientes campos:\n${cambios.join('\n')}`;
+  
+      // Crear el objeto bitácora
       const bitacora = {
         fecha: new Date(),
         id_usuario: this.getUser.id_usuario,
         id_objeto: 17,
         accion: 'ACTUALIZAR',
-        descripcion: 'SE ACTUALIZA EL CONTACTO CON EL ID: '+ dataContacto.id_contacto
+        descripcion: descripcion
       };
-      this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-      })
+  
+      // Insertar la bitácora
+      this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+        // Manejar la respuesta si es necesario
+      });
     }
+  }
+  
     activarBitacora(dataContacto: Contacto){
       const bitacora = {
         fecha: new Date(),
         id_usuario: this.getUser.id_usuario,
         id_objeto: 17,
         accion: 'ACTIVAR',
-        descripcion: 'SE ACTIVA EL CONTACTO CON EL ID: '+ dataContacto.id_contacto
+        descripcion: 'SE ACTIVA EL CONTACTO DE: '+ dataContacto.primer_nombre + dataContacto.primer_apellido
       }
       this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
       })
     }
+
     inactivarBitacora(dataContacto: Contacto){
       const bitacora = {
         fecha: new Date(),
         id_usuario: this.getUser.id_usuario,
         id_objeto: 17,
         accion: 'INACTIVAR',
-        descripcion: 'SE INACTIVA EL CONTACTO CON EL ID: '+ dataContacto.id_contacto
+        descripcion: 'SE INACTIVA EL CONTACTO DE: '+ dataContacto.primer_nombre + dataContacto.primer_apellido
       }
       this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
       })
@@ -387,7 +517,7 @@ agregarNuevoContacto() {
         id_usuario: this.getUser.id_usuario,
         id_objeto: 17,
         accion: 'ELIMINAR',
-        descripcion: 'SE ELIMINA EL CONTACTO CON EL ID: '+ dataContacto.id_contacto
+        descripcion: 'SE ELIMINA EL CONTACTO DE: '+ dataContacto.primer_nombre + dataContacto.primer_apellido
       }
       this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
       })

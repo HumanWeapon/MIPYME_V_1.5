@@ -7,9 +7,9 @@
                 <div class="card-header">
                   <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarRequisito">
                     <i class="fas fa-plus"></i> Nuevo</button>
-                    <button type="button" class="btn btn-primary custom-print-button btn-danger" title="Generar el Reporte" data-toggle="modal" data-target="#PDFRequisitos">
+                    <button type="button" class="btn btn-primary custom-print-button btn-danger" title="Generar el Reporte" data-toggle="modal" data-target="#PDFRQ">
                       <i class="fas fa-file-pdf mr-2"></i>PDF</button>
-                      <button type="button" class="btn btn-primary custom-print-button btn-success" title="Generar el Reporte en Excel" data-toggle="modal" data-target="#ExcelRequisitos">
+                      <button type="button" class="btn btn-primary custom-print-button btn-success" title="Generar el Reporte en Excel" data-toggle="modal" data-target="#ExcelRequsit">
                         <i class="fas fa-file-excel mr-2"></i>Excel
                     </button>
                 </div>
@@ -137,7 +137,7 @@
 </div>
 
 <!-- Form Ver PDF para Requisitos -->
-<div class="modal fade" id="PDFRequisitos">
+<div class="modal fade" id="PDFRQ">
     <div class="modal-dialog modal-xl">
       <div class="modal-content">
   
@@ -147,7 +147,7 @@
               <h1>Utilidad Mi Pyme</h1>
               <h4>Reporte de Requisitos</h4> 
               <!-- Puedes agregar más detalles del reporte aquí si es necesario -->
-              <p>Fecha: {{ getCurrentDate() }}</p>
+              <p>Fecha: {{ getDate() }}</p>
           </div>
           <div style="flex: 0;">
               <img src="\assets\dist\img\pym.png" alt="Logo de Mi Pyme" style="width: 200px; height: auto;">
@@ -171,9 +171,8 @@
           <th>Tipo Requisito</th>
           <th>Descripcion</th>
           <th>Creador</th>
-          <th>Fecha</th>
-          <th>Modificado por</th>
-          <th>Fecha</th>
+          <th>Fecha Creación</th>
+        
           <th>Estado</th>
         </tr>
       </thead>
@@ -183,8 +182,7 @@
           <td>{{ TRequi.descripcion }}</td>
           <td>{{ TRequi.creado_por}}</td>
           <td>{{ TRequi.fecha_creacion }}</td>
-          <td>{{ TRequi.modificado_por}}</td>
-          <td>{{ TRequi.fecha_modificacion}}</td>
+         
           <td>{{ getEstadoText(TRequi.estado) }}</td>
         </tr>
       </tbody>
@@ -193,63 +191,58 @@
 </div>
 </div>
 
-<!-- Form Ver Excel para Roles -->
-<div class="modal fade" id="ExcelRequisitos">
-    <div class="modal-dialog modal-xl">
-      <div class="modal-content">
-  
-        <!-- Cabecera del modal -->
-        <div class="modal-header" style="display: flex; align-items: center;">
-          <div style="flex: 1; text-align: left; margin-right: 20px;">
-              <h1>Utilidad Mi Pyme</h1>
-              <h4>Reporte de Requisitos</h4> 
-              <!-- Puedes agregar más detalles del reporte aquí si es necesario -->
-              <p>Fecha: {{ getCurrentDate() }}</p>
-          </div>
-          <div style="flex: 0;">
-              <img src="\assets\dist\img\pym.png" alt="Logo de Mi Pyme" style="width: 200px; height: auto;">
-          </div>
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
+
+
+
+<!-- Form Ver Excel-->
+<div class="modal fade" id="ExcelRequsit">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+
+      <!-- Cabecera del modal -->
+      <div class="modal-header" style="display: flex; align-items: center;">
+        <div style="flex: 1; text-align: left; margin-right: 20px;">
+            <h1>Utilidad Mi Pyme</h1>
+            <h4>Reporte de Teléfonos</h4> 
+            <!-- Puedes agregar más detalles del reporte aquí si es necesario -->
+            <p>Fecha: {{ getDate() }}</p>
         </div>
-  
-        <!-- Pie del modal -->
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary customn-print-button btn-success" (click)="generateExcel()">
-            <i class="fas fa-file-excel"></i>  Generar Excel</button>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        <div style="flex: 0;">
+            <img src="\assets\dist\img\pym.png" alt="Logo de Mi Pyme" style="width: 200px; height: auto;">
         </div>
-  
-        <!-- Contenido del modal -->
-        <div class="modal-body">
-          <!-- Aquí puedes colocar tu DataTable o cualquier otro contenido que desees mostrar -->
-          <table class="table table-striped">
-            <thead class="thead-dark">
-              <tr>
-                <th>Tipo Requisito</th>
-                <th>Descripcion</th>
-                <th>Creador</th>
-                <th>Fecha</th>
-                <th>Modificado por</th>
-                <th>Fecha</th>
-                <th>Estado</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let TRequi of listTipoR; let i = index">
-                <td>{{ TRequi.tipo_requisito }}</td>
-                <td>{{ TRequi.descripcion }}</td>
-                <td>{{ TRequi.creado_por}}</td>
-                <td>{{ TRequi.fecha_creacion }}</td>
-                <td>{{ TRequi.modificado_por}}</td>
-                <td>{{ TRequi.fecha_modificacion}}</td>
-                <td>{{ getEstadoText(TRequi.estado) }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-  
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
-    </div>
-  </div>
-  
-  
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary customn-print-button btn-success" (click)="generateExcel()">
+        <i class="fas fa-file-excel"></i>  Generar Excel</button>
+      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+    </div> <!-- Contenido del modal -->
+  <div class="modal-body">
+    <!-- Aquí puedes colocar tu DataTable o cualquier otro contenido que desees mostrar -->
+    <table class="table table-striped">
+      <thead class="thead-dark">
+        <tr>
+          <th>Tipo Requisito</th>
+          <th>Descripcion</th>
+          <th>Creador</th>
+          <th>Fecha Creación</th>
+        
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let TRequi of listTipoR; let i = index">
+          <td>{{ TRequi.tipo_requisito }}</td>
+          <td>{{ TRequi.descripcion }}</td>
+          <td>{{ TRequi.creado_por}}</td>
+          <td>{{ TRequi.fecha_creacion }}</td>
+         
+          <td>{{ getEstadoText(TRequi.estado) }}</td>
+        </tr>
+      </tbody>
+    </table>
+</div>
+</div>
+</div>
+
