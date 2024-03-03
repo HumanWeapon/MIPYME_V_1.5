@@ -15,7 +15,7 @@ export class ContactoTService {
 
   constructor(private http: HttpClient) {
     this.myAppUrl = environment.endpoint;
-    this.myApiUrl = 'api/contactoTelefono'
+    this.myApiUrl = 'api/telefonos'
     // Asignar un valor a una clave en localStorage
 
    }
@@ -70,6 +70,11 @@ export class ContactoTService {
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
     return this.http.post<ContactoTelefono>(`${this.myAppUrl}${this.myApiUrl}/updateContactoTelefono`, contactoTelefono, { headers: headers })
+  }
+  telefonosdeContactosPorId(id: number): Observable<any[]> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<any[]>(`${this.myAppUrl}${this.myApiUrl}/telefonosdeContactosPorId/${id}`, { headers: headers });
   }
 }
 /*                                          FRANKLIN ALEXANDER MURILLO CRUZ

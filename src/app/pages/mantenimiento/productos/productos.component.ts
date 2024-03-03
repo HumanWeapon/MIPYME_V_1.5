@@ -14,6 +14,7 @@ import { Paises } from 'src/app/interfaces/empresa/paises';
 import { PaisesService } from 'src/app/services/empresa/paises.service';
 import { Contacto } from 'src/app/interfaces/contacto/contacto';
 import { ContactoService } from 'src/app/services/contacto/contacto.service';
+import { da } from 'date-fns/locale';
 
 
 @Component({
@@ -108,7 +109,6 @@ export class ProductosComponent implements OnInit{
     this.dtTrigger.unsubscribe();
   }
 
-
   onInputChange(event: any, field: string) {
     if (field == 'producto') {
       const inputValue = event.target.value;
@@ -135,15 +135,21 @@ export class ProductosComponent implements OnInit{
         fecha_modificacion: new Date()
 
       };
-      this._productoService.addProducto(this.nuevoProducto).subscribe({
-        next: (data) => {
-          this.insertBitacora(data);
-          this.toastr.success('Producto agregado con éxito')
-        },
-        error: (e: HttpErrorResponse) => {
-          this._errorService.msjError(e);
-        }
-      });
+      if (!this.nuevoProducto.producto || !this.nuevoProducto.descripcion) {
+        this.toastr.warning('Debes completar los campos vacíos');
+      }else{
+        this._productoService.addProducto(this.nuevoProducto).subscribe({
+          next: (data) => {
+            console.log(data);
+            this.insertBitacora(data);
+            this.toastr.success('Producto agregado con éxito');
+            this.productos.push(data);
+          },
+          error: (e: HttpErrorResponse) => {
+            this._errorService.msjError(e);
+          }
+        });
+      }
     }
   }
   
@@ -170,25 +176,17 @@ export class ProductosComponent implements OnInit{
 
 
   editarProducto(cat: any) {
-
     this.productoEditando.producto = this.productoEditando.producto.toUpperCase();
     this.productoEditando.descripcion = this.productoEditando.descripcion.toUpperCase();
 
-    this._productoService.editarProducto(this.productoEditando).subscribe(data => {
-      this.updateBitacora(data);
-      this.toastr.success('Producto editado con éxito');
-      if(this.productoAllCategoria == null){
-        //no se puede editar el usuario
-      }else{
-      this.productoAllCategoria[this.indice].producto = this.productoEditando.producto;
-      this.productoAllCategoria[this.indice].descripcion = this.productoEditando.descripcion;
-      this.productoAllCategoria[this.indice].categoria.cat = cat.cat;
-       // Recargar la página
-       location.reload();
-       this._ngZone.run(() => {        
-      });
+    this._productoService.editarProducto(this.productoEditando).subscribe({
+      next: (data) =>  {
+        this.updateBitacora(data);
+        this.toastr.success('Producto editado con éxito');
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
       }
-
     });
   }
 

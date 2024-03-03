@@ -6,6 +6,7 @@ import { data, error } from 'jquery';
 import { ToastrService } from 'ngx-toastr';
 import { Empresa } from 'src/app/interfaces/empresa/empresas';
 import { BitacoraService } from 'src/app/services/administracion/bitacora.service';
+import { ContactoTService } from 'src/app/services/contacto/contactoTelefono.service';
 import { EmpresaService } from 'src/app/services/empresa/empresa.service';
 import { ErrorService } from 'src/app/services/error.service';
 import { ProductosService } from 'src/app/services/mantenimiento/producto.service';
@@ -29,7 +30,7 @@ export class OperacionesEmpresasComponent {
   productosEmpresa: any[] = [];//Obtiene los productos registrados de la Empresa y los muestra en la tabla.
   productosContactos: any[] = [];//Obtiene los contactos registrados de la Empresa y los muestra en la tabla.
   contactosActivos: any[] = []; //Obtiene los contactos activos de la Empresa y los muestra en la tabla.
-
+  telefonosContactos: any[] = [];//Obtiene los telefonos registrados para cada contacto.
 
   //Obtiene los productos no registrados para la empresa y mostrarlos en el modal de agregar productos.
   listNuevosProductos: any[] = []; //guarda los registros de mi consulta a la api
@@ -118,7 +119,8 @@ export class OperacionesEmpresasComponent {
     private _userService: UsuariosService,
     private _productoService: ProductosService,
     private _empresasProductosService: EmpresasProdcutosService,
-    private _empresasContactosService: EmpresasContactosService
+    private _empresasContactosService: EmpresasContactosService,
+    private _telefonosService: ContactoTService
   ) {}
 
   //busca los productos de la tabla principal de los productos
@@ -165,7 +167,16 @@ export class OperacionesEmpresasComponent {
       });
     }
   }
-  
+  buscarTelefonos(id_contacto: any){
+    this._telefonosService.telefonosdeContactosPorId(id_contacto).subscribe({
+      next: (data) =>{
+        this.telefonosContactos = data;
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
+  }
 
   agregarEmpresa(){
     const userLocal = localStorage.getItem('usuario');
@@ -225,7 +236,6 @@ export class OperacionesEmpresasComponent {
   getEmpresasContactosPorId() {
     this._empresasContactosService.consultarContactosPorId(this.idEmpresa).subscribe({
       next: (data: any) => {
-        console.log(data);
         this.productosContactos = data;
         this.todosLosContactos = data;
       },
@@ -250,7 +260,6 @@ export class OperacionesEmpresasComponent {
   getContactosNoRegistradosPorId() {
     this._empresasContactosService.consultarContactosNoRegistradosPorId(this.idEmpresa).subscribe({
       next: (data: any) => {
-        console.log(data);
         this.listNuevosContactos = data;
         this.listEditandoContactos = data;
       },
@@ -340,7 +349,6 @@ export class OperacionesEmpresasComponent {
   EditarContactos() {
     const contactosMarcados = this.listNuevosContactos.filter(contacto => contacto.posee_contacto);
     const contactosDesmarcados = this.listNuevosContactos.filter(contacto => !contacto.posee_contacto);
-    console.log(contactosDesmarcados);
     contactosMarcados.forEach(contacto => {
       if (!contacto.id_empresa) {
         // Si el producto no tiene un ID de empresa, significa que no estaba registrado anteriormente,
@@ -385,7 +393,6 @@ export class OperacionesEmpresasComponent {
   }
   eliminarContacto(contacto: any) {
     // Realizar una solicitud HTTP DELETE a la API para eliminar el registro
-    console.log(contacto)
     this._empresasContactosService.eliminarOperacionEmpresaContacto(contacto.id_emp_contactos).subscribe({
       next: (data: any) =>{
         this._toastr.success('Contacto eliminado exitosamente');
