@@ -18,6 +18,7 @@
                   <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover">
                       <thead>
                         <tr>
+                          <th>Contacto</th>
                           <th>Teléfono</th>
                           <th>Extención</th>
                           <th>Descripción</th>
@@ -30,7 +31,8 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <tr *ngFor="let conT of listContactoT; let i = index">
+                        <tr *ngFor="let conT of telefonosconcontacto; let i = index">
+                          <td>{{ conT.nombre }}</td>
                           <td>{{ conT.telefono }}</td>
                           <td>{{ conT.extencion }}</td>
                           <td>{{ conT.descripcion }}</td>
@@ -39,8 +41,8 @@
                           <td>{{ conT.modificado_por}}</td>
                           <td>{{ conT.fecha_modificacion}}</td>
                           <td>
-                            <ng-container *ngIf="conT.estado === 1">ACTIVADO</ng-container>
-                            <ng-container *ngIf="conT.estado === 2">INACTIVO</ng-container>
+                            <ng-container *ngIf="conT.estado == 1">ACTIVO</ng-container>
+                            <ng-container *ngIf="conT.estado == 2">INACTIVO</ng-container>
                             
                           </td>
                           <td class="text-center">
@@ -78,7 +80,7 @@
 <div class="modal fade" id="agregarContactoT">
 <div class="modal-dialog">
     <div class="modal-content">
-        <div class="modal-header">
+        <div class="modal-header" style="background-color: #1254a1; color: white;">
             <h4 class="modal-title">Agregar Contacto Telefono</h4>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
@@ -97,7 +99,13 @@
                 <div class="form-group">
                     <label for="nuevoContactoT">Descripción</label>
                     <input type="text" [(ngModel)]="nuevoContactoT.descripcion" name="nuevoContactoT.descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="nuevoContactoT" placeholder="Descripción">
-                </div>    
+                </div>
+                <div class="form-group">
+                  <label for="editarRol">Contacto:</label>
+                  <select class="form-control" id="agregarTelefono" [(ngModel)]="nuevoContactoT.id_contacto" name="nuevoContactoT.id_contacto" class="form-control" >
+                    <option *ngFor="let item of list_contactos; let value = index" [value]="item.id_contacto">{{ item.contacto }}</option>
+                  </select>
+                </div>
             </form>
         </div>
         <div class="modal-footer justify-content-between">
@@ -114,7 +122,7 @@
 <div class="modal fade" id="abrirModalEditarContactoT">
 <div class="modal-dialog">
     <div class="modal-content">
-        <div class="modal-header">
+        <div class="modal-header" style="background-color: #1254a1; color: white;">
             <h4 class="modal-title">Editar Contacto Telefono</h4>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>

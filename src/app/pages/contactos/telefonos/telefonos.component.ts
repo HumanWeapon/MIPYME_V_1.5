@@ -12,7 +12,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Usuario } from 'src/app/interfaces/seguridad/usuario';
 import * as XLSX from 'xlsx';
 import { format } from 'date-fns';
-import { es } from 'date-fns/locale'; // Importa el idioma español
+import { da, es } from 'date-fns/locale'; // Importa el idioma español
+import { ContactoService } from 'src/app/services/contacto/contacto.service';
 
 
 
@@ -24,6 +25,9 @@ import { es } from 'date-fns/locale'; // Importa el idioma español
 export class TelefonosComponent implements OnInit{
 
   getTelefono: any;
+  telefonosconcontacto: any[] = [];
+  localUser: string = '';
+  list_contactos: any[] = [];
 
 
   getDate(): string {
@@ -37,7 +41,6 @@ export class TelefonosComponent implements OnInit{
   contactoTEditando: ContactoTelefono = {
     id_telefono: 0, 
     id_contacto: 0,
-    id_tipo_telefono: 0,
     telefono: '', 
     extencion: '',
     descripcion:'',
@@ -51,7 +54,6 @@ export class TelefonosComponent implements OnInit{
   nuevoContactoT: ContactoTelefono = {
     id_telefono: 0, 
     id_contacto: 0,
-    id_tipo_telefono: 0,
     telefono: '', 
     extencion: '',
     descripcion:'',
@@ -79,11 +81,14 @@ export class TelefonosComponent implements OnInit{
     private ngZone: NgZone,
     private _bitacoraService: BitacoraService,
     private _errorService: ErrorService,
-    private _userService: UsuariosService
-    ) {}
+    private _userService: UsuariosService,
+    private _contactoService: ContactoService
+  ) {}
 
   
   ngOnInit(): void {
+    this.contactosActivos();
+    this.inicializarVariables();
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 10,
@@ -91,9 +96,10 @@ export class TelefonosComponent implements OnInit{
       responsive: true
     };
 
-    this._contactoTService.getAllContactosTelefono()
+    this._contactoTService.telefonosconcontacto()
       .subscribe((res: any) => {
-        this.listContactoT = res;
+        console.log(res);
+        this.telefonosconcontacto = res;
         this.dtTrigger.next(null);
       });
 
@@ -105,196 +111,243 @@ export class TelefonosComponent implements OnInit{
     this.dtTrigger.unsubscribe();
   }
 
-
-onInputChange(event: any, field: string) {
-  if (field === 'descripcion') {
-    const inputValue = event.target.value;
-    const uppercaseValue = inputValue.toUpperCase();
-    event.target.value = uppercaseValue;
-  }
-}
-
-// Variable de estado para alternar funciones
-
-toggleFunction(conT: any, i: number) {
-
-  // Ejecuta una función u otra según el estado
-  if (conT.estado == 1 ) {
-    this.inactivarContactoTelefono(conT, i); // Ejecuta la primera función
-  } else {
-    this.activarContactoTelefono(conT, i); // Ejecuta la segunda función
-  }
-}
-
-inactivarContactoTelefono(contactoTelefono: ContactoTelefono, i: any){
-  this._contactoTService.inactivarContactoTelefono(contactoTelefono).subscribe(data => {
-    this.inactivarBitacora(data);
-  this.toastr.success('El telefono: '+ contactoTelefono.telefono + ' ha sido inactivado')
-});
-  this.listContactoT[i].estado = 2;
-}
-
-activarContactoTelefono(contactoTelefono: ContactoTelefono, i: any){
-  this._contactoTService.activarContactoTelefono(contactoTelefono).subscribe(data => {
-    this.activarBitacora(data);
-    this.toastr.success('La telefono: '+ contactoTelefono.telefono  + ' ha sido activado')
-  });
-  this.listContactoT[i].estado = 1;
-}
-
-
-/*****************************************************************************************************/
-
-generateExcel() {
-  const headers = ['Telefono', 'Extensión', 'Descripción', 'Creador', 'Fecha de Creación', 'Estado'];
-  const data: any[][] = [];
-
-  // Recorre los datos y agrégalos a la matriz 'data'
-  this.listContactoT.forEach((conT, index) => {
-      const row = [
-          conT.telefono,
-          conT.extencion,
-          conT.descripcion,
-          conT.creado_por,
-          conT.fecha_creacion,
-          this.getEstadoText(conT.estado)
-      ];
-      data.push(row);
-  });
-
-  // Crea un nuevo libro de Excel
-  const workbook = XLSX.utils.book_new();
-  const worksheet = XLSX.utils.aoa_to_sheet([headers, ...data]);
-
-  // Agrega la hoja al libro de Excel
-  XLSX.utils.book_append_sheet(workbook, worksheet, 'Contactos');
-
-  // Guarda el libro de Excel como un archivo binario
-  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-  const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-
-  // Crea un objeto URL para el blob
-  const url = window.URL.createObjectURL(blob);
-
-  // Crea un enlace para descargar el archivo Excel
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'My Pyme-Reporte Telefonos.xlsx';
-
-  document.body.appendChild(a);
-  a.click();
-
-  // Limpia el objeto URL creado
-  window.URL.revokeObjectURL(url);
-  document.body.removeChild(a);
-}
-
-/*****************************************************************************************************/
-
-generatePDF() {
-const { jsPDF } = require("jspdf");
-const doc = new jsPDF();
-const data: any[][] = [];
-const headers = ['Telefono', 'Extensión', 'Descripción', 'Creador', 'Fecha de Creación', 'Estado'];
-
-// Agregar el logo al PDF
-const logoImg = new Image();
-logoImg.onload = () => {
-  // Dibujar el logo en el PDF
-  doc.addImage(logoImg, 'PNG', 10, 10, 50, 20); // Ajusta las coordenadas y dimensiones según tu diseño
-
-  // Agregar los comentarios al PDF centrados horizontalmente
-  const centerX = doc.internal.pageSize.getWidth() / 2;
-  doc.setFontSize(12);
-  doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
-  doc.text("Reporte de Telefonos", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
-  doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
-
-  // Recorre los datos y agrégalos a la matriz 'data'
-  this.listContactoT.forEach((conT, index) => {
-    const row = [
-      conT.telefono,
-      conT.extencion,
-      conT.descripcion,
-      conT.creado_por,
-      conT.fecha_creacion,
-      this.getEstadoText(conT.estado)
-    ];
-    data.push(row);
-  });
-
-  // Agregar la tabla al PDF
-  doc.autoTable({
-    head: [headers],
-    body: data,
-    startY: 70 // Ajusta la posición inicial de la tabla según tu diseño
-  });
-
-  // Guardar el PDF
-  doc.save('My Pyme-Reporte Contactos.pdf');
-};
-logoImg.src = '/assets/dist/img/pym.png'; // Ruta del logo
-}
-
-getCurrentDate(): string {
-const currentDate = new Date();
-return currentDate.toLocaleDateString(); // Retorna la fecha actual en formato local
-}
-
-getEstadoText(estado: number): string {
-switch (estado) {
-  case 1:
-    return 'ACTIVO';
-  case 2:
-    return 'INACTIVO';
-  case 3:
-    return 'BLOQUEADO';
-  case 4:
-    return 'VENCIDO';
-  default:
-    return 'Desconocido';
-}
-}
-
-/**************************************************************/
-
-
-  agregarNuevoContactoT() {
-
+  inicializarVariables(){
     const userLocal = localStorage.getItem('usuario');
     if (userLocal){
-    this.nuevoContactoT = {
-      id_telefono: 0, 
-      id_contacto: 0,
-      id_tipo_telefono: 0,
-      telefono: this.nuevoContactoT.telefono, 
-      extencion: this.nuevoContactoT.extencion,
-      descripcion:this.nuevoContactoT.descripcion,
-      creado_por: userLocal,
-      fecha_creacion: new Date(), 
-      modificado_por: userLocal,
-      fecha_modificacion: new Date(),
-      estado: 0,
-    };
+      this.localUser = userLocal
+    }
+  }
 
-    this._contactoTService.addContactoT(this.nuevoContactoT).subscribe({
-      next: (data) => {
-        this.insertBitacora(data);
-        this.toastr.success('Contacto agregado con éxito');
+  onInputChange(event: any, field: string) {
+    if (field === 'descripcion') {
+      const inputValue = event.target.value;
+      const uppercaseValue = inputValue.toUpperCase();
+      event.target.value = uppercaseValue;
+    }
+  }
+
+  // Variable de estado para alternar funciones
+
+  toggleFunction(conT: any, i: number) {
+
+    // Ejecuta una función u otra según el estado
+    if (conT.estado == 1 ) {
+      this.inactivarContactoTelefono(conT, i); // Ejecuta la primera función
+    } else {
+      this.activarContactoTelefono(conT, i); // Ejecuta la segunda función
+    }
+  }
+
+  contactosActivos(){
+    this._contactoService.getcontactosActivos().subscribe({
+      next: (data) =>{
+        this.list_contactos = data;
       },
       error: (e: HttpErrorResponse) => {
         this._errorService.msjError(e);
       }
     });
   }
-}
+
+  inactivarContactoTelefono(contactoTelefono: any, i: any){
+    const inactivarTelefono: ContactoTelefono = {
+      id_telefono: contactoTelefono.id_telefono,
+      id_contacto: contactoTelefono.id_contacto,
+      telefono: contactoTelefono.telefono,
+      extencion: contactoTelefono.extencion,
+      descripcion: contactoTelefono.descripcion,
+      creado_por: contactoTelefono.creado_por,
+      fecha_creacion: contactoTelefono.fecha_creacion,
+      modificado_por: this.localUser,
+      fecha_modificacion: new Date(),
+      estado: 2
+    };
+    this._contactoTService.inactivarContactoTelefono(inactivarTelefono).subscribe(data => {
+      this.inactivarBitacora(data);
+    this.toastr.success('El telefono: '+ contactoTelefono.telefono + ' ha sido inactivado')
+  });
+    this.telefonosconcontacto[i].estado = 2;
+    this.telefonosconcontacto[i].modificado_por = this.localUser;
+  }
+
+  activarContactoTelefono(contactoTelefono: any, i: any){
+    const activarTelefono: ContactoTelefono = {
+      id_telefono: contactoTelefono.id_telefono,
+      id_contacto: contactoTelefono.id_contacto,
+      telefono: contactoTelefono.telefono,
+      extencion: contactoTelefono.extencion,
+      descripcion: contactoTelefono.descripcion,
+      creado_por: contactoTelefono.creado_por,
+      fecha_creacion: contactoTelefono.fecha_creacion,
+      modificado_por: this.localUser,
+      fecha_modificacion: new Date(),
+      estado: 1
+    }
+    this._contactoTService.activarContactoTelefono(activarTelefono).subscribe(data => {
+      this.activarBitacora(data);
+      this.toastr.success('La telefono: '+ contactoTelefono.telefono  + ' ha sido activado')
+    });
+    this.telefonosconcontacto[i].estado = 1;
+    this.telefonosconcontacto[i].modificado_por = this.localUser;
+  }
+
+
+  /*****************************************************************************************************/
+
+  generateExcel() {
+    const headers = ['Telefono', 'Extensión', 'Descripción', 'Creador', 'Fecha de Creación', 'Estado'];
+    const data: any[][] = [];
+
+    // Recorre los datos y agrégalos a la matriz 'data'
+    this.listContactoT.forEach((conT, index) => {
+        const row = [
+            conT.telefono,
+            conT.extencion,
+            conT.descripcion,
+            conT.creado_por,
+            conT.fecha_creacion,
+            this.getEstadoText(conT.estado)
+        ];
+        data.push(row);
+    });
+
+    // Crea un nuevo libro de Excel
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.aoa_to_sheet([headers, ...data]);
+
+    // Agrega la hoja al libro de Excel
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Contactos');
+
+    // Guarda el libro de Excel como un archivo binario
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+    // Crea un objeto URL para el blob
+    const url = window.URL.createObjectURL(blob);
+
+    // Crea un enlace para descargar el archivo Excel
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'My Pyme-Reporte Telefonos.xlsx';
+
+    document.body.appendChild(a);
+    a.click();
+
+    // Limpia el objeto URL creado
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  }
+
+/*****************************************************************************************************/
+
+  generatePDF() {
+  const { jsPDF } = require("jspdf");
+  const doc = new jsPDF();
+  const data: any[][] = [];
+  const headers = ['Telefono', 'Extensión', 'Descripción', 'Creador', 'Fecha de Creación', 'Estado'];
+
+  // Agregar el logo al PDF
+  const logoImg = new Image();
+  logoImg.onload = () => {
+    // Dibujar el logo en el PDF
+    doc.addImage(logoImg, 'PNG', 10, 10, 50, 20); // Ajusta las coordenadas y dimensiones según tu diseño
+
+    // Agregar los comentarios al PDF centrados horizontalmente
+    const centerX = doc.internal.pageSize.getWidth() / 2;
+    doc.setFontSize(12);
+    doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+    doc.text("Reporte de Telefonos", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+    doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+
+    // Recorre los datos y agrégalos a la matriz 'data'
+    this.listContactoT.forEach((conT, index) => {
+      const row = [
+        conT.telefono,
+        conT.extencion,
+        conT.descripcion,
+        conT.creado_por,
+        conT.fecha_creacion,
+        this.getEstadoText(conT.estado)
+      ];
+      data.push(row);
+    });
+
+    // Agregar la tabla al PDF
+    doc.autoTable({
+      head: [headers],
+      body: data,
+      startY: 70 // Ajusta la posición inicial de la tabla según tu diseño
+    });
+
+    // Guardar el PDF
+    doc.save('My Pyme-Reporte Contactos.pdf');
+  };
+  logoImg.src = '/assets/dist/img/pym.png'; // Ruta del logo
+  }
+
+  getCurrentDate(): string {
+  const currentDate = new Date();
+  return currentDate.toLocaleDateString(); // Retorna la fecha actual en formato local
+  }
+
+  getEstadoText(estado: number): string {
+  switch (estado) {
+    case 1:
+      return 'ACTIVO';
+    case 2:
+      return 'INACTIVO';
+    case 3:
+      return 'BLOQUEADO';
+    case 4:
+      return 'VENCIDO';
+    default:
+      return 'Desconocido';
+  }
+  }
+
+  /**************************************************************/
+
+
+  agregarNuevoContactoT() {
+    this.nuevoContactoT = {
+      id_telefono: 0, 
+      id_contacto: this.nuevoContactoT.id_contacto,
+      telefono: this.nuevoContactoT.telefono, 
+      extencion: this.nuevoContactoT.extencion,
+      descripcion:this.nuevoContactoT.descripcion,
+      creado_por: this.localUser,
+      fecha_creacion: new Date(), 
+      modificado_por: this.localUser,
+      fecha_modificacion: new Date(),
+      estado: 1,
+    }
+    // Validar si el teléfono y la extensión contienen solo números y espacios en blanco
+    const telefonoValido = /^[0-9\s]+$/.test(this.nuevoContactoT.telefono);
+    const extencionValida = /^[0-9\s]+$/.test(this.nuevoContactoT.extencion);
+    if (!telefonoValido || !extencionValida) {
+      this.toastr.warning('El teléfono y la extensión deben contener solo números');
+  } else if (!this.nuevoContactoT.telefono || !this.nuevoContactoT.id_contacto) {
+      this.toastr.warning('Campos incompletos');
+  } else {
+      this._contactoTService.addContactoT(this.nuevoContactoT).subscribe({
+          next: (data) => {
+              this.telefonosconcontacto.push(data);
+              console.log(data);
+              this.insertBitacora(data);
+              this.toastr.success('Contacto agregado con éxito');
+          },
+          error: (e: HttpErrorResponse) => {
+              this._errorService.msjError(e);
+          }
+      });
+  }
+  }
 
 
   obtenerIdContactoT(contactoT: ContactoTelefono, i: any){
     this.contactoTEditando = {
       id_telefono: contactoT.id_telefono, 
       id_contacto: contactoT.id_contacto,
-      id_tipo_telefono: contactoT. id_tipo_telefono,
       telefono: contactoT.telefono, 
       extencion: contactoT.extencion,
       descripcion: contactoT.descripcion,

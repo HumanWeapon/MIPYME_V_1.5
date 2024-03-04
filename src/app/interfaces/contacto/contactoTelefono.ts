@@ -1,7 +1,6 @@
 export interface ContactoTelefono {
     id_telefono: number, 
     id_contacto: number,
-    id_tipo_telefono: number,
     telefono: string, 
     extencion: string,
     descripcion: string,

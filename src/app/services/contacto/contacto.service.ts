@@ -67,6 +67,11 @@ export class ContactoService {
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
     return this.http.post<Contacto>(`${this.myAppUrl}${this.myApiUrl}/updateContacto`, contacto, { headers: headers })
   }
+  getcontactosActivos(): Observable<any[]> {
+    const token = localStorage.getItem('token')
+    const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
+    return this.http.get<any[]>(`${this.myAppUrl}${this.myApiUrl}/getcontactosActivos`, { headers: headers })
+   }
 }
 
 

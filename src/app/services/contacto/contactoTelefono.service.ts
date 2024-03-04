@@ -20,22 +20,10 @@ export class ContactoTService {
 
    }
 
-
-
    addContactoT(contactoT: ContactoTelefono): Observable<any> {
-    const nuevoContactoT = {
-        id_telefono: contactoT.id_telefono, 
-        id_tipo_telefono: contactoT. id_tipo_telefono,
-        telefono: contactoT.telefono, 
-        extencion: contactoT.extencion,
-        descripcion: contactoT.descripcion,
-        creado_por: contactoT.creado_por, 
-        fecha_creacion: contactoT.fecha_creacion, 
-        modificado_por: contactoT.modificado_por, 
-        fecha_modificacion: contactoT.fecha_modificacion,
-        estado: contactoT.estado,
-      };
-      return this.http.post<ContactoTelefono>(`${this.myAppUrl}${this.myApiUrl}/postContactoTelefono`, nuevoContactoT)
+      const token = localStorage.getItem('token')
+      const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
+      return this.http.post<ContactoTelefono>(`${this.myAppUrl}${this.myApiUrl}/postContactoTelefono`, contactoT, { headers: headers })
   }
 
   
@@ -76,6 +64,11 @@ export class ContactoTService {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.get<any[]>(`${this.myAppUrl}${this.myApiUrl}/telefonosdeContactosPorId/${id}`, { headers: headers });
   }
+  telefonosconcontacto(): Observable<any[]> {
+    const token = localStorage.getItem('token')
+    const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
+    return this.http.get<any[]>(`${this.myAppUrl}${this.myApiUrl}/telefonosconcontacto`, { headers: headers })
+   }
 }
 /*                                          FRANKLIN ALEXANDER MURILLO CRUZ
                                                 CUENTA: 20151021932
