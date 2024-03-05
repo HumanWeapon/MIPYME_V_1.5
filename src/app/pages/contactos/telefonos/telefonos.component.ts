@@ -199,7 +199,7 @@ export class TelefonosComponent implements OnInit{
     const data: any[][] = [];
 
     // Recorre los datos y agrégalos a la matriz 'data'
-    this.listContactoT.forEach((conT, index) => {
+    this.telefonosconcontacto.forEach((conT, index) => {
         const row = [
             conT.telefono,
             conT.extencion,
@@ -244,7 +244,7 @@ export class TelefonosComponent implements OnInit{
   const { jsPDF } = require("jspdf");
   const doc = new jsPDF();
   const data: any[][] = [];
-  const headers = ['Telefono', 'Extensión', 'Descripción', 'Creador', 'Fecha de Creación', 'Estado'];
+  const headers = ['Telefono', 'Extensión', 'Descripción', 'Creado por', 'Fecha de Creación', 'Modificado por', 'Fecha de modificación', 'Estado'];
 
   // Agregar el logo al PDF
   const logoImg = new Image();
@@ -260,13 +260,15 @@ export class TelefonosComponent implements OnInit{
     doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
 
     // Recorre los datos y agrégalos a la matriz 'data'
-    this.listContactoT.forEach((conT, index) => {
+    this.telefonosconcontacto.forEach((conT, index) => {
       const row = [
         conT.telefono,
         conT.extencion,
         conT.descripcion,
         conT.creado_por,
         conT.fecha_creacion,
+        conT.modificado_por,
+        conT.fecha_modificacion,
         this.getEstadoText(conT.estado)
       ];
       data.push(row);
@@ -366,17 +368,11 @@ export class TelefonosComponent implements OnInit{
   editarContactoTelefono(){
     this._contactoTService.editarContactoTelefono(this.contactoTEditando).subscribe(data => {
       this.toastr.success('contacto editado con éxito');
-      this.listContactoT[this.indice].telefono = this.contactoTEditando.telefono;
-      this.listContactoT[this.indice].extencion = this.contactoTEditando.extencion;
-      this.listContactoT[this.indice].descripcion = this.contactoTEditando.descripcion;
-
-      
-        // Recargar la página
-        location.reload();
-        // Actualizar la vista
-        this.ngZone.run(() => {        
-        });
-    
+      this.telefonosconcontacto[this.indice].telefono = this.contactoTEditando.telefono;
+      this.telefonosconcontacto[this.indice].extencion = this.contactoTEditando.extencion;
+      this.telefonosconcontacto[this.indice].descripcion = this.contactoTEditando.descripcion.toUpperCase();
+      this.telefonosconcontacto[this.indice].nombre = data.contacto.toUpperCase();
+      console.log(data);
     });
   }
 
