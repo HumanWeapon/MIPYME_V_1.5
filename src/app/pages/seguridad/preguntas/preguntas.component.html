@@ -6,10 +6,9 @@
               <div class="card">
                 <div class="card-header">
                   <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarPregunta">
-                    <i class="fas fa-user-plus"></i> Nuevo</button>
+                    <i class="fas fa-plus"></i> Nuevo</button>
                     <button type="button" class="btn btn-primary custom-print-button btn-danger" title="Generar el Reporte" data-toggle="modal" data-target="#PDFPreguntas">
                       <i class="fas fa-file-pdf mr-2"></i>PDF</button>
-                      
                       <button type="button" class="btn btn-primary custom-print-button btn-success" title="Generar el Reporte en Excel" data-toggle="modal" data-target="#ExcelPreguntas">
                         <i class="fas fa-file-excel mr-2"></i>Excel
                     </button>
@@ -22,7 +21,9 @@
                           <th>Codigo</th>
                           <th>Pregunta</th>
                           <th>Estado</th>
+                          <th>Creador</th>
                           <th>Fecha Creación</th>
+                          <th>Modificador</th>
                           <th>Fecha Modificacion</th>
                           <th>Aciones</th>
                         </tr>
@@ -32,11 +33,13 @@
                           <td>{{ question.id_pregunta }}</td>
                           <td>{{ question.pregunta }}</td>
                           <td>
-                            <ng-container *ngIf="question.estado_pregunta === 1">Activo</ng-container>
-                            <ng-container *ngIf="question.estado_pregunta === 2">Inactivo</ng-container>
+                            <ng-container *ngIf="question.estado_pregunta == 1">ACTIVO</ng-container>
+                            <ng-container *ngIf="question.estado_pregunta == 2">INACTIVO</ng-container>
                           
                           </td>
+                          <td>{{ question.creado_por }}</td>
                           <td>{{ question.fecha_creacion }}</td>
+                          <td>{{ question.modificado_por }}</td>
                           <td>{{ question.fecha_modificacion }}</td>
                             <td class="text-center">
                               <div class="btn-group">
@@ -83,14 +86,14 @@
               <form (submit)="agregarNuevoPregunta()">
                   <div class="form-group">
                       <label for="nuevoPregunta">Nombre Pregunta:</label>
-                      <input type="text" [(ngModel)]="nuevoPregunta.pregunta" name="nuevoPregunta.pregunta" class="form-control" id="nuevoUsuario" placeholder="Nombre de usuario">
+                      <input type="text" [(ngModel)]="newQuestion.pregunta" name="nuevoPregunta.pregunta" class="form-control" id="nuevoUsuario" placeholder="Nombre de usuario">
                   </div>
                  
               </form>
           </div>
           <div class="modal-footer justify-content-between">
               <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-              <button type="button" (click)="agregarNuevoPregunta()" class="btn btn-success">Guardar</button>
+              <button type="button" (click)="agregarNuevoPregunta()" class="btn btn-success" data-dismiss="modal">Guardar</button>
           </div>
       </div>
   </div>
@@ -117,7 +120,7 @@
               <form>
                 <div class="form-group">
                     <label for="preguntaEditando">Nombre Pregunta:</label>
-                    <input type="text" [(ngModel)]="preguntaEditando.pregunta" name="preguntaEditando.pregunta" class="form-control" id="editarPregunta" placeholder="Pregunta">
+                    <input type="text" [(ngModel)]="editQuestion.pregunta" name="preguntaEditando.pregunta" class="form-control" id="editarPregunta" placeholder="Pregunta">
                 </div>
                
               </form>
@@ -165,8 +168,8 @@
                 <th>Codigo</th>
                 <th>Pregunta</th>
                 <th>Estado</th>
+                <th>Creador</th>
                 <th>Fecha de Creación</th>
-                <th>Fecha de Modificación</th>
               </tr>
             </thead>
             <tbody>
@@ -174,11 +177,11 @@
                 <td>{{ question.id_pregunta }}</td>
                 <td>{{ question.pregunta }}</td>
                 <td>
-                  <ng-container *ngIf="question.estado_pregunta === 1">Activo</ng-container>
-                  <ng-container *ngIf="question.estado_pregunta === 2">Inactivo</ng-container>
+                  <ng-container *ngIf="question.estado_pregunta == 1">ACTIVO</ng-container>
+                  <ng-container *ngIf="question.estado_pregunta == 2">INACTIVO</ng-container>
                 </td>
+                <td>{{ question.creado_por }}</td>
                 <td>{{ question.fecha_creacion }}</td>
-                <td>{{ question.fecha_modificacion }}</td>
               </tr>
             </tbody>
           </table>
@@ -213,18 +216,17 @@
             <i class="fas fa-file-excel"></i>  Generar Excel</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
         </div>
-  
-        <!-- Contenido del modal -->
-        <div class="modal-body">
+         <!-- Contenido del modal -->
+         <div class="modal-body">
           <!-- Aquí puedes colocar tu DataTable o cualquier otro contenido que desees mostrar -->
           <table class="table table-striped">
             <thead class="thead-dark">
               <tr>
-                <th>Código</th>
+                <th>Codigo</th>
                 <th>Pregunta</th>
                 <th>Estado</th>
+                <th>Creador</th>
                 <th>Fecha de Creación</th>
-                <th>Fecha de Modificación</th>
               </tr>
             </thead>
             <tbody>
@@ -232,22 +234,19 @@
                 <td>{{ question.id_pregunta }}</td>
                 <td>{{ question.pregunta }}</td>
                 <td>
-                  <ng-container *ngIf="question.estado_pregunta === 1">Activo</ng-container>
-                  <ng-container *ngIf="question.estado_pregunta === 2">Inactivo</ng-container>
+                  <ng-container *ngIf="question.estado_pregunta == 1">ACTIVO</ng-container>
+                  <ng-container *ngIf="question.estado_pregunta == 2">INACTIVO</ng-container>
                 </td>
+                <td>{{ question.creado_por }}</td>
                 <td>{{ question.fecha_creacion }}</td>
-                <td>{{ question.fecha_modificacion }}</td>
               </tr>
             </tbody>
           </table>
         </div>
-  
       </div>
     </div>
   </div>
   
-
-
 
 
 

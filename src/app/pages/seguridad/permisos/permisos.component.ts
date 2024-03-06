@@ -23,7 +23,8 @@ import { es } from 'date-fns/locale'; // Importa el idioma español
   styleUrls: ['./permisos.component.css']
 })
 export class PermisosComponent implements OnInit, OnDestroy {
-  permisos: Permisos | undefined; 
+
+  permisos: any; 
 
   getDate(): string {
     // Obtener la fecha actual
@@ -40,10 +41,10 @@ export class PermisosComponent implements OnInit, OnDestroy {
     id_permisos: 0,
     id_rol: 0,
     id_objeto: 0,
-    permiso_insercion: false,
-    permiso_eliminacion: false,
-    permiso_actualizacion: false,
     permiso_consultar: false,
+    permiso_insercion: false,
+    permiso_actualizacion: false,
+    permiso_eliminacion: false,
     estado_permiso: 0,
     creado_por: '',
     fecha_creacion: new Date(),
@@ -55,10 +56,10 @@ export class PermisosComponent implements OnInit, OnDestroy {
     id_permisos: 0,
     id_rol: 0,
     id_objeto: 0,
-    permiso_insercion: false,
-    permiso_eliminacion: false,
-    permiso_actualizacion: false,
     permiso_consultar: false,
+    permiso_insercion: false,
+    permiso_actualizacion: false,
+    permiso_eliminacion: false,
     estado_permiso: 0,
     creado_por: '',
     fecha_creacion: new Date(),
@@ -67,13 +68,13 @@ export class PermisosComponent implements OnInit, OnDestroy {
   };
 
   deletePermiso: Permisos = {
-    id_permisos: 0, 
-    id_rol: 0, 
+    id_permisos: 0,
+    id_rol: 0,
     id_objeto: 0,
+    permiso_consultar: false,
     permiso_insercion: false,
-    permiso_eliminacion: false,
     permiso_actualizacion: false,
-    permiso_consultar:false,
+    permiso_eliminacion: false,
     estado_permiso: 0,
     creado_por: '',
     fecha_creacion: new Date(),
@@ -156,16 +157,19 @@ toggleFunction(perm: any, i: number) {
 }
 
 
+
+
 inactivarPermiso(permisos: any, i: number){
   this._permService.inactivarPermiso(permisos).subscribe(data => {
-    this.toastr.success('El rol: '+ permisos.permiso+ ' ha sido inactivado');
+    this.toastr.success('El Permiso: '+ permisos.permiso+ ' ha sido inactivado');
     this.inactivarBitacora(data);
   });
   this.listPermisos[i].estado_permiso = 2;
 }
+
 activarPermiso(permisos: any, i: number){
   this._permService.activarPermiso(permisos).subscribe(data => {
-    this.toastr.success('El rol: '+ permisos.permiso+ ' ha sido activado');
+    this.toastr.success('El Permiso: '+ permisos.permiso+ ' ha sido activado');
     this.activarBitacora(data);
     
   });
@@ -310,10 +314,10 @@ activarPermiso(permisos: any, i: number){
         id_permisos: 0,
         id_rol: 0,
         id_objeto: 0,
-        permiso_insercion: false,
-        permiso_eliminacion: false,
-        permiso_actualizacion: false,
         permiso_consultar: false,
+        permiso_insercion: false,
+        permiso_actualizacion: false,
+        permiso_eliminacion: false,
         estado_permiso: 0,
         creado_por: LocalUser,
         fecha_creacion: new Date(),
@@ -337,10 +341,10 @@ activarPermiso(permisos: any, i: number){
       id_permisos: permisos.id_permisos,
       id_rol: permisos.id_rol,
       id_objeto: permisos.id_objeto,
-      permiso_insercion: permisos.permiso_insercion,
-      permiso_eliminacion: permisos.permiso_eliminacion,
-      permiso_actualizacion: permisos.permiso_actualizacion,
       permiso_consultar: permisos.permiso_consultar,
+      permiso_insercion: permisos.permiso_insercion,
+      permiso_actualizacion: permisos.permiso_actualizacion,
+      permiso_eliminacion: permisos.permiso_eliminacion,
       estado_permiso: permisos.estado_permiso,
       creado_por: permisos.creado_por,
       fecha_creacion: permisos.fecha_creacion,

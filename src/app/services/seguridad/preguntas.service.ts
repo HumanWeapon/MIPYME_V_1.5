@@ -23,7 +23,7 @@ export class PreguntasService {
    }
 
 
-
+/*
    addPregunta(preguntas: Preguntas): Observable<any> {
     const nuevoPregunta = {
 
@@ -38,6 +38,13 @@ export class PreguntasService {
       const token = localStorage.getItem('token')
       const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
       return this.http.post<Preguntas>(`${this.myAppUrl}${this.myApiUrl}/postPregunta`, nuevoPregunta, { headers: headers })
+  }
+*/
+
+  addPregunta(preguntas: Preguntas): Observable<any> {
+      const token = localStorage.getItem('token')
+      const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
+      return this.http.post<Preguntas>(`${this.myAppUrl}${this.myApiUrl}/postPregunta`, preguntas, { headers: headers })
   }
 
   

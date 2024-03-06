@@ -11,6 +11,7 @@ import { ErrorService } from 'src/app/services/error.service';
 import { BitacoraService } from 'src/app/services/administracion/bitacora.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Usuario } from 'src/app/interfaces/seguridad/usuario';
+import { DatePipe } from '@angular/common';
 import * as XLSX from 'xlsx';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale'; // Importa el idioma español
@@ -24,6 +25,7 @@ import { es } from 'date-fns/locale'; // Importa el idioma español
 })
 export class PreguntasComponent implements OnInit{
   getPregunta: any;
+
   
 
   getDate(): string {
@@ -33,7 +35,7 @@ export class PreguntasComponent implements OnInit{
     return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
 }
 
-  preguntaEditando: Preguntas = {
+editQuestion: Preguntas = {
     id_pregunta: 0,
     pregunta: '',
     estado_pregunta: 0,
@@ -44,7 +46,7 @@ export class PreguntasComponent implements OnInit{
 
   };
 
-  nuevoPregunta: Preguntas = {
+  newQuestion: Preguntas = {
     id_pregunta: 0,
     pregunta: '',
     estado_pregunta: 0,
@@ -72,7 +74,7 @@ export class PreguntasComponent implements OnInit{
     private ngZone: NgZone, 
     private _bitacoraService: BitacoraService,
     private _errorService: ErrorService,
-    private _userService: UsuariosService
+    private _userService: UsuariosService,
     ) { }
 
 
@@ -118,6 +120,7 @@ inactivarPregunta(pregunta: any, i: number){
 });
     this.listPreguntas[i].estado_pregunta = 2;
   }
+
   activarPregunta(pregunta: any, i: number){
     this._questionService.activarPregunta(pregunta).subscribe(data => {
     this.toastr.success('La pregunta: '+ pregunta.pregunta+ ' ha sido activado');
@@ -237,61 +240,65 @@ inactivarPregunta(pregunta: any, i: number){
   
 
 /**************************************************************/
- 
 
-  agregarNuevoPregunta() {
 
-    this.nuevoPregunta = {
+
+
+agregarNuevoPregunta() {
+  const LocalUser = localStorage.getItem('usuario');
+  if (LocalUser){
+
+    this.newQuestion = {
       id_pregunta: 0,
-      pregunta: this.nuevoPregunta.pregunta,
+      pregunta: this.newQuestion.pregunta,
       estado_pregunta: 1,
-      creado_por: 'SYSTEM',
-      fecha_creacion: new Date() ,
-      modificado_por: 'SYSTEM' ,
-      fecha_modificacion: new Date() 
-
+      creado_por: LocalUser,
+      fecha_creacion: new Date(),
+      modificado_por: LocalUser,
+      fecha_modificacion: new Date(),
+      
     };
 
-    this._questionService.addPregunta(this.nuevoPregunta).subscribe(data => {
-      this.insertBitacora(data);
-      this.toastr.success('Pregunta agregado con éxito');
-
-        // Recargar la página
-        location.reload();
-        // Actualizar la vista
-        this.ngZone.run(() => {        
-        });
-
+    this._questionService.addPregunta(this.newQuestion).subscribe({
+      next: (data) => {
+        this.insertBitacora(data);
+        this.toastr.success('Pregunta agregado con éxito')
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
     });
-
   }
+}
 
-
-  obtenerIdPregunta(preguntas: Preguntas, i: any){
-    this.preguntaEditando = {  
-      id_pregunta: preguntas.id_pregunta,
-      pregunta: preguntas.pregunta,
-      estado_pregunta: preguntas.estado_pregunta,
-      creado_por: preguntas.creado_por,
-      fecha_creacion: preguntas.fecha_creacion ,
-      modificado_por: preguntas.modificado_por,
-      fecha_modificacion: preguntas.fecha_modificacion 
-
+obtenerIdPregunta(pregunta: Preguntas, i: any) {
+  const localuser = localStorage.getItem('usuario');
+  if(localuser){
+    this.editQuestion = {
+      id_pregunta: pregunta.id_pregunta,
+      pregunta: pregunta.pregunta,
+      estado_pregunta: pregunta.estado_pregunta,
+      creado_por: pregunta.creado_por,
+      fecha_creacion: pregunta.fecha_creacion ,
+      modificado_por: pregunta.modificado_por,
+      fecha_modificacion: pregunta.fecha_modificacion  
+     
     };
-    this.indice = i;
   }
+  this.indice = i;
+}
 
 
   editarPregunta(){
-    this._questionService.editarPregunta(this.preguntaEditando).subscribe(data => {
+    this._questionService.editarPregunta(this.editQuestion).subscribe(data => {
       this.updateBitacora(data);
       this.toastr.success('Pregunta editada con éxito');
-      this.listPreguntas[this.indice].pregunta = this.preguntaEditando.pregunta;
-
-    });
-      // Actualizar la vista
-      this.ngZone.run(() => {        
+      this.listPreguntas[this.indice].pregunta = this.editQuestion.pregunta;
+       // Actualizar la vista
+       this.ngZone.run(() => {        
       });
+    });
+    
   }
 
 
