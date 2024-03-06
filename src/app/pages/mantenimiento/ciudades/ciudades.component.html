@@ -7,8 +7,11 @@
                 <div class="card-header">
                   <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarCiudad">
                     <i class="fas fa-plus"></i> Nuevo</button>
-                    <button type="button" class="btn btn-primary custom-print-button btn-danger" title="Generar el Reporte" data-toggle="modal" data-target="#PDFCiudad">
+                    <button type="button" class="btn btn-primary custom-print-button btn-danger" title="Generar el Reporte" data-toggle="modal" data-target="#PDFCiudades">
                       <i class="fas fa-file-pdf mr-2"></i>PDF</button>
+                      <button type="button" class="btn btn-primary custom-print-button btn-success" title="Generar el Reporte en Excel" data-toggle="modal" data-target="#ExcelCiudad">
+                        <i class="fas fa-file-excel mr-2"></i>Excel
+                    </button>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
@@ -43,8 +46,8 @@
                             <td class="text-center">
                               <div class="btn-group">
                                 <div class="form-check form-switch ml-4">
-                                  <input class="form-check-input" (click)="toggleFunction(ciu, i)" [title]="ciu.estado === 1 ? 'Desactivar' : 'Activar'" type="checkbox" 
-                                    role="switch" id="flexSwitchCheckChecked" [checked]="ciu.estado === 1">
+                                  <input class="form-check-input" (click)="toggleFunction(ciu, i)" [title]="ciu.estado == 1 ? 'Desactivar' : 'Activar'" type="checkbox" 
+                                    role="switch" id="flexSwitchCheckChecked" [checked]="ciu.estado == 1">
                                 </div>
                                   <button type="button" (click)="obtenerIdCiudad(ciu, i)" title="Editar Ciudad" data-toggle="modal" data-target="#abrirModalEditarCiudad"data-toggle="modal" data-target="#abrirModalEditarCiudad" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
                                 </div>
@@ -144,17 +147,92 @@
   <!-- /Actualizar ciudad Form -->
 
 
-  <!-- Form Ver PDF-->
-<div class="modal fade" id="PDFCiudad">
+<!-- Form Ver PDF-->
+<div class="modal fade" id="PDFCiudades">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+
+      <div class="modal-header" style="display: flex; align-items: center;">
+        <div style="flex: 1; text-align: left; margin-right: 20px;">
+            <h1>Utilidad Mi Pyme</h1>
+            <h4>Reporte de Usuario</h4> 
+            <!-- Puedes agregar más detalles del reporte aquí si es necesario -->
+            <p>Fecha: {{ getDate() }}</p>
+        </div>
+        <div style="flex: 0;">
+            <img src="\assets\dist\img\pym.png" alt="Logo de Mi Pyme" style="width: 200px; height: auto;">
+        </div>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary customn-print-button btn-danger" (click)="generatePDF()">
+          <i class="fas fa-file-pdf"></i>  Generar PDF</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      </div>
+       <!-- Contenido del modal -->
+       <div class="modal-body">
+        <!-- Aquí puedes colocar tu DataTable o cualquier otro contenido que desees mostrar -->
+        <table class="table table-striped">
+          <thead class="thead-dark">
+            <tr>
+              <th>Ciudad</th>
+              <th>Descripción</th>
+              <th>Creado</th>
+              <th>Fecha Creación</th>
+             
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let ciu of listCiudades; let i = index">
+              <td>{{ ciu.ciudad }}</td>
+              <td>{{ ciu.descripcion }}</td>
+              <td>{{ ciu.creado_por}}</td>
+              <td>{{ ciu.fecha_creacion }}</td>
+              
+              <td>{{ getEstadoText(ciu.estado) }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+      <!-- Pie del modal -->
+    
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+<!-- Form Ver Excel-->
+<div class="modal fade" id="ExcelCiudad">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
 
       <!-- Cabecera del modal -->
-      <div class="modal-header">
-        <h4 class="modal-title" >Reporte Ciudades</h4>
+      <div class="modal-header" style="display: flex; align-items: center;">
+        <div style="flex: 1; text-align: left; margin-right: 20px;">
+            <h1>Utilidad Mi Pyme</h1>
+            <h4>Reporte de Ciudades</h4> 
+            <!-- Puedes agregar más detalles del reporte aquí si es necesario -->
+            <p>Fecha: {{ getDate() }}</p>
+        </div>
+        <div style="flex: 0;">
+            <img src="\assets\dist\img\pym.png" alt="Logo de Mi Pyme" style="width: 200px; height: auto;">
+        </div>
         <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
 
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary customn-print-button btn-success" (click)="generateExcel()">
+        <i class="fas fa-file-excel"></i>  Generar Excel</button>
+      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+    </div>
       <!-- Contenido del modal -->
       <div class="modal-body">
         <!-- Aquí puedes colocar tu DataTable o cualquier otro contenido que desees mostrar -->
@@ -165,8 +243,7 @@
               <th>Descripción</th>
               <th>Creado</th>
               <th>Fecha Creación</th>
-              <th>Modificado</th>
-              <th>Fecha Modificación</th>
+             
               <th>Estado</th>
             </tr>
           </thead>
@@ -176,26 +253,18 @@
               <td>{{ ciu.descripcion }}</td>
               <td>{{ ciu.creado_por}}</td>
               <td>{{ ciu.fecha_creacion }}</td>
-              <td>{{ ciu.modificado_por}}</td>
-              <td>{{ ciu.fecha_modificacion}}</td>
+              
               <td>{{ getEstadoText(ciu.estado) }}</td>
             </tr>
           </tbody>
         </table>
 
       <!-- Pie del modal -->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary customn-print-button btn-danger" (click)="generatePDF()">
-          <i class="fas fa-file-pdf"></i>  Generar PDF</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+    
       </div>
     </div>
   </div>
 </div>
-
-
-
-
 
 
 

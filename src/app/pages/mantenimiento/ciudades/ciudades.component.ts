@@ -13,6 +13,9 @@ import { Usuario } from 'src/app/interfaces/seguridad/usuario';
 import { PaisesService } from 'src/app/services/empresa/paises.service';
 import { Paises } from 'src/app/interfaces/empresa/paises';
 import { da } from 'date-fns/locale';
+import * as XLSX from 'xlsx';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale'; // Importa el idioma español
 
 
 
@@ -22,6 +25,16 @@ import { da } from 'date-fns/locale';
   styleUrls: ['./ciudades.component.css']
 })
 export class CiudadesComponent implements OnInit{
+
+  getCity: any;
+
+
+  getDate(): string {
+    // Obtener la fecha actual
+    const currentDate = new Date();
+    // Formatear la fecha en el formato deseado
+    return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
+}
 
   listPaises: Paises[] = [];
   id_pais: number = 0;
@@ -107,7 +120,7 @@ onInputChange(event: any, field: string) {
 toggleFunction(ciu: any, i: number) {
 
   // Ejecuta una función u otra según el estado
-  if (ciu.estado === 1 ) {
+  if (ciu.estado == 1 ) {
     console.log(ciu);
 
     this.inactivarCiudad(ciu, i); // Ejecuta la primera función
@@ -154,49 +167,119 @@ toggleFunction(ciu: any, i: number) {
   });
     this.listCiudades[i].estado = 1;
   }
+
+  /*****************************************************************************************************/
+
+  generateExcel() {
+    const headers = ['Ciudad', 'Descripción', 'Creador', 'Fecha de Creación', 'Estado'];
+    const data: any[][] = [];
+  
+    // Recorre los datos de tu lista de ciudades y agrégalo a la matriz 'data'
+    this.listCiudades.forEach((ciu, index) => {
+      const row = [
+        ciu.ciudad,
+        ciu.descripcion,
+        ciu.creado_por,
+        ciu.fecha_creacion,
+        this.getEstadoText(ciu.estado) // Función para obtener el texto del estado
+      ];
+      data.push(row);
+    });
+  
+    // Crea un nuevo libro de Excel
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.aoa_to_sheet([headers, ...data]);
+  
+    // Agrega la hoja al libro de Excel
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Ciudades');
+  
+    // Guarda el libro de Excel como un archivo binario
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  
+    // Crea un objeto URL para el blob
+    const url = window.URL.createObjectURL(blob);
+  
+    // Crea un enlace para descargar el archivo Excel
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'My Pyme-Reporte Ciudades.xlsx';
+  
+    document.body.appendChild(a);
+    a.click();
+  
+    // Limpia el objeto URL creado
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  }
+  
   
   /*****************************************************************************************************/
 
-generatePDF() {
-
-  const {jsPDF} = require ("jspdf");
- 
-  const doc = new jsPDF();
-  const data: any[][] =[]
-  const headers = ['Nombre Ciudad', 'Descripcion', 'Creador', 'Fecha', 'Modificado por', 'Fecha', 'Estado'];
-
-  // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
-  this.listCiudades.forEach((ciu, index) => {
-    const row = [
-      ciu.ciudad,
-      ciu.descripcion,
-      ciu.creado_por,
-      ciu.fecha_creacion,
-      ciu.modificado_por,
-      ciu.fecha_modificacion,
-      this.getEstadoText(ciu.estado) // Función para obtener el texto del estado
-    ];
-    data.push(row);
-  });
-
-  doc.autoTable({
-    head: [headers],
-    body: data,
-  });
-
-  doc.output('dataurlnewwindow', null, 'Pymes.pdf');
-}
-
-getEstadoText(estado: number): string {
-  switch (estado) {
-    case 1:
-      return 'ACTIVO';
-    case 2:
-      return 'INACTIVO';
-    default:
-      return 'Desconocido';
+  generatePDF() {
+    const { jsPDF } = require("jspdf");
+    const doc = new jsPDF();
+    const data: any[][] = [];
+    const headers = ['Ciudad', 'Descripción', 'Creador', 'Fecha de Creación', 'Estado'];
+  
+    // Agregar el logo al PDF
+    const logoImg = new Image();
+    logoImg.onload = () => {
+      // Dibujar el logo en el PDF
+      doc.addImage(logoImg, 'PNG', 10, 10, 50, 20); // Ajusta las coordenadas y dimensiones según tu diseño
+  
+      // Agregar los comentarios al PDF centrados horizontalmente
+      const centerX = doc.internal.pageSize.getWidth() / 2;
+      doc.setFontSize(12);
+      doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+      doc.text("Reporte de Ciudades", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+      doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+  
+      // Recorre los datos de tu lista de ciudades y agrégalo a la matriz 'data'
+      this.listCiudades.forEach((ciu, index) => {
+        const row = [
+          ciu.ciudad,
+          ciu.descripcion,
+          ciu.creado_por,
+          ciu.fecha_creacion,
+          this.getEstadoText(ciu.estado) // Función para obtener el texto del estado
+        ];
+        data.push(row);
+      });
+  
+      // Agregar la tabla al PDF
+      doc.autoTable({
+        head: [headers],
+        body: data,
+        startY: 70 // Ajusta la posición inicial de la tabla según tu diseño
+      });
+  
+      // Guardar el PDF
+      doc.save('My Pyme-Reporte Ciudades.pdf');
+    };
+    logoImg.src = '/assets/dist/img/pym.png'; // Ruta del logo
   }
-}
+  
+  getCurrentDate(): string {
+    const currentDate = new Date();
+    return currentDate.toLocaleDateString(); // Retorna la fecha actual en formato local
+  }
+  
+  getEstadoText(estado: number): string {
+    switch (estado) {
+      case 1:
+        return 'ACTIVO';
+      case 2:
+        return 'INACTIVO';
+      case 3:
+        return 'BLOQUEADO';
+      case 4:
+        return 'VENCIDO';
+      default:
+        return 'Desconocido';
+    }
+  }
+  
 
 
 /**************************************************************/
@@ -324,27 +407,56 @@ insertBitacora(dataCiudad: Ciudades) {
     id_usuario: this.getUser.id_usuario,
     id_objeto: 18,
     accion: 'INSERTAR',
-    descripcion: 'SE INSERTA LA CIUDAD: ' + dataCiudad.ciudad
+    descripcion: `SE AGREGÓ UNA NUEVA CIUDAD:
+                  Ciudad: ${dataCiudad.ciudad},
+                  Descripción: ${dataCiudad.descripcion}`
   };
 
   this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
-    // Puedes manejar el éxito aquí si es necesario
+    // Puedes manejar la respuesta si es necesario
   });
 }
+
 
 // Actualizar la bitácora para una ciudad
 updateBitacora(dataCiudad: Ciudades) {
-  const bitacora = {
-    fecha: new Date(),
-    id_usuario: this.getUser.id_usuario,
-    id_objeto: 18,
-    accion: 'ACTUALIZAR',
-    descripcion: 'SE ACTUALIZA LA CIUDAD: ' + dataCiudad.ciudad
-  };
-  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
-    // Puedes manejar el éxito aquí si es necesario
-  });
+  // Guardar los datos de la ciudad actual antes de actualizarlos
+  const ciudadAnterior = { ...this.getCity };
+
+  // Actualizar los datos de la ciudad
+  this.getCity = dataCiudad;
+
+  // Comparar los datos anteriores con los nuevos datos
+  const cambios = [];
+  if (ciudadAnterior.ciudad !== dataCiudad.ciudad) {
+    cambios.push(`Ciudad anterior: ${ciudadAnterior.ciudad} -> Nueva Ciudad: ${dataCiudad.ciudad}`);
+  }
+  if (ciudadAnterior.descripcion !== dataCiudad.descripcion) {
+    cambios.push(`Descripción anterior: ${ciudadAnterior.descripcion} -> Nueva Descripción: ${dataCiudad.descripcion}`);
+  }
+  // Puedes agregar más comparaciones para otros campos según tus necesidades
+
+  // Si se realizaron cambios, registrar en la bitácora
+  if (cambios.length > 0) {
+    // Crear la descripción para la bitácora
+    const descripcion = `Se actualizaron los siguientes campos:\n${cambios.join('\n')}`;
+
+    // Crear el objeto bitácora
+    const bitacora = {
+      fecha: new Date(),
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 18,
+      accion: 'ACTUALIZAR',
+      descripcion: descripcion
+    };
+
+    // Insertar la bitácora
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+      // Puedes manejar la respuesta si es necesario
+    });
+  }
 }
+
 
 // Activar la bitácora para una ciudad
 activarBitacora(dataCiudad: Ciudades) {
