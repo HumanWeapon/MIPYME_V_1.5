@@ -16,6 +16,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import * as XLSX from 'xlsx';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale'; // Importa el idioma español
+import { SubmenuData } from 'src/app/interfaces/subMenuData/subMenuData'; 
 
 @Component({
   selector: 'app-permisos',
@@ -25,6 +26,10 @@ import { es } from 'date-fns/locale'; // Importa el idioma español
 export class PermisosComponent implements OnInit, OnDestroy {
 
   permisos: any; 
+  submenusData: SubmenuData[] = [];
+  objetosPrincipales: any[] | undefined;
+  submenuSeleccionado: string | undefined;
+  objetosFiltrados: any[] | undefined; // Lista de objetos filtrados
 
   getDate(): string {
     // Obtener la fecha actual
@@ -101,6 +106,7 @@ export class PermisosComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.filtrarObjetosPorTipo();
     this.getAllObjetos();
     this.getAllRoles();
 
@@ -133,16 +139,40 @@ export class PermisosComponent implements OnInit, OnDestroy {
   }
 
   getAllRoles() {
-    this._rolesService.getAllRoles().subscribe((data: Roles[]) => {
-      this.roles = data;
+    this._rolesService.getAllRoles().subscribe(data => {
+      this.roles = data.filter(rol => rol.estado_rol == 1);
     });
+  }
+
+  filtrarObjetosPorTipo() {
+    if (this.submenuSeleccionado) {
+      // Filtrar los objetos por el tipo seleccionado (basado en el submenu)
+      this.objetosFiltrados = this.objetos.filter(objeto => objeto.tipo_objeto === this.submenuSeleccionado);
+    } else {
+      // Si no se ha seleccionado ningún submenu, mostrar todos los objetos
+      this.objetosFiltrados = this.objetos;
+    }
   }
 
   getAllObjetos() {
     this._objectService.getAllObjetos().subscribe((data: Objetos[]) => {
-      this.objetos = data;
+      this.objetos = data.filter(obj => obj.estado_objeto == 1);
+    
+      // Filtrar los objetos principales
+      this.objetosPrincipales = this.objetos.filter(obj => obj.descripcion === 'MENUSIDEBAR');
+  
+      // Filtrar los submenús y asociar los datos con cada submenu
+      this.submenusData = [
+        { descripcion: 'ADMINISTRACION', datos: this.objetos.filter(obj => obj.descripcion === 'ADMINISTRACION') },
+        { descripcion: 'SEGURIDAD', datos: this.objetos.filter(obj => obj.descripcion === 'SEGURIDAD') },
+        { descripcion: 'MANTENIMIENTO', datos: this.objetos.filter(obj => obj.descripcion === 'MANTENIMIENTO') },
+        { descripcion: 'DASHBOARD', datos: this.objetos.filter(obj => obj.descripcion === 'DASHBOARD') },
+        { descripcion: 'EMPRESAS', datos: this.objetos.filter(obj => obj.descripcion === 'EMPRESAS') },
+        { descripcion: 'PYMES', datos: this.objetos.filter(obj => obj.descripcion === 'PYMES') }
+      ];
     });
   }
+
 
 // Variable de estado para alternar funciones
 
