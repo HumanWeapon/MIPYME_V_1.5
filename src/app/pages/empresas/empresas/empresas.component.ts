@@ -55,7 +55,7 @@ export class EmpresasComponent {
   indice: any;
 
   dtOptions: DataTables.Settings = {};
-  listEmpresa: Empresa[] = [];
+  listEmpresa: any[] = [];
   data: any; 
 
   // We use this trigger because fetching the list of persons can be quite long,
@@ -143,7 +143,6 @@ agregarNuevaEmpresa() {
     next: (data) => {
       this.toastr.success('Empresa agregada con éxito');
       this.listEmpresa.push(data);
-
     },
     error: (e: HttpErrorResponse) => {
       this.handleError(e, 'Error al agregar empresa');
@@ -279,13 +278,11 @@ getEstadoText(estado: number): string {
   editarEmpresa(){
     this._empresaService.editarEmpresa(this.empresaEditando).subscribe(data => {
       this.updateBitacora(data);
+      console.log(data);
       this.toastr.success('Empresa editada con éxito');
       this.listEmpresa[this.indice].nombre_empresa = this.empresaEditando.nombre_empresa;
       this.listEmpresa[this.indice].descripcion = this.empresaEditando.descripcion;
-        // Actualizar la vista
-        this.ngZone.run(() => {        
-        });
-    
+      this.listEmpresa[this.indice].tipoEmpresa.tipo_empresa = data.tipoEmpresa.tipo_empresa;
     });
   }
 
@@ -327,7 +324,6 @@ getEstadoText(estado: number): string {
     contrasena: '',
     id_rol: 0,
     fecha_ultima_conexion: new Date(),
-    primer_ingreso: new Date(),
     fecha_vencimiento: new Date(),
     intentos_fallidos: 0
   };
@@ -348,7 +344,6 @@ getEstadoText(estado: number): string {
         contrasena: '',
         id_rol: 0,
         fecha_ultima_conexion: new Date(),
-        primer_ingreso: new Date(),
         fecha_vencimiento: new Date(),
         intentos_fallidos: 0
     }
@@ -362,7 +357,7 @@ getEstadoText(estado: number): string {
      }
    });
  }
-  insertBitacora(dataEmpresa: Empresa){
+  insertBitacora(dataEmpresa: any){
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
@@ -373,7 +368,7 @@ getEstadoText(estado: number): string {
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
   }
-  updateBitacora(dataEmpresa: Empresa){
+  updateBitacora(dataEmpresa: any){
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.usuario,
@@ -406,7 +401,7 @@ getEstadoText(estado: number): string {
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
   }
-  deleteBitacora(dataEmpresa: Empresa){
+  deleteBitacora(dataEmpresa: any){
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,

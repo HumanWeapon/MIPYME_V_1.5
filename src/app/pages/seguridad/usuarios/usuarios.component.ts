@@ -52,7 +52,6 @@ export class UsuariosComponent {
     contrasena: '',
     id_rol: 0,
     fecha_ultima_conexion: new Date(),
-    primer_ingreso: new Date(),
     fecha_vencimiento: new Date(),
     intentos_fallidos: 0
   }
@@ -71,7 +70,6 @@ export class UsuariosComponent {
     contrasena: '',
     id_rol: 0,
     fecha_ultima_conexion: new Date(),
-    primer_ingreso: new Date(),
     fecha_vencimiento: new Date(),
     intentos_fallidos: 0
   }
@@ -318,13 +316,14 @@ toggleFunction(user: any, i: number) {
         contrasena: this.newUser.usuario,
         id_rol: this.newUser.id_rol,
         fecha_ultima_conexion: new Date(),
-        primer_ingreso: new Date(),
         fecha_vencimiento: this.newUser.fecha_vencimiento,
-        intentos_fallidos: 0,
+        intentos_fallidos: 0
       };
   
+      console.log(this.newUser);
       this._userService.addUsuario(this.newUser).subscribe({
         next: (data) => {
+          console.log(data);
           this.insertBitacora(data);
           this._toastr.success('Usuario agregado con éxito')
         },
@@ -351,7 +350,6 @@ toggleFunction(user: any, i: number) {
         contrasena: usuario.contrasena,
         id_rol: usuario.id_rol,
         fecha_ultima_conexion: usuario.fecha_ultima_conexion,
-        primer_ingreso: usuario.primer_ingreso,
         fecha_vencimiento: usuario.fecha_vencimiento,
         intentos_fallidos: usuario.intentos_fallidos,
       };
@@ -425,7 +423,6 @@ toggleFunction(user: any, i: number) {
     contrasena: '',
     id_rol: 0,
     fecha_ultima_conexion: new Date(),
-    primer_ingreso: new Date(),
     fecha_vencimiento: new Date(),
     intentos_fallidos: 0
   };
@@ -446,7 +443,6 @@ toggleFunction(user: any, i: number) {
         contrasena: '',
         id_rol: 0,
         fecha_ultima_conexion: new Date(),
-        primer_ingreso: new Date(),
         fecha_vencimiento: new Date(),
         intentos_fallidos: 0
     }

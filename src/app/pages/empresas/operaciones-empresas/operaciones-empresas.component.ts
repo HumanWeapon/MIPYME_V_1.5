@@ -322,7 +322,7 @@ export class OperacionesEmpresasComponent {
     }
     this._empresasProductosService.agregarOperacionEmpresaProducto(productoAgregado).subscribe({
       next: (data: any) =>{
-        this._toastr.success('Producto agregado exitosamente');
+        this._toastr.success('Productos actualizados');
         // Después de agregar el nuevo producto a la base de datos
         // Llamar a los métodos para obtener los datos actualizados
         this.actualizarTabla();
@@ -337,7 +337,7 @@ export class OperacionesEmpresasComponent {
 
     this._empresasProductosService.eliminarOperacionEmpresaProducto(producto.id_emp_prod).subscribe({
       next: (data: any) =>{
-        this._toastr.success('Producto eliminado exitosamente');
+        this._toastr.success('Productos actualizados');
         // Llamar a los métodos para obtener los datos actualizados
         this.actualizarTabla();
       },
@@ -381,7 +381,7 @@ export class OperacionesEmpresasComponent {
     }
     this._empresasContactosService.agregarOperacionEmpresaContacto(contactoAgregado).subscribe({
       next: (data: any) =>{
-        this._toastr.success('Producto agregado exitosamente');
+        this._toastr.success('Contactos actualizados');
         // Después de agregar el nuevo producto a la base de datos
         // Llamar a los métodos para obtener los datos actualizados
         this.actualizarTabla();
@@ -395,7 +395,7 @@ export class OperacionesEmpresasComponent {
     // Realizar una solicitud HTTP DELETE a la API para eliminar el registro
     this._empresasContactosService.eliminarOperacionEmpresaContacto(contacto.id_emp_contactos).subscribe({
       next: (data: any) =>{
-        this._toastr.success('Contacto eliminado exitosamente');
+        this._toastr.success('Contactos actualizados');
         // Llamar a los métodos para obtener los datos actualizados
         this.actualizarTabla();
       },
