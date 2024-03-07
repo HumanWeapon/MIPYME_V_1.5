@@ -21,10 +21,10 @@ export class UsuariosService {
 
    }
 
-   addUsuario(user: Usuario): Observable<any> {
+  addUsuario(user: Usuario): Observable<Usuario> {
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-      return this.http.post<Usuario>(`${this.myAppUrl}${this.myApiUrl}/postUsuario`, user,{ headers: headers })
+    return this.http.post<Usuario>(`${this.myAppUrl}${this.myApiUrl}/postUsuario`, user,{ headers: headers })
   }
 
   login(usuario: Usuario): Observable<string> {
