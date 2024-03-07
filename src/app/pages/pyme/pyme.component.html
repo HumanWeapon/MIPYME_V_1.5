@@ -19,7 +19,6 @@
                     <tr>
                       <th>Nombre Pyme</th>
                       <th>Descripcion</th>
-                      <th>Categoria</th>
                       <th>Creado</th>
                       <th>Fecha Creación</th>
                       <th>Modificador</th>
@@ -32,7 +31,6 @@
                     <tr *ngFor="let pyme of listPymes; let i = index">
                       <td>{{ pyme.nombre_pyme }}</td>
                       <td>{{ pyme.descripcion }}</td>
-                      <td>{{ pyme.categoria }}</td>
                       <td>{{ pyme.creado_por}}</td>
                       <td>{{ pyme.fecha_creacion}}</td>
                       <td>{{ pyme.modificado_por}}</td>
@@ -91,16 +89,6 @@
         <label for="nuevaDescripcion">Descripción:</label>
         <input type="text" [(ngModel)]="newPyme.descripcion" name="newPyme.descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="descripcion" placeholder="Descripción">
       </div>
-
-      <!-- Campo: Categoria -->
-      <div class="form-group">
-        <label for="nuevaDescripcion">Categoria:</label>
-        <select [(ngModel)]="newPyme.categoria" name="newPyme.categoria"  class="form-control" id="categoria">
-          <option value="1">Selecciona la Categoria</option>
-          <option *ngFor="let categoria of listCategorias" [ngValue]="categoria.categoria">{{ categoria.categoria }}</option>
-        </select>
-      </div>
-
       <div class="form-group">
         <label for="estado">Estado</label>
         <select [(ngModel)]="newPyme.estado" name="newPyme.estado" class="form-control" id="estado">
@@ -143,14 +131,6 @@
               <div class="form-group">
                   <label for="PymeEditando">Descripción</label>
                   <input type="text" [(ngModel)]="editPyme.descripcion" name="pymeEditando.descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="editarDescripcion" placeholder="Descripción">
-              </div>  
-                      <!-- Campo: Categoria -->
-              <div class="form-group">
-                <label for="PymeEditando">Categoria:</label>
-                <select [(ngModel)]="editPyme.categoria" name="pymeEditando.categoria"  class="form-control" id="categoria">
-                  <option value="0">Selecciona la Categoria</option>
-                  <option *ngFor="let categoria of listCategorias" [ngValue]="categoria.categoria">{{ categoria.categoria }}</option>
-                </select>
               </div>    
             </form>
           </div>
@@ -196,7 +176,6 @@
           <tr>
             <th>Nombre Pyme</th>
             <th>Descripcion</th>
-            <th>Categoria</th>
             <th>Creador</th>
             <th>Fecha Creación</th>
             
@@ -207,7 +186,6 @@
           <tr *ngFor="let pyme of listPymes">
             <td>{{ pyme.nombre_pyme }}</td>
             <td>{{ pyme.descripcion }}</td>
-            <td>{{ pyme.categoria }}</td>
             <td>{{ pyme.creado_por}}</td>
             <td>{{ pyme.fecha_creacion}}</td>
             
@@ -261,7 +239,6 @@
           <tr>
             <th>Nombre Pyme</th>
             <th>Descripcion</th>
-            <th>Categoria</th>
             <th>Creador</th>
             <th>Fecha Creación</th>
   
@@ -272,7 +249,6 @@
           <tr *ngFor="let pyme of listPymes">
             <td>{{ pyme.nombre_pyme }}</td>
             <td>{{ pyme.descripcion }}</td>
-            <td>{{ pyme.categoria }}</td>
             <td>{{ pyme.creado_por}}</td>
             <td>{{ pyme.fecha_creacion}}</td>
             

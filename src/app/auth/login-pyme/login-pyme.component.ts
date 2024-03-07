@@ -26,13 +26,13 @@ export class LoginPymeComponent {
     id_tipo_empresa: 0,
     nombre_pyme: '',
     rtn:'',
-    categoria:'',
     descripcion: '',
     creado_por: '',
     fecha_creacion: new Date(),
     modificado_por: '',
     fecha_modificacion: new Date(),
-    estado: 0
+    estado: 0,
+    id_rol: 0
   };
 
   valorEnviar: string = "";
@@ -70,14 +70,14 @@ export class LoginPymeComponent {
       nombre_pyme: this.nombre_pyme,
       rtn: this.rtn,
       id_pyme: 0,
-      categoria:'',
       creado_por: '',
       fecha_creacion: new Date(),
       modificado_por: '',
       fecha_modificacion: new Date(),
       estado: 0,
       id_tipo_empresa: 0,
-      descripcion: ''
+      descripcion: '',
+      id_rol: 0
     }
     
     this.loading = true;
@@ -111,7 +111,6 @@ export class LoginPymeComponent {
     this.getPyme = {
      nombre_pyme: this.nombre_pyme,
      id_pyme: 0,
-     categoria:'',
      creado_por: '',
      fecha_creacion: new Date(),
      modificado_por: '',
@@ -119,7 +118,8 @@ export class LoginPymeComponent {
      estado: 0,
      rtn: '',
      id_tipo_empresa: 0,
-     descripcion: ''
+     descripcion: '',
+     id_rol: 0
    }
    this._pymeService.getPyme(this.getPyme).subscribe({
      next: (data) => {

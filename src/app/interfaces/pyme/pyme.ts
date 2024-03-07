@@ -3,11 +3,11 @@ export interface Pyme {
     id_tipo_empresa: number,
     nombre_pyme: string,
     rtn: string,
-    categoria: string,
     descripcion: string,
     creado_por: string,
     fecha_creacion: Date,
     modificado_por: string,
     fecha_modificacion: Date,
-    estado: number
+    estado: number,
+    id_rol: number
 }

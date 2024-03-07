@@ -41,13 +41,13 @@ export class PymeComponent {
     id_tipo_empresa: 1,
     nombre_pyme: '',
     rtn:'',
-    categoria: '',
     descripcion: '',
     creado_por: '',
     fecha_creacion: new Date(),
     modificado_por: '',
     fecha_modificacion: new Date(),
     estado: 0,
+    id_rol: 0
   };
 
   newPyme: Pyme = {
@@ -55,13 +55,13 @@ export class PymeComponent {
     id_tipo_empresa: 1,
     nombre_pyme: '',
     rtn:'',
-    categoria: '',
     descripcion: '',
     creado_por: '',
     fecha_creacion: new Date(),
     modificado_por: '',
     fecha_modificacion: new Date(),
     estado: 0,
+    id_rol: 0
   };
   indice: any;
 
@@ -149,12 +149,12 @@ generateExcel() {
     const row = [
       pyme.nombre_pyme,
       pyme.descripcion,
-      pyme.categoria,
       pyme.creado_por,
       pyme.fecha_creacion,
       pyme.modificado_por,
       pyme.fecha_modificacion,
-      this.getEstadoText(pyme.estado) // Función para obtener el texto del estado
+      this.getEstadoText(pyme.estado), // Función para obtener el texto del estado
+      pyme.id_rol
     ];
     data.push(row);
   });
@@ -223,12 +223,12 @@ generatePDF() {
       const row = [
         pyme.nombre_pyme,
         pyme.descripcion,
-        pyme.categoria,
         pyme.creado_por,
         pyme.fecha_creacion,
         pyme.modificado_por,
         pyme.fecha_modificacion,
-        estadoResult
+        estadoResult,
+        pyme.id_rol
       ];
       data.push(row);
     });
@@ -261,12 +261,12 @@ agregarNuevaPyme() {
       nombre_pyme: this.newPyme.nombre_pyme.toUpperCase(),
       rtn:this.newPyme.rtn,
       descripcion: this.newPyme.descripcion,
-      categoria: this.newPyme.categoria,
       creado_por: userLocal,
       fecha_creacion: new Date(),
       modificado_por: userLocal,
       fecha_modificacion: new Date(),
-      estado: this.newPyme.estado
+      estado: this.newPyme.estado,
+      id_rol: this.newPyme.id_rol
     };
 
     this._pymesService.addPyme(this.newPyme).subscribe({
@@ -305,12 +305,12 @@ agregarNuevaPyme() {
       nombre_pyme: pyme.nombre_pyme,
       rtn:pyme.rtn,
       descripcion: pyme.descripcion,
-      categoria: pyme.categoria,
       creado_por: pyme.creado_por,
       fecha_creacion: pyme.fecha_creacion,
       modificado_por: pyme.modificado_por,
       fecha_modificacion: pyme.fecha_modificacion,
-      estado: pyme.estado
+      estado: pyme.estado,
+      id_rol: pyme.id_rol
     };
     this.indice = i;
   }
@@ -323,7 +323,6 @@ agregarNuevaPyme() {
       this.toastr.success('Pyme editada con éxito');
       this.listPymes[this.indice].nombre_pyme = this.editPyme.nombre_pyme
       this.listPymes[this.indice].descripcion = this.editPyme.descripcion
-      this.listPymes[this.indice].categoria = this.editPyme.categoria;
         // Actualizar la vista
         this.ngZone.run(() => {        
         });
@@ -443,7 +442,6 @@ agregarNuevaPyme() {
     descripcion: `SE INSERTA LA PYME:
                   Nombre Pyme: ${dataPyme.nombre_pyme},
                   Descripción: ${dataPyme.descripcion},
-                  Categoría: ${dataPyme.categoria},
                   Estado: ${this.getEstadoText(dataPyme.estado)}`
   };
 
@@ -467,9 +465,6 @@ updateBitacora(dataPyme: Pyme) {
   }
   if (pymeAnterior.descripcion !== dataPyme.descripcion) {
     cambios.push(`Descripción anterior: ${pymeAnterior.descripcion} -> Nueva Descripción: ${dataPyme.descripcion}`);
-  }
-  if (pymeAnterior.categoria !== dataPyme.categoria) {
-    cambios.push(`Categoría anterior: ${pymeAnterior.categoria} -> Nueva Categoría: ${dataPyme.categoria}`);
   }
   if (pymeAnterior.estado !== dataPyme.estado) {
     cambios.push(`Estado anterior: ${this.getEstadoText(pymeAnterior.estado)} -> Nuevo Estado: ${this.getEstadoText(dataPyme.estado)}`);
