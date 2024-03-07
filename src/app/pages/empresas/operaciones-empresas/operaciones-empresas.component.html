@@ -75,7 +75,7 @@
                           <td>{{ obj.producto.categoria.categoria }}</td>
                           <td>{{ obj.producto.descripcion }}</td>
                           <td>{{ obj.creado_por }}</td>
-                          <td>{{ obj.fecha_creacion | date:'dd/MM/yyyy HH:mm'}}</td>
+                          <td>{{ obj.fecha_creacion | date:'dd/MM/yyyy'}}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -140,7 +140,7 @@
                             <td>{{ obj.tipo_contacto }}</td>
                             <td>{{ obj.descripcion }}</td>
                             <td>{{ obj.creado_por }}</td>
-                            <td>{{ obj.fecha_creacion | date:'dd/MM/yyyy HH:mm'}}</td>
+                            <td>{{ obj.fecha_creacion | date:'dd/MM/yyyy'}}</td>
                             <td class="text-center">
                               <button type="button" (click)="buscarTelefonos(obj.id_contacto)" class="btn btn-primary btn-sm"><i class="fas fa-solid fa-phone" data-toggle="modal" data-target="#ver_telefonos"></i></button>
                             </td>
@@ -208,7 +208,7 @@
                             <td>{{ obj.tipo_contacto }}</td>
                             <td>{{ obj.descripcion }}</td>
                             <td>{{ obj.creado_por }}</td>
-                            <td>{{ obj.fecha_creacion | date:'dd/MM/yyyy HH:mm'}}</td>
+                            <td>{{ obj.fecha_creacion | date:'dd/MM/yyyy'}}</td>
                           </tr>
                         </tbody>
                       </table>

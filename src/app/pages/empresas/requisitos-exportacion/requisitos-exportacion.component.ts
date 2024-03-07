@@ -241,7 +241,6 @@ getUser: Usuario = {
   contrasena: '',
   id_rol: 0,
   fecha_ultima_conexion: new Date(),
-  primer_ingreso: new Date(),
   fecha_vencimiento: new Date(),
   intentos_fallidos: 0
 };
@@ -262,7 +261,6 @@ getUsuario(){
       contrasena: '',
       id_rol: 0,
       fecha_ultima_conexion: new Date(),
-      primer_ingreso: new Date(),
       fecha_vencimiento: new Date(),
       intentos_fallidos: 0
   }

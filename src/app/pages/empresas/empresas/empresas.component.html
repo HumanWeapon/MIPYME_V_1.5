@@ -20,6 +20,7 @@
                     <thead>
                       <tr>
                         <th>NOMBRE</th>
+                        <th>TIPO</th>
                         <th>DESCRIPCION</th>
                         <th>CREADOR</th>
                         <th>Fecha Creación</th>
@@ -32,6 +33,7 @@
                     <tbody>
                       <tr *ngFor="let empresa of listEmpresa; let i = index">
                         <td>{{ empresa.nombre_empresa }}</td>
+                        <td>{{ empresa.tipoEmpresa.tipo_empresa }}</td>
                         <td>{{ empresa.descripcion }}</td>
                         <td>{{ empresa.creado_por}}</td>
                         <td>{{ empresa.fecha_creacion}}</td>
@@ -98,8 +100,6 @@
               <option *ngFor="let tipo of list_tipoEmpresa" [value]="tipo.id_tipo_empresa">{{ tipo.tipo_empresa }}</option>
             </select>
           </div>
-          
-          
           <!-- Botones -->
           <div class="modal-footer justify-content-between">
             <!-- Botón Cancelar -->
@@ -130,11 +130,22 @@
                 </button>
             </div>
             <div class="modal-body">
-
-
-
-
-              
+              <form>
+                <div class="form-group">
+                    <label for="contactoTEditando">Empresa</label>
+                    <input type="text" [(ngModel)]="empresaEditando.nombre_empresa" name="contactoTEditando.telefono" class="form-control" id="editarTelefono" placeholder="Teléfono" >
+                </div>
+                <div class="form-group">
+                    <label for="contactoTEditando">Descripción:</label>
+                    <input type="text" [(ngModel)]="empresaEditando.descripcion" name="contactoTEditando.descripcion"  class="form-control" id="editarDescripcion" placeholder="Descripción" (input)="onInputChange($event, 'descripcion')" >
+                </div>
+                <div class="form-group">
+                  <label for="inputStatus">Tipo de Empresa</label>
+                  <select id="inputStatus" class="form-control custom-select" [(ngModel)]="empresaEditando.id_tipo_empresa" name="empresaEditando.id_tipo_empresa">
+                    <option *ngFor="let tipo of list_tipoEmpresa" [value]="tipo.id_tipo_empresa">{{ tipo.tipo_empresa }}</option>
+                  </select>
+                </div>
+              </form>
             </div>
             <div class="modal-footer justify-content-between">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>

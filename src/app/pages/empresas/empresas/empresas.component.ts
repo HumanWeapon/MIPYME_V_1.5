@@ -58,7 +58,7 @@ export class EmpresasComponent {
   indice: any;
 
   dtOptions: DataTables.Settings = {};
-  listEmpresa: Empresa[] = [];
+  listEmpresa: any[] = [];
   data: any; 
 
   // We use this trigger because fetching the list of persons can be quite long,
@@ -148,7 +148,6 @@ agregarNuevaEmpresa() {
     next: (data) => {
       this.toastr.success('Empresa agregada con éxito');
       this.listEmpresa.push(data);
-
     },
     error: (e: HttpErrorResponse) => {
       this.handleError(e, 'Error al agregar empresa');
@@ -373,13 +372,11 @@ getEstadoText(estado: number): string {
   editarEmpresa(){
     this._empresaService.editarEmpresa(this.empresaEditando).subscribe(data => {
       this.updateBitacora(data);
+      console.log(data);
       this.toastr.success('Empresa editada con éxito');
       this.listEmpresa[this.indice].nombre_empresa = this.empresaEditando.nombre_empresa;
       this.listEmpresa[this.indice].descripcion = this.empresaEditando.descripcion;
-        // Actualizar la vista
-        this.ngZone.run(() => {        
-        });
-    
+      this.listEmpresa[this.indice].tipoEmpresa.tipo_empresa = data.tipoEmpresa.tipo_empresa;
     });
   }
 
@@ -421,7 +418,6 @@ getEstadoText(estado: number): string {
     contrasena: '',
     id_rol: 0,
     fecha_ultima_conexion: new Date(),
-    primer_ingreso: new Date(),
     fecha_vencimiento: new Date(),
     intentos_fallidos: 0
   };
@@ -442,7 +438,6 @@ getEstadoText(estado: number): string {
         contrasena: '',
         id_rol: 0,
         fecha_ultima_conexion: new Date(),
-        primer_ingreso: new Date(),
         fecha_vencimiento: new Date(),
         intentos_fallidos: 0
     }
@@ -456,9 +451,6 @@ getEstadoText(estado: number): string {
      }
    });
  }
-
-
-
  insertBitacora(dataEmpresa: Empresa) {
   const bitacora = {
       fecha: new Date(),
@@ -477,14 +469,13 @@ getEstadoText(estado: number): string {
   });
 }
 
-
 updateBitacora(dataEmpresa: Empresa) {
   // Guardar la empresa actual antes de actualizarla
   const empresaAnterior = { ...this.getEmpresa };
-
+ 
   // Actualizar la empresa
   this.getEmpresa = dataEmpresa;
-
+ 
   // Comparar los datos anteriores con los nuevos datos
   const cambios = [];
   if (empresaAnterior.nombre_empresa !== dataEmpresa.nombre_empresa) {
@@ -494,12 +485,12 @@ updateBitacora(dataEmpresa: Empresa) {
       cambios.push(`Descripción anterior: ${empresaAnterior.descripcion} -> Nueva descripción: ${dataEmpresa.descripcion}`);
   }
   // Puedes agregar más comparaciones para otros campos según tus necesidades
-
+ 
   // Si se realizaron cambios, registrar en la bitácora
   if (cambios.length > 0) {
       // Crear la descripción para la bitácora
       const descripcion = `Se actualizaron los siguientes campos:\n${cambios.join('\n')}`;
-
+ 
       // Crear el objeto bitácora
       const bitacora = {
           fecha: new Date(),
@@ -508,13 +499,14 @@ updateBitacora(dataEmpresa: Empresa) {
           accion: 'ACTUALIZAR',
           descripcion: descripcion
       };
-
+ 
       // Insertar la bitácora
       this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
           // Manejar la respuesta si es necesario
       });
   }
 }
+
 
 
   activarBitacora(dataEmpresa: any){
@@ -540,7 +532,7 @@ updateBitacora(dataEmpresa: Empresa) {
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
   }
-  deleteBitacora(dataEmpresa: Empresa){
+  deleteBitacora(dataEmpresa: any){
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,

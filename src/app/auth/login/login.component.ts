@@ -33,7 +33,6 @@ export class LoginComponent {
     contrasena: '',
     id_rol: 0,
     fecha_ultima_conexion: new Date(),
-    primer_ingreso: new Date(),
     fecha_vencimiento: new Date(),
     intentos_fallidos: 0
   };
@@ -108,7 +107,6 @@ export class LoginComponent {
       estado_usuario: 0,
       id_rol: 0,
       fecha_ultima_conexion: new Date(),
-      primer_ingreso: new Date(),
       fecha_vencimiento: new Date(),
       intentos_fallidos: 0
     }
@@ -153,7 +151,6 @@ export class LoginComponent {
       contrasena: '',
       id_rol: 0,
       fecha_ultima_conexion: new Date(),
-      primer_ingreso: new Date(),
       fecha_vencimiento: new Date(),
       intentos_fallidos: 0
     }
@@ -183,7 +180,6 @@ export class LoginComponent {
       contrasena: this.getUser.contrasena,
       id_rol: this.getUser.id_rol,
       fecha_ultima_conexion: new Date(),
-      primer_ingreso: this.getUser.primer_ingreso,
       fecha_vencimiento: this.getUser.fecha_vencimiento,
       intentos_fallidos: this.getUser.intentos_fallidos
     }

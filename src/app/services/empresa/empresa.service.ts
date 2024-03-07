@@ -38,10 +38,10 @@ export class EmpresaService {
     return this.http.post<Empresa>(`${this.myAppUrl}${this.myApiUrl}/getEmpresa`, nombre_empresa,{ headers: headers })
   }
 
-  getAllEmpresas(): Observable<Empresa[]> {
+  getAllEmpresas(): Observable<any[]> {
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.get<Empresa[]>(`${this.myAppUrl}${this.myApiUrl}/getAllEmpresas`,  { headers: headers })
+    return this.http.get<any[]>(`${this.myAppUrl}${this.myApiUrl}/getAllEmpresas`,  { headers: headers })
   }
   getEmpresasPymes(id_tipo_empresa: number): Observable<Empresa[]> {
     const token = localStorage.getItem('token');

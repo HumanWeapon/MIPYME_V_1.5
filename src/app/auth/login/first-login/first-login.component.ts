@@ -28,7 +28,6 @@ export class FirstLoginComponent {
     contrasena: '',
     id_rol: 0,
     fecha_ultima_conexion: new Date(),
-    primer_ingreso: new Date(),
     fecha_vencimiento: new Date(),
     intentos_fallidos: 0
   }
@@ -129,7 +128,6 @@ export class FirstLoginComponent {
         contrasena: this.usuario.contrasena,
         id_rol: this.usuario.id_rol,
         fecha_ultima_conexion: new Date(),
-        primer_ingreso: this.usuario.primer_ingreso,
         fecha_vencimiento: this.usuario.fecha_vencimiento,
         intentos_fallidos: this.usuario.intentos_fallidos
       }

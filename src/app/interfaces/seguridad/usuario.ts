@@ -11,7 +11,6 @@ export interface Usuario {
     contrasena: string,
     id_rol: number,
     fecha_ultima_conexion: Date,
-    primer_ingreso: Date,
     fecha_vencimiento: Date,
     intentos_fallidos: number,
 }
