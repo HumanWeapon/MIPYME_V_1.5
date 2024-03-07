@@ -58,7 +58,7 @@
                           </div>
 
                             <button type="button" (click)="obtenerIdUsuario(user, i)" title="Editar Usuario" class="btna" data-toggle="modal" data-target="#abrirModalEditar"data-toggle="modal" data-target="#abrirModalEditar"  ><i class="fas fa-solid fa-pen"></i></button>
-                          
+                            
                           </div>
                       </td>
                     </tr>
@@ -91,15 +91,15 @@
         <form (ngSubmit)="agregarNuevoUsuario()">
           <div class="form-group">
             <label for="nuevoUsuario">Usuario:</label>
-            <input type="text" [(ngModel)]="newUser.usuario" name="nuevoUsuario.usuario" (input)="eliminarEspaciosBlanco($event, 'usuario')" class="form-control" id="nuevoUsuario" placeholder="Nombre de usuario">
+            <input type="text" [(ngModel)]="newUser.usuario" name="nuevoUsuario.usuario" (input)="eliminarCaracteresEspeciales($event, 'usuario')" (input)="convertirAMayusculas($event, 'usuario')"  class="form-control" id="nuevoUsuario" placeholder="Nombre de usuario">
           </div>
           <div class="form-group">
             <label for="nuevoNombre">Nombre completo:</label>
-            <input type="text" [(ngModel)]="newUser.nombre_usuario" name="nuevoUsuario.nombre_usuario" (input)="convertirAMayusculas($event, 'usuario')" class="form-control" id="nuevoNombre" placeholder="Nombre completo">
+            <input type="text" [(ngModel)]="newUser.nombre_usuario" name="nuevoUsuario.usuario" (input)="eliminarCaracteresEspeciales($event, 'nombre_usuario')" (input)="convertirAMayusculas($event, 'nombre_usuario')" class="form-control" id="nuevoUsuario" placeholder="Nombre de usuario">
           </div>
           <div class="form-group">
             <label for="nuevoCorreo">Correo Electrónico:</label>
-            <input type="text" [(ngModel)]="newUser.correo_electronico" name="nuevoUsuario.correo_electronico" (input)="eliminarEspaciosBlanco($event, 'usuario')" class="form-control" id="nuevoCorreo" placeholder="Correo Electrónico">
+            <input type="text" [(ngModel)]="newUser.correo_electronico" name="nuevoUsuario.correo_electronico" (input)="eliminarCaracteresEspeciales($event, 'correo')" (input)="convertirAMayusculas($event, 'correo')" class="form-control" id="nuevoCorreo" placeholder="Correo Electrónico">
           </div>
           <div class="form-group">
             <label for="nuevoRol">Rol:</label>
@@ -139,15 +139,15 @@
               <form>
                 <div class="form-group">
                     <label for="editarUsuario">Usuario:</label>
-                    <input type="text" [(ngModel)]="editUser.usuario" name="editUser.usuario" (input)="eliminarEspaciosBlanco($event, 'usuario')" class="form-control" id="editarUsuario" placeholder="Nombre de usuario">
+                    <input type="text" [(ngModel)]="editUser.usuario" name="editUser.usuario" (input)="eliminarCaracteresEspeciales($event, 'usuario')" (input)="eliminarEspaciosBlanco($event, 'usuario')" class="form-control" id="editarUsuario" placeholder="Nombre de usuario">
                 </div>
                 <div class="form-group">
                     <label for="editarNombre">Nombre completo:</label>
-                    <input type="text" [(ngModel)]="editUser.nombre_usuario" name="editUser.nombre_usuario" (input)="convertirAMayusculas($event, 'usuario')" class="form-control" id="editarNombre" placeholder="Nombre completo">
+                    <input type="text" [(ngModel)]="editUser.nombre_usuario" name="editUser.nombre_usuario" (input)="eliminarCaracteresEspeciales($event, 'nombre_usuario')" (input)="convertirAMayusculas($event, 'nombre_usuario')" class="form-control" id="editarNombre" placeholder="Nombre completo">
                 </div>
                 <div class="form-group">
                     <label for="editarCorreo">Correo Electrónico:</label>
-                    <input type="email" [(ngModel)]="editUser.correo_electronico" name="editUser.correo_electronico" (input)="eliminarEspaciosBlanco($event, 'usuario')" class="form-control" id="editarCorreo" placeholder="Correo Electrónico">
+                    <input type="email" [(ngModel)]="editUser.correo_electronico" name="editUser.correo_electronico"  (input)="eliminarCaracteresEspeciales($event, 'correo')" (input)="eliminarEspaciosBlanco($event, 'usuario')" class="form-control" id="editarCorreo" placeholder="Correo Electrónico">
                 </div>
                 <div class="form-group">
                   <label for="editarRol">Rol:</label>

@@ -9,6 +9,7 @@ import { FirstLoginComponent } from './login/first-login/first-login.component';
 import { PreguntasUsuarioComponent } from './login/preguntas-usuario/preguntas-usuario.component';
 import { LoginPymeComponent } from './login-pyme/login-pyme.component';
 import { PasswordEmailComponent } from './login/password-email/password-email.component';
+import { ResetPasswordComponent } from '../auth/login/reset-password/reset-password.component';
 
 
 const routes: Routes =[
@@ -20,6 +21,8 @@ const routes: Routes =[
   {path: 'firstlogin', component: FirstLoginComponent},
   {path: 'login-pyme', component: LoginPymeComponent},
   {path: 'password-email', component: PasswordEmailComponent},
+  {path: 'resetPassword/:token', component: ResetPasswordComponent }
+
 ];
 
 @NgModule({

@@ -52,7 +52,7 @@ export class LoginComponent {
   }
 
   irLoginPyme() {
-    this.router.navigate(['/login-pyme']); // Reemplaza '/ruta-del-modulo-pyme' con la ruta real de tu módulo Pyme
+    this.router.navigate(['/resetPassword']); // Reemplaza '/ruta-del-modulo-pyme' con la ruta real de tu módulo Pyme
   }
 
 

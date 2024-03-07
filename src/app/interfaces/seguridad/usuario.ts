@@ -13,5 +13,5 @@ export interface Usuario {
     fecha_ultima_conexion: Date,
     primer_ingreso: Date,
     fecha_vencimiento: Date,
-    intentos_fallidos: number
+    intentos_fallidos: number,
 }

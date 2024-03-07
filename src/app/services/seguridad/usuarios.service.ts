@@ -41,6 +41,7 @@ export class UsuariosService {
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
     return this.http.post<Usuario>(`${this.myAppUrl}${this.myApiUrl}/getUsuario`, usuario, { headers: headers })
   }
+  
 
   getAllUsuarios(): Observable<Usuario[]> {
     return this.http.get<Usuario[]>(`${this.myAppUrl}${this.myApiUrl}/getAllUsuarios`)
@@ -77,4 +78,12 @@ export class UsuariosService {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.post<string>(`${this.myAppUrl}${this.myApiUrl}/getCorreoElectronicoPorUsuario`, { usuario }, { headers: headers });
   }
+
+  forgotPassword(correo_electronico: string): Observable<any> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const body = { correo_electronico: correo_electronico }; // Construye el objeto con la propiedad correo_electronico
+    return this.http.put<any>(`${this.myAppUrl}${this.myApiUrl}/forgot-password`, body, { headers: headers });
+  }
+  
 }
