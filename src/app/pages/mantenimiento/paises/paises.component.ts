@@ -8,6 +8,9 @@ import { BitacoraService } from 'src/app/services/administracion/bitacora.servic
 import { PaisesService } from 'src/app/services/empresa/paises.service';
 import { ErrorService } from 'src/app/services/error.service';
 import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
+import * as XLSX from 'xlsx';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale'; // Importa el idioma español
 
 @Component({
   selector: 'app-paises',
@@ -16,6 +19,16 @@ import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 })
 
 export class PaisesComponent implements OnInit{
+  getPais: any;
+
+
+  getDate(): string {
+    // Obtener la fecha actual
+    const currentDate = new Date();
+    // Formatear la fecha en el formato deseado
+    return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
+}
+
 
   paisEditando: Paises = {
     id_pais: 0, 
@@ -125,49 +138,121 @@ toggleFunction(paises: any, i: number) {
     this.listPaises[i].estado = 1;
   }
 
+
+
+
   /*****************************************************************************************************/
 
-generatePDF() {
-
-  const {jsPDF} = require ("jspdf");
- 
-  const doc = new jsPDF();
-  const data: any[][] =[]
-  const headers = ['Nombre Pais', 'Descripcion', 'Creador', 'Fecha', 'Modificado por', 'Fecha', 'Estado'];
-
-  // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
-  this.listPaises.forEach((paises, index) => {
-    const row = [
-      paises.pais,
-      paises.descripcion,
-      paises.creado_por,
-      paises.fecha_creacion,
-      paises.modificado_por,
-      paises.fecha_modificacion,
-      this.getEstadoText(paises.estado) // Función para obtener el texto del estado
-    ];
-    data.push(row);
-  });
-
-  doc.autoTable({
-    head: [headers],
-    body: data,
-  });
-
-  doc.output('dataurlnewwindow', null, 'Pymes.pdf');
-}
-
-getEstadoText(estado: number): string {
-  switch (estado) {
-    case 1:
-      return 'ACTIVO';
-    case 2:
-      return 'INACTIVO';
-    default:
-      return 'Desconocido';
+  generateExcelP() {
+    const headers = ['País', 'Descripción', 'Creador', 'Fecha de Creación', 'Estado'];
+    const data: any[][] = [];
+  
+    // Recorre los datos de tu lista de países y agrégalo a la matriz 'data'
+    this.listPaises.forEach((pais, index) => {
+      const row = [
+        pais.pais,
+        pais.descripcion,
+        pais.creado_por,
+        pais.fecha_creacion,
+        this.getEstadoText(pais.estado) // Función para obtener el texto del estado
+      ];
+      data.push(row);
+    });
+  
+    // Crea un nuevo libro de Excel
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.aoa_to_sheet([headers, ...data]);
+  
+    // Agrega la hoja al libro de Excel
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Paises');
+  
+    // Guarda el libro de Excel como un archivo binario
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  
+    // Crea un objeto URL para el blob
+    const url = window.URL.createObjectURL(blob);
+  
+    // Crea un enlace para descargar el archivo Excel
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'My Pyme-Reporte Paises.xlsx';
+  
+    document.body.appendChild(a);
+    a.click();
+  
+    // Limpia el objeto URL creado
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
   }
-}
+  
 
+  /*****************************************************************************************************/
+
+  generatePDF() {
+    const { jsPDF } = require("jspdf");
+    const doc = new jsPDF();
+    const data: any[][] = [];
+    const headers = ['País', 'Descripción', 'Creador', 'Fecha de Creación', 'Estado'];
+  
+    // Agregar el logo al PDF
+    const logoImg = new Image();
+    logoImg.onload = () => {
+      // Dibujar el logo en el PDF
+      doc.addImage(logoImg, 'PNG', 10, 10, 50, 20); // Ajusta las coordenadas y dimensiones según tu diseño
+  
+      // Agregar los comentarios al PDF centrados horizontalmente
+      const centerX = doc.internal.pageSize.getWidth() / 2;
+      doc.setFontSize(12);
+      doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+      doc.text("Reporte de Países", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+      doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+  
+      // Recorre los datos de tu lista de países y agrégalo a la matriz 'data'
+      this.listPaises.forEach((pais, index) => {
+        const row = [
+          pais.pais,
+          pais.descripcion,
+          pais.creado_por,
+          pais.fecha_creacion,
+          this.getEstadoText(pais.estado) // Función para obtener el texto del estado
+        ];
+        data.push(row);
+      });
+  
+      // Agregar la tabla al PDF
+      doc.autoTable({
+        head: [headers],
+        body: data,
+        startY: 70 // Ajusta la posición inicial de la tabla según tu diseño
+      });
+  
+      // Guardar el PDF
+      doc.save('My Pyme-Reporte Países.pdf');
+    };
+    logoImg.src = '/assets/dist/img/pym.png'; // Ruta del logo
+  }
+  
+  getCurrentDate(): string {
+    const currentDate = new Date();
+    return currentDate.toLocaleDateString(); // Retorna la fecha actual en formato local
+  }
+  
+  getEstadoText(estado: number): string {
+    switch (estado) {
+      case 1:
+        return 'ACTIVO';
+      case 2:
+        return 'INACTIVO';
+      case 3:
+        return 'BLOQUEADO';
+      case 4:
+        return 'VENCIDO';
+      default:
+        return 'Desconocido';
+    }
+  }
+  
 
 /**************************************************************/
 
@@ -292,22 +377,52 @@ insertBitacora(dataPais: Paises){
     id_usuario: this.getUser.id_usuario,
     id_objeto: 19,
     accion: 'INSERTAR',
-    descripcion: 'SE INSERTA EL PAIS: '+ dataPais.pais
-  }
-  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-  })
-}
-updateBitacora(dataPais: Paises){
-  const bitacora = {
-    fecha: new Date(),
-    id_usuario: this.getUser.id_usuario,
-    id_objeto: 19,
-    accion: 'ACTUALIZAR',
-    descripcion: 'SE ACTUALIZA EL PAIS: '+ dataPais.pais
+    descripcion: `SE INSERTA EL PAÍS: ${dataPais.pais}, Descripción: ${dataPais.descripcion}`
   };
-  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-  })
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+    // Puedes manejar la respuesta si es necesario
+  });
 }
+
+updateBitacora(dataPais: Paises) {
+  // Guardar los datos del país actual antes de actualizarlos
+  const paisAnterior = { ...this.getPais };
+
+  // Actualizar los datos del país
+  this.getPais = dataPais;
+
+  // Comparar los datos anteriores con los nuevos datos
+  const cambios = [];
+  if (paisAnterior.pais !== dataPais.pais) {
+    cambios.push(`País anterior: ${paisAnterior.pais} -> Nuevo País: ${dataPais.pais}`);
+  }
+  if (paisAnterior.descripcion !== dataPais.descripcion) {
+    cambios.push(`Descripción anterior: ${paisAnterior.descripcion} -> Nueva Descripción: ${dataPais.descripcion}`);
+  }
+  // Puedes agregar más comparaciones para otros campos según tus necesidades
+
+  // Si se realizaron cambios, registrar en la bitácora
+  if (cambios.length > 0) {
+    // Crear la descripción para la bitácora
+    const descripcion = `Se actualizaron los siguientes campos:\n${cambios.join('\n')}`;
+
+    // Crear el objeto bitácora
+    const bitacora = {
+      fecha: new Date(),
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 19,
+      accion: 'ACTUALIZAR',
+      descripcion: descripcion
+    };
+
+    // Insertar la bitácora
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+      // Puedes manejar la respuesta si es necesario
+    });
+  }
+}
+
+
 activarBitacora(dataPais: Paises){
   const bitacora = {
     fecha: new Date(),

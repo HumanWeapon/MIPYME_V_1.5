@@ -22,13 +22,14 @@
                           <th>Id Permiso</th>
                           <th>Rol</th>
                           <th>Objeto</th>
-                          <th>Insertar</th> 
-                          <th>Eliminar</th>
-                          <th>Consultar</th>
+                          <th>Consultar</th> 
+                          <th>Insertar</th>
                           <th>Actualizar</th>
+                          <th>Eliminar</th>
                           <th>Estado</th>
-                          <th>Creado por</th>
-                          <th>Creación</th>
+                          <th>Creador</th>
+                          <th>Fecha Creación</th>
+                          <th>Modificador</th>
                           <th>Modificación</th>
                           <th>Acciones</th>                          
                         </tr>
@@ -39,19 +40,19 @@
                           <td>{{ getRolNombre(perm.id_rol) }}</td>                          
                           <td>{{ getObjetoNombre(perm.id_objeto) }}</td>                          
                           <td style="text-align: center;">                          
-                            <ng-container *ngIf="perm.permiso_insercion; else noCheckbox">{{ '✓' }}</ng-container>
-                            <ng-template #noCheckbox>{{ 'X' }}</ng-template>
-                          </td>
-                          <td style="text-align: center;">
-                            <ng-container *ngIf="perm.permiso_eliminacion; else noCheckbox">{{ '✓' }}</ng-container>
-                            <ng-template #noCheckbox>{{ 'X' }}</ng-template>
-                          </td>
-                          <td style="text-align: center;">
                             <ng-container *ngIf="perm.permiso_consultar; else noCheckbox">{{ '✓' }}</ng-container>
                             <ng-template #noCheckbox>{{ 'X' }}</ng-template>
                           </td>
                           <td style="text-align: center;">
+                            <ng-container *ngIf="perm.permiso_insercion; else noCheckbox">{{ '✓' }}</ng-container>
+                            <ng-template #noCheckbox>{{ 'X' }}</ng-template>
+                          </td>
+                          <td style="text-align: center;">
                             <ng-container *ngIf="perm.permiso_actualizacion; else noCheckbox">{{ '✓' }}</ng-container>
+                            <ng-template #noCheckbox>{{ 'X' }}</ng-template>
+                          </td>
+                          <td style="text-align: center;">
+                            <ng-container *ngIf="perm.permiso_eliminacion; else noCheckbox">{{ '✓' }}</ng-container>
                             <ng-template #noCheckbox>{{ 'X' }}</ng-template>
                           </td>   
                           <td>
@@ -60,11 +61,12 @@
                           </td>                         
                           <td>{{ perm.creado_por}}</td>
                           <td>{{ perm.fecha_creacion }}</td>
+                          <td>{{ perm.modificado_por}}</td>
                           <td>{{ perm.fecha_modificacion}}</td>
                           <td class="text-center">
                             <div class="btn-group">
                               <div class="form-check form-switch ml-4">
-                                <input class="form-check-input" (click)="toggleFunction(perm, i)" [title]="perm.estado_permiso== 1 ? 'Desactivar' : 'Activar'" type="checkbox" 
+                                <input class="form-check-input" (click)="toggleFunction(perm, i)" [title]="perm.estado_permiso == 1 ? 'Desactivar' : 'Activar'" type="checkbox" 
                                   role="switch" id="flexSwitchCheckChecked" [checked]="perm.estado_permiso == 1">
                               </div>
                                 <button type="button" (click)="obtenerIdPermiso(perm, i)" title="Editar Permiso"  data-toggle="modal" data-target="#abrirModalEditarPermiso" class="btna" ><i class="fas fa-solid fa-pen"></i></button>                                
@@ -110,31 +112,34 @@
                   <select [(ngModel)]="nuevoPermiso.id_objeto" name="nuevoPermiso.id_objeto" class="form-control" id="nuevo_objeto">
                       <option *ngFor="let objeto of objetos" [value]="objeto.objeto">{{ objeto.objeto }}</option>
                   </select>
-              </div>               
+              </div>   
+              <div class="form-group">
+                <div class="form-check">
+                  <input type="checkbox" [(ngModel)]="nuevoPermiso.permiso_consultar" name="nuevoPermiso.permiso_consultar" class="form-check-input" id="nuevoPermisoConsultar">
+                  <label for="nuevoPermisoConsultar" class="form-check-label">Consultar</label>
+                </div>
+              </div>             
             <div class="form-group">
               <div class="form-check">
                 <input type="checkbox" [(ngModel)]="nuevoPermiso.permiso_insercion" name="nuevoPermiso.permiso_insercion" class="form-check-input" id="NuevoPermisoInsercion">
                 <label for="nuevoPermisoInsercion" class="form-check-label">Insertar</label>
               </div>
             </div> 
+            
+            <div class="form-group">
+              <div class="form-check">
+                <input type="checkbox" [(ngModel)]="nuevoPermiso.permiso_actualizacion" name="nuevoPermiso.permiso_actualizacion" class="form-check-input" id="nuevoPermisoActualizacion">
+                <label for="nuevoPermisoActualizacion" class="form-check-label">Actualizar</label>
+              </div>
+            </div>  
+
             <div class="form-group">
               <div class="form-check">
                 <input type="checkbox" [(ngModel)]="nuevoPermiso.permiso_eliminacion" name="nuevoPermiso.permiso_eliminacion" class="form-check-input" id="nuevoPermisoEliminacion">
                 <label for="nuevoPermisoEliminacion" class="form-check-label">Eliminar</label>
               </div>
             </div>
-            <div class="form-group">
-              <div class="form-check">
-                <input type="checkbox" [(ngModel)]="nuevoPermiso.permiso_consultar" name="nuevoPermiso.permiso_consultar" class="form-check-input" id="nuevoPermisoConsultar">
-                <label for="nuevoPermisoConsultar" class="form-check-label">Consultar</label>
-              </div>
-            </div> 
-            <div class="form-group">
-              <div class="form-check">
-                <input type="checkbox" [(ngModel)]="nuevoPermiso.permiso_actualizacion" name="nuevoPermiso.permiso_actualizacion" class="form-check-input" id="nuevoPermisoActualizacion">
-                <label for="nuevoPermisoActualizacion" class="form-check-label">Actualizar</label>
-              </div>
-            </div>                        
+                               
             </form>
         </div>
         <div class="modal-footer justify-content-between">
@@ -171,28 +176,31 @@
           </div>
           <div class="form-group">
             <div class="form-check">
+              <input type="checkbox" [(ngModel)]="permisoeditando.permiso_consultar" name="permisoEditando.permiso_consultar" class="form-check-input" id="editarPermisoConsulta">
+              <label for="editarPermisoConsulta" class="form-check-label">Consultar</label>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="form-check">
               <input type="checkbox" [(ngModel)]="permisoeditando.permiso_insercion" name="permisoEditando.permiso_insercion" class="form-check-input" id="editarPermisoInsercion">
               <label for="editarPermisoInsercion" class="form-check-label">Insertar</label>
             </div>
-          </div>          
+          </div>  
+          
+          <div class="form-group">
+            <div class="form-check">
+              <input type="checkbox" [(ngModel)]="permisoeditando.permiso_actualizacion" name="permisoEditando.permiso_actualizacion" class="form-check-input" id="editarPermisoActualizacion">
+                <label for="editarPermisoActualizacion" class="form-check-label">Actualizar</label>
+              </div>
+            </div> 
+
           <div class="form-group">
             <div class="form-check">
               <input type="checkbox" [(ngModel)]="permisoeditando.permiso_eliminacion" name="permisoEditando.permiso_eliminacion" class="form-check-input" id="editarPermisoEliminacion">
               <label for="editarPermisoEliminacion" class="form-check-label">Eliminar</label>
             </div>
           </div>
-          <div class="form-group">
-            <div class="form-check">
-              <input type="checkbox" [(ngModel)]="permisoeditando.permiso_consultar" name="permisoEditando.permiso_consultar" class="form-check-input" id="editarPermisoConsulta">
-              <label for="editarPermisoConsulta" class="form-check-label">Consultar</label>
-            </div>
-          </div>
-            <div class="form-group">
-              <div class="form-check">
-                <input type="checkbox" [(ngModel)]="permisoeditando.permiso_actualizacion" name="permisoEditando.permiso_actualizacion" class="form-check-input" id="editarPermisoActualizacion">
-                  <label for="editarPermisoActualizacion" class="form-check-label">Actualizar</label>
-                </div>
-              </div>            
+                     
             </form>
         </div>
         <div class="modal-footer justify-content-between">
@@ -237,14 +245,14 @@
               <th>Id Permiso</th>
               <th>Rol</th>
               <th>Objeto</th>
-              <th>Insertar</th> 
-              <th>Eliminar</th>
               <th>Consultar</th>
+              <th>Insertar</th> 
               <th>Actualizar</th>
+              <th>Eliminar</th>
               <th>Estado</th>
               <th>Creado por</th>
-              <th>Creación</th>
-              <th>Modificación</th>
+              <th>Fecha Creación</th>
+            
             </tr>
           </thead>
           <tbody>
@@ -252,14 +260,14 @@
               <td>{{ perm.id_permisos }}</td>
               <td>{{ getRolNombre(perm.id_rol) }}</td>                          
               <td>{{ getObjetoNombre(perm.id_objeto) }}</td> 
-              <td>{{ perm.permiso_insercion }}</td>
-              <td>{{ perm.permiso_eliminacion }}</td>
               <td>{{ perm.permiso_consultar }}</td>
+              <td>{{ perm.permiso_insercion }}</td>
               <td>{{ perm.permiso_actualizacion }}</td>
+              <td>{{ perm.permiso_eliminacion }}</td>
               <td>{{ getEstadoText(perm.estado_permiso) }}</td>
               <td>{{ perm.creado_por }}</td>
               <td>{{ perm.fecha_creacion }}</td>
-              <td>{{ perm.fecha_modificacion}}</td> 
+             
             </tr>
           </tbody>
         </table>
@@ -303,14 +311,14 @@
             <th>Id Permiso</th>
             <th>Rol</th>
             <th>Objeto</th>
-            <th>Insertar</th> 
-            <th>Eliminar</th>
             <th>Consultar</th>
+            <th>Insertar</th> 
             <th>Actualizar</th>
+            <th>Eliminar</th>
             <th>Estado</th>
-            <th>Creado por</th>
-            <th>Creación</th>
-            <th>Modificación</th>
+            <th>Creador</th>
+            <th>Fecha Creación</th>
+           
           </tr>
         </thead>
         <tbody>
@@ -318,14 +326,14 @@
             <td>{{ perm.id_permisos }}</td>
             <td>{{ getRolNombre(perm.id_rol) }}</td>                          
             <td>{{ getObjetoNombre(perm.id_objeto) }}</td> 
-            <td>{{ perm.permiso_insercion }}</td>
-            <td>{{ perm.permiso_eliminacion }}</td>
             <td>{{ perm.permiso_consultar }}</td>
+            <td>{{ perm.permiso_insercion }}</td>
             <td>{{ perm.permiso_actualizacion }}</td>
+            <td>{{ perm.permiso_eliminacion }}</td>
             <td>{{ getEstadoText(perm.estado_permiso) }}</td>
             <td>{{ perm.creado_por }}</td>
             <td>{{ perm.fecha_creacion }}</td>
-            <td>{{ perm.fecha_modificacion}}</td> 
+           
           </tr>
         </tbody>
       </table>

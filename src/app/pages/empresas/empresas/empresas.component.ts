@@ -15,6 +15,9 @@ import { Router } from '@angular/router';
 import { TipoEmpresa } from 'src/app/interfaces/mantenimiento/tipoEmpresa';
 import { TipoEmpresaService } from 'src/app/services/mantenimiento/tipoEmpresa.service';
 import { da } from 'date-fns/locale';
+import * as XLSX from 'xlsx';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale'; // Importa el idioma español
 
 @Component({
   selector: 'app-empresas',
@@ -61,6 +64,8 @@ export class EmpresasComponent {
   // We use this trigger because fetching the list of persons can be quite long,
   // thus we ensure the data is fetched before rendering
   dtTrigger: Subject<any> = new Subject<any>();
+  
+  getEmpresa: any;
 
   constructor(
     private _empresaService: EmpresaService,
@@ -165,6 +170,15 @@ handleError(error: HttpErrorResponse, errorMessage: string) {
   this.toastr.error(errorMessage);
 }
 
+
+
+getDate(): string {
+  // Obtener la fecha actual
+  const currentDate = new Date();
+  // Formatear la fecha en el formato deseado
+  return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
+}
+
 /************************************************************/
 // Variable de estado para alternar funciones
 
@@ -203,49 +217,129 @@ handleError(error: HttpErrorResponse, errorMessage: string) {
     }); // Aquí se cierra correctamente el paréntesis de la suscripción
     this.listEmpresa[i].estado = 2;
   }
+
+
+
+
+
+/*****************************************************************************************************/
+
+
+  generateExcel() {
+    const headers = ['Nombre Empresa', 'Descripción', 'Creador', 'Fecha de Creación', 'Estado'];
+    const data: any[][] = [];
+
+    // Recorre los datos de tu lista y agrégalo a la matriz 'data'
+    this.listEmpresa.forEach((empresa, index) => {
+        const row = [
+            empresa.nombre_empresa,
+            empresa.descripcion,
+            empresa.creado_por,
+            empresa.fecha_creacion,
+            this.getEstadoText(empresa.estado) // Función para obtener el texto del estado
+        ];
+        data.push(row);
+    });
+
+    // Crea un nuevo libro de Excel
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.aoa_to_sheet([headers, ...data]);
+
+    // Agrega la hoja al libro de Excel
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Empresas');
+
+    // Guarda el libro de Excel como un archivo binario
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+    // Crea un objeto URL para el blob
+    const url = window.URL.createObjectURL(blob);
+
+    // Crea un enlace para descargar el archivo Excel
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'My Pyme-Reporte Empresas.xlsx';
+
+    document.body.appendChild(a);
+    a.click();
+
+    // Limpia el objeto URL creado
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+}
+
 /*****************************************************************************************************/
 
 generatePDF() {
-
-  const {jsPDF} = require ("jspdf");
- 
+  const { jsPDF } = require("jspdf");
   const doc = new jsPDF();
-  const data: any[][] =[]
-  const headers = ['Nombre Empresa', 'Descripcion', 'Creador', 'Fecha', 'Modificado por', 'Fecha', 'Estado'];
+  const data: any[][] = [];
+  const headers = ['Nombre Empresa', 'Descripción', 'Creador', 'Fecha de Creación', 'Estado'];
 
-  // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
-  this.listEmpresa.forEach((empresa, index) => {
-    const row = [
-      empresa.nombre_empresa,
-      empresa.descripcion,
-      empresa.creado_por,
-      empresa.fecha_creacion,
-      empresa.modificado_por,
-      empresa.fecha_modificacion,
-      this.getEstadoText(empresa.estado) // Función para obtener el texto del estado
-    ];
-    data.push(row);
-  });
+  // Agregar el logo al PDF
+  const logoImg = new Image();
+  logoImg.onload = () => {
+      // Dibujar el logo en el PDF
+      doc.addImage(logoImg, 'PNG', 10, 10, 50, 20); // Ajusta las coordenadas y dimensiones según tu diseño
 
-  doc.autoTable({
-    head: [headers],
-    body: data,
-  });
+      // Agregar los comentarios al PDF centrados horizontalmente
+      const centerX = doc.internal.pageSize.getWidth() / 2;
+      doc.setFontSize(12);
+      doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+      doc.text("Reporte de Empresas", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+      doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
 
-  doc.output('dataurlnewwindow', null, 'Pymes.pdf');
+      // Recorre los datos de tu lista y agrégalo a la matriz 'data'
+      this.listEmpresa.forEach((empresa, index) => {
+          const row = [
+              empresa.nombre_empresa,
+              empresa.descripcion,
+              empresa.creado_por,
+              empresa.fecha_creacion,
+              this.getEstadoText(empresa.estado) // Función para obtener el texto del estado
+          ];
+          data.push(row);
+      });
+
+      // Agregar la tabla al PDF
+      doc.autoTable({
+          head: [headers],
+          body: data,
+          startY: 70 // Ajusta la posición inicial de la tabla según tu diseño
+      });
+
+      // Guardar el PDF
+      doc.save('My Pyme-Reporte Empresas.pdf');
+  };
+  logoImg.src = '/assets/dist/img/pym.png'; // Ruta del logo
+}
+
+getCurrentDate(): string {
+  const currentDate = new Date();
+  return currentDate.toLocaleDateString(); // Retorna la fecha actual en formato local
 }
 
 getEstadoText(estado: number): string {
   switch (estado) {
-    case 1:
-      return 'ACTIVO';
-    case 2:
-      return 'INACTIVO';
-    default:
-      return 'Desconocido';
+      case 1:
+          return 'ACTIVO';
+      case 2:
+          return 'INACTIVO';
+      case 3:
+          return 'BLOQUEADO';
+      case 4:
+          return 'VENCIDO';
+      default:
+          return 'Desconocido';
   }
 }
+
+
+
 /*******************************************************************************/
+
+
+
   onInputChange(event: any, field: string) {
     if (field === 'nombre_empresa' || field === 'descripcion') {
       const inputValue = event.target.value;
@@ -357,46 +451,83 @@ getEstadoText(estado: number): string {
      }
    });
  }
-  insertBitacora(dataEmpresa: any){
-    const bitacora = {
+ insertBitacora(dataEmpresa: Empresa) {
+  const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
       id_objeto: 9,
       accion: 'INSERTAR',
-      descripcion: 'SE INSERTA LA EMPRESA CON EL ID: '+ dataEmpresa.id_empresa
-    }
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
+      descripcion: `SE INSERTA LA EMPRESA:
+                    ID Empresa: ${dataEmpresa.id_empresa},
+                    Nombre Empresa: ${dataEmpresa.nombre_empresa},
+                    Descripción: ${dataEmpresa.descripcion},
+                    Creado por: ${dataEmpresa.creado_por},`
+  };
+
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+      // Manejar la respuesta si es necesario
+  });
+}
+
+updateBitacora(dataEmpresa: Empresa) {
+  // Guardar la empresa actual antes de actualizarla
+  const empresaAnterior = { ...this.getEmpresa };
+ 
+  // Actualizar la empresa
+  this.getEmpresa = dataEmpresa;
+ 
+  // Comparar los datos anteriores con los nuevos datos
+  const cambios = [];
+  if (empresaAnterior.nombre_empresa !== dataEmpresa.nombre_empresa) {
+      cambios.push(`Nombre de empresa anterior: ${empresaAnterior.nombre_empresa} -> Nuevo nombre de empresa: ${dataEmpresa.nombre_empresa}`);
   }
-  updateBitacora(dataEmpresa: any){
-    const bitacora = {
-      fecha: new Date(),
-      id_usuario: this.getUser.usuario,
-      id_objeto: 9,
-      accion: 'ACTUALIZAR',
-      descripcion: 'SE ACTUALIZA LA EMPRESA CON EL ID: '+ dataEmpresa.id_empresa
-    };
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
+  if (empresaAnterior.descripcion !== dataEmpresa.descripcion) {
+      cambios.push(`Descripción anterior: ${empresaAnterior.descripcion} -> Nueva descripción: ${dataEmpresa.descripcion}`);
   }
+  // Puedes agregar más comparaciones para otros campos según tus necesidades
+ 
+  // Si se realizaron cambios, registrar en la bitácora
+  if (cambios.length > 0) {
+      // Crear la descripción para la bitácora
+      const descripcion = `Se actualizaron los siguientes campos:\n${cambios.join('\n')}`;
+ 
+      // Crear el objeto bitácora
+      const bitacora = {
+          fecha: new Date(),
+          id_usuario: this.getUser.usuario,
+          id_objeto: 9,
+          accion: 'ACTUALIZAR',
+          descripcion: descripcion
+      };
+ 
+      // Insertar la bitácora
+      this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+          // Manejar la respuesta si es necesario
+      });
+  }
+}
+
+
+
   activarBitacora(dataEmpresa: any){
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
       id_objeto: 9,
       accion: 'ACTIVAR',
-      descripcion: 'SE ACTIVA LA EMPRESA CON EL ID: '+ dataEmpresa.id_empresa
+      descripcion: 'SE ACTIVA LA EMPRESA: '+ dataEmpresa.empresa
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
   }
+
   inactivarBitacora(dataEmpresa: any){
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
       id_objeto: 9,
       accion: 'INACTIVAR',
-      descripcion: 'SE INACTIVA LA EMPRESA CON EL ID: '+ dataEmpresa.id_empresa
+      descripcion: 'SE INACTIVA LA EMPRESA: '+ dataEmpresa.empresa
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
@@ -407,7 +538,7 @@ getEstadoText(estado: number): string {
       id_usuario: this.getUser.id_usuario,
       id_objeto: 9,
       accion: 'ELIMINAR',
-      descripcion: 'SE ELIMINA LA EMPRESA CON EL ID: '+ dataEmpresa.id_empresa
+      descripcion: 'SE ELIMINA LA EMPRESA: '+ dataEmpresa.id_empresa
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })

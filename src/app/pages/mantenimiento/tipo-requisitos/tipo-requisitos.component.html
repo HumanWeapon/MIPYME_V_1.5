@@ -7,9 +7,9 @@
                 <div class="card-header">
                   <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarRequisito">
                     <i class="fas fa-plus"></i> Nuevo</button>
-                    <button type="button" class="btn btn-primary custom-print-button btn-danger" title="Generar el Reporte" data-toggle="modal" data-target="#PDFRQ">
+                    <button type="button" class="btn btn-primary custom-print-button btn-danger" title="Generar el Reporte" data-toggle="modal" data-target="#PDFReQ">
                       <i class="fas fa-file-pdf mr-2"></i>PDF</button>
-                      <button type="button" class="btn btn-primary custom-print-button btn-success" title="Generar el Reporte en Excel" data-toggle="modal" data-target="#ExcelRequsit">
+                      <button type="button" class="btn btn-primary custom-print-button btn-success" title="Generar el Reporte en Excel" data-toggle="modal" data-target="#ExcelRequisito">
                         <i class="fas fa-file-excel mr-2"></i>Excel
                     </button>
                 </div>
@@ -137,7 +137,7 @@
 </div>
 
 <!-- Form Ver PDF para Requisitos -->
-<div class="modal fade" id="PDFRQ">
+<div class="modal fade" id="PDFReQ">
     <div class="modal-dialog modal-xl">
       <div class="modal-content">
   
@@ -195,7 +195,7 @@
 
 
 <!-- Form Ver Excel-->
-<div class="modal fade" id="ExcelRequsit">
+<div class="modal fade" id="ExcelRequisito">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
 
@@ -203,7 +203,7 @@
       <div class="modal-header" style="display: flex; align-items: center;">
         <div style="flex: 1; text-align: left; margin-right: 20px;">
             <h1>Utilidad Mi Pyme</h1>
-            <h4>Reporte de Teléfonos</h4> 
+            <h4>Reporte de Requisitos </h4> 
             <!-- Puedes agregar más detalles del reporte aquí si es necesario -->
             <p>Fecha: {{ getDate() }}</p>
         </div>
@@ -217,7 +217,8 @@
       <button type="button" class="btn btn-secondary customn-print-button btn-success" (click)="generateExcel()">
         <i class="fas fa-file-excel"></i>  Generar Excel</button>
       <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-    </div> <!-- Contenido del modal -->
+    </div>
+      <!-- Contenido del modal -->
   <div class="modal-body">
     <!-- Aquí puedes colocar tu DataTable o cualquier otro contenido que desees mostrar -->
     <table class="table table-striped">
@@ -245,4 +246,3 @@
 </div>
 </div>
 </div>
-
