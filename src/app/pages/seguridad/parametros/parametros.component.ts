@@ -112,6 +112,18 @@ export class ParametrosComponent implements OnInit{
     }
   }
 
+  eliminarCaracteresEspeciales(event: any, field: string) {
+    setTimeout(() => {
+      let inputValue = event.target.value;
+  
+      // Elimina caracteres especiales dependiendo del campo
+      if (field === 'parametro' || field === 'valor') {
+        inputValue = inputValue.replace(/[^a-zA-Z0-9]/g, ''); // Solo permite letras y números
+      }
+      event.target.value = inputValue;
+    });
+  }
+
   convertirAMayusculas(event: any, field: string) {
     setTimeout(() => {
       const inputValue = event.target.value;

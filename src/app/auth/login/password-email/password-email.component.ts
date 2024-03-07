@@ -28,54 +28,51 @@ export class PasswordEmailComponent implements OnInit {
     intentos_fallidos: 0
   };
 
-  correoElectronico: string = ''; // Variable para almacenar el correo electrónico
+  correoElectronico: string = '';
 
-  constructor(private router: Router, private _usuarioService: UsuariosService,
-    private _toastr: ToastrService,) {}
+  constructor(private router: Router, private usuarioService: UsuariosService,
+    private toastr: ToastrService) { }
 
-    ngOnInit() {
-      // Obtener el usuario pasado desde el componente anterior
-      const usuario: Usuario = history.state.usuario;
-      if (usuario) {
-        // Llamar al método getUsuario() con el usuario obtenido
-        this.getUsuario(usuario);
-      }
+  ngOnInit() {
+    const usuario: Usuario = history.state.usuario;
+    if (usuario) {
+      this.getUsuario(usuario);
     }
-    
-    getUsuario(usuario: Usuario) {
-      // Utiliza el usuario recibido como parámetro en lugar de obtenerlo de localStorage
-      this._usuarioService.getUsuario(usuario).subscribe(data => {
-        // Actualiza la propiedad usuario con los datos obtenidos del servicio
-        this.usuario = data;
-        console.log(this.usuario);
-      });
+  }
+  
+  getUsuario(usuario: Usuario) {
+    this.usuarioService.getUsuario(usuario).subscribe(data => {
+      this.usuario = data;
+      console.log(this.usuario);
+    });
+  }
+
+  onEnviarCorreo() {
+    if (!this.validarCorreoElectronico(this.correoElectronico)) {
+      this.toastr.warning('Por favor, ingresa un correo electrónico válido.');
+      return;
     }
 
-    onEnviarCorreo() {
-      // Validar si el correo electrónico es válido (por ejemplo, utilizando una expresión regular)
-      if (!this.validarCorreoElectronico(this.correoElectronico)) {
-        // Si el correo electrónico no es válido, muestra un mensaje de error
-        this._toastr.warning('Por favor, ingresa un correo electrónico válido.');
-        return;
-      }
-  
-      // Verificar si el correo electrónico ingresado coincide con el correo electrónico del usuario
-      if (this.correoElectronico !== this.usuario.correo_electronico) {
-        // Si el correo electrónico no coincide, muestra un mensaje de error
-        this._toastr.error('El correo electrónico ingresado no coincide con el del usuario.');
-        return;
-      }
-      
-      // Si el correo electrónico coincide con el del usuario, muestra un mensaje de éxito
-      this._toastr.success('El correo electrónico coincide con el del usuario.');
-  
-      // Aquí puedes implementar la lógica para enviar el correo electrónico
-      console.log('Correo electrónico válido:', this.correoElectronico);
+    if (this.correoElectronico !== this.usuario.correo_electronico) {
+      this.toastr.error('El correo electrónico ingresado no coincide con el del usuario.');
+      return;
     }
-  
-  
 
-  // Función para validar el formato del correo electrónico utilizando una expresión regular
+    this.toastr.success('El correo electrónico coincide con el del usuario.');
+
+    // Llamar al servicio para enviar el correo electrónico
+    this.usuarioService.forgotPassword(this.correoElectronico).subscribe(
+      response => {
+        this.toastr.success('Correo Enviado');
+        // Aquí puedes navegar a la siguiente página o mostrar otro mensaje según la respuesta del servicio
+      },
+      error => {
+        console.error('Error al enviar el correo electrónico:', error);
+        this.toastr.error('Error al enviar el correo electrónico.');
+      }
+    );
+  }
+
   validarCorreoElectronico(correoElectronico: string): boolean {
     const expresionRegularCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return expresionRegularCorreo.test(correoElectronico);
@@ -95,8 +92,9 @@ export class PasswordEmailComponent implements OnInit {
   navigateMetodo() {
     this.router.navigate(['/metodo']);
   }
-  
+
 }
+
 
 
 

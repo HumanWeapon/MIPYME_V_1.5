@@ -82,18 +82,18 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form (submit)="agregarNuevoRol()">
+                <form (ngSubmit)="agregarNuevoRol()">
                     <div class="form-group">
                         <label for="nuevoRol">Nombre del Rol:</label>
-                        <input type="text" [(ngModel)]="nuevoRol.rol" name="nuevoRol.rol" (input)="convertirAMayusculas($event, 'rol')" class="form-control" id="nuevoRol" placeholder="Nombre del rol">
+                        <input type="text" [(ngModel)]="nuevoRol.rol" name="nuevoRol.rol" (input)="eliminarCaracteresEspeciales($event, 'rol')" (input)="convertirAMayusculas($event, 'rol')" class="form-control" id="nuevoRol" placeholder="Nombre del rol">
                         <label for="nuevoRol">Descripción:</label>
-                        <input type="text" [(ngModel)]="nuevoRol.descripcion" name="nuevoRol.descripcion" (input)="convertirAMayusculas($event, 'rol')"class="form-control" id="nuevoRol" placeholder="Descripcion">
+                        <input type="text" [(ngModel)]="nuevoRol.descripcion" name="nuevoRol.descripcion" (input)="eliminarCaracteresEspeciales($event, 'descripcion')" (input)="convertirAMayusculas($event, 'descripcion')"class="form-control" id="nuevodescripcion" placeholder="Descripcion">
                       </div>
                 </form>
             </div>
             <div class="modal-footer justify-content-between">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-                <button type="button" (click)="agregarNuevoRol()" class="btn btn-success" data-dismiss="modal">Guardar</button>
+                <button type="submit" (click)="agregarNuevoRol()" class="btn btn-success" data-dismiss="modal">Guardar</button>
             </div>
         </div>
     </div>
@@ -121,9 +121,9 @@
                 <form>
                   <div class="form-group">
                       <label for="rolEditando">Nombre del Rol:</label>
-                      <input type="text" [(ngModel)]="rolEditando.rol" name="rolEditando.rol" (input)="convertirAMayusculas($event, 'rol')" class="form-control" id="editarRol" placeholder="Nombre del rol">
+                      <input type="text" [(ngModel)]="rolEditando.rol" name="rolEditando.rol" (input)="eliminarCaracteresEspeciales($event, 'rol')" (input)="convertirAMayusculas($event, 'rol')" class="form-control" id="editarRol" placeholder="Nombre del rol">
                       <label for="rolEditando">Descripcion:</label>
-                      <input type="text" [(ngModel)]="rolEditando.descripcion" name="rolEditando.descripcion" (input)="convertirAMayusculas($event, 'rol')" class="form-control" id="editarRol" placeholder="Descripcion">
+                      <input type="text" [(ngModel)]="rolEditando.descripcion" name="rolEditando.descripcion" (input)="eliminarCaracteresEspeciales($event, 'descripcion')" (input)="convertirAMayusculas($event, 'descripcion')" class="form-control" id="editarRol" placeholder="Descripcion">
                   </div>
                 </form>
             </div>

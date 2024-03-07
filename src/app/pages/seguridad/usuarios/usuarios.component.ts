@@ -115,6 +115,21 @@ export class UsuariosComponent {
     this.dtTrigger.unsubscribe();
   }
 
+  eliminarCaracteresEspeciales(event: any, field: string) {
+  setTimeout(() => {
+    let inputValue = event.target.value;
+
+    // Elimina caracteres especiales dependiendo del campo
+    if (field === 'usuario' || field === 'nombre') {
+      inputValue = inputValue.replace(/[^a-zA-Z0-9]/g, ''); // Solo permite letras y números
+    } else if (field === 'correo') {
+      inputValue = inputValue.replace(/[^a-zA-Z0-9@.]/g, ''); // Solo permite letras, números, @ y .
+    }
+
+    event.target.value = inputValue;
+  });
+}
+
   eliminarEspaciosBlanco(event: any, field: string) {
 
     setTimeout(() => {
@@ -174,6 +189,8 @@ toggleFunction(user: any, i: number) {
     });
     this.usuariosAllRoles[i].estado_usuario = 1;
   }
+ 
+  /*****************************************************************************************************/
 
 
    /*****************************************************************************************************/

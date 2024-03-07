@@ -12,5 +12,5 @@ export interface Usuario {
     id_rol: number,
     fecha_ultima_conexion: Date,
     fecha_vencimiento: Date,
-    intentos_fallidos: number
+    intentos_fallidos: number,
 }

@@ -12,6 +12,7 @@ import { SpinnerComponent } from '../shared/spinner/spinner.component';
 import { LoginPymeComponent } from './login-pyme/login-pyme.component';
 import { RegisterPymeComponent } from './register-pyme/register-pyme.component';
 import { PasswordEmailComponent } from './login/password-email/password-email.component';
+import { ResetPasswordComponent } from './login/reset-password/reset-password.component';
 
 
 
@@ -28,7 +29,8 @@ import { PasswordEmailComponent } from './login/password-email/password-email.co
     SpinnerComponent,
     LoginPymeComponent,
     RegisterPymeComponent,
-    PasswordEmailComponent
+    PasswordEmailComponent,
+    ResetPasswordComponent
   ],
   imports: [
     CommonModule,

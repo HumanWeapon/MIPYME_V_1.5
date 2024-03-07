@@ -16,6 +16,7 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale'; 
 
 
+
 @Component({
   selector: 'app-roles',
   templateUrl:'./roles.component.html',
@@ -97,8 +98,21 @@ export class RolesComponent implements OnInit{
     this.dtTrigger.unsubscribe();
   }
 
-  // Variable de estado para alternar funciones
+  eliminarCaracteresEspeciales(event: any, field: string) {
+    setTimeout(() => {
+      let inputValue = event.target.value;
+  
+      // Elimina caracteres especiales dependiendo del campo
+      if (field === 'rol') {
+        inputValue = inputValue.replace(/[^a-zA-Z0-9]/g, ''); // Solo permite letras y números
+      }else if (field === 'descripcion') {
+        inputValue = inputValue.replace(/[^a-zA-Z0-9\s]/g, ''); // Solo permite letras, números y espacios en blanco
+      }
+      event.target.value = inputValue;
+    });
+  }
 
+  // Variable de estado para alternar funciones
   toggleFunction(roles: any, i: number) {
     if (roles.estado_rol == 1) {
       this.inactivarRol(roles, i);
@@ -245,36 +259,47 @@ activarRol(rol: any, i: number){
 
 /**************************************************************/
 
-  agregarNuevoRol() {
+agregarNuevoRol() {
+  const userLocal = localStorage.getItem('usuario');
+  if (userLocal){
+    const fechaActual = new Date();
+    const fechaFormateada = this._datePipe.transform(fechaActual, 'yyyy-MM-dd');
+    const nuevoRolTmp = {
+      id_rol: 0, 
+      rol: this.nuevoRol.rol , 
+      descripcion: this.nuevoRol.descripcion, 
+      estado_rol: 1,
+      creado_por: userLocal,
+      fecha_creacion: fechaFormateada as unknown as Date, 
+      modificado_por: userLocal, 
+      fecha_modificacion: fechaFormateada as unknown as Date,
+    };
 
-    const userLocal = localStorage.getItem('usuario');
-    if (userLocal){
-      const fechaActual = new Date();
-      const fechaFormateada = this._datePipe.transform(fechaActual, 'yyyy-MM-dd');
-      this.nuevoRol = {
-        id_rol: 0, 
-        rol: this.nuevoRol.rol , 
-        descripcion: this.nuevoRol.descripcion, 
-        estado_rol: 1,
-        creado_por: userLocal,
-        fecha_creacion: fechaFormateada as unknown as Date, 
-        modificado_por: userLocal, 
-        fecha_modificacion: fechaFormateada as unknown as Date,
-      };
+    this._rolService.addRol(nuevoRolTmp).subscribe({
+      next: (data) => {
+        this._toastr.success('Rol agregado con éxito');
+        this.insertBitacora(data);
+        this.listRoles.push(nuevoRolTmp);
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
 
-      this._rolService.addRol(this.nuevoRol).subscribe({
-        next: (data) => {
-          this._toastr.success('Rol agregado con éxito');
-          this.insertBitacora(data);
-          this.listRoles.push(this.nuevoRol);
-          
-        },
-        error: (e: HttpErrorResponse) => {
-          this._errorService.msjError(e);
-        }
-      });
-    }
+    // Limpiar campos del formulario en el modal
+    this.nuevoRol = {
+      id_rol: 0, 
+      rol: '', 
+      descripcion: '', 
+      estado_rol: 1,
+      creado_por: '', 
+      fecha_creacion: new Date(), 
+      modificado_por: '', 
+      fecha_modificacion: new Date(),
+    };
   }
+}
+
 
   obtenerIdRol(roles: Roles, i: any){
     this.rolEditando = {

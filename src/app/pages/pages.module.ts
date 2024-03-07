@@ -72,7 +72,9 @@ import { OperacionesEmpresasComponent } from './empresas/operaciones-empresas/op
     SeguridadComponent,
     AdministracionComponent,
     MantenimientoComponent,
-    OperacionesEmpresasComponent
+    OperacionesEmpresasComponent,
+
+    
   ],
   imports: [
     CommonModule,
