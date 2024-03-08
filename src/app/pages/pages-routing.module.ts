@@ -78,7 +78,7 @@ const routes: Routes = [
     { path: 'empresas_productos', component:EmpresasProductosComponent, data:{titulo: 'Productos de empresas'}},
     { path: 'contactos', component:ContactoComponent, data:{titulo: 'Contacto'}},
     { path: 'telefonos', component:TelefonosComponent, data:{titulo: 'Teléfonos'}},
-    { path: 'contacto_direcciones', component:DireccionesComponent, data:{titulo: 'Contacto de direcciones'}},
+    { path: 'direcciones', component:DireccionesComponent, data:{titulo: 'Direcciones de Empresa'}},
 
     //ABC grado C.
     //{ path: 'contactos', component:ContactoEmpresasComponent, data:{titulo: 'Contactos'}},

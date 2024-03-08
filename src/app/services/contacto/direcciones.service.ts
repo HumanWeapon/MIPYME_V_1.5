@@ -14,7 +14,7 @@ export class DireccionesService {
 
   constructor(private http: HttpClient) {
     this.myAppUrl = environment.endpoint;
-    this.myApiUrl = 'api/direcontactos'
+    this.myApiUrl = 'api/direcciones'
     // Asignar un valor a una clave en localStorage
 
    }
@@ -31,10 +31,10 @@ export class DireccionesService {
     return this.http.post<ContactoDirecciones[]>(`${this.myAppUrl}${this.myApiUrl}/getDirecContactos`, { id_contacto: id_contacto }, { headers: headers })
    }
   
-   getAllDireccion(): Observable<ContactoDirecciones[]> {
+   getdirecciones(): Observable<any[]> {
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.get<ContactoDirecciones[]>(`${this.myAppUrl}${this.myApiUrl}/getAllDirecContactos`, { headers: headers })
+    return this.http.get<any[]>(`${this.myAppUrl}${this.myApiUrl}/getdirecciones`, { headers: headers })
    }
    inactivarDireccion(direccion: ContactoDirecciones): Observable<ContactoDirecciones>{
     const token = localStorage.getItem('token')

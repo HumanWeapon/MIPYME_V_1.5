@@ -28,17 +28,6 @@ export class DireccionesComponent {
   
   getDireccion: any;
 
-  getDate(): string {
-    // Obtener la fecha actual
-    const currentDate = new Date();
-    // Formatear la fecha en el formato deseado
-    return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
-}
-
-
-
-
-
   direccionEditando: ContactoDirecciones = {
     id_direccion: 0, 
     id_tipo_direccion: 0,
@@ -67,7 +56,7 @@ export class DireccionesComponent {
   indice: any;
 
   dtOptions: DataTables.Settings = {};
-  listDirecciones: ContactoDirecciones[] = [];
+  listDirecciones: any[] = [];
   data: any;
   listContacto: Contacto[] = [];
   listTipoC: TipoDireccion[] = [];
@@ -102,18 +91,11 @@ export class DireccionesComponent {
       language: {url:'//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'},
       responsive: true
     };
-    this._objService.getAllDireccion()
+    this._objService.getdirecciones()
       .subscribe((res: any) => {
         this.listDirecciones= res;
         console.log(res)
         this.dtTrigger.next(null);
-      });
-
-      this._Tipodireccion.getAllTipoDirecciones().subscribe(data => {
-        this.listTipoC = data
-        console.log(this.listTipoC)
-
-      
       });
       this.getUsuario();
   }
@@ -123,7 +105,12 @@ export class DireccionesComponent {
     this.dtTrigger.unsubscribe();
   }
 
-
+  getDate(): string {
+    // Obtener la fecha actual
+    const currentDate = new Date();
+    // Formatear la fecha en el formato deseado
+    return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
+  }
   onInputChange(event: any, field: string) {
     if (field === 'direccion' || field === 'descripcion') {
       const inputValue = event.target.value;
