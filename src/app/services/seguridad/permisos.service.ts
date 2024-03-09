@@ -38,17 +38,19 @@ export class PermisosService {
     return this.http.get<Permisos[]>(`${this.myAppUrl}${this.myApiUrl}/getAllPermisos`, { headers: headers })
    }
 
-   inactivarPermiso(permisos: Permisos): Observable<Permisos>{
-    const token = localStorage.getItem('token')
-    const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.post<Permisos>(`${this.myAppUrl}${this.myApiUrl}/inactivatePermiso`, permisos, { headers: headers })
-   }
-
-   activarPermiso(permisos: Permisos): Observable<Permisos>{
-    const token = localStorage.getItem('token')
-    const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.post<Permisos>(`${this.myAppUrl}${this.myApiUrl}/activatePermiso`, permisos, { headers: headers })
-   }
+   inactivarPermiso(id_permisos: Permisos): Observable<Permisos>{
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    console.log('Datos que se están enviando para inactivar el permiso:', id_permisos); // Agregar esta línea para imprimir los datos
+    return this.http.post<Permisos>(`${this.myAppUrl}${this.myApiUrl}/inactivatePermiso`, id_permisos, { headers: headers });
+  }
+  
+  activarPermiso(id_permisos: Permisos): Observable<Permisos>{
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    console.log('Datos que se están enviando para activar el permiso:', id_permisos); // Agregar esta línea para imprimir los datos
+    return this.http.post<Permisos>(`${this.myAppUrl}${this.myApiUrl}/activatePermiso`, id_permisos, { headers: headers });
+  }
 
    editarPermiso(permisos: Permisos): Observable<any> {
     return this.http.post<Permisos>(`${this.myAppUrl}${this.myApiUrl}/updatePermisos`, permisos)

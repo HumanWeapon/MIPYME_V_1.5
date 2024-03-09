@@ -18,26 +18,24 @@
                     <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover">
                         <thead>
                           <tr>
-                            <th>Codigo</th>
-                            <th>Parámetro</th>
-                            <th>Estado</th>
-                            <th>Valor</th>
-                            <th>Fecha Creación</th>
-                            <th>Fecha Modificación</th>
-                            <th>Aciones</th>
+                            <th>PARAMETRO</th>
+                            <th>ESTADO</th>
+                            <th>VALOR</th>
+                            <th>FECHA CREACION</th>
+                            <th>FECHA MODIFICACION</th>
+                            <th>ACCIONES</th>
                           </tr>
                         </thead>
                         <tbody>
                           <tr *ngFor="let parametros of listParametros; let i = index">
-                            <td>{{ parametros.id_parametro }}</td>
                             <td>{{ parametros.parametro }}</td>
                             <td>
                               <ng-container *ngIf="parametros.estado_parametro == 1">ACTIVO</ng-container>
                               <ng-container *ngIf="parametros.estado_parametro == 2">INACTIVO</ng-container>
                             </td>
                             <td>{{ parametros.valor }}</td>
-                            <td>{{ parametros.fecha_creacion }}</td>
-                            <td>{{ parametros.fecha_modificacion }}</td>
+                            <td>{{ parametros.fecha_creacion | date:'YYYY-MM-dd' }}</td>
+                            <td>{{ parametros.fecha_modificacion | date:'YYYY-MM-dd' }}</td>
                             <td class="text-center">
                               <div class="btn-group">
                                 <div class="form-check form-switch ml-4">
@@ -80,10 +78,10 @@
               </button>
           </div>
           <div class="modal-body">
-              <form (submit)="agregarNuevoParametro()">
+              <form (ngSubmit)="agregarNuevoParametro()">
                   <div class="form-group">
                       <label for="nuevoParametro">Parametro:</label>
-                      <input type="text" [(ngModel)]="nuevoParametro.parametro"name="nuevoParametro.parametro" (input)="eliminarCaracteresEspeciales($event, 'parametro')"  (input)="onInputChange($event, 'parametro')" class="form-control" id="nuevoParametro" placeholder="Parametro">
+                      <input type="text" [(ngModel)]="nuevoParametro.parametro"name="nuevoParametro.parametro" (input)="eliminarCaracteresEspeciales($event, 'parametro')"  class="form-control" id="nuevoParametro" placeholder="Parametro">
                   </div>
                   <div class="form-group">
                       <label for="nuevoParametro">Valor:</label>
@@ -93,8 +91,8 @@
               </form>
           </div>
           <div class="modal-footer justify-content-between">
-              <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-              <button type="button" (click)="agregarNuevoParametro()" class="btn btn-success" data-dismiss="modal">Guardar</button>
+              <button type="button" (click)="cancelarInput()" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+              <button type="submit" (click)="agregarNuevoParametro()" class="btn btn-success" data-dismiss="modal">Guardar</button>
           </div>
       </div>
   </div>
@@ -126,7 +124,7 @@
           </div>
           <div class="modal-footer justify-content-between">
               <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-              <button type="button" (click)="editarParametro()" class="btn btn-success" data-dismiss="modal">Guardar</button>
+              <button type="submit" (click)="editarParametro()" class="btn btn-success" data-dismiss="modal">Guardar</button>
           </div>
       </div>
   </div>

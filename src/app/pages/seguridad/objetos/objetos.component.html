@@ -5,8 +5,8 @@
             <div class="col-12">
               <div class="card">
                 <div class="card-header">
-                  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarObjeto">
-                    <i class="fas fa-plus"></i> Nuevo</button>
+                  <!--<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarObjeto">
+                    <i class="fas fa-plus"></i> Nuevo</button>-->
                     <button type="button" class="btn btn-primary custom-print-button btn-danger" title="Generar el Reporte" data-toggle="modal" data-target="#PDFObjetos">
                       <i class="fas fa-file-pdf mr-2"></i>PDF</button>
                     
@@ -31,10 +31,10 @@
                         </thead>
                         <tbody>
                           <tr *ngFor="let obj of listObjetos; let i = index">
-                            <td>{{ obj.objeto }}</td>
-                            <td>{{ obj.descripcion }}</td>
-                            <td>{{ obj.tipo_objeto }}</td>
-                            <td>{{ obj.creado_por}}</td>
+                            <td>{{ obj.objeto | uppercase }}</td>
+                            <td>{{ obj.descripcion | uppercase }}</td>
+                            <td>{{ obj.tipo_objeto | uppercase }}</td>
+                            <td>{{ obj.creado_por | uppercase}}</td>
                             <td>{{ obj.fecha_creacion }}</td>
                             <td>{{ obj.fecha_modificacion}}</td>
                             <td>
@@ -86,16 +86,22 @@
               <form (submit)="agregarNuevoObjeto()">
                   <div class="form-group">
                       <label for="nuevoObjeto">Nombre del Objeto:</label>
-                      <input type="text" [(ngModel)]="nuevoObjeto.objeto" name="nuevoObjeto.objeto" (input)="onInputChange($event, 'objeto')" class="form-control" id="nuevoObjeto" placeholder="Nombre del objeto">
+                      <input type="text" [(ngModel)]="nuevoObjeto.objeto" name="nuevoObjeto.objeto" (input)="eliminarCaracteresEspeciales($event, 'objeto')" class="form-control" id="nuevoObjeto" placeholder="Nombre del objeto">
                   </div>
                   <div class="form-group">
                       <label for="nuevoDescripcion">Descripción</label>
-                      <input type="text" [(ngModel)]="nuevoObjeto.descripcion" name="nuevoObjeto.descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="nuevodescripcion" placeholder="Descripción">
+                      <input type="text" [(ngModel)]="nuevoObjeto.descripcion" name="nuevoObjeto.descripcion" (input)="eliminarCaracteresEspeciales($event, 'descripcion')" class="form-control" id="nuevodescripcion" placeholder="Descripción">
                   </div>
                   <div class="form-group">
-                      <label for="nuevoTipoObjeto">Tipo objeto:</label>
-                      <input type="text" [(ngModel)]="nuevoObjeto.tipo_objeto" name="nuevoObjeto.tipo_objeto" (input)="onInputChange($event, 'tipo_objeto')" class="form-control" id="nuevotipo" placeholder="Tipo Objeto">
-                  </div>
+                    <label for="nuevoTipoObjeto">Tipo Objeto</label>
+                    <input type="text" [(ngModel)]="nuevoObjeto.tipo_objeto" name="nuevoObjeto.tipo_objeto" (input)="eliminarCaracteresEspeciales($event, 'tipo_objeto')" class="form-control" id="nuevotipo" placeholder="Tipo Objeto">
+                </div>
+                  <!--<div class="form-group">
+                    <label for="nuevoTipoObjeto">Tipo Objeto</label>
+                    <select [(ngModel)]="nuevoObjeto.tipo_objeto" name="nuevoObjeto.tipo_objeto" class="form-control" id="nuevoObjeto.tipo_objeto">
+                      <option *ngFor="let objeto of filtrarObjetosUnicos()" [value]="objeto.tipo_objeto">{{ objeto.tipo_objeto }}</option>
+                    </select>
+                  </div>-->
                               
               </form>
           </div>
@@ -123,11 +129,11 @@
               <form>
                 <div class="form-group">
                     <label for="objetoEditando">Nombre:</label>
-                    <input type="text" [(ngModel)]="objetoEditando.objeto" name="objetoEditando.objeto" (input)="onInputChange($event, 'objeto')" class="form-control" id="editarObjeto" placeholder="Nombre del objeto">
+                    <input type="text" [(ngModel)]="objetoEditando.objeto" name="objetoEditando.objeto" (input)="eliminarCaracteresEspeciales($event, 'objeto')" class="form-control" id="editarObjeto" placeholder="Nombre del objeto">
                 </div>
                 <div class="form-group">
                     <label for="objetoEditando">Descripción:</label>
-                    <input type="text" [(ngModel)]="objetoEditando.descripcion" name="objetoEditando.descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="editarDescripcion" placeholder="Descripción">
+                    <input type="text" [(ngModel)]="objetoEditando.descripcion" name="objetoEditando.descripcion" (input)="eliminarCaracteresEspeciales($event, 'descripcion')" class="form-control" id="editarDescripcion" placeholder="Descripción">
                 </div>
                
               </form>

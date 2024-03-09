@@ -22,32 +22,11 @@ export class PreguntasService {
 
    }
 
-
-/*
-   addPregunta(preguntas: Preguntas): Observable<any> {
-    const nuevoPregunta = {
-
-      id_pregunta: preguntas.id_pregunta,
-      pregunta: preguntas.pregunta,
-      creado_por: preguntas.creado_por,
-      fecha_creacion: preguntas.fecha_creacion ,
-      modificado_por: preguntas.modificado_por,
-      fecha_modificacion: preguntas.fecha_modificacion 
-      
-      };
-      const token = localStorage.getItem('token')
-      const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-      return this.http.post<Preguntas>(`${this.myAppUrl}${this.myApiUrl}/postPregunta`, nuevoPregunta, { headers: headers })
-  }
-*/
-
   addPregunta(preguntas: Preguntas): Observable<any> {
       const token = localStorage.getItem('token')
       const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
       return this.http.post<Preguntas>(`${this.myAppUrl}${this.myApiUrl}/postPregunta`, preguntas, { headers: headers })
   }
-
-  
 
    getPregunta(preguntas: Preguntas): Observable<Preguntas> {
     const token = localStorage.getItem('token')
@@ -60,7 +39,6 @@ export class PreguntasService {
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
     return this.http.get<Preguntas[]>(`${this.myAppUrl}${this.myApiUrl}/getAllPreguntas`, { headers: headers })
    }
-
 
    inactivarPregunta(preguntas: Preguntas): Observable<Preguntas>{
     const token = localStorage.getItem('token')
