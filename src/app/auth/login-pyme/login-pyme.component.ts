@@ -14,6 +14,15 @@ import { ErrorService } from 'src/app/services/error.service';
 })
 export class LoginPymeComponent {
 
+  goToRegister(event: Event) {
+    event.preventDefault(); // Evitar el comportamiento predeterminado del enlace
+    this.router.navigate(['/register-pyme']); // Navegar a la página de registro
+}
+
+goToLogin() {
+  this.router.navigate(['/login']); 
+}
+
   nombre_pyme: string = '';
   rtn: string = '';
   loading: boolean = false;
@@ -23,7 +32,6 @@ export class LoginPymeComponent {
 
   getPyme: Pyme = {
     id_pyme: 0,
-    id_tipo_empresa: 0,
     nombre_pyme: '',
     rtn:'',
     descripcion: '',
@@ -40,13 +48,10 @@ export class LoginPymeComponent {
   constructor(
     private _pymeService: PymeService,
     private _toastr: ToastrService,
-    private _router: Router, 
     private _errorService: ErrorService,
     private router: Router) {}
   
-  navigateToRegister() {
-    this.router.navigate(['/registerpyme']);
-  }
+
 
   eliminarEspaciosBlanco() {
     this.nombre_pyme = this.nombre_pyme.replace(/\s/g, ''); // Elimina espacios en blanco
@@ -75,7 +80,6 @@ export class LoginPymeComponent {
       modificado_por: '',
       fecha_modificacion: new Date(),
       estado: 0,
-      id_tipo_empresa: 0,
       descripcion: '',
       id_rol: 0
     }
@@ -91,16 +95,16 @@ export class LoginPymeComponent {
         
         if(this.ultimaConexion == null){
           localStorage.setItem('firstLogin', this.nombre_pyme);
-          this._router.navigate(['/firstlogin'])
+          this.router.navigate(['/firstlogin'])
         }
         else{
           localStorage.setItem('nombre_pyme', this.nombre_pyme);
           localStorage.setItem('CCP',this.rtn);
-          this._router.navigate(['dashboard'])
+          this.router.navigate(['dashboard'])
         }
       },
     error: (e: HttpErrorResponse) => {
-      console.error('Error en la solicitud:', e);
+      console.error('Error en la solicitud chupala:', e);
       this._errorService.msjError(e);
       this.loading = false;
     }
@@ -117,7 +121,6 @@ export class LoginPymeComponent {
      fecha_modificacion: new Date(),
      estado: 0,
      rtn: '',
-     id_tipo_empresa: 0,
      descripcion: '',
      id_rol: 0
    }
@@ -127,7 +130,7 @@ export class LoginPymeComponent {
        console.log(data)
      },
      error: (e: HttpErrorResponse) => {
-       this._errorService.msjError(e);
+       this._errorService.msjError(e); 
        this.loading = false
      }
    });

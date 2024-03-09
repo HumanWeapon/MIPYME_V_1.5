@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 import { Pyme  } from 'src/app/interfaces/pyme/pyme';
 import { ErrorService } from 'src/app/services/error.service';
 import { NgZone } from '@angular/core';
@@ -27,6 +27,7 @@ export class PymeComponent {
   getEstadoText: any;
   getPyme: any;
 
+
   getDate(): string {
     // Obtener la fecha actual
     const currentDate = new Date();
@@ -38,7 +39,6 @@ export class PymeComponent {
 
   editPyme: Pyme = {
     id_pyme: 0,
-    id_tipo_empresa: 1,
     nombre_pyme: '',
     rtn:'',
     descripcion: '',
@@ -52,7 +52,6 @@ export class PymeComponent {
 
   newPyme: Pyme = {
     id_pyme: 0,
-    id_tipo_empresa: 1,
     nombre_pyme: '',
     rtn:'',
     descripcion: '',
@@ -82,6 +81,7 @@ export class PymeComponent {
     private _errorService: ErrorService,
     private _userService: UsuariosService,
     private _pymesService: PymeService,
+    private http: HttpClient
   ) {}
 
   ngOnInit(): void {
@@ -107,6 +107,11 @@ export class PymeComponent {
     // Do not forget to unsubscribe the event
     this.dtTrigger.unsubscribe();
   }
+
+
+
+  
+
   
 /**********************************************************/
 // Variable de estado para alternar funciones
@@ -252,12 +257,18 @@ generatePDF() {
 
 
 /**************************************************************/
+
+
+
+
+
+
+
 agregarNuevaPyme() {
   const userLocal = localStorage.getItem('usuario');
   if (userLocal) {
     this.newPyme = {
       id_pyme: 0,
-      id_tipo_empresa: this.newPyme.id_tipo_empresa,
       nombre_pyme: this.newPyme.nombre_pyme.toUpperCase(),
       rtn:this.newPyme.rtn,
       descripcion: this.newPyme.descripcion,
@@ -269,7 +280,7 @@ agregarNuevaPyme() {
       id_rol: this.newPyme.id_rol
     };
 
-    this._pymesService.addPyme(this.newPyme).subscribe({
+    this._pymesService.PostPyme(this.newPyme).subscribe({
       next: (data) => {
         this.insertBitacora(data);
         this.toastr.success('Pyme Agregada Exitosamente');
@@ -301,7 +312,6 @@ agregarNuevaPyme() {
   obtenerIdPyme(pyme: Pyme, i: any) {
     this.editPyme = {
       id_pyme: pyme.id_pyme,
-      id_tipo_empresa: pyme.id_tipo_empresa,
       nombre_pyme: pyme.nombre_pyme,
       rtn:pyme.rtn,
       descripcion: pyme.descripcion,
