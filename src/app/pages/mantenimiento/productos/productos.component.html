@@ -167,9 +167,6 @@
         </div>
         <div style="flex: 0;">
             <img src="\assets\dist\img\pym.png" alt="Logo de Mi Pyme" style="width: 200px; height: auto;">
-        </div>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-      </div>
       
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary customn-print-button btn-danger" (click)="generatePDF()">
@@ -194,16 +191,12 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let produc of listProductos">
+            <tr *ngFor="let produc of productos; let i = index">
               <td>{{ produc.producto }}</td>
               <td>{{ produc.descripcion }}</td>
               <td>{{ produc.creado_por }}</td>
               <td>{{ produc.fecha_creacion}}</td>
-             
-              <td>
-                <ng-container *ngIf="produc.estado === 1">ACTIVO</ng-container>
-                <ng-container *ngIf="produc.estado === 2">INACTIVO</ng-container>
-              </td>
+              <td>{{ getEstadoText(produc.estado) }}</td>
             </tr>
           </tbody>
         </table>
@@ -255,7 +248,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let produc of listProductos">
+            <tr *ngFor="let produc of productos">
               <td>{{ produc.producto }}</td>
               <td>{{ produc.descripcion }}</td>
               <td>{{ produc.creado_por }}</td>

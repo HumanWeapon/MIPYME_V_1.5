@@ -205,29 +205,28 @@ export class ProductosComponent implements OnInit{
   
   }
 
-  editarProducto() {
 
+  editarProducto() {
     this.productoEditando.producto = this.productoEditando.producto.toUpperCase();
     this.productoEditando.descripcion = this.productoEditando.descripcion.toUpperCase();
 
-    const esMismoProducto = this.listProductos[this.indice].producto === this.productoEditando.producto;
+    const esMismoProducto = this.productos[this.indice].producto === this.productoEditando.producto;
 
         // Si el usuario no es el mismo, verifica si el nombre de usuario ya existe
         if (!esMismoProducto) {
-          const ProducExistente = this.listProductos.some(user => user.producto === this.productoEditando.producto);
+          const ProducExistente = this.productos.some(user => user.producto === this.productoEditando.producto);
           if (ProducExistente) {
             this.toastr.error('El Producto ya existe. Por favor, elige otro Producto.');
             return;
           }
         }
-
     this._productoService.editarProducto(this.productoEditando).subscribe(data => {
         this.updateBitacora(data);
         this.toastr.success('Producto editado con éxito');
-        this.listProductos[this.indice].producto = this.productoEditando.producto;
-        this.listProductos[this.indice].descripcion = this.productoEditando.descripcion;
+        this.productos[this.indice].producto = this.productoEditando.producto;
+        this.productos[this.indice].descripcion = this.productoEditando.descripcion;
     });
-}
+  }
 
   /**********************************************************/
 // Variable de estado para alternar funciones
