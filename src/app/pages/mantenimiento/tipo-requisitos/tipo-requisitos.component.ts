@@ -311,6 +311,8 @@ getEstadoText(estado: number): string {
         };
         if (!this.nuevoTipoRequisito.tipo_requisito || !this.nuevoTipoRequisito.descripcion) {
           this.toastr.warning('Debes completar los campos vacíos');
+          this.nuevoTipoRequisito.tipo_requisito = '';
+          this.nuevoTipoRequisito.descripcion = '';
         }else{
         this._tipoRequisitoService.addTipoRequisito(this.nuevoTipoRequisito).subscribe({
           next: (data) => {
@@ -318,9 +320,6 @@ getEstadoText(estado: number): string {
             this.toastr.success('Tipo de Requisito agregado con éxito')
             this.listTipoR.push(this.nuevoTipoRequisito)
           },
-          error: (e: HttpErrorResponse) => {
-            this._errorService.msjError(e);
-          }
         });
       }
       }

@@ -13,6 +13,7 @@ import { Usuario } from 'src/app/interfaces/seguridad/usuario';
 import * as XLSX from 'xlsx';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale'; // Importa el idioma español
+import { DatePipe } from '@angular/common';
 
 
 @Component({
@@ -65,6 +66,7 @@ export class TipoContactoComponent implements OnInit{
     private _bitacoraService: BitacoraService,
     private _errorService: ErrorService,
     private _userService: UsuariosService,
+    private _datePipe: DatePipe
     ) {}
 
   
@@ -88,14 +90,26 @@ export class TipoContactoComponent implements OnInit{
     this.dtTrigger.unsubscribe();
   }
 
-onInputChange(event: any, field: string) {
-  if (field === 'tipo_contacto') {
-    const inputValue = event.target.value;
-    const uppercaseValue = inputValue.toUpperCase();
-    event.target.value = uppercaseValue;
+  convertirAMayusculas(event: any, field: string) {
+    setTimeout(() => {
+      const inputValue = event.target.value;
+      event.target.value = inputValue.toUpperCase();
+    });
   }
-}
 
+  eliminarCaracteresEspeciales(event: any, field: string) {
+    setTimeout(() => {
+      let inputValue = event.target.value;
+  
+      // Elimina caracteres especiales dependiendo del campo
+      if (field === 'tipo_contacto') {
+        inputValue = inputValue.replace(/[^a-zA-Z0-9\s]/g, ''); // Solo permite letras y números
+      }else if (field === 'descripcion') {
+        inputValue = inputValue.replace(/[^a-zA-Z0-9\s]/g, ''); // Solo permite letras, números y espacios en blanco
+      }
+      event.target.value = inputValue;
+    });
+  }
 
 getDate(): string {
   // Obtener la fecha actual
@@ -256,30 +270,32 @@ getEstadoText(estado: number): string {
 
     const userLocal = localStorage.getItem('usuario');
     if (userLocal){
+      const fechaActual = new Date();
+      const fechaFormateada = this._datePipe.transform(fechaActual, 'yyyy-MM-dd');
     this.nuevoTipoContacto = {
       id_tipo_contacto: 0, 
       tipo_contacto: this.nuevoTipoContacto.tipo_contacto, 
       descripcion:this.nuevoTipoContacto.descripcion,
       creado_por: userLocal, 
-      fecha_creacion: new Date(), 
+      fecha_creacion: fechaFormateada as unknown as Date,
       modificado_por: userLocal, 
-      fecha_modificacion: new Date(),
+      fecha_modificacion: fechaFormateada as unknown as Date,
       estado: 1,
 
     };
-
+    if (!this.nuevoTipoContacto.tipo_contacto || !this.nuevoTipoContacto.descripcion) {
+      this.toastr.warning('Debes completar los campos vacíos');
+      this.nuevoTipoContacto.tipo_contacto = '';
+      this.nuevoTipoContacto.descripcion = '';
+    }else{
     this._tipoCService.addTipoContacto(this.nuevoTipoContacto).subscribe({
       next: (data) => {
         this.insertBitacora(data);
         this.toastr.success('contacto agregado con éxito');
+        this.listTipoC.push(this.nuevoTipoContacto)
       },
-      error: (e: HttpErrorResponse) => {
-        this._errorService.msjError(e);
-      }
     });
-    location.reload();
-    this.ngZone.run(() => {        
-    });
+  }
   }
 }
 
@@ -301,18 +317,31 @@ getEstadoText(estado: number): string {
     this.indice = i;
   }
 
+  cancelarInput(){
+    this.nuevoTipoContacto.tipo_contacto = '';
+    this.nuevoTipoContacto.descripcion = '';
+   }
 
   editarTipoContacto(){
+    this.tipoContactoEditando.tipo_contacto = this.tipoContactoEditando.tipo_contacto.toUpperCase();
+    this.tipoContactoEditando.descripcion = this.tipoContactoEditando.descripcion.toUpperCase();
+    
+    const esMismoTipoC = this.listTipoC[this.indice].tipo_contacto === this.tipoContactoEditando.tipo_contacto;
+
+        // Si el usuario no es el mismo, verifica si el nombre de usuario ya existe
+        if (!esMismoTipoC) {
+          const TipoCOExistente = this.listTipoC.some(user => user.tipo_contacto === this.tipoContactoEditando.tipo_contacto);
+          if (TipoCOExistente) {
+            this.toastr.error('El Tipo de Contacto ya existe. Por favor, elige otro Tipo de Contacto.');
+            return;
+          }
+        }
+
     this._tipoCService.editarTipoContacto(this.tipoContactoEditando).subscribe(data => {
       this.updateBitacora(data);
       this.toastr.success('contacto editada con éxito');
       this.listTipoC[this.indice].tipo_contacto = this.tipoContactoEditando.tipo_contacto;
       this.listTipoC[this.indice].descripcion = this.tipoContactoEditando.descripcion;
-
-        // Actualizar la vista
-        this.ngZone.run(() => {        
-        });
-    
     });
   }
 

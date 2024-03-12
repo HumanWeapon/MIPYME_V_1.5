@@ -13,6 +13,7 @@ import { Usuario } from 'src/app/interfaces/seguridad/usuario';
 import * as XLSX from 'xlsx';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale'; // Importa el idioma español
+import { DatePipe } from '@angular/common';
 
 
 @Component({
@@ -36,9 +37,9 @@ export class TipoEmpresaComponent implements OnInit{
         id_tipo_empresa: 0, 
         tipo_empresa: '', 
         descripcion:'',
-        creado_por: 'SYSTEM', 
+        creado_por: '', 
         fecha_creacion: new Date(), 
-        modificado_por: 'SYSTEM', 
+        modificado_por: '', 
         fecha_modificacion: new Date(),
         estado: 0,
     
@@ -60,7 +61,8 @@ export class TipoEmpresaComponent implements OnInit{
     private _bitacoraService: BitacoraService,
     private _errorService: ErrorService,
     private _userService: UsuariosService,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private _datePipe: DatePipe
     ) {}
 
     ngOnInit(): void {
@@ -83,16 +85,26 @@ export class TipoEmpresaComponent implements OnInit{
         this.dtTrigger.unsubscribe();
       }
 
-      onInputChange(event: any, field: string) {
-        if (field === 'tipo_empresa' ) {
-          const inputValue = event.target.value;
-          const uppercaseValue = inputValue.toUpperCase();
-          event.target.value = uppercaseValue;
-        }
+      eliminarCaracteresEspeciales(event: any, field: string) {
+        setTimeout(() => {
+          let inputValue = event.target.value;
+      
+          // Elimina caracteres especiales dependiendo del campo
+          if (field === 'tipo_empresa') {
+            inputValue = inputValue.replace(/[^a-zA-Z0-9\s]/g, ''); // Solo permite letras y números
+          }else if (field === 'descripcion') {
+            inputValue = inputValue.replace(/[^a-zA-Z0-9\s]/g, ''); // Solo permite letras, números y espacios en blanco
+          }
+          event.target.value = inputValue;
+        });
       }
 
-
-
+      convertirAMayusculas(event: any, field: string) {
+        setTimeout(() => {
+          const inputValue = event.target.value;
+          event.target.value = inputValue.toUpperCase();
+        });
+      }
 
       getDate(): string {
         // Obtener la fecha actual
@@ -112,6 +124,11 @@ export class TipoEmpresaComponent implements OnInit{
   } else {
     this.activarTipoEmpresa(Tempre, i); // Ejecuta la segunda función
   }
+ }
+
+ cancelarInput(){
+  this.nuevoTipoEmpresa.tipo_empresa = '';
+  this.nuevoTipoEmpresa.descripcion = '';
  }
     
       inactivarTipoEmpresa(tipoEmpresa: TipoEmpresa, i: any){
@@ -251,27 +268,32 @@ getEstadoText(estado: number): string {
     
         const userLocal = localStorage.getItem('usuario');
     if (userLocal){
+      const fechaActual = new Date();
+      const fechaFormateada = this._datePipe.transform(fechaActual, 'yyyy-MM-dd');
         this.nuevoTipoEmpresa = {
           id_tipo_empresa: 0, 
           tipo_empresa: this.nuevoTipoEmpresa.tipo_empresa, 
           descripcion:this.nuevoTipoEmpresa.descripcion,
           creado_por: userLocal, 
-          fecha_creacion: new Date(), 
+          fecha_creacion: fechaFormateada as unknown as Date, 
           modificado_por: userLocal, 
-          fecha_modificacion: new Date(),
+          fecha_modificacion: fechaFormateada as unknown as Date,
           estado: 1,
     
         };
-    
+        if (!this.nuevoTipoEmpresa.tipo_empresa || !this.nuevoTipoEmpresa.descripcion) {
+          this.toastr.warning('Debes completar los campos vacíos');
+          this.nuevoTipoEmpresa.tipo_empresa = '';
+          this.nuevoTipoEmpresa.descripcion = '';
+        }else{
         this.tipoempresaService.addTipoEmpresa(this.nuevoTipoEmpresa).subscribe({
           next: (data) => {
             this.insertBitacora(data);
             this.toastr.success('Tipo de empresa agregado con éxito')
+            this.listTipoE.push(this.nuevoTipoEmpresa)
           },
-          error: (e: HttpErrorResponse) => {
-            this._errorService.msjError(e);
-          }
         });
+      }
       }
     }
     
@@ -294,16 +316,24 @@ getEstadoText(estado: number): string {
     
     
       editarTipoEmpresa(){
+        this.tipoEmpresaEditando.tipo_empresa = this.tipoEmpresaEditando.tipo_empresa.toUpperCase();
+        this.tipoEmpresaEditando.descripcion = this.tipoEmpresaEditando.descripcion.toUpperCase();
+
+    const esMismoTipoE = this.listTipoE[this.indice].tipo_empresa === this.tipoEmpresaEditando.tipo_empresa;
+
+        // Si el usuario no es el mismo, verifica si el nombre de usuario ya existe
+        if (!esMismoTipoE) {
+          const TipoEExistente = this.listTipoE.some(user => user.tipo_empresa === this.tipoEmpresaEditando.tipo_empresa);
+          if (TipoEExistente) {
+            this.toastr.error('El Tipo de Empresa ya existe. Por favor, elige otro Tipo de Empresa.');
+            return;
+          }
+        }
         this.tipoempresaService.editarTipoEmpresa(this.tipoEmpresaEditando).subscribe(data => {
           this.updateBitacora(data);
           this.toastr.success('Tipo de empresa editado con éxito');
           this.listTipoE[this.indice].tipo_empresa = this.tipoEmpresaEditando.tipo_empresa;
           this.listTipoE[this.indice].descripcion = this.tipoEmpresaEditando.descripcion;
-    
-            // Actualizar la vista
-            this.ngZone.run(() => {        
-            });
-        
         });
       }
 
