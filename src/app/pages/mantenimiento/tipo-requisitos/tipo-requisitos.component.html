@@ -15,6 +15,7 @@
                 <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover">
                     <thead>
                         <tr>
+                          <th>Id</th>
                           <th>Tipo Requisito</th>
                           <th>Descripción</th>
                           <th>Creado</th>
@@ -27,6 +28,7 @@
                       </thead>
                       <tbody>
                         <tr *ngFor="let TRequi of listTipoR; let i = index">
+                          <td>{{ TRequi.id_tipo_requisito }}</td>
                           <td>{{ TRequi.tipo_requisito | uppercase }}</td>
                           <td>{{ TRequi.descripcion | uppercase }}</td>
                           <td>{{ TRequi.creado_por | uppercase }}</td>

@@ -18,6 +18,7 @@
                 <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover" id="tablaCatProd">
                     <thead>
                       <tr>
+                        <th>Id</th>
                         <th>Categoria</th>
                         <th>Descripción</th>
                         <th>Creado</th>
@@ -29,11 +30,12 @@
                     </thead>
                     <tbody>
                       <tr *ngFor="let cate of listCate; let i = index">
-                        <td>{{ cate.categoria}}</td>
+                        <td>{{ cate.id_categoria }}</td>
+                        <td>{{ cate.categoria }}</td>
                         <td>{{ cate.descripcion }}</td>
-                        <td>{{ cate.creado_por}}</td>
+                        <td>{{ cate.creado_por }}</td>
                         <td>{{ cate.fecha_creacion }}</td>
-                        <td>{{ cate.fecha_modificacion}}</td>
+                        <td>{{ cate.fecha_modificacion }}</td>
                         <td>
                           <ng-container *ngIf="cate.estado === 1">ACTIVO</ng-container>
                           <ng-container *ngIf="cate.estado === 2">INACTIVO</ng-container>
