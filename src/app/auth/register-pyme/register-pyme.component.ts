@@ -25,11 +25,11 @@ export class RegisterPymeComponent implements OnInit{
     id_pyme: 0,
     nombre_pyme: '',
     rtn:'',
-    descripcion: '',
     creado_por: '',
     fecha_creacion: new Date(),
     modificado_por: '',
     fecha_modificacion: new Date(),
+    fecha_ultima_conexion: new Date(),
     estado: 0,
     id_rol: 0
   };
@@ -58,9 +58,9 @@ export class RegisterPymeComponent implements OnInit{
   }
 
   eliminarEspaciosBlanco() {
-    this.nombre_pyme = this.nombre_pyme.replace(/\s/g, ''); // Elimina espacios en blanco para el cambo usuario
-    this.nombre_pyme = this.nombre_pyme.toUpperCase(); // Convierte el texto a mayúsculas
-    this.rtn = this.rtn.replace(/\s/g, ''); // Elimina espacios en blanco para el cambo contraseña
+    //this.newPyme.nombre_pyme = this.newPyme.nombre_pyme.replace(/\s/g, ''); // Elimina espacios en blanco para el cambo pyme
+    this.newPyme.nombre_pyme = this.newPyme.nombre_pyme.toUpperCase(); // Convierte el texto a mayúsculas
+    this.newPyme.rtn = this.rtn.replace(/\s/g, ''); // Elimina espacios en blanco para el cambo contraseña
   }
 
 
@@ -85,11 +85,11 @@ export class RegisterPymeComponent implements OnInit{
       id_pyme: 0,
       nombre_pyme: this.newPyme.nombre_pyme.toUpperCase(),
       rtn:this.newPyme.rtn,
-      descripcion: this.newPyme.descripcion,
       creado_por: 'REGISTRO PYME',
       fecha_creacion: new Date(),
       modificado_por: 'REGISTRO PYME',
       fecha_modificacion: new Date(),
+      fecha_ultima_conexion: new Date(),
       estado: 1,
       id_rol: this.id_rolPyme
     };

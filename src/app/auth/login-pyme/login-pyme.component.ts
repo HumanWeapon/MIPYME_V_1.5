@@ -34,11 +34,11 @@ goToLogin() {
     id_pyme: 0,
     nombre_pyme: '',
     rtn:'',
-    descripcion: '',
     creado_por: '',
     fecha_creacion: new Date(),
     modificado_por: '',
     fecha_modificacion: new Date(),
+    fecha_ultima_conexion: new Date(),
     estado: 0,
     id_rol: 0
   };
@@ -54,7 +54,6 @@ goToLogin() {
 
 
   eliminarEspaciosBlanco() {
-    this.nombre_pyme = this.nombre_pyme.replace(/\s/g, ''); // Elimina espacios en blanco
     this.nombre_pyme = this.nombre_pyme.toUpperCase(); // Convierte el texto a mayúsculas
     this.rtn = this.rtn.replace(/\s/g, ''); // Elimina espacios en blanco
   }
@@ -80,7 +79,7 @@ goToLogin() {
       modificado_por: '',
       fecha_modificacion: new Date(),
       estado: 0,
-      descripcion: '',
+      fecha_ultima_conexion: new Date(),
       id_rol: 0
     }
     
@@ -121,7 +120,7 @@ goToLogin() {
      fecha_modificacion: new Date(),
      estado: 0,
      rtn: '',
-     descripcion: '',
+     fecha_ultima_conexion: new Date(),
      id_rol: 0
    }
    this._pymeService.getPyme(this.getPyme).subscribe({
