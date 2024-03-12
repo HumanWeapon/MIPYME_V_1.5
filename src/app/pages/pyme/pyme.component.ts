@@ -143,10 +143,25 @@ toggleFunction(pyme: any, i: number) {
   }
 
 
+  eliminarCaracteresEspeciales(event: any, field: string) {
+    setTimeout(() => {
+      let inputValue = event.target.value;
+  
+      // Elimina caracteres especiales dependiendo del campo
+      if (field === 'nombre_pyme') {
+        inputValue = inputValue.replace(/[^a-zA-Z0-9]/g, ''); // Solo permite letras y números
+      } else if (field === 'rtn') {
+        inputValue = inputValue.replace(/[^a-zA-Z0-9@.]/g, ''); // Solo permite letras, números, @ y .
+      }
+      event.target.value = inputValue;
+    });
+  }
+  
+
 /*****************************************************************************************************/
 
 generateExcel() {
-  const headers = ['Codigo','Nombre Pyme', 'RTN',  'Creador', 'Fecha Creación', 'Ultima Conexión','Estado'];
+  const headers = ['Id','Nombre Pyme', 'RTN',  'Creador', 'Fecha Creación', 'Ultima Conexión','Estado'];
   const data: any[][] = [];
 
   // Recorre los datos de tus Pymes y agrégalos a la matriz 'data'
@@ -197,7 +212,7 @@ generatePDF() {
   const { jsPDF } = require("jspdf");
   const doc = new jsPDF();
   const data: any[][] = [];
-  const headers = ['Código', 'Nombre Pyme', 'RTN', 'Creador', 'Fecha Creación', 'Ultima Conexión', 'Estado'];
+  const headers = ['Id', 'Nombre Pyme', 'RTN', 'Creador', 'Fecha Creación', 'Ultima Conexión', 'Estado'];
   const usuario = localStorage.getItem('usuario');
 
   // Obtiene la fecha actual y la formatea

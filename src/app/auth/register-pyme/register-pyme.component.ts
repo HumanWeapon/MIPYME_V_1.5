@@ -63,6 +63,23 @@ export class RegisterPymeComponent implements OnInit{
     this.newPyme.rtn = this.rtn.replace(/\s/g, ''); // Elimina espacios en blanco para el cambo contraseña
   }
 
+  eliminarCaracteresEspeciales(event: any, field: string) {
+    setTimeout(() => {
+      let inputValue = event.target.value;
+  
+      // Elimina caracteres especiales dependiendo del campo
+      if (field === 'nombre_pyme') {
+        inputValue = inputValue.replace(/[^a-zA-Z0-9]/g, ''); // Solo permite letras y números
+      } else if (field === 'rtn') {
+        inputValue = inputValue.replace(/[^a-zA-Z0-9@.]/g, ''); // Solo permite letras, números, @ y .
+      } else if (field === 'confirmar_rtn') {
+        inputValue = inputValue.replace(/[^a-zA-Z0-9@.]/g, ''); // Solo permite letras, números, @ y .
+      }
+      event.target.value = inputValue;
+    });
+  }
+  
+
 
   getRolPyme(){
     this._pymesService.getRolPyme().subscribe({
@@ -77,10 +94,25 @@ export class RegisterPymeComponent implements OnInit{
   }
 
   registrar(): void {
-    if (this.newPyme.rtn !== this.confirmar_rtn) {
-      console.error('Los RTN no coinciden');
-      return;
+    // Verifica si alguno de los campos está vacío
+    if (!this.newPyme.nombre_pyme || !this.newPyme.rtn || !this.confirmar_rtn) {
+      this._toastr.error('Por favor, complete todos los campos');
+      return; 
     }
+  
+    // Verifica si los RTN exceden los 14 dígitos
+    if (this.newPyme.rtn.length !== 14 || this.confirmar_rtn.length !== 14) {
+      this._toastr.error('El RTN debe tener exactamente 14 dígitos');
+      return; 
+    }
+  
+    // Verifica si los RTN coinciden
+    if (this.newPyme.rtn !== this.confirmar_rtn) {
+      this._toastr.error('RTN no Coinciden');
+      return; 
+    }
+  
+    // Si todos los campos están llenos, la longitud del RTN es válida y los RTN coinciden, procede con el registro
     this.newPyme = {
       id_pyme: 0,
       nombre_pyme: this.newPyme.nombre_pyme.toUpperCase(),
@@ -97,12 +129,12 @@ export class RegisterPymeComponent implements OnInit{
     this._pymesService.PostPyme(this.newPyme).subscribe({
       next: (data) => {
         this._toastr.success('Pyme Agregada Exitosamente');
-
+        // Después de mostrar el mensaje de éxito, redirige al usuario a la página de inicio de sesión
+        this.router.navigate(['/login-pyme']);
       },
       error: (e: HttpErrorResponse) => {
         this._errorService.msjError(e);
       }
     });
-
   }
-}
+}  

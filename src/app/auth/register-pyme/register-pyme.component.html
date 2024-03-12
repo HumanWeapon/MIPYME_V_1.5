@@ -10,7 +10,7 @@
 
  <form method="post">
           <div class="input-group mb-3">
-            <input type="text" class="form-control" [(ngModel)]="newPyme.nombre_pyme" name="nombre_pyme" (input)="eliminarEspaciosBlanco()" placeholder="Nombre de la Pyme" maxlength="50" autocomplete="off">
+            <input type="text" class="form-control" [(ngModel)]="newPyme.nombre_pyme" name="nombre_pyme" (input)="eliminarEspaciosBlanco()" (input)="eliminarCaracteresEspeciales($event, 'nombre_pyme')"placeholder="Nombre de la Pyme" maxlength="50" autocomplete="off">
             <div class="input-group-append">
               <div class="input-group-text">
                 <span class="fas fa-user"></span>
@@ -18,7 +18,7 @@
             </div>
           </div>
           <div class="input-group mb-3">
-            <input type="text" [(ngModel)]="newPyme.rtn" name="rtn" (input)="eliminarEspaciosBlanco()" autocomplete="off" class="form-control" id="contraseña" placeholder="RTN sin Guiones">
+            <input type="text" [(ngModel)]="rtn" name="rtn" (input)="eliminarEspaciosBlanco()" (input)="eliminarCaracteresEspeciales($event, 'rtn')" autocomplete="off" class="form-control" id="contraseña" placeholder="RTN sin Guiones">
             <div class="input-group-append">
               <div class="input-group-text">
                 <span class="fas fa-lock"></span>
@@ -26,7 +26,7 @@
             </div>
           </div>
           <div class="input-group mb-3">
-            <input type="text" [(ngModel)]="confirmar_rtn" name="confirmar_rtn" (input)="eliminarEspaciosBlanco()" autocomplete="off" class="form-control" id="confirmar_contraseña" placeholder="Confirma RTN sin Guiones">
+            <input type="text" [(ngModel)]="confirmar_rtn" name="confirmar_rtn" (input)="eliminarEspaciosBlanco()" (input)="eliminarCaracteresEspeciales($event, 'confirmar_rtn')" autocomplete="off"  class="form-control" id="confirmar_contraseña" placeholder="Confirma RTN sin Guiones">
             <div class="input-group-append">
               <div class="input-group-text">
                 <span class="fas fa-lock"></span>
