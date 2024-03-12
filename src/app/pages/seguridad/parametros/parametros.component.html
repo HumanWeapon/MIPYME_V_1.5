@@ -18,24 +18,30 @@
                     <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover">
                         <thead>
                           <tr>
+                            <th>ID</th>
                             <th>PARAMETRO</th>
-                            <th>ESTADO</th>
                             <th>VALOR</th>
+                            <th>CREADO POR</th>
                             <th>FECHA CREACION</th>
+                            <th>MODIFICADO POR</th>
                             <th>FECHA MODIFICACION</th>
+                            <th>ESTADO</th>
                             <th>ACCIONES</th>
                           </tr>
                         </thead>
                         <tbody>
                           <tr *ngFor="let parametros of listParametros; let i = index">
+                            <td>{{ parametros.id_parametro }}</td>
                             <td>{{ parametros.parametro }}</td>
+                            <td>{{ parametros.valor }}</td>
+                            <td>{{ parametros.creado_por | uppercase }}</td>
+                            <td>{{ parametros.fecha_creacion | date:'YYYY-MM-dd' }}</td>
+                            <td>{{ parametros.modificado_por | uppercase }}</td>
+                            <td>{{ parametros.fecha_modificacion | date:'YYYY-MM-dd' }}</td>
                             <td>
                               <ng-container *ngIf="parametros.estado_parametro == 1">ACTIVO</ng-container>
                               <ng-container *ngIf="parametros.estado_parametro == 2">INACTIVO</ng-container>
                             </td>
-                            <td>{{ parametros.valor }}</td>
-                            <td>{{ parametros.fecha_creacion | date:'YYYY-MM-dd' }}</td>
-                            <td>{{ parametros.fecha_modificacion | date:'YYYY-MM-dd' }}</td>
                             <td class="text-center">
                               <div class="btn-group">
                                 <div class="form-check form-switch ml-4">

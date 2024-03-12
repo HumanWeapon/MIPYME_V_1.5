@@ -21,6 +21,7 @@
               <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover ">
                   <thead>
                     <tr>
+                      <th>ID</th>
                       <th>USUARIO</th>
                       <th>NOMBRE</th>
                       <th>CORREO</th>
@@ -35,6 +36,7 @@
                   </thead>
                   <tbody>
                     <tr *ngFor="let user of usuariosAllRoles; let i = index">
+                      <td>{{ user.id_usuario }}</td>
                       <td>{{ user.usuario | uppercase }}</td>
                       <td>{{ user.nombre_usuario | uppercase }}</td>
                       <td>{{ user.correo_electronico | uppercase }}</td>

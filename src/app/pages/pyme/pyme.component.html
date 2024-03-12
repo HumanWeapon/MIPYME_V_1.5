@@ -17,6 +17,7 @@
               <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped">
                   <thead>
                     <tr>
+                      <th>Id</th>
                       <th>Nombre Pyme</th>
                       <th>Descripcion</th>
                       <th>Creado</th>
@@ -29,6 +30,7 @@
                   </thead>
                   <tbody>
                     <tr *ngFor="let pyme of listPymes; let i = index">
+                      <td>{{ pyme.id_pyme }}</td>
                       <td>{{ pyme.nombre_pyme }}</td>
                       <td>{{ pyme.descripcion }}</td>
                       <td>{{ pyme.creado_por}}</td>
