@@ -142,7 +142,7 @@
                 </div>
                 <div class="modal-footer justify-content-between">
                   <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-                  <button type="button" class="btn btn-success" (click)="editarProducto()" data-dismiss="modal">Guardar</button>
+                  <button type="button" class="btn btn-success" (click)="editarProducto(productoEditando.id_categoria)" data-dismiss="modal">Guardar</button>
               </div>
               </form>
           </div>
@@ -169,6 +169,8 @@
         </div>
         <div style="flex: 0;">
             <img src="\assets\dist\img\pym.png" alt="Logo de Mi Pyme" style="width: 200px; height: auto;">
+          </div>
+        </div>
       
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary customn-print-button btn-danger" (click)="generatePDF()">

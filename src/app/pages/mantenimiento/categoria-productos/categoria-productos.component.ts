@@ -14,6 +14,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import * as XLSX from 'xlsx';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale'; // Importa el idioma español
+import { DatePipe } from '@angular/common';
 
                        
 
@@ -31,9 +32,9 @@ export class CategoriaProductosComponent implements OnInit{
     id_categoria: 0,
     categoria: "",
     descripcion: "",
-    creado_por: 'SYSTEM',
+    creado_por: '',
     fecha_creacion: new Date(), 
-    modificado_por: 'SYSTEM',
+    modificado_por: '',
     fecha_modificacion:new Date(), 
     estado: 0,
   };
@@ -42,9 +43,9 @@ export class CategoriaProductosComponent implements OnInit{
     id_categoria: 0,
     categoria: "",
     descripcion: "",
-    creado_por: 'SYSTEM',
+    creado_por: '',
     fecha_creacion: new Date(), 
-    modificado_por: 'SYSTEM',
+    modificado_por: '',
     fecha_modificacion:new Date(), 
     estado: 0,
   };
@@ -66,7 +67,8 @@ export class CategoriaProductosComponent implements OnInit{
     private ngZone: NgZone,
     private _errorService: ErrorService,
     private _bitacoraService: BitacoraService,
-    private _userService: UsuariosService
+    private _userService: UsuariosService,
+    private _datePipe: DatePipe
     ) { }
   
   ngOnInit(): void {
@@ -88,15 +90,6 @@ export class CategoriaProductosComponent implements OnInit{
   ngOnDestroy(): void {
     // Do not forget to unsubscribe the event
     this.dtTrigger.unsubscribe();
-  }
-
-
-  onInputChange(event: any, field: string) {
-    if (field == 'categoria' || field == 'descripcion') {
-      const inputValue = event.target.value;
-      const uppercaseValue = inputValue.toUpperCase();
-      event.target.value = uppercaseValue;
-    }
   }
 
 // Variable de estado para alternar funciones
@@ -148,6 +141,31 @@ getDate(): string {
     this.listCate[i].estado = 2;
   }
 
+  eliminarCaracteresEspeciales(event: any, field: string) {
+    setTimeout(() => {
+      let inputValue = event.target.value;
+  
+      // Elimina caracteres especiales dependiendo del campo
+      if (field === 'categoria') {
+        inputValue = inputValue.replace(/[^a-zA-Z0-9\s]/g, ''); // Solo permite letras y números
+      }else if (field === 'descripcion') {
+        inputValue = inputValue.replace(/[^a-zA-Z0-9\s]/g, ''); // Solo permite letras, números y espacios en blanco
+      }
+      event.target.value = inputValue;
+    });
+  }
+
+  convertirAMayusculas(event: any, field: string) {
+    setTimeout(() => {
+      const inputValue = event.target.value;
+      event.target.value = inputValue.toUpperCase();
+    });
+  }
+
+  cancelarInput(){
+    this.nuevaCategoriaProducto.categoria = '';
+    this.nuevaCategoriaProducto.descripcion = '';
+   }
 
   /*****************************************************************************************************/
 
@@ -266,23 +284,32 @@ getDate(): string {
     
     const userlocal=localStorage.getItem('usuario')
     if (userlocal){
-      const catProducto = {
+      const fechaActual = new Date();
+      const fechaFormateada = this._datePipe.transform(fechaActual, 'yyyy-MM-dd');
+      this. nuevaCategoriaProducto = {
+        id_categoria: 0,
         categoria: this.nuevaCategoriaProducto.categoria,
         descripcion:this.nuevaCategoriaProducto.descripcion,
         creado_por: userlocal, 
-        fecha_creacion: new Date(), 
+        fecha_creacion: fechaFormateada as unknown as Date, 
         modificado_por: userlocal, 
-        fecha_modificacion: new Date(),
+        fecha_modificacion: fechaFormateada as unknown as Date,
         estado: 1,
       }
-      this._categoriaService.addCategoriaProducto(catProducto).subscribe((data: Categoria) => {
+      if (!this.nuevaCategoriaProducto.categoria || !this.nuevaCategoriaProducto.descripcion) {
+        this._toastr.warning('Debes completar los campos vacíos');
+        this.nuevaCategoriaProducto.categoria = '';
+        this.nuevaCategoriaProducto.descripcion = '';
+      }else{
+      this._categoriaService.addCategoriaProducto(this.nuevaCategoriaProducto).subscribe({
+        next: (data) => {
         this.insertBitacora(data);
         this._toastr.success('Categoría agregada exitosamente');
-        location.reload();
-      });
-    }
-  }
-
+        this.listCate.push(this.nuevaCategoriaProducto)
+      },
+    });
+  }}
+}
 
   obtenerIdCategoriaProducto(Cate: Categoria, i: any){
     this.CategoriaEditando = {
@@ -301,15 +328,25 @@ getDate(): string {
 
 
   editarCategoriaProducto(){
+    this.CategoriaEditando.categoria = this.CategoriaEditando.categoria.toUpperCase();
+    this.CategoriaEditando.descripcion = this.CategoriaEditando.descripcion.toUpperCase();
+
+    const esMismaCategoria = this.listCate[this.indice].categoria === this.CategoriaEditando.categoria;
+
+        // Si el usuario no es el mismo, verifica si el nombre de usuario ya existe
+        if (!esMismaCategoria) {
+          const TipoCateExistente = this.listCate.some(user => user.categoria === this.CategoriaEditando.categoria);
+          if (TipoCateExistente) {
+            this._toastr.error('El Tipo de Categoria ya existe. Por favor, elige otro Tipo de Categoria.');
+            return;
+          }
+        }
+
     this._categoriaService.editarCategoriaProducto(this.CategoriaEditando).subscribe(data => {
       this.updateBitacora(data);
       this._toastr.success('Categoria editada con éxito');
       this.listCate[this.indice].categoria = this.CategoriaEditando.categoria;
       this.listCate[this.indice].categoria = this.CategoriaEditando.descripcion;
-              // Actualizar la vista
-        this.ngZone.run(() => {        
-        });
-    
     });
   }
 

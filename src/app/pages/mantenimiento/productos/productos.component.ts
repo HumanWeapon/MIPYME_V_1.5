@@ -102,7 +102,8 @@ export class ProductosComponent implements OnInit{
 
   
   ngOnInit(): void {
-    this.getUsuario()
+    this.getUsuario();
+    this.getAllCategorias();
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 10,
@@ -114,11 +115,13 @@ export class ProductosComponent implements OnInit{
         this.productos = res;
         this.dtTrigger.next(null);
       });
-
-      this._categoriaProductos.getAllCategorias().subscribe(data => {
-        this.listCategorias = data
-      });
       this.getUsuario();
+  }
+
+  getAllCategorias(){
+    this._categoriaProductos.getAllCategorias().subscribe(data => {
+      this.listCategorias = data.filter(categoria => categoria.estado == 1);
+    });
   }
 
   ngOnDestroy(): void {
@@ -206,7 +209,7 @@ export class ProductosComponent implements OnInit{
   }
 
 
-  editarProducto() {
+  editarProducto(id_categoria_selected: any) {
     this.productoEditando.producto = this.productoEditando.producto.toUpperCase();
     this.productoEditando.descripcion = this.productoEditando.descripcion.toUpperCase();
 
@@ -220,11 +223,17 @@ export class ProductosComponent implements OnInit{
             return;
           }
         }
+
+        const categoriaSeleccionada = this.listCategorias.find(categoria => categoria.id_categoria == id_categoria_selected);
+        if (!categoriaSeleccionada) {
+          return;
+        }
     this._productoService.editarProducto(this.productoEditando).subscribe(data => {
         this.updateBitacora(data);
         this.toastr.success('Producto editado con éxito');
         this.productos[this.indice].producto = this.productoEditando.producto;
         this.productos[this.indice].descripcion = this.productoEditando.descripcion;
+        this.productos[this.indice].categoria = categoriaSeleccionada;
     });
   }
 
@@ -326,6 +335,7 @@ generatePDF() {
     doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
     doc.text("Reporte de Productos", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
     doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+    doc.text("Usuario: " + this.getUser.usuario, centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
 
     // Recorre los datos de productos y agrégalo a la matriz 'data'
     this.listProductos.forEach((obj, index) => {

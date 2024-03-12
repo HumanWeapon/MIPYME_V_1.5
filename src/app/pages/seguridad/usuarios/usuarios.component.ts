@@ -92,8 +92,8 @@ export class UsuariosComponent {
     this._rolService.getAllRoles().subscribe(data => {
       this.listRol = data.filter(rol => rol.estado_rol == 1);
     });
-
   }
+  
   getAllUsuarios(){
     this.dtOptions = {
       pagingType: 'full_numbers',
