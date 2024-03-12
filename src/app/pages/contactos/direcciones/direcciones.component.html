@@ -19,11 +19,11 @@
                 <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover">
                     <thead>
                       <tr>
+                        <th>Id</th>
                         <th>Dirección</th>
                         <th>Descripción</th>
                         <th>Ciudad</th>
                         <th>Pais</th>
-                        <th>URL</th>
                         <th>Creado por</th>
                         <th>Fecha Creación</th>
                         <th>Modificado por</th>
@@ -34,11 +34,11 @@
                     </thead>
                     <tbody>
                       <tr *ngFor="let obj of listDirecciones; let i = index">
+                        <td>{{ obj.id_direccion }}</td>
                         <td>{{ obj.direccion }}</td>
                         <td>{{ obj.descripcion }}</td>
                         <td>{{ obj.ciudad }}</td>
                         <td>{{ obj.pais }}</td>
-                        <td>{{ obj.url }}</td>
                         <td>{{ obj.creado_por }}</td>
                         <td>{{ obj.fecha_creacion}}</td>
                         <td>{{ obj.modificado_por }}</td>

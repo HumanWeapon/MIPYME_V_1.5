@@ -88,9 +88,8 @@ export class ParametrosComponent implements OnInit{
       language: {url:'//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'},
       responsive: true
     };
-    this._parametroService.getAllParametros()
-      .subscribe({
-        next: (data) => {
+    this._parametroService.getAllParametros().subscribe({
+      next: (data) => {
         this.listParametros = data;
         this.dtTrigger.next(0);
       }
@@ -112,13 +111,18 @@ export class ParametrosComponent implements OnInit{
     }
   }
 
+  cancelarInput(){;
+    this.nuevoParametro.parametro ='';
+    this.nuevoParametro.valor = 0;
+  }
+
   eliminarCaracteresEspeciales(event: any, field: string) {
     setTimeout(() => {
       let inputValue = event.target.value;
   
       // Elimina caracteres especiales dependiendo del campo
       if (field === 'parametro' || field === 'valor') {
-        inputValue = inputValue.replace(/[^a-zA-Z0-9]/g, ''); // Solo permite letras y números
+        inputValue = inputValue.replace(/[^a-zA-Z0-9\s]/g, '');// Solo permite letras y números
       }
       event.target.value = inputValue;
     });
@@ -283,29 +287,33 @@ generateExcel() {
 
 
   agregarNuevoParametro() {
+    const LocalUser = localStorage.getItem('usuario')
+    if (LocalUser){
 
-    this.nuevoParametro = {
+    const nuevoParametro = {
       id_parametro: 0,
       parametro: this.nuevoParametro.parametro,
-      estado_parametro: this.nuevoParametro.estado_parametro,
+      estado_parametro: 1,
       valor: this.nuevoParametro.valor,
       id_usuario: 0,
-      creado_por: '',
+      creado_por: LocalUser,
       fecha_creacion: new Date(),
-      modificado_por: '',
+      modificado_por: LocalUser,
       fecha_modificacion: new Date(),
       alerta_busqueda: 0, 
     };
 
-    this._parametroService.addParametro(this.nuevoParametro).subscribe(data => {
-      this.toastr.success('Parametro agregado con éxito');
+    this._parametroService.addParametro(nuevoParametro).subscribe({
+      next: (data) => {
+        this.toastr.success('Parametro agregado con éxito');
+        this.insertBitacora(data);
+        this.listParametros.push(nuevoParametro)
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
     });
-
-      // Recargar la página
-      location.reload();
-      // Actualizar la vista
-      this.ngZone.run(() => {        
-      });
+    }
   }
 
 
@@ -331,20 +339,23 @@ generateExcel() {
     this.parametroEditando.creado_por = this.parametroEditando.creado_por.toUpperCase();
     this.parametroEditando.modificado_por = this.parametroEditando.modificado_por.toUpperCase();
 
+    const esMismoParametro = this.listParametros[this.indice].parametro === this.parametroEditando.parametro;
+    if (!esMismoParametro) {
+      const ParametroExistente = this.listParametros.some(user => user.parametro === this.parametroEditando.parametro);
+      if (ParametroExistente) {
+        this.toastr.error('El Parametro ya existe. Por favor, elige otro Parametro.');
+        return;
+      }
+    }
+
     this._parametroService.editarParametro(this.parametroEditando).subscribe(data => {
       this.updateBitacora(data);
       this.toastr.success('Parametro editado con éxito');
       this.listParametros[this.indice].parametro = this.parametroEditando.parametro;
       this.listParametros[this.indice].valor = this.parametroEditando.valor;
-        this.ngZone.run(() => {        
-        });
-      
     });
   }
 
-
-
-  
    /*************************************************************** Métodos de Bitácora ***************************************************************************/
 
    getUser: Usuario = {

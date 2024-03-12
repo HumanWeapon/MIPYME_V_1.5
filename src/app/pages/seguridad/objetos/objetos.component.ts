@@ -13,6 +13,7 @@ import { DatePipe } from '@angular/common';
 import * as XLSX from 'xlsx';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale'; 
+import { SubmenuData } from 'src/app/interfaces/subMenuData/subMenuData';
 
 
 @Component({
@@ -34,9 +35,9 @@ export class ObjetosComponent implements OnInit{
     objeto: '', 
     descripcion:'', 
     tipo_objeto: '', 
-    estado_objeto: 0,
-    url: '',
+    url:'',
     icono: '',
+    estado_objeto: 0,
     creado_por: '', 
     fecha_creacion: new Date(), 
     modificado_por: '', 
@@ -48,8 +49,8 @@ export class ObjetosComponent implements OnInit{
     id_objeto: 0, 
     objeto: '', 
     descripcion:'', 
-    tipo_objeto: '',
-    url: '',
+    tipo_objeto: '', 
+    url:'',
     icono: '',
     estado_objeto: 0,
     creado_por: '', 
@@ -63,6 +64,8 @@ export class ObjetosComponent implements OnInit{
   dtOptions: DataTables.Settings = {};
   listObjetos: Objetos[] = [];
   data: any;
+  submenusData: SubmenuData[] = [];
+  submenuSeleccionado: string | undefined;
 
   // We use this trigger because fetching the list of persons can be quite long,
   // thus we ensure the data is fetched before rendering
@@ -107,7 +110,7 @@ export class ObjetosComponent implements OnInit{
     const inputValue = event.target.value;
     if (field === 'objeto') {
       // Convierte a mayúsculas y elimina espacios en blanco
-      event.target.value = inputValue.toUpperCase().replace(/\s/g, '')
+      event.target.value = inputValue.toUpperCase();
     } else if (field === 'tipo_objeto' || field === 'descripcion'){
       // Convierte a mayúsculas sin eliminar espacios en blanco
       event.target.value = inputValue.toUpperCase();
@@ -128,10 +131,19 @@ toggleFunction(obj: any, i: number) {
 }
  
 
-convertirAMayusculas(event: any, field: string) {
+eliminarCaracteresEspeciales(event: any, field: string) {
   setTimeout(() => {
-    const inputValue = event.target.value;
-    event.target.value = inputValue.toUpperCase();
+    let inputValue = event.target.value;
+
+    // Elimina caracteres especiales dependiendo del campo
+    if (field === 'objeto') {
+      inputValue = inputValue.replace(/[^a-zA-Z0-9\s]/g, ''); // Solo permite letras y números
+      inputValue = inputValue.toUpperCase();
+    }else if (field === 'descripcion') {
+      inputValue = inputValue.replace(/[^a-zA-Z0-9\s]/g, ''); // Solo permite letras, números y espacios en blanco
+      inputValue = inputValue.toUpperCase();
+    }
+    event.target.value = inputValue;
   });
 }
 
@@ -154,9 +166,16 @@ activarObjeto(obj: any, i: number){
   this.listObjetos[i].estado_objeto = 1;
 }
 
-
-
-
+filtrarObjetosUnicos() {
+  const tiposUnicos = new Set();
+  return this.listObjetos.filter(objeto => {
+    if (!tiposUnicos.has(objeto.tipo_objeto)) {
+      tiposUnicos.add(objeto.tipo_objeto);
+      return true;
+    }
+    return false;
+  });
+}
 
   /*****************************************************************************************************/
 
@@ -269,44 +288,40 @@ getEstadoText(estado: number): string {
 
 
 /**************************************************************/
-
-
-
-
 agregarNuevoObjeto() {
   const userLocal = localStorage.getItem('usuario');
   if (userLocal) {
-    const fechaActual = new Date();
-    const fechaFormateada = this.datePipe.transform(fechaActual, 'yyyy-MM-dd');
-
     this.nuevoObjeto = {
       id_objeto: 0,
       objeto: this.nuevoObjeto.objeto,
       descripcion: this.nuevoObjeto.descripcion,
       tipo_objeto: this.nuevoObjeto.tipo_objeto,
-      url: this.nuevoObjeto.url,
+      url:this.nuevoObjeto.url,
       icono: '',
       estado_objeto: 1,
       creado_por: userLocal,
-      fecha_creacion: fechaFormateada as unknown as Date, // Convertir la cadena a Date
+      fecha_creacion: new Date(),
       modificado_por: userLocal,
-      fecha_modificacion: fechaFormateada as unknown as Date // Convertir la cadena a Date
+      fecha_modificacion: new Date()
     };
+
+    console.log('Datos que se están enviando:', this.nuevoObjeto);
 
     this._objService.addObjeto(this.nuevoObjeto).subscribe({
       next: (data) => {
-        this.toastr.success(data, 'Objeto agregado con éxito');
-        this.insertBitacora(data);
-        this.listObjetos.push(this.nuevoObjeto);
-       
+        this.toastr.success(data.msg, 'Objeto agregado con éxito');
+        // Puedes hacer otras acciones aquí después de agregar el objeto con éxito, como actualizar la lista de objetos
       },
       error: (e: HttpErrorResponse) => {
-        this._errorService.msjError(e);
+        if (e.error && e.error.msg) {
+          this.toastr.error(e.error.msg, 'Error al agregar objeto');
+        } else {
+          this.toastr.error('Error al agregar objeto', 'Error');
+        }
       }
     });
   }
 }
-
 
   obtenerIdObjeto(objetos: Objetos, i: any){
     this.objetoEditando = {
@@ -314,9 +329,9 @@ agregarNuevoObjeto() {
       objeto: objetos.objeto, 
       descripcion: objetos.descripcion, 
       tipo_objeto: objetos.tipo_objeto, 
-      estado_objeto: objetos.estado_objeto,
       url: objetos.url,
       icono: objetos.icono,
+      estado_objeto: objetos.estado_objeto,
       creado_por: objetos.creado_por, 
       fecha_creacion: objetos.fecha_creacion, 
       modificado_por: objetos.modificado_por, 
@@ -327,6 +342,25 @@ agregarNuevoObjeto() {
 
 
   editarObjeto(){
+    this.objetoEditando.objeto = this.objetoEditando.objeto.toUpperCase();
+    this.objetoEditando.descripcion = this.objetoEditando.descripcion.toUpperCase();
+    this.objetoEditando.tipo_objeto = this.objetoEditando.tipo_objeto.toUpperCase();
+    this.objetoEditando.modificado_por = this.objetoEditando.modificado_por.toUpperCase();
+    this.objetoEditando.creado_por = this.objetoEditando.creado_por.toUpperCase();
+
+
+    const esMismoObjeto = this.listObjetos[this.indice].objeto === this.objetoEditando.objeto;
+  
+    // Si el usuario no es el mismo, verifica si el nombre de usuario ya existe
+    if (!esMismoObjeto) {
+      const ObjetoExistente = this.listObjetos.some(user => user.objeto === this.objetoEditando.objeto);
+      if (ObjetoExistente) {
+        this.toastr.error('El Objeto ya existe. Por favor, elige otro nombre para el nuevo Objeto.');
+        return;
+      }
+    }
+
+
     this._objService.editarObjeto(this.objetoEditando).subscribe(data => {
       this.updateBitacora(data);
       this.toastr.success('Objeto editado con éxito');

@@ -7,17 +7,15 @@
                 <div class="card-header">
                   <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarRequisito">
                     <i class="fas fa-plus"></i> Nuevo</button>
-                    <button type="button" class="btn btn-primary custom-print-button btn-danger" title="Generar el Reporte" data-toggle="modal" data-target="#PDFReQ">
-                      <i class="fas fa-file-pdf mr-2"></i>PDF</button>
-                      <button type="button" class="btn btn-primary custom-print-button btn-success" title="Generar el Reporte en Excel" data-toggle="modal" data-target="#ExcelRequisito">
-                        <i class="fas fa-file-excel mr-2"></i>Excel
-                    </button>
+                    <button type="button" class="btn btn-primary custom-print-button btn-primary" title="Generar el Reporte" data-toggle="modal" data-target="#PDFReQ">
+                      <i class="fas fa-print"></i> Imprimir Datos</button>
                 </div>
             <!-- /.card-header -->
             <div class="card-body">
                 <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover">
                     <thead>
                         <tr>
+                          <th>Id</th>
                           <th>Tipo Requisito</th>
                           <th>Descripción</th>
                           <th>Creado</th>
@@ -30,6 +28,7 @@
                       </thead>
                       <tbody>
                         <tr *ngFor="let TRequi of listTipoR; let i = index">
+                          <td>{{ TRequi.id_tipo_requisito }}</td>
                           <td>{{ TRequi.tipo_requisito | uppercase }}</td>
                           <td>{{ TRequi.descripcion | uppercase }}</td>
                           <td>{{ TRequi.creado_por | uppercase }}</td>
@@ -86,16 +85,17 @@
             <form (submit)="agregarNuevoTipoRequisito()">
                 <div class="form-group">
                     <label for="nuevoTipoRequisito">Tipo Requisito:</label>
-                    <input type="text" [(ngModel)]="nuevoTipoRequisito.tipo_requisito" name="nuevoTipoRequisito.tipo_requisito" (input)="eliminarEspaciosBlanco($event, 'tipo_requisito')" (input)="convertirAMayusculas($event, 'tipo_requisito')"  class="form-control" id="nuevoTipoRequisito" placeholder="Tipo Requisito">
+                    <input type="text" [(ngModel)]="nuevoTipoRequisito.tipo_requisito" (input)="eliminarCaracteresEspeciales($event, 'tipo_requisito')" name="nuevoTipoRequisito.tipo_requisito" (input)="convertirAMayusculas($event, 'tipo_requisito')"  class="form-control" id="nuevoTipoRequisito" placeholder="Tipo Requisito">
                 </div>
                 <div class="form-group">
-                    <label for="nuevoTipoRequisito">Descripción</label>
-                    <input type="text" [(ngModel)]="nuevoTipoRequisito.descripcion" name="nuevoTipoRequisito.descripcion" (input)="eliminarEspaciosBlanco($event, 'descripcion')" (input)="convertirAMayusculas($event, 'descripcion')" class="form-control" id="nuevoTipoRequisito" placeholder="Descripción">
-                </div>    
+                  <label for="nuevoTipoRequisito">Descripción</label>
+                  <textarea [(ngModel)]="nuevoTipoRequisito.descripcion" rows="5" name="nuevoTipoRequisito.descripcion" (input)="eliminarCaracteresEspeciales($event, 'descripcion')" (input)="convertirAMayusculas($event, 'descripcion')" class="form-control" id="nuevoTipoRequisito" placeholder="Descripción"></textarea>
+              </div>
+                
             </form>
         </div>
         <div class="modal-footer justify-content-between">
-            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="cancelarInput()">Cancelar</button>
             <button type="button" (click)="agregarNuevoTipoRequisito()" class="btn btn-success" data-dismiss="modal">Guardar</button>
         </div>
     </div>
@@ -118,12 +118,12 @@
             <form>
               <div class="form-group">
                   <label for="tipoRequisitoEditando">Tipo Requisito:</label>
-                  <input type="text" [(ngModel)]="tipoRequisitoEditando.tipo_requisito" name="tipoRequisitoEditando.tipo_requisito" class="form-control" id="editartipoRequisito" placeholder="Nombre de la ciudad" (input)="convertirAMayusculas($event, 'tipo_requisito')" (input)="eliminarEspaciosBlanco($event, 'tipo_requisito')" >
+                  <input type="text" [(ngModel)]="tipoRequisitoEditando.tipo_requisito" name="tipoRequisitoEditando.tipo_requisito" class="form-control" id="editartipoRequisito" placeholder="Nombre de la ciudad" (input)="convertirAMayusculas($event, 'tipo_requisito')" (input)="eliminarEspaciosBlanco($event, 'tipo_requisito')" (input)="eliminarCaracteresEspeciales($event, 'tipo_requisito')" >
               </div>
               <div class="form-group">
-                  <label for="tipoRequisitoEditando">Descripción:</label>
-                  <input type="text" [(ngModel)]="tipoRequisitoEditando.descripcion" name="tipoRequisitoEditando.descripcion"  class="form-control" id="editartipoRequisito" placeholder="Descripción" (input)="convertirAMayusculas($event, 'descripcion')" (input)="eliminarEspaciosBlanco($event, 'descripcion')" >
-              </div>
+                <label for="tipoRequisitoEditando">Descripción:</label>
+                <textarea [(ngModel)]="tipoRequisitoEditando.descripcion" name="tipoRequisitoEditando.descripcion" class="form-control" id="editartipoRequisito" placeholder="Descripción" rows="3" (input)="convertirAMayusculas($event, 'descripcion')" (input)="eliminarEspaciosBlanco($event, 'descripcion')"(input)="eliminarCaracteresEspeciales($event, 'descripcion')"></textarea>
+            </div>
         
              
             </form>
@@ -148,17 +148,20 @@
               <h4>Reporte de Requisitos</h4> 
               <!-- Puedes agregar más detalles del reporte aquí si es necesario -->
               <p>Fecha: {{ getDate() }}</p>
+              <p>Usuario {{getUser.usuario}}</p>
           </div>
+
           <div style="flex: 0;">
               <img src="\assets\dist\img\pym.png" alt="Logo de Mi Pyme" style="width: 200px; height: auto;">
           </div>
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
         
         <!-- Pie del modal -->
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary customn-print-button btn-danger" (click)="generatePDF()">
             <i class="fas fa-file-pdf"></i>  Generar PDF</button>
+            <button type="button" class="btn btn-secondary customn-print-button btn-success" (click)="generateExcel()">
+              <i class="fas fa-file-excel"></i>  Generar Excel</button>
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
         </div>
 
@@ -212,12 +215,6 @@
         </div>
         <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
-
-    <div class="modal-footer">
-      <button type="button" class="btn btn-secondary customn-print-button btn-success" (click)="generateExcel()">
-        <i class="fas fa-file-excel"></i>  Generar Excel</button>
-      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-    </div>
       <!-- Contenido del modal -->
   <div class="modal-body">
     <!-- Aquí puedes colocar tu DataTable o cualquier otro contenido que desees mostrar -->

@@ -18,7 +18,7 @@
                     <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover">
                       <thead>
                         <tr>
-                          <th>Codigo</th>
+                          <th>Id</th>
                           <th>Pregunta</th>
                           <th>Estado</th>
                           <th>Creador</th>
@@ -30,16 +30,16 @@
                       </thead>
                       <tbody>
                         <tr *ngFor="let question of listPreguntas; let i = index">
-                          <td>{{ question.id_pregunta }}</td>
-                          <td>{{ question.pregunta }}</td>
+                          <td>{{ question.id_pregunta  }}</td>
+                          <td>{{ question.pregunta | uppercase}}</td>
                           <td>
                             <ng-container *ngIf="question.estado_pregunta == 1">ACTIVO</ng-container>
                             <ng-container *ngIf="question.estado_pregunta == 2">INACTIVO</ng-container>
                           
                           </td>
-                          <td>{{ question.creado_por }}</td>
+                          <td>{{ question.creado_por | uppercase}}</td>
                           <td>{{ question.fecha_creacion }}</td>
-                          <td>{{ question.modificado_por }}</td>
+                          <td>{{ question.modificado_por | uppercase }}</td>
                           <td>{{ question.fecha_modificacion }}</td>
                             <td class="text-center">
                               <div class="btn-group">
@@ -83,17 +83,17 @@
               </button>
           </div>
           <div class="modal-body">
-              <form (submit)="agregarNuevoPregunta()">
+              <form (ngSubmit)="agregarNuevoPregunta()">
                   <div class="form-group">
-                      <label for="nuevoPregunta">Nombre Pregunta:</label>
-                      <input type="text" [(ngModel)]="newQuestion.pregunta" name="nuevoPregunta.pregunta" class="form-control" id="nuevoUsuario" placeholder="Nombre de usuario">
+                      <label for="nuevaPregunta">Nombre Pregunta:</label>
+                      <input type="text" [(ngModel)]="newQuestion.pregunta" (input)="convertirAMayusculas($event, 'pregunta')" name="nuevaPregunta.pregunta" class="form-control" id="nuevaPregunta" placeholder="Pregunta">
                   </div>
                  
               </form>
           </div>
           <div class="modal-footer justify-content-between">
-              <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-              <button type="button" (click)="agregarNuevoPregunta()" class="btn btn-success" data-dismiss="modal">Guardar</button>
+              <button type="button" (click)="cancelarInput()" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+              <button type="submit" (click)="agregarNuevoPregunta()" class="btn btn-success" data-dismiss="modal">Guardar</button>
           </div>
       </div>
   </div>
@@ -120,7 +120,7 @@
               <form>
                 <div class="form-group">
                     <label for="preguntaEditando">Nombre Pregunta:</label>
-                    <input type="text" [(ngModel)]="editQuestion.pregunta" name="preguntaEditando.pregunta" class="form-control" id="editarPregunta" placeholder="Pregunta">
+                    <input type="text" [(ngModel)]="editQuestion.pregunta" (input)="convertirAMayusculas($event, 'pregunta')" name="preguntaEditando.pregunta" class="form-control" id="editarPregunta" placeholder="Pregunta">
                 </div>
                
               </form>
