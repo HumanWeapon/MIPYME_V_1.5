@@ -15,6 +15,7 @@
                     <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover">
                         <thead>
                           <tr>
+                            <th>Id</th>
                             <th>Tipo Contacto</th>
                             <th>Descripción</th>
                             <th>Creado</th>
@@ -27,9 +28,16 @@
                         </thead>
                         <tbody>
                           <tr *ngFor="let Tconta of listTipoC; let i = index">
+<<<<<<< HEAD
                             <td>{{ Tconta.tipo_contacto | uppercase }}</td>
                             <td>{{ Tconta.descripcion | uppercase }}</td>
                             <td>{{ Tconta.creado_por | uppercase }}</td>
+=======
+                            <td>{{ Tconta.id_tipo_contacto }}</td>
+                            <td>{{ Tconta.tipo_contacto }}</td>
+                            <td>{{ Tconta.descripcion }}</td>
+                            <td>{{ Tconta.creado_por}}</td>
+>>>>>>> 117c769e60a6759cf4d6f8afd606a55abc73b798
                             <td>{{ Tconta.fecha_creacion }}</td>
                             <td>{{ Tconta.modificado_por | uppercase }}</td>
                             <td>{{ Tconta.fecha_modificacion}}</td>

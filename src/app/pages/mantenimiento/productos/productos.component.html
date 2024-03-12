@@ -16,6 +16,7 @@
                 <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover">
                     <thead>
                       <tr>
+                        <th>Id</th>
                         <th>Producto</th>
                         <th>Descripción</th>
                         <th>Categoría</th>
@@ -29,6 +30,7 @@
                     </thead>
                     <tbody>
                       <tr *ngFor="let produc of productos; let i = index">
+                        <td>{{ produc.id_producto }}</td>
                         <td>{{ produc.producto }}</td>
                         <td>{{ produc.descripcion }}</td>
                         <td>{{ produc.categoria.categoria }}</td>
