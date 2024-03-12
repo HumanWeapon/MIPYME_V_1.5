@@ -6,13 +6,10 @@
         <div class="col-12">
           <div class="card">
             <div class="card-header">
-              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarProducto">
-                <i class="fas fa-plus"></i> Nuevo</button>
-                <button type="button" class="btn btn-primary custom-print-button btn-danger" title="Generar el Reporte" data-toggle="modal" data-target="#PDFProductos">
-                  <i class="fas fa-file-pdf mr-2"></i>PDF</button>
-                  <button type="button" class="btn btn-primary custom-print-button btn-success" title="Generar el Reporte en Excel" data-toggle="modal" data-target="#ExcelProductos">
-                    <i class="fas fa-file-excel mr-2"></i>Excel
-                </button>
+              <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarProducto">
+                <i class="fas fa-plus"></i> Nuevo</button> -->
+                <button type="button" class="btn btn-primary custom-print-button btn-primary" title="Generar el Reporte" data-toggle="modal" data-target="#PDFReQ">
+                  <i class="fas fa-print"></i> Imprimir Datos</button>
             </div>
             <!-- /.card-header -->
             <div class="card-body">
@@ -90,11 +87,11 @@
 
               <div class="form-group">
                   <label for="nuevoProducto">Nombre del Producto:</label>
-                  <input type="text" [(ngModel)]="nuevoProducto.producto" name="nuevoProducto.producto" (input)="onInputChange($event, 'producto')" class="form-control" id="nuevoProducto" placeholder="Nombre del producto">
+                  <input type="text" [(ngModel)]="nuevoProducto.producto" name="nuevoProducto.producto" (input)="eliminarCaracteresEspeciales($event, 'producto')" (input)="convertirAMayusculas($event, 'descripcion')" class="form-control" id="nuevoProducto" placeholder="Nombre del producto">
               </div>
               <div class="form-group">
                   <label for="nuevoDescripcion">Descripción</label>
-                  <input type="text" [(ngModel)]="nuevoProducto.descripcion" name="nuevoProducto.descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="nuevodescripcion" placeholder="Descripción">
+                  <input type="text" [(ngModel)]="nuevoProducto.descripcion" name="nuevoProducto.descripcion" class="form-control" id="nuevodescripcion" placeholder="Descripción" (input)="convertirAMayusculas($event, 'descripcion')" (input)="eliminarCaracteresEspeciales($event, 'descripcion')">
               </div>
 
             <div class="form-group">
@@ -129,12 +126,12 @@
               <form>
                 <div class="form-group">
                     <label for="editarProducto">Producto:</label>
-                    <input type="text" [(ngModel)]="productoEditando.producto" name="productoEditando" (input)="onInputChange($event, 'producto')" class="form-control" id="editarProducto" placeholder="Nombre del producto">
+                    <input type="text" [(ngModel)]="productoEditando.producto" name="productoEditando" (input)="eliminarCaracteresEspeciales($event, 'producto')" (input)="convertirAMayusculas($event, 'descripcion')" class="form-control" id="editarProducto" placeholder="Nombre del producto">
                 </div>
                 <div class="form-group">
                     <label for="editarDescripcion">Descripción:</label>
-                    <input type="text" [(ngModel)]="productoEditando.descripcion" name="descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="editarDescripcion" placeholder="Descripción">
-                </div>
+                    <textarea [(ngModel)]="productoEditando.descripcion" name="productoEditando.descripcion" class="form-control" id="productoEditando.descripcion" placeholder="Descripción" rows="3" (input)="convertirAMayusculas($event, 'descripcion')" (input)="eliminarCaracteresEspeciales($event, 'descripcion')"></textarea>
+                  </div>
                 <div class="form-group">
                   <label for="editarCategoria">Categoría:</label>
                   <select class="form-control" id="editarCategoria" [(ngModel)]="productoEditando.id_categoria" name="id_categoria">
@@ -143,7 +140,7 @@
                 </div>
                 <div class="modal-footer justify-content-between">
                   <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-                  <button type="submit" class="btn btn-success" (click)="editarProducto(cat)" data-dismiss="modal">Guardar</button>
+                  <button type="button" class="btn btn-success" (click)="editarProducto()" data-dismiss="modal">Guardar</button>
               </div>
               </form>
           </div>
@@ -156,7 +153,7 @@
 
 
 <!-- Form Ver PDF-->
-<div class="modal fade" id="PDFProductos">
+<div class="modal fade" id="PDFReQ">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
 
@@ -166,6 +163,7 @@
             <h4>Reporte de Productos</h4> 
             <!-- Puedes agregar más detalles del reporte aquí si es necesario -->
             <p>Fecha: {{ getDate() }}</p>
+            <p>Usuario {{getUser.usuario}}</p>
         </div>
         <div style="flex: 0;">
             <img src="\assets\dist\img\pym.png" alt="Logo de Mi Pyme" style="width: 200px; height: auto;">
@@ -176,6 +174,8 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary customn-print-button btn-danger" (click)="generatePDF()">
           <i class="fas fa-file-pdf"></i>  Generar PDF</button>
+          <button type="button" class="btn btn-secondary customn-print-button btn-success" (click)="generateExcel()">
+            <i class="fas fa-file-excel"></i>  Generar Excel</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
       </div>
       
@@ -239,12 +239,6 @@
         </div>
         <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
-
-    <div class="modal-footer">
-      <button type="button" class="btn btn-secondary customn-print-button btn-success" (click)="generateExcel()">
-        <i class="fas fa-file-excel"></i>  Generar Excel</button>
-      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-    </div>
 
       <!-- Contenido del modal -->
       <div class="modal-body">
