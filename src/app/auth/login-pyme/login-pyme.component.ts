@@ -103,7 +103,6 @@ goToLogin() {
         }
       },
     error: (e: HttpErrorResponse) => {
-      console.error('Error en la solicitud chupala:', e);
       this._errorService.msjError(e);
       this.loading = false;
     }

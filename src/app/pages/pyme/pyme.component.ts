@@ -345,31 +345,41 @@ agregarNuevaPyme() {
   }
 
 
-  editarPyme(){
-    
-    this.editPyme.nombre_pyme = this.editPyme.nombre_pyme.toUpperCase();
+  editarPyme() {
+    this.editPyme.nombre_pyme = this.editPyme.nombre_pyme;
     this.editPyme.rtn = this.editPyme.rtn;
-
+  
+    // Obtener el nombre de usuario del localStorage
+    const userLocal = localStorage.getItem('usuario') ?? ''; // Si userLocal es null, asigna una cadena vacía
+  
+    // Agregar el nombre de usuario al objeto editPyme
+    this.editPyme.modificado_por = userLocal;
+  
     const esMismoTipo = this.listPymes[this.indice].nombre_pyme === this.editPyme.nombre_pyme;
-
-        // Si la pyme no es el mismo, verifica si el nombre ya existe
-        if (!esMismoTipo) {
-          const PymeExistente = this.listPymes.some(user => user.nombre_pyme === this.editPyme.nombre_pyme);
-          if (PymeExistente) {
-            this.toastr.error('El nombre de la Pyme ya existe. Por favor, elige otro nombre.');
-            return;
-          }
-        }
-
-        this._pymesService.editarPyme(this.editPyme).subscribe(data => {
-          this.updateBitacora(data);
-          this.toastr.success('Pyme editado con éxito');
-          this.listPymes[this.indice].nombre_pyme = this.editPyme.nombre_pyme;
-          this.listPymes[this.indice].rtn = this.editPyme.rtn;
-        
-        });
+  
+    // Si la pyme no es la misma, verifica si el nombre ya existe
+    if (!esMismoTipo) {
+      const PymeExistente = this.listPymes.some(user => user.nombre_pyme === this.editPyme.nombre_pyme);
+      if (PymeExistente) {
+        this.toastr.error('El nombre de la Pyme ya existe. Por favor, elige otro nombre.');
+        return;
       }
-
+    }
+  
+    this._pymesService.editarPyme(this.editPyme).subscribe(data => {
+      // Actualizar la bitácora
+      this.updateBitacora(data);
+      this.toastr.success('Pyme editado con éxito');
+      
+      // Actualizar los datos en el arreglo listPymes
+      this.listPymes[this.indice].nombre_pyme = this.editPyme.nombre_pyme;
+      this.listPymes[this.indice].rtn = this.editPyme.rtn;
+  
+      // Asignar el nombre de usuario que modificó el registro
+      this.listPymes[this.indice].modificado_por = userLocal;
+    });
+  }
+  
 
   /***********************************************************************/
 
