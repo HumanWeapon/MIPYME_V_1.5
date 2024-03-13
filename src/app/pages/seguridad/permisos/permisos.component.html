@@ -56,8 +56,8 @@
                             <ng-template #noCheckbox>{{ 'X' }}</ng-template>
                           </td>   
                           <td>
-                            <ng-container *ngIf="perm.estado_permiso === 1">ACTIVO</ng-container>
-                            <ng-container *ngIf="perm.estado_permiso === 2">INACTIVO</ng-container>
+                            <ng-container *ngIf="perm.estado_permiso == 1">ACTIVO</ng-container>
+                            <ng-container *ngIf="perm.estado_permiso == 2">INACTIVO</ng-container>
                           </td>                         
                           <td>{{ perm.creado_por}}</td>
                           <td>{{ perm.fecha_creacion }}</td>

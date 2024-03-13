@@ -31,6 +31,7 @@ export class DireccionesComponent {
   direccionEditando: ContactoDirecciones = {
     id_direccion: 0, 
     id_tipo_direccion: 0,
+    id_ciudad: 0,
     direccion:'', 
     descripcion: '', 
     creado_por: '', 
@@ -44,6 +45,7 @@ export class DireccionesComponent {
   nuevaDireccion: ContactoDirecciones = {
     id_direccion: 0, 
     id_tipo_direccion: 0,
+    id_ciudad: 0,
     direccion:'', 
     descripcion: '', 
     creado_por: '', 
@@ -51,12 +53,15 @@ export class DireccionesComponent {
     modificado_por: '', 
     fecha_modificacion: new Date(), 
     estado: 0
-
   };
   indice: any;
 
   dtOptions: DataTables.Settings = {};
   listDirecciones: any[] = [];
+  listTipoDireccion: any[]=[];
+  listCiudades: any[] = [];
+  id_tipo_direccion: number = 0;
+  id_ciudad: number = 0;
   data: any;
   listContacto: Contacto[] = [];
   listTipoC: TipoDireccion[] = [];
@@ -94,15 +99,30 @@ export class DireccionesComponent {
     this._objService.getdirecciones()
       .subscribe((res: any) => {
         this.listDirecciones= res;
-        console.log(res)
         this.dtTrigger.next(null);
-      });
+    });
+    this._objService.getTipoDirecciones()
+    .subscribe((res: any) => {
+      this.listTipoDireccion = res;
+    });
+    this._objService.getCiudades()
+    .subscribe((res: any) => {
+      this.listCiudades = res;
+    });
       this.getUsuario();
   }
 
   ngOnDestroy(): void {
     // Do not forget to unsubscribe the event
     this.dtTrigger.unsubscribe();
+  }
+  tipoDireccionSeleccionada(event: Event): void {
+    const id_tipo_direccion = (event.target as HTMLSelectElement).value;
+    this.id_tipo_direccion = Number(id_tipo_direccion);
+  }
+  ciudadSeleccionada(event: Event): void {
+    const id_ciudad = (event.target as HTMLSelectElement).value;
+    this.id_ciudad = Number(id_ciudad);
   }
 
   getDate(): string {
@@ -126,7 +146,8 @@ export class DireccionesComponent {
     if(usuarioLocal){
       this.nuevaDireccion = {
         id_direccion: 0, 
-        id_tipo_direccion: this.nuevaDireccion.id_tipo_direccion, 
+        id_tipo_direccion: this.id_tipo_direccion,
+        id_ciudad: this.id_ciudad,
         direccion: this.nuevaDireccion.direccion, 
         descripcion:this.nuevaDireccion.descripcion, 
         estado: 1,
@@ -134,7 +155,6 @@ export class DireccionesComponent {
         fecha_creacion: new Date(), 
         modificado_por: usuarioLocal, 
         fecha_modificacion: new Date()
-
       };
 
 
@@ -160,6 +180,7 @@ export class DireccionesComponent {
     this.direccionEditando = {
     id_direccion: direccion.id_direccion,
     id_tipo_direccion: this.nuevaDireccion.id_tipo_direccion, 
+    id_ciudad: this.nuevaDireccion.id_ciudad,
     direccion: direccion.direccion, 
     descripcion: direccion.descripcion,  
     creado_por: direccion.creado_por, 

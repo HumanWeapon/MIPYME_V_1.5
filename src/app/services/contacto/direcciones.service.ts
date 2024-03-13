@@ -31,11 +31,7 @@ export class DireccionesService {
     return this.http.post<ContactoDirecciones[]>(`${this.myAppUrl}${this.myApiUrl}/getDirecContactos`, { id_contacto: id_contacto }, { headers: headers })
    }
   
-   getdirecciones(): Observable<any[]> {
-    const token = localStorage.getItem('token')
-    const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.get<any[]>(`${this.myAppUrl}${this.myApiUrl}/getdirecciones`, { headers: headers })
-   }
+
    inactivarDireccion(direccion: ContactoDirecciones): Observable<ContactoDirecciones>{
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
@@ -58,4 +54,24 @@ export class DireccionesService {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.post<any>(`${this.myAppUrl}${this.myApiUrl}/getAllDireccionByContacto`,id_contacto, { headers: headers });
   }
+
+  //Nuevas
+  //Obtiene todas las direcciones
+  getdirecciones(): Observable<any[]> {
+    const token = localStorage.getItem('token')
+    const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
+    return this.http.get<any[]>(`${this.myAppUrl}${this.myApiUrl}/getdirecciones`, { headers: headers })
+  }
+  //Obtiene todos los tipo de dirección activos
+  getTipoDirecciones(): Observable<any[]> {
+    const token = localStorage.getItem('token')
+    const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
+    return this.http.get<any[]>(`${this.myAppUrl}${this.myApiUrl}/getTipoDirecciones`, { headers: headers })
+   }
+  //Obtiene todas las ciudades activas
+  getCiudades(): Observable<any[]> {
+    const token = localStorage.getItem('token')
+    const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
+    return this.http.get<any[]>(`${this.myAppUrl}${this.myApiUrl}/getCiudades`, { headers: headers })
+   }
 }

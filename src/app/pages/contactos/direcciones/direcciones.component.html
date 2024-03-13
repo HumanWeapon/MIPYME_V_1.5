@@ -20,14 +20,12 @@
                     <thead>
                       <tr>
                         <th>Dirección</th>
+                        <th>Tipo dirección</th>
                         <th>Descripción</th>
                         <th>Ciudad</th>
                         <th>Pais</th>
-                        <th>URL</th>
                         <th>Creado por</th>
                         <th>Fecha Creación</th>
-                        <th>Modificado por</th>
-                        <th>Fecha Modificación</th>
                         <th>Estado</th>
                         <th>Aciones</th>
                       </tr>
@@ -35,18 +33,16 @@
                     <tbody>
                       <tr *ngFor="let obj of listDirecciones; let i = index">
                         <td>{{ obj.direccion }}</td>
+                        <td>{{ obj.tipo_direccion }}</td>
                         <td>{{ obj.descripcion }}</td>
                         <td>{{ obj.ciudad }}</td>
                         <td>{{ obj.pais }}</td>
-                        <td>{{ obj.url }}</td>
                         <td>{{ obj.creado_por }}</td>
                         <td>{{ obj.fecha_creacion}}</td>
-                        <td>{{ obj.modificado_por }}</td>
-                        <td>{{ obj.fecha_modificacion}}</td>
                         <td>
-                            <ng-container *ngIf="obj.estado === 1">ACTIVO</ng-container>
-                            <ng-container *ngIf="obj.estado === 2">INACTIVO</ng-container>
-                          </td>
+                            <ng-container *ngIf="obj.estado == 1">ACTIVO</ng-container>
+                            <ng-container *ngIf="obj.estado == 2">INACTIVO</ng-container>
+                        </td>
                         <td class="text-center">
                           <div class="btn-group">
                             <div class="form-check form-switch ml-4">
@@ -75,7 +71,7 @@
 
 
 
-<!-- Agregar Usuario Form -->
+<!-- Agregar dirección Form -->
 <div class="modal fade" id="agregarProducto">
 <div class="modal-dialog">
   <div class="modal-content">
@@ -98,12 +94,19 @@
               </div>
 
             <div class="form-group">
-              <label for="editarTipoDireccion">Tipo_Direccion:</label>
-              <select class="form-control" id="editarRol" [(ngModel)]="nuevaDireccion.id_tipo_direccion" name="id_tipo_direccion">
-                <option *ngFor="let item of listTipoC" [ngValue]="item.id_tipo_direccion">{{ item.tipo_direccion }}</option>
+              <label for="inputStatus">Tipo direccion:</label>
+              <select class="form-control custom-select" id="inputStatus" (change)="tipoDireccionSeleccionada($event)">
+                <option selected disabled>Seleccionar</option>
+                <option *ngFor="let item of listTipoDireccion" [ngValue]="item.id_tipo_direccion">{{ item.tipo_direccion }}</option>
               </select>
             </div>
-                          
+            <div class="form-group">
+              <label for="inputStatus">Ciudad:</label>
+              <select class="form-control custom-select" id="inputStatus" (change)="ciudadSeleccionada($event)">
+                <option selected disabled>Seleccionar</option>
+                <option *ngFor="let item of listCiudades" [ngValue]="item.id_ciudad">{{ item.ciudad }}</option>
+              </select>
+            </div>
           </form>
       </div>
       <div class="modal-footer justify-content-between">
