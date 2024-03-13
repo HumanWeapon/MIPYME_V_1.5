@@ -14,7 +14,8 @@ export class MantenimientoComponent implements OnInit {
 
   tipo_objeto: string = 'MANTENIMIENTO';
   estado_objeto: number = 1;
-  listObjetos: Objetos[] = [];
+  listObjetos: any[] = [];
+  listObjetos2: any[] = [];
   mostrar: boolean = true;
 
   constructor(
@@ -28,6 +29,7 @@ export class MantenimientoComponent implements OnInit {
 
   ngOnInit(): void {
     this.getAllObjetosMenu();
+    this.getAllObjetosMenuJSON();
   }
 
   getAllObjetosMenu(){
@@ -35,6 +37,18 @@ export class MantenimientoComponent implements OnInit {
       next: (data: any) => {
         this.listObjetos = data;
         console.log(this.listObjetos)
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    })
+  }
+
+  getAllObjetosMenuJSON(){
+    this._seguridadService.objetosJSON().subscribe({
+      next: (data: any) => {
+        this.listObjetos2 = data;
+        console.log(this.listObjetos2)
       },
       error: (e: HttpErrorResponse) => {
         this._errorService.msjError(e);
