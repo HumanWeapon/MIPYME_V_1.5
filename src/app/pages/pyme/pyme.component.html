@@ -5,11 +5,8 @@
         <div class="card">
           <div class="card-header">
             
-            <button type="button" class="btn btn-primary custom-print-button btn-danger" title="Generar el Reporte" data-toggle="modal" data-target="#PDFpyme">
-              <i class="fas fa-file-pdf mr-2"></i>PDF</button>
-              <button type="button" class="btn btn-primary custom-print-button btn-success" title="Generar el Reporte en Excel" data-toggle="modal" data-target="#Excelpyme">
-                <i class="fas fa-file-excel mr-2"></i>Excel
-            </button>
+            <button type="button" class="btn btn-primary custom-print-button btn-primary" title="Generar el Reporte" data-toggle="modal" data-target="#PDFpyme">
+              <i class="fas fa-print"></i> Imprimir Datos</button>
           </div>
           <!-- /.card-header -->
           <div class="card-body">
@@ -129,11 +126,11 @@
               <form>
                 <div class="form-group">
                     <label for="pymeEditando">Nombre de Pyme</label>
-                    <input type="text" [(ngModel)]="editPyme.nombre_pyme" name="pymeEditando.nombre_pyme" (input)="onInputChange($event, 'nombre_pyme')" (input)="eliminarCaracteresEspeciales($event, 'nombre_pyme')"class="form-control" id="editarNombre" placeholder="Nombre de la Pyme"[ngModelOptions]="{standalone: true}" (ngModelChange)="editPyme.nombre_pyme=$event.toUpperCase()">
+                    <input type="text" [(ngModel)]="editPyme.nombre_pyme" name="editPyme.nombre_pyme" (input)="onInputChange($event, 'nombre_pyme')" (input)="eliminarCaracteresEspeciales($event, 'nombre_pyme')"class="form-control" id="editarNombre" placeholder="Nombre de la Pyme"[ngModelOptions]="{standalone: true}" (ngModelChange)="editPyme.nombre_pyme=$event.toUpperCase()">
                 </div>   
               <div class="form-group">
                   <label for="PymeEditando">RTN</label>
-                  <input type="text" [(ngModel)]="editPyme.rtn" name="pymeEditando.rtn" (input)="onInputChange($event, 'rtn')" (input)="eliminarCaracteresEspeciales($event, 'rtn')" class="form-control" id="editarRTN" placeholder="RTN">
+                  <input type="text" [(ngModel)]="editPyme.rtn" name="editPyme.rtn" (input)="onInputChange($event, 'rtn')" (input)="eliminarCaracteresEspeciales($event, 'rtn')" class="form-control" id="editarRTN" placeholder="RTN">
               </div>    
             </form>
           </div>
@@ -153,22 +150,27 @@
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
 
+      <!-- Cabecera del modal -->
       <div class="modal-header" style="display: flex; align-items: center;">
         <div style="flex: 1; text-align: left; margin-right: 20px;">
             <h1>Utilidad Mi Pyme</h1>
             <h4>Reporte de Pymes</h4> 
             <!-- Puedes agregar más detalles del reporte aquí si es necesario -->
             <p>Fecha: {{ getDate() }}</p>
+            <p>Usuario {{getUser.usuario}}</p>
         </div>
+
         <div style="flex: 0;">
             <img src="\assets\dist\img\pym.png" alt="Logo de Mi Pyme" style="width: 200px; height: auto;">
         </div>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
       
+      <!-- Pie del modal -->
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary customn-print-button btn-danger" (click)="generatePDF()">
           <i class="fas fa-file-pdf"></i>  Generar PDF</button>
+          <button type="button" class="btn btn-secondary customn-print-button btn-success" (click)="generateExcel()">
+            <i class="fas fa-file-excel"></i>  Generar Excel</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
       </div>
 
@@ -232,7 +234,7 @@
       </div>
 
     <div class="modal-footer">
-      <button type="button" class="btn btn-secondary customn-print-button btn-success" (click)="generateExcel()">
+      <button type="button" class="btn btn-secondary customn-print-button btn-success" >
         <i class="fas fa-file-excel"></i>  Generar Excel</button>
       <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
     </div>

@@ -24,7 +24,6 @@ import { es } from 'date-fns/locale'; // Importa el idioma español
 })
 export class PymeComponent {
 
-  getEstadoText: any;
   getPyme: any;
 
 
@@ -161,10 +160,10 @@ toggleFunction(pyme: any, i: number) {
 /*****************************************************************************************************/
 
 generateExcel() {
-  const headers = ['Id','Nombre Pyme', 'RTN',  'Creador', 'Fecha Creación', 'Ultima Conexión','Estado'];
+  const headers = ['ID', 'Nombre Pyme', 'RTN', 'Creador', 'Fecha Creación', 'Ultima Conexión', 'Estado'];
   const data: any[][] = [];
 
-  // Recorre los datos de tus Pymes y agrégalos a la matriz 'data'
+  // Recorre los datos de tu lista de Pymes y agrégalos a la matriz 'data'
   this.listPymes.forEach((pyme, index) => {
     const row = [
       pyme.id_pyme,
@@ -173,8 +172,7 @@ generateExcel() {
       pyme.creado_por,
       pyme.fecha_creacion,
       pyme.fecha_ultima_conexion,
-      this.getEstadoText(pyme.estado), // Función para obtener el texto del estado
-      pyme.id_rol
+      this.getEstadoText(pyme.estado) // Función para obtener el texto del estado
     ];
     data.push(row);
   });
@@ -182,7 +180,7 @@ generateExcel() {
   // Crea un nuevo libro de Excel
   const workbook = XLSX.utils.book_new();
   const worksheet = XLSX.utils.aoa_to_sheet([headers, ...data]);
-
+  
   // Agrega la hoja al libro de Excel
   XLSX.utils.book_append_sheet(workbook, worksheet, 'Pymes');
 
@@ -206,18 +204,16 @@ generateExcel() {
   document.body.removeChild(a);
 }
 
+
+
+
 /*****************************************************************************************************/
 
 generatePDF() {
   const { jsPDF } = require("jspdf");
   const doc = new jsPDF();
   const data: any[][] = [];
-  const headers = ['Id', 'Nombre Pyme', 'RTN', 'Creador', 'Fecha Creación', 'Ultima Conexión', 'Estado'];
-  const usuario = localStorage.getItem('usuario');
-
-  // Obtiene la fecha actual y la formatea
-  const fechaActual = new Date();
-  const fechaFormateada = fechaActual.toLocaleDateString();
+  const headers = ['ID Pyme', 'Nombre Pyme', 'RTN', 'Creador', 'Fecha Creación', 'Ultima Conexión', 'Estado'];
 
   // Agregar el logo al PDF
   const logoImg = new Image();
@@ -228,18 +224,13 @@ generatePDF() {
     // Agregar los comentarios al PDF centrados horizontalmente
     const centerX = doc.internal.pageSize.getWidth() / 2;
     doc.setFontSize(12);
-    doc.text("Reporte de Pymes", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
-    doc.text("Fecha: " + fechaFormateada, centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+    doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+    doc.text("Reporte de Pymes", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+    doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' });
+    doc.text("Usuario: " + this.getUser.usuario, centerX, 40, { align: 'center' });  // Ajusta las coordenadas vertical y horizontalmente
 
-    // Recorre los datos de tu Pymes y agrégalos a la matriz 'data'
+    // Recorre los datos de tu lista de Pymes y agrégalos a la matriz 'data'
     this.listPymes.forEach((pyme, index) => {
-      let estadoResult: any = '';
-      if (pyme.estado === 1) {
-        estadoResult = 'ACTIVO';
-      } else {
-        estadoResult = 'INACTIVO';
-      }
-
       const row = [
         pyme.id_pyme,
         pyme.nombre_pyme,
@@ -247,8 +238,7 @@ generatePDF() {
         pyme.creado_por,
         pyme.fecha_creacion,
         pyme.fecha_ultima_conexion,
-        estadoResult,
-        pyme.id_rol
+        this.getEstadoText(pyme.estado) // Función para obtener el texto del estado
       ];
       data.push(row);
     });
@@ -257,18 +247,36 @@ generatePDF() {
     doc.autoTable({
       head: [headers],
       body: data,
-      startY: 40 // Ajusta la posición inicial de la tabla según tu diseño
+      startY: 70 // Ajusta la posición inicial de la tabla según tu diseño
     });
-
-    // Usuario en la parte inferior izquierda, debajo de la tabla
-    doc.setFontSize(12);
-    doc.text(`Reporte Generado por el Usuario: ${usuario}`, 10, doc.autoTable.previous.finalY + 10);
 
     // Guardar el PDF
     doc.save('Reporte de Pymes.pdf');
   };
   logoImg.src = '/assets/dist/img/pym.png'; // Ruta del logo
 }
+
+getCurrentDate(): string {
+  const currentDate = new Date();
+  return currentDate.toLocaleDateString(); // Retorna la fecha actual en formato local
+}
+
+getEstadoText(estado: number): string {
+  switch (estado) {
+    case 1:
+      return 'ACTIVO';
+    case 2:
+      return 'INACTIVO';
+    case 3:
+      return 'BLOQUEADO';
+    case 4:
+      return 'VENCIDO';
+    default:
+      return 'Desconocido';
+  }
+}
+
+
 
 
 /**************************************************************/
@@ -336,20 +344,31 @@ agregarNuevaPyme() {
     this.indice = i;
   }
 
-  editarPyme() {
-    this._pymesService.editarPyme(this.editPyme).subscribe({
-      next: (data) => {
-        this.updateBitacora(data);
-        this.toastr.success('Pyme editado con éxito'); 
-      },
-      error: (e: HttpErrorResponse) => {
-        this._errorService.msjError(e);
+
+  editarPyme(){
+    
+    this.editPyme.nombre_pyme = this.editPyme.nombre_pyme.toUpperCase();
+    this.editPyme.rtn = this.editPyme.rtn;
+
+    const esMismoTipo = this.listPymes[this.indice].nombre_pyme === this.editPyme.nombre_pyme;
+
+        // Si la pyme no es el mismo, verifica si el nombre ya existe
+        if (!esMismoTipo) {
+          const PymeExistente = this.listPymes.some(user => user.nombre_pyme === this.editPyme.nombre_pyme);
+          if (PymeExistente) {
+            this.toastr.error('El nombre de la Pyme ya existe. Por favor, elige otro nombre.');
+            return;
+          }
+        }
+
+        this._pymesService.editarPyme(this.editPyme).subscribe(data => {
+          this.updateBitacora(data);
+          this.toastr.success('Pyme editado con éxito');
+          this.listPymes[this.indice].nombre_pyme = this.editPyme.nombre_pyme;
+          this.listPymes[this.indice].rtn = this.editPyme.rtn;
+        
+        });
       }
-    });
-     this.listPymes[this.indice].nombre_pyme = this.editPyme.nombre_pyme.toUpperCase();
-     this.listPymes[this.indice].rtn = this.editPyme.rtn;
-  }
-  
 
 
   /***********************************************************************/
