@@ -18,6 +18,7 @@ import { da } from 'date-fns/locale';
 import * as XLSX from 'xlsx';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale'; // Importa el idioma español
+import { DatePipe } from '@angular/common';
 
 
 @Component({
@@ -95,12 +96,14 @@ export class ProductosComponent implements OnInit{
     private _errorService: ErrorService,
     private _userService: UsuariosService,
     private _ngZone: NgZone,
-    private _categoriaProductos: CategoriaService
+    private _categoriaProductos: CategoriaService,
+    private _datePipe: DatePipe
     ) {}
 
   
   ngOnInit(): void {
-    this.getUsuario()
+    this.getUsuario();
+    this.getAllCategorias();
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 10,
@@ -112,11 +115,13 @@ export class ProductosComponent implements OnInit{
         this.productos = res;
         this.dtTrigger.next(null);
       });
-
-      this._categoriaProductos.getAllCategorias().subscribe(data => {
-        this.listCategorias = data
-      });
       this.getUsuario();
+  }
+
+  getAllCategorias(){
+    this._categoriaProductos.getAllCategorias().subscribe(data => {
+      this.listCategorias = data.filter(categoria => categoria.estado == 1);
+    });
   }
 
   ngOnDestroy(): void {
@@ -124,18 +129,32 @@ export class ProductosComponent implements OnInit{
     this.dtTrigger.unsubscribe();
   }
 
-  onInputChange(event: any, field: string) {
-    if (field == 'producto') {
-      const inputValue = event.target.value;
-      const uppercaseValue = inputValue.toUpperCase();
-      event.target.value = uppercaseValue;
-    }
+  eliminarCaracteresEspeciales(event: any, field: string) {
+    setTimeout(() => {
+      let inputValue = event.target.value;
+  
+      // Elimina caracteres especiales dependiendo del campo
+      if (field === 'producto') {
+        inputValue = inputValue.replace(/[^a-zA-Z0-9\s]/g, ''); // Solo permite letras y números y espacios en blanco
+      }else if (field === 'descripcion') {
+        inputValue = inputValue.replace(/[^a-zA-Z0-9\s]/g, ''); // Solo permite letras, números y espacios en blanco
+      }
+      event.target.value = inputValue;
+    });
   }
   
+  convertirAMayusculas(event: any, field: string) {
+    setTimeout(() => {
+      const inputValue = event.target.value;
+      event.target.value = inputValue.toUpperCase();
+    });
+  }
 
   agregarNuevoProducto() {
     const usuarioLocal = localStorage.getItem('usuario')
     if(usuarioLocal){
+      const fechaActual = new Date();
+      const fechaFormateada = this._datePipe.transform(fechaActual, 'yyyy-MM-dd');
       this.nuevoProducto = {
         id_producto: 0, 
         id_contacto:0,
@@ -145,9 +164,9 @@ export class ProductosComponent implements OnInit{
         descripcion:this.nuevoProducto.descripcion, 
         estado: 1,
         creado_por: usuarioLocal, 
-        fecha_creacion: new Date(), 
+        fecha_creacion: fechaFormateada as unknown as Date,
         modificado_por: usuarioLocal, 
-        fecha_modificacion: new Date()
+        fecha_modificacion: fechaFormateada as unknown as Date,
 
       };
       if (!this.nuevoProducto.producto || !this.nuevoProducto.descripcion) {
@@ -190,18 +209,31 @@ export class ProductosComponent implements OnInit{
   }
 
 
-  editarProducto(cat: any) {
+  editarProducto(id_categoria_selected: any) {
     this.productoEditando.producto = this.productoEditando.producto.toUpperCase();
     this.productoEditando.descripcion = this.productoEditando.descripcion.toUpperCase();
 
-    this._productoService.editarProducto(this.productoEditando).subscribe({
-      next: (data) =>  {
+    const esMismoProducto = this.productos[this.indice].producto === this.productoEditando.producto;
+
+        // Si el usuario no es el mismo, verifica si el nombre de usuario ya existe
+        if (!esMismoProducto) {
+          const ProducExistente = this.productos.some(user => user.producto === this.productoEditando.producto);
+          if (ProducExistente) {
+            this.toastr.error('El Producto ya existe. Por favor, elige otro Producto.');
+            return;
+          }
+        }
+
+        const categoriaSeleccionada = this.listCategorias.find(categoria => categoria.id_categoria == id_categoria_selected);
+        if (!categoriaSeleccionada) {
+          return;
+        }
+    this._productoService.editarProducto(this.productoEditando).subscribe(data => {
         this.updateBitacora(data);
         this.toastr.success('Producto editado con éxito');
-      },
-      error: (e: HttpErrorResponse) => {
-        this._errorService.msjError(e);
-      }
+        this.productos[this.indice].producto = this.productoEditando.producto;
+        this.productos[this.indice].descripcion = this.productoEditando.descripcion;
+        this.productos[this.indice].categoria = categoriaSeleccionada;
     });
   }
 
@@ -303,6 +335,7 @@ generatePDF() {
     doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
     doc.text("Reporte de Productos", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
     doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+    doc.text("Usuario: " + this.getUser.usuario, centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
 
     // Recorre los datos de productos y agrégalo a la matriz 'data'
     this.listProductos.forEach((obj, index) => {

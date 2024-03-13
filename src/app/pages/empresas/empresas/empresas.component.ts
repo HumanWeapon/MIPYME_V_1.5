@@ -97,10 +97,17 @@ export class EmpresasComponent {
     this.getUsuario();
   }
 
+  getAllTipoEmpresa(){
+    this._tipoEmpresa.getAllTipoEmpresa().subscribe(data => {
+      this.list_tipoEmpresa = data.filter(empresa => empresa.estado == 1);
+    });
+  }
+
   getTipoEmpresa(){
     this._tipoEmpresa.getAllTipoEmpresa().subscribe({
       next: (data) => {
         this.list_tipoEmpresa = data;
+        this.list_tipoEmpresa = data.filter(empresa => empresa.estado == 1);
       },
       error: (e: HttpErrorResponse) => {
         this._errorService.msjError(e);

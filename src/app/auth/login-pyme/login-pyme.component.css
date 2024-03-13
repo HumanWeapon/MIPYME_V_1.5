@@ -1,81 +1,88 @@
 body.login-page {
   background: rgb(255,255,255);
   background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(254,254,254,1) 0%, rgba(233,233,233,1) 0%);
+}
+
+.h1 {
+  text-align: center;
+}
+
+.card.card-outline.card-primary {
+  border: 2px solid #1254a1;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  max-width: 100%; /* Reducimos el ancho máximo de la tarjeta */
+  max-height: 100%;
+  margin: 0 auto; /* Centra la tarjeta en el centro de la pantalla */
+}
+
+.card-header.text-center {
+  width: 100%;
+  height: 60px; /* Redujimos la altura del encabezado a 60px */
+  background-color: #0074b9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card-header.text-center::before {
+  content: "";
+  width: 100%;
+  height: 60px; /* Ajustamos la altura de la imagen */
+  background-image: url(src\assets\dist\img\mipyme.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.login-box-msg {
+  color: #3370e2;
+}
+
+.form-control {
+  border: 1px solid #3370e2;
+}
+
+.btn-primary {
+  background-color: #3370e2;
+  border-color: #3370e2;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background-color: #0074b9;
+  border-color: #000;
+  color: #fff;
+}
+
+.btn-link {
+  color: #3370e2;
+}
+
+.btn-link:hover,
+.btn-link:focus {
+  color: #ff9d00; /* Cambiar el color al rojo cuando se selecciona con el cursor */
+}
+
+
+/* Estilos para pantallas más pequeñas */
+@media screen and (max-width: 750px) {
+  html {
+      font-size: 12px;
   }
-  
-  .h1 {
-    text-align: center;
+}
+
+@media screen and (max-width: 580px) {
+  html {
+      font-size: 10px;
   }
-  
+
   .card.card-outline.card-primary {
-    border: 2px solid #1254a1;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    max-width: 300px; /* Reducimos el ancho máximo de la tarjeta */
-    margin: 0 auto; /* Centra la tarjeta en el centro de la pantalla */
+      max-width: 300px; /* Reducimos aún más el ancho de la tarjeta */
   }
-  
-  .card-header.text-center {
-    width: 100%;
-    height: 60px; /* Redujimos la altura del encabezado a 60px */
-    background-color: #0074b9;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+
+  .container-form {
+      height: auto;
+      flex-direction: column;
   }
-  
-  .card-header.text-center::before {
-    content: "";
-    width: 100%;
-    height: 60px; /* Ajustamos la altura de la imagen */
-    background-image: url(src\assets\dist\img\mipyme.png);
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-  }
-  
-  .login-box-msg {
-    color: #3370e2;
-  }
-  
-  .form-control {
-    border: 1px solid #3370e2;
-  }
-  
-  .btn-primary {
-    background-color: #3370e2;
-    border-color: #3370e2;
-    color: #fff;
-  }
-  
-  .btn-primary:hover {
-    background-color: #0074b9;
-    border-color: #000;
-    color: #fff;
-  }
-  
-  .btn-link {
-    color: #3370e2;
-  }
-  
-  /* Estilos para pantallas más pequeñas */
-  @media screen and (max-width: 750px) {
-    html {
-        font-size: 12px;
-    }
-  }
-  
-  @media screen and (max-width: 580px) {
-    html {
-        font-size: 10px;
-    }
-  
-    .card.card-outline.card-primary {
-        max-width: 250px; /* Reducimos aún más el ancho de la tarjeta */
-    }
-  
-    .container-form {
-        height: auto;
-        flex-direction: column;
-    }
-  }
+}

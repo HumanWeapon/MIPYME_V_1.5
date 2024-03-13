@@ -14,7 +14,7 @@ import { Usuario } from 'src/app/interfaces/seguridad/usuario';
 import { DatePipe } from '@angular/common';
 import * as XLSX from 'xlsx';
 import { format } from 'date-fns';
-import { es } from 'date-fns/locale'; // Importa el idioma español
+import { da, es } from 'date-fns/locale'; // Importa el idioma español
 
 
 
@@ -85,13 +85,13 @@ editQuestion: Preguntas = {
       language: {url:'//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'},
       responsive: true
     };
-    this._questionService.getAllPreguntas()
-      .subscribe((res: any) => {
-        this.listPreguntas = res;
-        this.dtTrigger.next(null);
+    this._questionService.getAllPreguntas().subscribe({
+        next: (data) =>{
+          this.listPreguntas = data;
+          this.dtTrigger.next(0)
+        }
       });
       this.getUsuario();
-      
   }
 
   ngOnDestroy(): void {
@@ -99,6 +99,12 @@ editQuestion: Preguntas = {
     this.dtTrigger.unsubscribe();
   }
 
+  convertirAMayusculas(event: any, field: string) {
+    setTimeout(() => {
+      const inputValue = event.target.value;
+      event.target.value = inputValue.toUpperCase();
+    });
+  }
 
     // Variable de estado para alternar funciones
 
@@ -240,15 +246,11 @@ inactivarPregunta(pregunta: any, i: number){
   
 
 /**************************************************************/
-
-
-
-
 agregarNuevoPregunta() {
   const LocalUser = localStorage.getItem('usuario');
   if (LocalUser){
 
-    this.newQuestion = {
+    const newQuestion = {
       id_pregunta: 0,
       pregunta: this.newQuestion.pregunta,
       estado_pregunta: 1,
@@ -259,16 +261,22 @@ agregarNuevoPregunta() {
       
     };
 
-    this._questionService.addPregunta(this.newQuestion).subscribe({
+    this._questionService.addPregunta(newQuestion).subscribe({
       next: (data) => {
+        this.toastr.success('Pregunta agregado con éxito');
         this.insertBitacora(data);
-        this.toastr.success('Pregunta agregado con éxito')
+        this.listPreguntas.push(newQuestion)
       },
       error: (e: HttpErrorResponse) => {
         this._errorService.msjError(e);
       }
     });
+
   }
+}
+
+cancelarInput(){;
+  this.newQuestion.pregunta ='';
 }
 
 obtenerIdPregunta(pregunta: Preguntas, i: any) {
@@ -288,8 +296,18 @@ obtenerIdPregunta(pregunta: Preguntas, i: any) {
   this.indice = i;
 }
 
-
   editarPregunta(){
+    this.editQuestion.pregunta = this.editQuestion.pregunta.toUpperCase();
+
+    const esMismaPregunta = this.listPreguntas[this.indice].pregunta === this.editQuestion.pregunta;
+    if (!esMismaPregunta) {
+      const PreguntaExistente = this.listPreguntas.some(user => user.pregunta === this.editQuestion.pregunta);
+      if (PreguntaExistente) {
+        this.toastr.error('La Pregunta ya existe. Por favor, elige otra pregunta.');
+        return;
+      }
+    }
+
     this._questionService.editarPregunta(this.editQuestion).subscribe(data => {
       this.updateBitacora(data);
       this.toastr.success('Pregunta editada con éxito');

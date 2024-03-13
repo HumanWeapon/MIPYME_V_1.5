@@ -12,6 +12,7 @@ import { format } from 'date-fns';
 import * as XLSX from 'xlsx';
 import { Usuario } from 'src/app/interfaces/seguridad/usuario';
 import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
+import { DatePipe } from '@angular/common';
 
 
 @Component({
@@ -65,7 +66,8 @@ export class TipoRequisitosComponent implements OnInit {
     private _bitacoraService: BitacoraService,
     private _errorService: ErrorService,
     private _userService: UsuariosService,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private _datePipe: DatePipe
     ) {}
 
     ngOnInit(): void {
@@ -141,12 +143,30 @@ eliminarEspaciosBlanco(event: any, field: string) {
   setTimeout(() => {
     const inputValue = event.target.value;
     event.target.value = inputValue.toUpperCase();
-    this.tipoRequisitoEditando.tipo_requisito = this.tipoRequisitoEditando.tipo_requisito.replace(/\s/g, ''); // Elimina espacios en blanco
     this.tipoRequisitoEditando.descripcion = this.tipoRequisitoEditando.descripcion.toUpperCase(); // Convierte el texto a mayúsculas
-    this.nuevoTipoRequisito.tipo_requisito = this.nuevoTipoRequisito.tipo_requisito.replace(/\s/g, ''); // Elimina espacios en blanco
     this.nuevoTipoRequisito.descripcion = this.nuevoTipoRequisito.descripcion.toUpperCase(); // Convierte el texto a mayúsculas
   });
 }
+
+eliminarCaracteresEspeciales(event: any, field: string) {
+  setTimeout(() => {
+    let inputValue = event.target.value;
+
+    // Elimina caracteres especiales dependiendo del campo
+    if (field === 'tipo_requisito') {
+      inputValue = inputValue.replace(/[^a-zA-Z0-9\s]/g, ''); // Solo permite letras y números
+    }else if (field === 'descripcion') {
+      inputValue = inputValue.replace(/[^a-zA-Z0-9\s]/g, ''); // Solo permite letras, números y espacios en blanco
+    }
+    event.target.value = inputValue;
+  });
+}
+
+cancelarInput(){
+   this.nuevoTipoRequisito.tipo_requisito = '';
+   this.nuevoTipoRequisito.descripcion = '';
+  }
+  
 
 
 /*****************************************************************************************************/
@@ -215,6 +235,7 @@ generatePDF() {
     doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
     doc.text("Reporte de Tipos de Requisito", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
     doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+    doc.text("Usuario: " + this.getUser.usuario, centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
 
     // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
     this.tipoRequisitoAll.forEach((TipoR, index) => {
@@ -275,27 +296,32 @@ getEstadoText(estado: number): string {
         const userLocal = localStorage.getItem('usuario');
     if (userLocal){
 
+      const fechaActual = new Date();
+      const fechaFormateada = this._datePipe.transform(fechaActual, 'yyyy-MM-dd');
         this.nuevoTipoRequisito = {
           id_tipo_requisito: 0, 
           tipo_requisito: this.nuevoTipoRequisito.tipo_requisito, 
           descripcion:this.nuevoTipoRequisito.descripcion,
           creado_por: userLocal, 
-          fecha_creacion: new Date(), 
+          fecha_creacion: fechaFormateada as unknown as Date, 
           modificado_por: userLocal, 
-          fecha_modificacion: new Date(),
+          fecha_modificacion: fechaFormateada as unknown as Date, 
           estado: 1,
     
         };
-    
+        if (!this.nuevoTipoRequisito.tipo_requisito || !this.nuevoTipoRequisito.descripcion) {
+          this.toastr.warning('Debes completar los campos vacíos');
+          this.nuevoTipoRequisito.tipo_requisito = '';
+          this.nuevoTipoRequisito.descripcion = '';
+        }else{
         this._tipoRequisitoService.addTipoRequisito(this.nuevoTipoRequisito).subscribe({
           next: (data) => {
             this.insertBitacora(data);
             this.toastr.success('Tipo de Requisito agregado con éxito')
+            this.listTipoR.push(this.nuevoTipoRequisito)
           },
-          error: (e: HttpErrorResponse) => {
-            this._errorService.msjError(e);
-          }
         });
+      }
       }
     }
     
@@ -316,9 +342,22 @@ getEstadoText(estado: number): string {
         this.indice = i;
       }
     
-    
       editarTipoRequisito(){
-        
+    
+    this.tipoRequisitoEditando.tipo_requisito = this.tipoRequisitoEditando.tipo_requisito.toUpperCase();
+    this.tipoRequisitoEditando.descripcion = this.tipoRequisitoEditando.descripcion.toUpperCase();
+
+    const esMismoTipo = this.listTipoR[this.indice].tipo_requisito === this.tipoRequisitoEditando.tipo_requisito;
+
+        // Si el usuario no es el mismo, verifica si el nombre de usuario ya existe
+        if (!esMismoTipo) {
+          const TipoRExistente = this.listTipoR.some(user => user.tipo_requisito === this.tipoRequisitoEditando.tipo_requisito);
+          if (TipoRExistente) {
+            this.toastr.error('El Tipo de Requisito ya existe. Por favor, elige otro Tipo de Requisito.');
+            return;
+          }
+        }
+
         this._tipoRequisitoService.editarTipoRequisito(this.tipoRequisitoEditando).subscribe(data => {
           this.updateBitacora(data);
           this.toastr.success('Tipo de Requisito editado con éxito');
@@ -327,6 +366,7 @@ getEstadoText(estado: number): string {
         
         });
       }
+      
 
       /*************************************************************** Métodos de Bitácora ***************************************************************************/
 

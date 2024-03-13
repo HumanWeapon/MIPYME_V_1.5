@@ -21,7 +21,13 @@ export class PymeService {
     // Asignar un valor a una clave en localStorage
    }
 
+   PostPyme(pyme: any): Observable<any> {
+    const token = localStorage.getItem('token')
+    const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
+    return this.http.post<any>(`${this.myAppUrl}${this.myApiUrl}/postPyme`, pyme, { headers: headers })
+}
 
+ 
    addPyme(pyme: Pyme): Observable<any> {
       const token = localStorage.getItem('token')
       const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
@@ -36,6 +42,12 @@ export class PymeService {
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
     return this.http.post<Pyme>(`${this.myAppUrl}${this.myApiUrl}/getPyme`, pyme,{ headers: headers })
+  }
+
+  getRolPyme(): Observable<any> {
+    const token = localStorage.getItem('token')
+    const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
+    return this.http.get<any>(`${this.myAppUrl}${this.myApiUrl}/getRolPyme`,{ headers: headers })
   }
 
   getAllPymes(): Observable<Pyme[]> {

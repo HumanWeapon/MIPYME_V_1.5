@@ -38,6 +38,7 @@ export class ContactoComponent implements OnInit{
   usuario: string = '';
   listContactosActivos: any[]=[];
   contacteditar: any;
+  
   contactoEditando: Contacto = {
     id_contacto: 0,
     id_tipo_contacto: 0,
@@ -311,7 +312,7 @@ agregarNuevoContacto() {
       this._contactoService.addContacto(this.nuevoContacto).subscribe({
         next: (data) => {
           console.log(data);
-          //this.insertBitacora(data);
+          this.insertBitacora(data);
           this.toastr.success('Contacto Agregado Exitosamente');
           this.listContacto.push(data);
         },

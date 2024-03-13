@@ -1,215 +1,88 @@
-:root {
-    --color-amarillo: #ECAB0F;
-    --color-azul: #00008B
+body.login-page {
+  background: rgb(255,255,255);
+  background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(254,254,254,1) 0%, rgba(233,233,233,1) 0%);
+}
+
+.h1 {
+  text-align: center;
+}
+
+.card.card-outline.card-primary {
+  border: 2px solid #1254a1;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  max-width: 100%; /* Reducimos el ancho máximo de la tarjeta */
+  max-height: 100%;
+  margin: 0 auto; /* Centra la tarjeta en el centro de la pantalla */
+}
+
+.card-header.text-center {
+  width: 100%;
+  height: 60px; /* Redujimos la altura del encabezado a 60px */
+  background-color: #0074b9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card-header.text-center::before {
+  content: "";
+  width: 100%;
+  height: 60px; /* Ajustamos la altura de la imagen */
+  background-image: url(src\assets\dist\img\mipyme.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.login-box-msg {
+  color: #3370e2;
+}
+
+.form-control {
+  border: 1px solid #3370e2;
+}
+
+.btn-primary {
+  background-color: #3370e2;
+  border-color: #3370e2;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background-color: #0074b9;
+  border-color: #000;
+  color: #fff;
+}
+
+.btn-link {
+  color: #3370e2;
+}
+
+.btn-link:hover,
+.btn-link:focus {
+  color: #ff9d00; /* Cambiar el color al rojo cuando se selecciona con el cursor */
+}
+
+
+/* Estilos para pantallas más pequeñas */
+@media screen and (max-width: 750px) {
+  html {
+      font-size: 12px;
+  }
+}
+
+@media screen and (max-width: 580px) {
+  html {
+      font-size: 10px;
   }
 
-body {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-    font-family: 'Montserrat', sans-serif;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    background-image: url(/src/assets/dist/img/comercio-internacional.jpg);
-    background-size: cover;
-}
+  .card.card-outline.card-primary {
+      max-width: 300px; /* Reducimos aún más el ancho de la tarjeta */
+  }
 
-.information {
-    width: 100%;
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    background-color: #00008B ;
-    border-top-left-radius: 20px;
-    border-bottom-left-radius: 20px;
-
-}
-.form-information {
-    width: 80%;
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    background-color: #ECAB0F;
-    border-top-right-radius: 20px;
-    border-bottom-right-radius: 20px;
-}
-
-
-.container-form {
-display: flex;
-border-radius: 20px;
-box-shadow: 0 5px 7px rgba(0, 0, 0, 0.1);
-height: 700px;
-max-width: 1000px;
-transition: all 1s ease;
-margin: 10px;
-}
-
-
-
-
-.info-childs {
-    width: 100%;
-    padding: 0 30px;
-
-}
-
-.info-childs h2 {
-font-size: 2.5rem;
-color: #ECAB0F;
-
-}
-
-.info-childs p {
-    margin: 15px 0;
-    color: #ECAB0F;
-}
-
-.info-childs input {
-    background-color: #ECAB0F;
-    outline: none;
-    border: solid 2px #ECAB0F;
-    border-radius: 20px;
-    padding: 10px 20px;
-    color: white;
-    cursor: pointer;
-    transition: background-color .3s ease;
-    
-}
-
-.info-childs input:hover{
-    background-color: aqua;
-    border: none;
-    color: white;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.form-information-childs {
-    padding: 0 30px;
-
-}
-
-.form-information-childs h2 {
-    color: #00008B;
-    font-size: 2rem;
-}
-
-
-/*Segunda parte de la pantalla*/
-
-.form-information-childs p {
-    color: #00008B;
-    
-}
-
-.icons {
-    margin: 15px 0;
-    
-}
-
-.icons i{
-    border-radius: 50%;
-    padding: 15px;
-    cursor: pointer;
-    margin: 0 10px;
-    color: #00008B;
-    border: solid thin #00008B;
-    transition: background-color 0.3s ease;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-   
-}
-
-.icons i:hover {
-    background-color: #00008B;
-    color: aqua;
-
-}
-
-.Recordar{
-    margin: -5px 0 20px 5px;
-    color: aqua;
-    cursor: pointer;
-
-}
-
-.Recordar:hover{
-    text-decoration: underline;
-}
-
-.form {
-    margin: 30px 0 0 0;
-}
-
-.form label {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-    border-radius: 20px;
-    padding: 0 10px;
-    border-color: #00008B;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-
-}
-
-.form label input {
-    width: 100%;
-    padding: 10px;
-    border-color: aqua;
-    border: none;
-    outline: none;
-    border-radius: 20px;
-    color: #00008B;
-}
-
-.form label i {
-    color: #00008B;
-}
-
-.form input[type= "submit"]{
-    background-color: #00008B;
-    color: white;
-    border-radius: 20px;
-    border: none;
-    padding: 10px 15px;
-    cursor: pointer;
-    margin-top: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.form input[type= "submit"]:hover {
-    background-color: aqua;
-}
-
-.hide {
-    position: absolute;
-    transform: translateY(-300%);
-}
-
-
-
-/*Responsive from*/
-
-@media screen and (max-width:750px) {
-    html {
-        font-size: 12px;
-    }
-
-}
-
-@media screen and (max-width:580px) {
-    html {
-        font-size: 10px;
-    }
-
-    .container-form {
-        height: auto;
-        flex-direction: column;
-    }
-
+  .container-form {
+      height: auto;
+      flex-direction: column;
+  }
 }

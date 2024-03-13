@@ -17,6 +17,7 @@ import * as XLSX from 'xlsx';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale'; // Importa el idioma español
 import { SubmenuData } from 'src/app/interfaces/subMenuData/subMenuData'; 
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-permisos',
@@ -102,7 +103,8 @@ export class PermisosComponent implements OnInit, OnDestroy {
     private ngZone: NgZone,
     private _bitacoraService: BitacoraService,
     private _errorService: ErrorService,
-    private _userService: UsuariosService
+    private _userService: UsuariosService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -117,8 +119,7 @@ export class PermisosComponent implements OnInit, OnDestroy {
       responsive: true,
     };
 
-    this._permService.getAllPermisos()
-    .subscribe({
+    this._permService.getAllPermisos().subscribe({
       next: (data) =>{
       this.listPermisos = data;
       this.dtTrigger.next(0);
@@ -176,40 +177,34 @@ export class PermisosComponent implements OnInit, OnDestroy {
 
 // Variable de estado para alternar funciones
 
-toggleFunction(perm: any, i: number) {
+toggleFunction(permiso: any, i: number) {
 
   // Ejecuta una función u otra según el estado
-  if (perm.estado_permiso == 1 ) {
-    this.inactivarPermiso(perm, i); // Ejecuta la primera función
+  if (permiso.estado_permiso == 1 ) {
+    this.inactivarPermiso(permiso, i); // Ejecuta la primera función
   } else {
-    this.activarPermiso(perm, i); // Ejecuta la segunda función
+    this.activarPermiso(permiso, i); // Ejecuta la segunda función
   }
 }
 
 
-
-
-inactivarPermiso(permisos: any, i: number){
-  this._permService.inactivarPermiso(permisos).subscribe(data => {
-    this.toastr.success('El Permiso: '+ permisos.permiso+ ' ha sido inactivado');
-    this.inactivarBitacora(data);
-  });
-  this.listPermisos[i].estado_permiso = 2;
+inactivarPermiso(permiso: any, i: number){
+  this._permService.inactivarPermiso(permiso).subscribe(data => {
+      this.inactivarBitacora(data);
+      this.toastr.success('El Permiso: '+ permiso.id_permisos+ ' ha sido inactivado');
+      this.listPermisos[i].estado_permiso = 2; // Cambia el estado del permiso en la lista local
+      this.cdr.detectChanges(); // Detecta los cambios y actualiza la vista
+    });
 }
 
-activarPermiso(permisos: any, i: number){
-  this._permService.activarPermiso(permisos).subscribe(data => {
-    this.toastr.success('El Permiso: '+ permisos.permiso+ ' ha sido activado');
+activarPermiso(permiso: any, i: number){
+  this._permService.activarPermiso(permiso).subscribe(data => {
+    this.toastr.success('El Permiso: '+ permiso.id_permisos+ ' ha sido activado');
     this.activarBitacora(data);
-    
+    this.listPermisos[i].estado_permiso = 1; // Cambia el estado del permiso en la lista local
+    this.cdr.detectChanges(); // Detecta los cambios y actualiza la vista
   });
-  this.listPermisos[i].estado_permiso = 1;
 }
-
-
-
-
-
 
   /*****************************************************************************************************/
 
