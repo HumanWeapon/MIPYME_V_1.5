@@ -10,13 +10,13 @@
           <div class="card-body d-flex flex-row flex-wrap">
             <div *ngFor="let subResultado of resultado.resultado" class="col-md-6 col-lg-3">
               <div *ngFor="let objeto of subResultado.atributes" class=" flex-fill mr-2">
-                <div class="small-box" style="background-color: #ffd973; color: #1254a1;">
+                <div class="small-box" style="background-color: #dfdfdfb4;">
                   <h5 class="card-title m-1"> <strong>{{ objeto.objeto }}</strong></h5>
                   <p class="card-text m-1">{{ objeto.descripcion }}</p>
-                  <div class="icon p-1">
+                  <div class="icon p-1" style="color: #003c8059;">
                     <i class="{{ objeto.icono }}"></i>
                   </div>
-                  <a (click)="navegar(objeto.url)" class="small-box-footer" style="color: #1254a1;" title="Seleccionar">Acceder
+                  <a (click)="navegar(objeto.url)" class="small-box-footer" style="background-color: #b2b2b2b4; color: rgb(51, 51, 51);" title="Seleccionar">Acceder
                     <i class="fas fa-arrow-circle-right"></i>
                   </a>
                 </div>
