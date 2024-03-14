@@ -3,7 +3,27 @@
     margin-left: 5px; /* Agrega un pequeño margen entre los botones */
   }
   
-
+  /* Estilos para la tabla */
+  .modal-content table {
+    width: 100%; /* La tabla ocupa todo el ancho del contenedor */
+    height: 100%; /* La tabla ocupa todo el alto del contenedor */
+    border-collapse: collapse; /* Elimina el espacio entre las celdas de la tabla */
+  }
+  
+  /* Estilo para las celdas de la tabla */
+  .modal-content table td, .modal-content table th {
+    padding: 10px; /* Agrega relleno a las celdas según tus necesidades */
+    border: 1px solid #ddd; /* Establece un borde para las celdas */
+  }
+  
+  .fa-lock{
+    color: #5D6D7E;
+  }
+  
+  .fa-lock-open{
+    color: #2ECC71;
+  }
+  
   .fa-pen{
     color: rgb(255, 174, 0)
   }
