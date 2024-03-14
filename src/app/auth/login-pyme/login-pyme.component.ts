@@ -57,6 +57,21 @@ goToLogin() {
     this.nombre_pyme = this.nombre_pyme.toUpperCase(); // Convierte el texto a mayúsculas
     this.rtn = this.rtn.replace(/\s/g, ''); // Elimina espacios en blanco
   }
+  
+  eliminarCaracteresEspeciales(event: any, field: string) {
+    setTimeout(() => {
+      let inputValue = event.target.value;
+  
+      // Elimina caracteres especiales dependiendo del campo
+      if (field === 'nombre_pyme') {
+        inputValue = inputValue.replace(/[^a-zA-Z0-9]/g, ''); // Solo permite letras y números
+      } else if (field === 'rtn') {
+        inputValue = inputValue.replace(/[^a-zA-Z0-9@.]/g, ''); // Solo permite letras, números, @ y .
+      }
+      event.target.value = inputValue;
+    });
+  }
+  
 
   irLogin() {
     this.router.navigate(['/login']); // Reemplaza '/ruta-del-modulo-pyme' con la ruta real de tu módulo Pyme
