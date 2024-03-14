@@ -16,66 +16,67 @@
               </div>
               <!-- /.card-header -->
               <div class="card-body">
+                <div class="table-responsive">
                   <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover">
-                      <thead>
-                        <tr>
-                          <th>Id</th>
-                          <th>Rol</th>
-                          <th>Objeto</th>
-                          <th>Consultar</th> 
-                          <th>Insertar</th>
-                          <th>Actualizar</th>
-                          <th>Eliminar</th>
-                          <th>Estado</th>
-                          <th>Creador</th>
-                          <th>Fecha Creación</th>
-                          <th>Modificador</th>
-                          <th>Modificación</th>
-                          <th>Acciones</th>                          
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr *ngFor="let permiso of listPermisos; let i = index">
-                          <td>{{ permiso.id_permisos }}</td>                           
-                          <td>{{ getRolNombre(permiso.id_rol) }}</td>                          
-                          <td>{{ getObjetoNombre(permiso.id_objeto) }}</td>                          
-                          <td style="text-align: center;">                          
-                            <ng-container *ngIf="permiso.permiso_consultar; else noCheckbox">{{ '✓' }}</ng-container>
-                            <ng-template #noCheckbox>{{ 'X' }}</ng-template>
-                          </td>
-                          <td style="text-align: center;">
-                            <ng-container *ngIf="permiso.permiso_insercion; else noCheckbox">{{ '✓' }}</ng-container>
-                            <ng-template #noCheckbox>{{ 'X' }}</ng-template>
-                          </td>
-                          <td style="text-align: center;">
-                            <ng-container *ngIf="permiso.permiso_actualizacion; else noCheckbox">{{ '✓' }}</ng-container>
-                            <ng-template #noCheckbox>{{ 'X' }}</ng-template>
-                          </td>
-                          <td style="text-align: center;">
-                            <ng-container *ngIf="permiso.permiso_eliminacion; else noCheckbox">{{ '✓' }}</ng-container>
-                            <ng-template #noCheckbox>{{ 'X' }}</ng-template>
-                          </td>   
-                          <td>
-                            <ng-container *ngIf="permiso.estado_permiso == 1">ACTIVO</ng-container>
-                            <ng-container *ngIf="permiso.estado_permiso == 2">INACTIVO</ng-container>
-                          </td>                         
-                          <td>{{ permiso.creado_por}}</td>
-                          <td>{{ permiso.fecha_creacion }}</td>
-                          <td>{{ permiso.modificado_por}}</td>
-                          <td>{{ permiso.fecha_modificacion}}</td>
-                          <td class="text-center">
-                            <div class="btn-group">
-                              <div class="form-check form-switch ml-4">
-                                <input class="form-check-input" (click)="toggleFunction(permiso, i)" [title]="permiso.estado_permiso == 1 ? 'Desactivar' : 'Activar'" type="checkbox" 
-                                  role="switch" id="flexSwitchCheckChecked" [checked]="permiso.estado_permiso == 1">
-                              </div>
-                                <button type="button" (click)="obtenerIdPermiso(permiso, i)" title="Editar Permiso"  data-toggle="modal" data-target="#abrirModalEditarPermiso" class="btna" ><i class="fas fa-solid fa-pen"></i></button>                                
-                              </div>
-                          </td>
-                        </tr>
-                      </tbody>
-                  </table>
-  
+                    <thead>
+                      <tr>
+                        <th>Id</th>
+                        <th>Rol</th>
+                        <th>Objeto</th>
+                        <th>Consultar</th> 
+                        <th>Insertar</th>
+                        <th>Actualizar</th>
+                        <th>Eliminar</th>
+                        <th>Estado</th>
+                        <th>Creador</th>
+                        <th>Fecha Creación</th>
+                        <th>Modificador</th>
+                        <th>Modificación</th>
+                        <th>Acciones</th>                          
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let permiso of listPermisos; let i = index">
+                        <td>{{ permiso.id_permisos }}</td>                           
+                        <td>{{ getRolNombre(permiso.id_rol) }}</td>                          
+                        <td>{{ getObjetoNombre(permiso.id_objeto) }}</td>                          
+                        <td style="text-align: center;">                          
+                          <ng-container *ngIf="permiso.permiso_consultar; else noCheckbox">{{ '✓' }}</ng-container>
+                          <ng-template #noCheckbox>{{ 'X' }}</ng-template>
+                        </td>
+                        <td style="text-align: center;">
+                          <ng-container *ngIf="permiso.permiso_insercion; else noCheckbox">{{ '✓' }}</ng-container>
+                          <ng-template #noCheckbox>{{ 'X' }}</ng-template>
+                        </td>
+                        <td style="text-align: center;">
+                          <ng-container *ngIf="permiso.permiso_actualizacion; else noCheckbox">{{ '✓' }}</ng-container>
+                          <ng-template #noCheckbox>{{ 'X' }}</ng-template>
+                        </td>
+                        <td style="text-align: center;">
+                          <ng-container *ngIf="permiso.permiso_eliminacion; else noCheckbox">{{ '✓' }}</ng-container>
+                          <ng-template #noCheckbox>{{ 'X' }}</ng-template>
+                        </td>   
+                        <td>
+                          <ng-container *ngIf="permiso.estado_permiso == 1">ACTIVO</ng-container>
+                          <ng-container *ngIf="permiso.estado_permiso == 2">INACTIVO</ng-container>
+                        </td>                         
+                        <td>{{ permiso.creado_por}}</td>
+                        <td>{{ permiso.fecha_creacion }}</td>
+                        <td>{{ permiso.modificado_por}}</td>
+                        <td>{{ permiso.fecha_modificacion}}</td>
+                        <td class="text-center">
+                          <div class="btn-group">
+                            <div class="form-check form-switch ml-4">
+                              <input class="form-check-input" (click)="toggleFunction(permiso, i)" [title]="permiso.estado_permiso == 1 ? 'Desactivar' : 'Activar'" type="checkbox" 
+                                role="switch" id="flexSwitchCheckChecked" [checked]="permiso.estado_permiso == 1">
+                            </div>
+                              <button type="button" (click)="obtenerIdPermiso(permiso, i)" title="Editar Permiso"  data-toggle="modal" data-target="#abrirModalEditarPermiso" class="btna" ><i class="fas fa-solid fa-pen"></i></button>                                
+                            </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                </table>
+                </div>
               </div>
               <!-- /.card-body -->
             </div>

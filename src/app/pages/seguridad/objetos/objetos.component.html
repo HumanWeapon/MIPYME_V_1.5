@@ -16,46 +16,47 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
+                  <div class="table-responsive">
                     <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover">
-                        <thead>
-                          <tr>
-                            <th>Id</th>
-                            <th>Nombre</th>
-                            <th>Descripción</th>
-                            <th>Tipo Objeto</th>
-                            <th>Creado</th>
-                            <th>Fecha Creación</th>
-                            <th>Fecha Modificación</th>
-                            <th>Estado</th>
-                            <th>Acciones</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr *ngFor="let obj of listObjetos; let i = index">
-                            <td>{{ obj.id_objeto }}</td>
-                            <td>{{ obj.objeto | uppercase }}</td>
-                            <td>{{ obj.descripcion | uppercase }}</td>
-                            <td>{{ obj.tipo_objeto | uppercase }}</td>
-                            <td>{{ obj.creado_por | uppercase}}</td>
-                            <td>{{ obj.fecha_creacion }}</td>
-                            <td>{{ obj.fecha_modificacion}}</td>
-                            <td>
-                                <ng-container *ngIf="obj.estado_objeto == 1">ACTIVO</ng-container>
-                                <ng-container *ngIf="obj.estado_objeto == 2">INACTIVO</ng-container>
-                              </td>
-                            <td class="text-center">
-                              <div class="btn-group">
-                                <div class="form-check form-switch ml-4">
-                                  <input class="form-check-input" (click)="toggleFunction(obj, i)" [title]="obj.estado_objeto == 1 ? 'Desactivar' : 'Activar'" type="checkbox" 
-                                    role="switch" id="flexSwitchCheckChecked" [checked]="obj.estado_objeto == 1">
-                                </div>
-                                  <button type="button" (click)="obtenerIdObjeto(obj, i)" title="Editar" data-toggle="modal" data-target="#abrirModalEditarObjeto"data-toggle="modal" data-target="#abrirModalEditarObjeto" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
-                                </div>
+                      <thead>
+                        <tr>
+                          <th>Id</th>
+                          <th>Nombre</th>
+                          <th>Descripción</th>
+                          <th>Tipo Objeto</th>
+                          <th>Creado</th>
+                          <th>Fecha Creación</th>
+                          <th>Fecha Modificación</th>
+                          <th>Estado</th>
+                          <th>Acciones</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let obj of listObjetos; let i = index">
+                          <td>{{ obj.id_objeto }}</td>
+                          <td>{{ obj.objeto | uppercase }}</td>
+                          <td>{{ obj.descripcion | uppercase }}</td>
+                          <td>{{ obj.tipo_objeto | uppercase }}</td>
+                          <td>{{ obj.creado_por | uppercase}}</td>
+                          <td>{{ obj.fecha_creacion }}</td>
+                          <td>{{ obj.fecha_modificacion}}</td>
+                          <td>
+                              <ng-container *ngIf="obj.estado_objeto == 1">ACTIVO</ng-container>
+                              <ng-container *ngIf="obj.estado_objeto == 2">INACTIVO</ng-container>
                             </td>
-                          </tr>
-                        </tbody>
-                    </table>
-    
+                          <td class="text-center">
+                            <div class="btn-group">
+                              <div class="form-check form-switch ml-4">
+                                <input class="form-check-input" (click)="toggleFunction(obj, i)" [title]="obj.estado_objeto == 1 ? 'Desactivar' : 'Activar'" type="checkbox" 
+                                  role="switch" id="flexSwitchCheckChecked" [checked]="obj.estado_objeto == 1">
+                              </div>
+                                <button type="button" (click)="obtenerIdObjeto(obj, i)" title="Editar" data-toggle="modal" data-target="#abrirModalEditarObjeto"data-toggle="modal" data-target="#abrirModalEditarObjeto" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
+                              </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                  </table>
+                  </div>
                 </div>
                 <!-- /.card-body -->
               </div>

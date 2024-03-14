@@ -18,54 +18,56 @@
         
           <!-- /.card-header -->
           <div class="card-body">
-              <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover ">
-                  <thead>
-                    <tr>
-                      <th>ID</th>
-                      <th>USUARIO</th>
-                      <th>NOMBRE</th>
-                      <th>CORREO</th>
-                      <th>ROL</th>
-                      <th>ESTADO</th>
-                      <th>CREADOR</th>
-                      <th>MODIFICADOR</th>
-                      <th>ULTIMA VEZ</th>
-                      <th>VENCE</th>
-                      <th>ACCIONES</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let user of usuariosAllRoles; let i = index">
-                      <td>{{ user.id_usuario }}</td>
-                      <td>{{ user.usuario | uppercase }}</td>
-                      <td>{{ user.nombre_usuario | uppercase }}</td>
-                      <td>{{ user.correo_electronico | uppercase }}</td>
-                      <td>{{ user.roles.rol | uppercase }}</td>
-                      <td>
-                          <ng-container *ngIf="user.estado_usuario === 1">ACTIVO</ng-container>
-                          <ng-container *ngIf="user.estado_usuario === 2">INACTIVO</ng-container>
-                          <ng-container *ngIf="user.estado_usuario === 3">VENCIDO</ng-container>
-                          <ng-container *ngIf="user.estado_usuario === 3">BLOQUEADO</ng-container>
-                      </td>
-                      <td>{{ user.creado_por | uppercase }}</td>
-                      <td>{{ user.modificado_por | uppercase }}</td>
-                      <td>{{ user.fecha_ultima_conexion | uppercase }}</td>
-                      <td>{{ user.fecha_vencimiento | uppercase }}</td>
-                      <td class="text-center">
-                        <div class="btn-group">
+            <div class="table-responsive">
+              <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>USUARIO</th>
+                    <th>NOMBRE</th>
+                    <th>CORREO</th>
+                    <th>ROL</th>
+                    <th>ESTADO</th>
+                    <th>CREADOR</th>
+                    <th>MODIFICADOR</th>
+                    <th>ULTIMA VEZ</th>
+                    <th>VENCE</th>
+                    <th>ACCIONES</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let user of usuariosAllRoles; let i = index">
+                    <td>{{ user.id_usuario }}</td>
+                    <td>{{ user.usuario | uppercase }}</td>
+                    <td>{{ user.nombre_usuario | uppercase }}</td>
+                    <td>{{ user.correo_electronico | uppercase }}</td>
+                    <td>{{ user.roles.rol | uppercase }}</td>
+                    <td>
+                        <ng-container *ngIf="user.estado_usuario === 1">ACTIVO</ng-container>
+                        <ng-container *ngIf="user.estado_usuario === 2">INACTIVO</ng-container>
+                        <ng-container *ngIf="user.estado_usuario === 3">VENCIDO</ng-container>
+                        <ng-container *ngIf="user.estado_usuario === 3">BLOQUEADO</ng-container>
+                    </td>
+                    <td>{{ user.creado_por | uppercase }}</td>
+                    <td>{{ user.modificado_por | uppercase }}</td>
+                    <td>{{ user.fecha_ultima_conexion | uppercase }}</td>
+                    <td>{{ user.fecha_vencimiento | uppercase }}</td>
+                    <td class="text-center">
+                      <div class="btn-group">
 
-                          <div class="form-check form-switch ml-4">
-                            <input class="form-check-input" (click)="toggleFunction(user, i)" [title]="user.estado_usuario == 1 ? 'Desactivar' : 'Activar'" type="checkbox" 
-                              role="switch" id="flexSwitchCheckChecked" [checked]="user.estado_usuario == 1">
-                          </div>
+                        <div class="form-check form-switch ml-4">
+                          <input class="form-check-input" (click)="toggleFunction(user, i)" [title]="user.estado_usuario == 1 ? 'Desactivar' : 'Activar'" type="checkbox" 
+                            role="switch" id="flexSwitchCheckChecked" [checked]="user.estado_usuario == 1">
+                        </div>
 
-                            <button type="button" (click)="obtenerIdUsuario(user, i)" title="Editar Usuario" class="btna" data-toggle="modal" data-target="#abrirModalEditar"data-toggle="modal" data-target="#abrirModalEditar"  ><i class="fas fa-solid fa-pen"></i></button>
-                            
-                          </div>
-                      </td>
-                    </tr>
-                  </tbody>
-              </table>
+                          <button type="button" (click)="obtenerIdUsuario(user, i)" title="Editar Usuario" class="btna" data-toggle="modal" data-target="#abrirModalEditar"data-toggle="modal" data-target="#abrirModalEditar"  ><i class="fas fa-solid fa-pen"></i></button>
+                          
+                        </div>
+                    </td>
+                  </tr>
+                </tbody>
+            </table>
+            </div>
           </div>
           <!-- /.card-body -->
         </div>
