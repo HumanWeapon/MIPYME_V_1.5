@@ -54,6 +54,11 @@ body.login-page {
     border-color: #000;
     color: #fff;
   }
+
+  .btn-link:hover,
+  .btn-link:focus {
+    color: #ff9d00; /* Cambiar el color al rojo cuando se selecciona con el cursor */
+  }
   
   .btn-link {
     color: #3370e2;

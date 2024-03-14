@@ -6,42 +6,53 @@
         <a class="h1"></a>
       </div>
       <div class="card-body">
-        <p class="login-box-msg">Registrate</p>
+        <p class="login-box-msg" style="color: #3370e2; font-size: medium;">Registrate y se parte de nosotros</p>
 
  <form method="post">
-          <div class="input-group mb-3">
-            <input type="text" class="form-control" [(ngModel)]="newPyme.nombre_pyme" name="nombre_pyme" (input)="eliminarEspaciosBlanco()" (input)="eliminarCaracteresEspeciales($event, 'nombre_pyme')"placeholder="Nombre de la Pyme" maxlength="50" autocomplete="off">
-            <div class="input-group-append">
-              <div class="input-group-text">
-                <span class="fas fa-user"></span>
+  <div class="form-group">
+    <label for="nombre_pyme" style="color: #3370e2; font-size: smaller;">Nombre de la Pyme:</label>
+    <div class="input-group">
+      <input type="text" class="form-control" [(ngModel)]="newPyme.nombre_pyme" name="nombre_pyme" (input)="eliminarEspaciosBlanco()" (input)="eliminarCaracteresEspeciales($event, 'nombre_pyme')" placeholder="Nombre de la Pyme" maxlength="50" autocomplete="off">
+      <div class="input-group-append">
+        <div class="input-group-text">
+          <span class="fas fa-user"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+          <div class="form-group">
+            <label for="rtn" style="color: #3370e2; font-size: smaller;">RTN:</label>
+            <div class="input-group">
+              <input type="text" [(ngModel)]="rtn" name="rtn" (input)="eliminarEspaciosBlanco()" (input)="eliminarCaracteresEspeciales($event, 'rtn')" autocomplete="off" class="form-control" id="contraseña" placeholder="RTN sin Guiones">
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-lock"></span>
+                </div>
               </div>
             </div>
           </div>
-          <div class="input-group mb-3">
-            <input type="text" [(ngModel)]="rtn" name="rtn" (input)="eliminarEspaciosBlanco()" (input)="eliminarCaracteresEspeciales($event, 'rtn')" autocomplete="off" class="form-control" id="contraseña" placeholder="RTN sin Guiones">
-            <div class="input-group-append">
-              <div class="input-group-text">
-                <span class="fas fa-lock"></span>
-              </div>
-            </div>
-          </div>
-          <div class="input-group mb-3">
-            <input type="text" [(ngModel)]="confirmar_rtn" name="confirmar_rtn" (input)="eliminarEspaciosBlanco()" (input)="eliminarCaracteresEspeciales($event, 'confirmar_rtn')" autocomplete="off"  class="form-control" id="confirmar_contraseña" placeholder="Confirma RTN sin Guiones">
-            <div class="input-group-append">
-              <div class="input-group-text">
-                <span class="fas fa-lock"></span>
+          
+          <div class="form-group">
+            <label for="confirmar_rtn" style="color: #3370e2;; font-size: smaller;">Confirmar RTN:</label>
+            <div class="input-group">
+              <input type="text" [(ngModel)]="confirmar_rtn" name="confirmar_rtn" (input)="eliminarEspaciosBlanco()" (input)="eliminarCaracteresEspeciales($event, 'confirmar_rtn')" autocomplete="off" class="form-control" id="confirmar_rtn" placeholder="Ingresa los dígitos de tu RTN">
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-lock"></span>
+                </div>
               </div>
             </div>
           </div>
           <div class="row">
             <div class="col-12 mt-3">
               <button type="submit" (click)="registrar()" class="btn btn-primary btn-block">Registrate</button>
-              <div>¿Ya tienes una cuenta? <a href="#" (click)="goToLonginPyme($event)" class="btn btn-link">Iniciar sesión</a></div>
-            </div>
+              <div style="text-align: center;">
+                ¿Ya tienes una cuenta? <a href="#" (click)="goToLonginPyme($event)" class="btn btn-link">Iniciar sesión</a>
+              </div>
           </div>
     
- </form>
       </div>
-    </div>
-  </div>
-</body>
+
+
+

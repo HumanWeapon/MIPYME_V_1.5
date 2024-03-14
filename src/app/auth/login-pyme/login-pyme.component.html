@@ -6,22 +6,29 @@
         <a class="h1"></a>
       </div>
       <div class="card-body">
-        <p class="login-box-msg">Iniciar sesión</p>
+        <p class="login-box-msg" style="color: #3370e2; font-size: medium;">Iniciar sesión</p>
 
         <form method="post">
-          <div class="input-group mb-3">
-            <input type="text" class="form-control" [(ngModel)]="nombre_pyme" name="nombre_pyme" (input)="eliminarEspaciosBlanco()" placeholder="Pyme" maxlength="50" autocomplete="false">
-            <div class="input-group-append">
-              <div class="input-group-text">
-                <span class="fas fa-user"></span>
+          <div class="form-group">
+            <label for="nombre_pyme" style="color: #3370e2; font-size: smaller;">Nombre de la Pyme:</label>
+            <div class="input-group">
+              <input type="text" class="form-control" [(ngModel)]="nombre_pyme" name="nombre_pyme" (input)="eliminarEspaciosBlanco()" placeholder="Pyme" maxlength="50" autocomplete="false">
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-user"></span>
+                </div>
               </div>
             </div>
           </div>
-          <div class="input-group mb-3">
-            <input type="text" [(ngModel)]="rtn" name="rtn" (input)="eliminarEspaciosBlanco()" autocomplete="false" class="form-control" id="contraseña" placeholder="RTN">
-            <div class="input-group-append">
-              <div class="input-group-text">
-                <span class="fas fa-lock"></span>
+          
+          <div class="form-group">
+            <label for="rtn" style="color: #3370e2; font-size: smaller;">RTN:</label>
+            <div class="input-group">
+              <input type="text" [(ngModel)]="rtn" name="rtn" (input)="eliminarEspaciosBlanco()" autocomplete="false" class="form-control" id="contraseña" placeholder="RTN">
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-lock"></span>
+                </div>
               </div>
             </div>
           </div>
@@ -35,11 +42,12 @@
         </form>
         
         <!-- Aquí agregamos el botón para regresar al login -->
+        <div style="text-align: center;">
+          ¿No tienes una cuenta? <a href="#" (click)="goToRegister($event)" class="btn btn-link">Regístrate</a>
+        </div>        
             <button (click)="goToLogin()" class="btn btn-link">
               <i class="fas fa-arrow-left"></i> Regresar
             </button>
-            <div>¿No tienes una cuenta? <a href="#" (click)="goToRegister($event)" class="btn btn-link"> Regístrate</a></div>
-            </div>
           </div>
         </div>
       <!-- /.card-body -->
@@ -47,4 +55,4 @@
     <!-- /.card -->
 
   <!-- /.login-box -->
-</body>
+
