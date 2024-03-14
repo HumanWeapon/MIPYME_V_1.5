@@ -105,7 +105,7 @@
                 <div class="form-group">
                   <label for="nuevoPermiso">Rol</label>
                   <select [(ngModel)]="nuevoPermiso.id_rol" name="nuevoPermiso.id_rol" class="form-control" id="nuevo_rol">
-                      <option *ngFor="let rol of roles" [value]="rol.rol">{{ rol.rol }}</option>
+                      <option *ngFor="let rol of roles" [value]="rol.id_rol">{{ rol.rol }}</option>
                   </select>
               </div>
               <!-- Selector de submenu -->
@@ -329,7 +329,8 @@
             <th>Eliminar</th>
             <th>Estado</th>
             <th>Creador</th>
-            <th>Fecha Creación</th>
+            <th>Fecha creación</th>
+            <th>Fecha modificación</th>
            
           </tr>
         </thead>
@@ -345,6 +346,7 @@
             <td>{{ getEstadoText(perm.estado_permiso) }}</td>
             <td>{{ perm.creado_por }}</td>
             <td>{{ perm.fecha_creacion }}</td>
+            <td>{{ perm.fecha_modificacion }}</td>
            
           </tr>
         </tbody>

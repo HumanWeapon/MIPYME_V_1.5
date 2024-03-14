@@ -31,15 +31,6 @@ export class PermisosComponent implements OnInit, OnDestroy {
   objetosPrincipales: any[] | undefined;
   submenuSeleccionado: string | undefined;
   objetosFiltrados: any[] | undefined; // Lista de objetos filtrados
-
-  getDate(): string {
-    // Obtener la fecha actual
-    const currentDate = new Date();
-    // Formatear la fecha en el formato deseado
-    return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
-}
-  
-
   roles: Roles[] = [];
   objetos: Objetos[] = [];
 
@@ -144,7 +135,13 @@ export class PermisosComponent implements OnInit, OnDestroy {
       this.roles = data.filter(rol => rol.estado_rol == 1);
     });
   }
-
+  getDate(): string {
+    // Obtener la fecha actual
+    const currentDate = new Date();
+    // Formatear la fecha en el formato deseado
+    return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
+  }
+  
   filtrarObjetosPorTipo() {
     if (this.submenuSeleccionado) {
       // Filtrar los objetos por el tipo seleccionado (basado en el submenu)
@@ -164,12 +161,13 @@ export class PermisosComponent implements OnInit, OnDestroy {
   
       // Filtrar los submenús y asociar los datos con cada submenu
       this.submenusData = [
-        { descripcion: 'ADMINISTRACION', datos: this.objetos.filter(obj => obj.descripcion === 'ADMINISTRACION') },
-        { descripcion: 'SEGURIDAD', datos: this.objetos.filter(obj => obj.descripcion === 'SEGURIDAD') },
-        { descripcion: 'MANTENIMIENTO', datos: this.objetos.filter(obj => obj.descripcion === 'MANTENIMIENTO') },
+        { descripcion: 'BUSCAR PRODUCTOS', datos: this.objetos.filter(obj => obj.descripcion === 'BUSCAR PRODUCTOS') },
         { descripcion: 'DASHBOARD', datos: this.objetos.filter(obj => obj.descripcion === 'DASHBOARD') },
+        { descripcion: 'PYMES', datos: this.objetos.filter(obj => obj.descripcion === 'PYMES') },
         { descripcion: 'EMPRESAS', datos: this.objetos.filter(obj => obj.descripcion === 'EMPRESAS') },
-        { descripcion: 'PYMES', datos: this.objetos.filter(obj => obj.descripcion === 'PYMES') }
+        { descripcion: 'SEGURIDAD', datos: this.objetos.filter(obj => obj.descripcion === 'SEGURIDAD') },
+        { descripcion: 'ADMINISTRACION', datos: this.objetos.filter(obj => obj.descripcion === 'ADMINISTRACION') },
+        { descripcion: 'MANTENIMIENTO', datos: this.objetos.filter(obj => obj.descripcion === 'MANTENIMIENTO') }
       ];
     });
   }
@@ -318,38 +316,38 @@ activarPermiso(permiso: any, i: number){
   
   getEstadoText(estado: number): string {
     switch (estado) {
-      case 1:
+      case estado: 1
         return 'ACTIVO';
-      case 2:
+      case estado: 2
         return 'INACTIVO';
       default:
-        return 'Desconocido';
+        return 'DESCONOCIDO';
     }
   }
   
 
 
 /**************************************************************/
-
-
   agregarNuevoPermiso() {
     const LocalUser = localStorage.getItem('usuario');
     if (LocalUser){
-      this.nuevoPermiso = {
-        id_permisos: 0,
-        id_rol: 0,
-        id_objeto: 0,
-        permiso_consultar: false,
-        permiso_insercion: false,
-        permiso_actualizacion: false,
-        permiso_eliminacion: false,
-        estado_permiso: 0,
+      const permisoEnviado: Permisos = {
+        id_permisos: this.nuevoPermiso.id_permisos,
+        id_rol: this.nuevoPermiso.id_rol,
+        id_objeto: this.nuevoPermiso.id_objeto,
+        permiso_consultar: this.nuevoPermiso.permiso_consultar,
+        permiso_insercion: this.nuevoPermiso.permiso_insercion,
+        permiso_actualizacion: this.nuevoPermiso.permiso_actualizacion,
+        permiso_eliminacion: this.nuevoPermiso.permiso_eliminacion,
         creado_por: LocalUser,
         fecha_creacion: new Date(),
         modificado_por: LocalUser,
         fecha_modificacion: new Date(),
+        estado_permiso: 1,
       }
-      this._permService.addPermiso(this.nuevoPermiso).subscribe({
+      console.log(permisoEnviado);
+      console.log(this.objetosFiltrados);
+      this._permService.addPermiso(permisoEnviado).subscribe({
         next: (data) => {
           this.insertBitacora(data);
           this.toastr.success('Permiso agregado exitosamente', 'Éxito')
