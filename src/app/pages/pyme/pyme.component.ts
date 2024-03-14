@@ -356,12 +356,22 @@ agregarNuevaPyme() {
     this.editPyme.modificado_por = userLocal;
   
     const esMismoTipo = this.listPymes[this.indice].nombre_pyme === this.editPyme.nombre_pyme;
+    const esMismoRTN = this.listPymes[this.indice].rtn === this.editPyme.rtn;
   
-    // Si la pyme no es la misma, verifica si el nombre ya existe
+    // Si la Pyme no es la misma, verifica si el nombre ya existe
     if (!esMismoTipo) {
       const PymeExistente = this.listPymes.some(user => user.nombre_pyme === this.editPyme.nombre_pyme);
       if (PymeExistente) {
         this.toastr.error('El nombre de la Pyme ya existe. Por favor, elige otro nombre.');
+        return;
+      }
+    }
+  
+    // Si el RTN no es el mismo, verifica si el RTN ya existe
+    if (!esMismoRTN) {
+      const RTNExistente = this.listPymes.some(user => user.rtn === this.editPyme.rtn);
+      if (RTNExistente) {
+        this.toastr.error('El RTN ya está asociado a otra Pyme. Por favor, elige otro RTN.');
         return;
       }
     }
