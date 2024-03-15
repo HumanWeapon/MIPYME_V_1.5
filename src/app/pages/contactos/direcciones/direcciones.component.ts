@@ -17,8 +17,6 @@ import * as XLSX from 'xlsx';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale'; // Importa el idioma español
 
-
-
 @Component({
   selector: 'app-direcciones',
   templateUrl: './direcciones.component.html',
