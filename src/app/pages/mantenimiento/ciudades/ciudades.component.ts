@@ -16,6 +16,7 @@ import { da } from 'date-fns/locale';
 import * as XLSX from 'xlsx';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale'; // Importa el idioma español
+import { DatePipe } from '@angular/common';
 
 
 
@@ -28,16 +29,13 @@ export class CiudadesComponent implements OnInit{
 
   getCity: any;
 
-
   getDate(): string {
     // Obtener la fecha actual
     const currentDate = new Date();
     // Formatear la fecha en el formato deseado
     return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
 }
-
-  listPaises: Paises[] = [];
-  id_pais: number = 0;
+ 
   ciudadEditando: Ciudades = {
     id_ciudad: 0, 
     ciudad: '', 
@@ -55,9 +53,9 @@ export class CiudadesComponent implements OnInit{
     id_ciudad: 0, 
     ciudad: '', 
     descripcion:'',
-    creado_por: 'SYSTEM', 
+    creado_por: '', 
     fecha_creacion: new Date(), 
-    modificado_por: 'SYSTEM', 
+    modificado_por: '', 
     fecha_modificacion: new Date(),
     estado: 0,
     id_pais: 0
@@ -65,7 +63,9 @@ export class CiudadesComponent implements OnInit{
   indice: any;
 
   dtOptions: DataTables.Settings = {};
-  listCiudades: any[] = [];
+  listCiudades: Ciudades[] = [];
+  listPaises: Paises[] = [];
+  ciudadesAllPaises: any[] = [];
   data: any;
 
   // We use this trigger because fetching the list of persons can be quite long,
@@ -81,39 +81,72 @@ export class CiudadesComponent implements OnInit{
     private _errorService: ErrorService,
     private _userService: UsuariosService,
     private ngZone: NgZone,
-    private _paisService: PaisesService
+    private _paisService: PaisesService,
+    private _datePipe: DatePipe
     ) {}
 
   
   ngOnInit(): void {
-    this.getPais();
+    this.getAllPaises();
+    this.getAllCiudades();
+  }
+
+  getAllPaises(){
+    this._paisService.getAllPaises().subscribe(data => {
+      this.listPaises = data.filter(pais => pais.estado == 1);
+    });
+  }
+
+  getAllCiudades(){
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 10,
       language: {url:'//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'},
       responsive: true
     };
-    this._ciudadService.getAllCiudades()
-      .subscribe((res: any) => {
-        console.log(res);
-        this.listCiudades = res;
-        this.dtTrigger.next(null);
-      });
-      this.getUsuario();
+    this._ciudadService.getAllCiudades().subscribe({
+      next: (data) =>{
+        this.ciudadesAllPaises = data;
+        this.listCiudades = data;
+        this.dtTrigger.next(0);
+        console.log('Datos de ciudadesAllPaises después de obtener los datos actualizados:', this.ciudadesAllPaises); // Agregar este console.log
+      },
+    });
+    
   }
+
 
   ngOnDestroy(): void {
     // Do not forget to unsubscribe the event
     this.dtTrigger.unsubscribe();
   }
 
-onInputChange(event: any, field: string) {
-  if (field === 'ciudad' || field === 'descripcion') {
-    const inputValue = event.target.value;
-    const uppercaseValue = inputValue.toUpperCase();
-    event.target.value = uppercaseValue;
+  convertirAMayusculas(event: any, field: string) {
+    setTimeout(() => {
+      const inputValue = event.target.value;
+      event.target.value = inputValue.toUpperCase();
+    });
   }
-}
+
+  eliminarCaracteresEspeciales(event: any, field: string) {
+    setTimeout(() => {
+      let inputValue = event.target.value;
+  
+      // Elimina caracteres especiales dependiendo del campo
+      if (field === 'ciudad') {
+        inputValue = inputValue.replace(/[^a-zA-Z0-9\s]/g, ''); // Solo permite letras y números
+      }else if (field === 'descripcion') {
+        inputValue = inputValue.replace(/[^a-zA-Z0-9\s]/g, ''); // Solo permite letras, números y espacios en blanco
+      }
+      event.target.value = inputValue;
+    });
+  }
+
+  cancelarInput(){
+    this.nuevoCiudad.ciudad = '';
+    this.nuevoCiudad.descripcion = '';
+   }
+   
 
 // Variable de estado para alternar funciones
 
@@ -146,8 +179,9 @@ toggleFunction(ciu: any, i: number) {
     this.toastr.success('La Ciudad: '+ ciudades.ciudad + ' ha sido inactivado');
     this.inactivarBitacora(data);
   });
-    this.listCiudades[i].estado = 2;
+    this.ciudadesAllPaises[i].estado = 2;
   }
+
   activarCiudad(ciudades: any, i: any){
     const activarCiudad : Ciudades = {
       id_ciudad: ciudades.id_ciudad, 
@@ -165,7 +199,7 @@ toggleFunction(ciu: any, i: number) {
     this.toastr.success('La ciudad: '+ ciudades.ciudad + ' ha sido activado');
     this.activarBitacora(data);
   });
-    this.listCiudades[i].estado = 1;
+    this.ciudadesAllPaises[i].estado = 1;
   }
 
   /*****************************************************************************************************/
@@ -175,7 +209,7 @@ toggleFunction(ciu: any, i: number) {
     const data: any[][] = [];
   
     // Recorre los datos de tu lista de ciudades y agrégalo a la matriz 'data'
-    this.listCiudades.forEach((ciu, index) => {
+    this.ciudadesAllPaises.forEach((ciu, index) => {
       const row = [
         ciu.ciudad,
         ciu.descripcion,
@@ -236,7 +270,7 @@ toggleFunction(ciu: any, i: number) {
       doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
   
       // Recorre los datos de tu lista de ciudades y agrégalo a la matriz 'data'
-      this.listCiudades.forEach((ciu, index) => {
+      this.ciudadesAllPaises.forEach((ciu, index) => {
         const row = [
           ciu.ciudad,
           ciu.descripcion,
@@ -283,49 +317,62 @@ toggleFunction(ciu: any, i: number) {
 
 
 /**************************************************************/
-
-  getPais(){
-    this._paisService.getAllPaises().subscribe({
-      next: (data) => {
-        this.listPaises = data;
-      },
-      error: (e: HttpErrorResponse)=> {
-        this._errorService.msjError(e);
-      }
-    });
-  }
-  tipoEmpresaSeleccionado(event: Event): void {
+ 
+ /* tipoEmpresaSeleccionado(event: Event): void {
     const idPais = (event.target as HTMLSelectElement).value;
     this.id_pais = Number(idPais);
-  }
+  }*/
+
   agregarNuevoCiudad() {
-
     const userLocal = localStorage.getItem('usuario');
-    if (userLocal){
-    this.nuevoCiudad = {
-      id_ciudad: 0, 
-      ciudad: this.nuevoCiudad.ciudad, 
-      descripcion:this.nuevoCiudad.descripcion,
-      creado_por: userLocal, 
-      fecha_creacion: new Date(), 
-      modificado_por: userLocal, 
-      fecha_modificacion: new Date(),
-      estado: 1,
-      id_pais: this.id_pais
-    };
-
-    this._ciudadService.addCiudad(this.nuevoCiudad).subscribe({
-      next:(data) => {
-      this.insertBitacora(data);
-      this.toastr.success('Ciudad agregado con éxito');
-    },
-    error: (e: HttpErrorResponse) => {
-      this._errorService.msjError(e);
+    if (userLocal) {
+      const fechaActual = new Date();
+      const fechaFormateada = this._datePipe.transform(fechaActual, 'yyyy-MM-dd');
+  
+      const nuevaCiudad = {
+        id_ciudad: 0, 
+        ciudad: this.nuevoCiudad.ciudad, 
+        descripcion: this.nuevoCiudad.descripcion,
+        creado_por: userLocal, 
+        fecha_creacion: fechaFormateada as unknown as Date, 
+        modificado_por: userLocal, 
+        fecha_modificacion: fechaFormateada as unknown as Date,
+        estado: 1,
+        id_pais: this.nuevoCiudad.id_pais
+      };
+  
+      console.log('Datos de la nueva ciudad:', nuevaCiudad); // Agregar esta línea para imprimir los datos en la consola
+  
+      if (!this.validarDatosCiudad(nuevaCiudad)) {
+        this.toastr.warning('Debes completar los campos vacíos');
+        return;
+      }
+  
+      this._ciudadService.addCiudad(nuevaCiudad).subscribe({
+        next: (data) => {
+          this.insertBitacora(data);
+          this.toastr.success('Ciudad agregada con éxito');
+          this.ciudadesAllPaises.push(nuevaCiudad);
+          this.limpiarCampos();
+        },
+        error: (error) => {
+          this.toastr.error('Error al agregar la ciudad. Por favor, contacta al administrador.');
+          console.error(error);
+        }
+      });
     }
-  });
- }
-}
-
+  }
+  
+  
+  validarDatosCiudad(ciudad: any): boolean {
+    return ciudad.ciudad && ciudad.descripcion && ciudad.id_pais;
+  }
+  
+  limpiarCampos() {
+    this.nuevoCiudad.ciudad = '';
+    this.nuevoCiudad.descripcion = '';
+  }
+  
 
   obtenerIdCiudad(ciudades: Ciudades, i: any){
     this.ciudadEditando = {
@@ -344,15 +391,25 @@ toggleFunction(ciu: any, i: number) {
 
 
   editarCiudad(){
+    this.ciudadEditando.ciudad = this.ciudadEditando.ciudad.toUpperCase();
+    this.ciudadEditando.descripcion = this.ciudadEditando.descripcion.toUpperCase();
+
+    const esMismaCiu = this.listCiudades[this.indice].ciudad === this.ciudadEditando.ciudad
+
+    // Si el usuario no es el mismo, verifica si el nombre de usuario ya existe
+    if (!esMismaCiu) {
+      const CiuExistente = this.listCiudades.some(user => user.ciudad === this.ciudadEditando.ciudad);
+      if (CiuExistente) {
+        this.toastr.error('La Ciudad ya existe. Por favor, elige otra Ciudad.');
+        return;
+      }
+    }
+
     this._ciudadService.editarCiudad(this.ciudadEditando).subscribe(data => {
       this.updateBitacora(data);
       this.toastr.success('Ciudad editada con éxito');
-      this.listCiudades[this.indice].ciudad = this.ciudadEditando.ciudad;
-      this.listCiudades[this.indice].descripcion = this.ciudadEditando.descripcion;
-
-        // Actualizar la vista
-        this.ngZone.run(() => {        
-        });
+      this.ciudadesAllPaises[this.indice].ciudad = this.ciudadEditando.ciudad;
+      this.ciudadesAllPaises[this.indice].descripcion = this.ciudadEditando.descripcion;
     
     });
   }

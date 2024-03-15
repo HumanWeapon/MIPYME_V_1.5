@@ -8,11 +8,8 @@
             <div class="card-header">
              <!--<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarProducto">
                 <i class="fas fa-plus"></i> Nuevo</button>--> 
-                <button type="button" class="btn btn-primary custom-print-button btn-danger" title="Generar el Reporte" data-toggle="modal" data-target="#PDFDireccion">
-                  <i class="fas fa-file-pdf mr-2"></i>PDF</button>
-                  <button type="button" class="btn btn-primary custom-print-button btn-success" title="Generar el Reporte en Excel" data-toggle="modal" data-target="#ExcelDireccion">
-                    <i class="fas fa-file-excel mr-2"></i>Excel
-                </button>
+                <button type="button" class="btn btn-primary custom-print-button btn-primary" title="Generar el Reporte" data-toggle="modal" data-target="#PDFReQ">
+                  <i class="fas fa-print"></i> Generar Reporte</button>
             </div>
             <!-- /.card-header -->
             <div class="card-body">
@@ -33,13 +30,13 @@
                     </thead>
                     <tbody>
                       <tr *ngFor="let obj of listDirecciones; let i = index">
-                        <td>{{ obj.id_direccion }}</td>
-                        <td>{{ obj.direccion }}</td>
-                        <td>{{ obj.tipo_direccion }}</td>
-                        <td>{{ obj.descripcion }}</td>
-                        <td>{{ obj.ciudad }}</td>
-                        <td>{{ obj.pais }}</td>
-                        <td>{{ obj.creado_por }}</td>
+                        <td>{{ obj.id_direccion | uppercase }}</td>
+                        <td>{{ obj.direccion | uppercase }}</td>
+                        <td>{{ obj.tipo_direccion | uppercase }}</td>
+                        <td>{{ obj.descripcion | uppercase }}</td>
+                        <td>{{ obj.ciudad | uppercase }}</td>
+                        <td>{{ obj.pais | uppercase }}</td>
+                        <td>{{ obj.creado_por | uppercase }}</td>
                         <td>{{ obj.fecha_creacion}}</td>
                         <td>
                             <ng-container *ngIf="obj.estado == 1">ACTIVO</ng-container>
@@ -51,7 +48,7 @@
                               <input class="form-check-input" (click)="toggleFunction(obj, i)" [title]="obj.estado == 1 ? 'Desactivar' : 'Activar'" type="checkbox" 
                                 role="switch" id="flexSwitchCheckChecked" [checked]="obj.estado == 1">
                               </div>
-                              <button type="button" (click)="obtenerIdDireccion(obj, i)" data-toggle="modal" title="Editar Contacto" data-target="#abrirModalEditarContacto"data-toggle="modal" data-target="#abrirModalEditarContacto" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
+                              <button type="button" (click)="obtenerIdDireccion(obj, i)" data-toggle="modal" title="Editar Direcciones" data-target="#abrirModalEditarDireccion" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
                             </div>
                         </td>
                       </tr>
@@ -88,11 +85,11 @@
 
               <div class="form-group">
                   <label for="nuevaDireccion">Dirección:</label>
-                  <input type="text" [(ngModel)]="nuevaDireccion.direccion" name="nuevaDireccion.direccion" (input)="onInputChange($event, 'direccion')" class="form-control" id="nuevaDireccion" placeholder="Direccion">
+                  <input type="text" [(ngModel)]="nuevaDireccion.direccion" name="nuevaDireccion.direccion" class="form-control" id="nuevaDireccion" placeholder="Direccion" (input)="eliminarCaracteresEspeciales($event, 'direccion')" (input)="convertirAMayusculas($event, 'direccion')">
               </div>
               <div class="form-group">
                   <label for="nuevoDescripcion">Descripción</label>
-                  <input type="text" [(ngModel)]="nuevaDireccion.descripcion" name="nuevaDireccion.descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="nuevodescripcion" placeholder="Descripción">
+                  <textarea rows="4" type="text" [(ngModel)]="nuevaDireccion.descripcion" name="nuevaDireccion.descripcion" class="form-control" id="nuevodescripcion" placeholder="Descripción" (input)="eliminarCaracteresEspeciales($event, 'descripcion')" (input)="convertirAMayusculas($event, 'descripcion')"></textarea>
               </div>
 
             <div class="form-group">
@@ -121,7 +118,7 @@
 <!-- /Agregar Usuario Form -->
 
 <!-- Actualizar Usuario Form -->
-<div class="modal fade" id="abrirModalEditarObjeto">
+<div class="modal fade" id="abrirModalEditarDireccion">
   <div class="modal-dialog">
       <div class="modal-content">
           <div class="modal-header">
@@ -134,16 +131,16 @@
               <form>
                 <div class="form-group">
                     <label for="editarDireccion">Direccion:</label>
-                    <input type="text" [(ngModel)]="direccionEditando.direccion" name="direccionEditando" (input)="onInputChange($event, 'direccion')" class="form-control" id="editarDireccion" placeholder="Direccion">
+                    <input type="text" [(ngModel)]="direccionEditando.direccion" name="direccionEditando" class="form-control" id="editarDireccion" placeholder="Direccion" (input)="eliminarCaracteresEspeciales($event, 'direccion')" (input)="convertirAMayusculas($event, 'direccion')">
                 </div>
                 <div class="form-group">
                     <label for="editarDescripcion">Descripción:</label>
-                    <input type="text" [(ngModel)]="direccionEditando.descripcion" name="descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="editarDescripcion" placeholder="Descripción">
+                    <textarea rows="4" type="text" [(ngModel)]="direccionEditando.descripcion" name="descripcion" class="form-control" id="editarDescripcion" placeholder="Descripción" (input)="eliminarCaracteresEspeciales($event, 'descripcion')" (input)="convertirAMayusculas($event, 'descripcion')"></textarea>
                 </div>
                 <div class="form-group">
-                  <label for="editarTipoContacto">Tipo Contacto:</label>
+                  <label for="editarTipoContacto">Tipo Direccion:</label>
                   <select class="form-control" id="editarTipoContacto" [(ngModel)]="direccionEditando.id_tipo_direccion" name="id_tipo_direccion">
-                    <option *ngFor="let item of listTipoC" [ngValue]="item.id_tipo_direccion">{{ item.tipo_direccion }}</option>
+                    <option *ngFor="let item of listTipoDireccion" [ngValue]="item.id_direccion">{{ item.direccion }}</option>
                   </select>
                 </div>
 
@@ -162,7 +159,7 @@
 
 
 <!-- Form Ver PDF-->
-<div class="modal fade" id="#PDFDireccion">
+<div class="modal fade" id="PDFReQ">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
 
@@ -172,18 +169,21 @@
             <h4>Reporte de Direcciones </h4> 
             <!-- Puedes agregar más detalles del reporte aquí si es necesario -->
             <p>Fecha: {{ getDate() }}</p>
+            <p>Usuario {{getUser.usuario}}</p>
         </div>
         <div style="flex: 0;">
             <img src="\assets\dist\img\pym.png" alt="Logo de Mi Pyme" style="width: 200px; height: auto;">
         </div>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
       
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary customn-print-button btn-danger" (click)="generatePDF()">
-          <i class="fas fa-file-pdf"></i>  Generar PDF</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-      </div>
+        <!-- Pie del modal -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary customn-print-button btn-danger" (click)="generatePDF()">
+            <i class="fas fa-file-pdf"></i>  Generar PDF</button>
+            <button type="button" class="btn btn-secondary customn-print-button btn-success" (click)="generateExcel()">
+              <i class="fas fa-file-excel"></i>  Generar Excel</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        </div>
 
       <!-- Contenido del modal -->
       <div class="modal-body">
@@ -191,25 +191,22 @@
         <table class="table table-striped">
           <thead class="thead-dark">
             <tr>
+              <th>ID</th>
               <th>Direccion</th>
               <th>Descripción</th>
               <th>Creado</th>
               <th>Fecha Creación</th>
-            
               <th>Estado</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let obj of listDirecciones">
+              <td>{{ obj.id_direccion }}</td>
               <td>{{ obj.direccion }}</td>
               <td>{{ obj.descripcion }}</td>
               <td>{{ obj.creado_por }}</td>
               <td>{{ obj.fecha_creacion}}</td>
-              
-              <td>
-                <ng-container *ngIf="obj.estado === 1">ACTIVO</ng-container>
-                <ng-container *ngIf="obj.estado === 2">INACTIVO</ng-container>
-              </td>
+              <td>{{ getEstadoText(obj.estado) }}</td>
             </tr>
           </tbody>
         </table>
@@ -237,6 +234,7 @@
             <h4>Reporte de Direcciones </h4> 
             <!-- Puedes agregar más detalles del reporte aquí si es necesario -->
             <p>Fecha: {{ getDate() }}</p>
+            <p>Usuario {{getUser.usuario}}</p>
         </div>
         <div style="flex: 0;">
             <img src="\assets\dist\img\pym.png" alt="Logo de Mi Pyme" style="width: 200px; height: auto;">
@@ -244,36 +242,28 @@
         <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
 
-    <div class="modal-footer">
-      <button type="button" class="btn btn-secondary customn-print-button btn-success" (click)="generateExcel()">
-        <i class="fas fa-file-excel"></i>  Generar Excel</button>
-      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-    </div>
    <!-- Contenido del modal -->
    <div class="modal-body">
     <!-- Aquí puedes colocar tu DataTable o cualquier otro contenido que desees mostrar -->
     <table class="table table-striped">
       <thead class="thead-dark">
         <tr>
+          <th>ID</th>
           <th>Direccion</th>
           <th>Descripción</th>
           <th>Creado</th>
           <th>Fecha Creación</th>
-        
           <th>Estado</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let obj of listDirecciones">
+          <td>{{ obj.id_direccion }}</td>
           <td>{{ obj.direccion }}</td>
           <td>{{ obj.descripcion }}</td>
           <td>{{ obj.creado_por }}</td>
           <td>{{ obj.fecha_creacion}}</td>
-          
-          <td>
-            <ng-container *ngIf="obj.estado === 1">ACTIVO</ng-container>
-            <ng-container *ngIf="obj.estado === 2">INACTIVO</ng-container>
-          </td>
+          <td>{{ getEstadoText(obj.estado) }}</td>
         </tr>
       </tbody>
     </table>

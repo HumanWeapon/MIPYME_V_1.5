@@ -21,19 +21,10 @@ export class CiudadesService {
 
    }
 
-
-
-   addCiudad(ciu: Ciudades): Observable<any> {
-    const nuevoCiudad = {
-      ciudad: ciu.ciudad, 
-      descripcion: ciu.descripcion,
-      creado_por: ciu.creado_por, 
-      fecha_creacion: ciu.fecha_creacion, 
-      modificado_por: ciu.modificado_por, 
-      fecha_modificacion: ciu.fecha_modificacion,
-      estado: ciu.estado,
-      };
-      return this.http.post<Ciudades>(`${this.myAppUrl}${this.myApiUrl}/postCiudad`, nuevoCiudad)
+   addCiudad(ciu: Ciudades): Observable<Ciudades> {
+    const token = localStorage.getItem('token')
+    const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
+    return this.http.post<Ciudades>(`${this.myAppUrl}${this.myApiUrl}/postCiudad`, ciu,{ headers: headers })
   }
 
   
@@ -69,6 +60,16 @@ export class CiudadesService {
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
     return this.http.get<any[]>(`${this.myAppUrl}${this.myApiUrl}/getCiudades`, { headers: headers })
    }
+   
+   ciudadesAllPaises(): Observable<Ciudades[]> {
+    const token = localStorage.getItem('token');
+    console.log('Token de autorización:', token); // Agregar esta línea para imprimir el token en la consola
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<Ciudades[]>(`${this.myAppUrl}${this.myApiUrl}/ciudadesAllPaises`, { headers: headers });
+  }
+  
+
+
 }
 
 

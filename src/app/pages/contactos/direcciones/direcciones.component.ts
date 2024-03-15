@@ -16,6 +16,9 @@ import { da } from 'date-fns/locale';
 import * as XLSX from 'xlsx';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale'; // Importa el idioma español
+import { DatePipe } from '@angular/common';
+import { TipoContacto } from 'src/app/interfaces/mantenimiento/tipoContacto';
+import { TipoContactoService } from 'src/app/services/mantenimiento/tipoContacto.service';
 
 @Component({
   selector: 'app-direcciones',
@@ -63,6 +66,7 @@ export class DireccionesComponent {
   data: any;
   listContacto: Contacto[] = [];
   listTipoC: TipoDireccion[] = [];
+  listTipoContacto: TipoContacto[] = [];
 
   // We use this trigger because fetching the list of persons can be quite long,
   // thus we ensure the data is fetched before rendering
@@ -82,12 +86,14 @@ export class DireccionesComponent {
     private _userService: UsuariosService,
     private ngZone: NgZone,
     private _contacto: ContactoService,
-    private _Tipodireccion: TipoDireccionService
+    private _tipoContacto: TipoContactoService,
+    private _Tipodireccion: TipoDireccionService,
+    private _datePipe: DatePipe
     ) {}
 
   
   ngOnInit(): void {
-    this.getUsuario()
+    this.getUsuario();
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 10,
@@ -99,16 +105,23 @@ export class DireccionesComponent {
         this.listDirecciones= res;
         this.dtTrigger.next(null);
     });
-    this._objService.getTipoDirecciones()
-    .subscribe((res: any) => {
-      this.listTipoDireccion = res;
+    this._objService.getTipoDirecciones().subscribe(data => {
+      this.listTipoDireccion = data.filter(tipoDireccion => tipoDireccion.estado == 1)
     });
+
     this._objService.getCiudades()
     .subscribe((res: any) => {
       this.listCiudades = res;
     });
       this.getUsuario();
   }
+
+  getTipoDireccion(){
+    this._objService.getTipoDirecciones().subscribe(data => {
+      this.listTipoDireccion = data.filter(tipoDireccion => tipoDireccion.estado == 1);
+    });
+  }
+  
 
   ngOnDestroy(): void {
     // Do not forget to unsubscribe the event
@@ -129,12 +142,26 @@ export class DireccionesComponent {
     // Formatear la fecha en el formato deseado
     return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
   }
-  onInputChange(event: any, field: string) {
-    if (field === 'direccion' || field === 'descripcion') {
+
+  convertirAMayusculas(event: any, field: string) {
+    setTimeout(() => {
       const inputValue = event.target.value;
-      const uppercaseValue = inputValue.toUpperCase();
-      event.target.value = uppercaseValue;
-    }
+      event.target.value = inputValue.toUpperCase();
+    });
+  }
+
+  eliminarCaracteresEspeciales(event: any, field: string) {
+    setTimeout(() => {
+      let inputValue = event.target.value;
+  
+      // Elimina caracteres especiales dependiendo del campo
+      if (field === 'direccion') {
+        inputValue = inputValue.replace(/[^a-zA-Z0-9\s]/g, ''); // Solo permite letras y números
+      }else if (field === 'descripcion') {
+        inputValue = inputValue.replace(/[^a-zA-Z0-9\s]/g, ''); // Solo permite letras, números y espacios en blanco
+      }
+      event.target.value = inputValue;
+    });
   }
   
 
@@ -142,6 +169,8 @@ export class DireccionesComponent {
 
     const usuarioLocal = localStorage.getItem('usuario')
     if(usuarioLocal){
+      const fechaActual = new Date();
+      const fechaFormateada = this._datePipe.transform(fechaActual, 'yyyy-MM-dd');
       this.nuevaDireccion = {
         id_direccion: 0, 
         id_tipo_direccion: this.id_tipo_direccion,
@@ -150,30 +179,26 @@ export class DireccionesComponent {
         descripcion:this.nuevaDireccion.descripcion, 
         estado: 1,
         creado_por: usuarioLocal, 
-        fecha_creacion: new Date(), 
+        fecha_creacion: fechaFormateada as unknown as Date, 
         modificado_por: usuarioLocal, 
-        fecha_modificacion: new Date()
+        fecha_modificacion: fechaFormateada as unknown as Date,
       };
-
-
-    
+      if (!this.nuevaDireccion.direccion || !this.nuevaDireccion.descripcion) {
+        this.toastr.warning('Debes completar los campos vacíos');
+        this.nuevaDireccion.direccion = '';
+        this.nuevaDireccion.descripcion = '';
+      }else{
       this._objService.addDireccion(this.nuevaDireccion).subscribe({
         next: (data) => {
           this.insertBitacora(data);
           this.toastr.success('Direccion agregado con éxito')
+          this.listDirecciones.push(this.nuevaDireccion)
         },
-        error: (e: HttpErrorResponse) => {
-          this._errorService.msjError(e);
-        }
       });
-      location.reload();
-      this.ngZone.run(() => {        
-      });
+    }
     }
   }
   
-
-
   obtenerIdDireccion(direccion: ContactoDirecciones, i: any){
     this.direccionEditando = {
     id_direccion: direccion.id_direccion,
@@ -194,19 +219,26 @@ export class DireccionesComponent {
 
 
   editarDireccion(con: any) {
+
+    this.direccionEditando.direccion = this.direccionEditando.direccion.toUpperCase();
+    this.direccionEditando.descripcion = this.direccionEditando.descripcion.toUpperCase();
     
+    const esMismaDirec = this.listDirecciones[this.indice].direccion === this.direccionEditando.direccion;
+
+    // Si el usuario no es el mismo, verifica si el nombre de usuario ya existe
+    if (!esMismaDirec) {
+      const DirecExistente = this.listDirecciones.some(user => user.direccion === this.direccionEditando.direccion);
+      if (DirecExistente) {
+        this.toastr.error('La Direccion ya existe. Por favor, elige otra Direccion.');
+        return;
+      }
+    }
+
     this._objService.editarDireccion(this.direccionEditando).subscribe(data => {
       this.toastr.success('Direccion editado con éxito');
-      if(this.Alltipocontacto == null){
-        //no se puede editar el usuario
-      }else{
-      this.Alltipocontacto[this.indice].direccion = this.direccionEditando.direccion;
+      this.listDirecciones[this.indice].direccion = this.direccionEditando.direccion;
       this.Alltipocontacto[this.indice].descripcion = this.direccionEditando.descripcion;
       this.Alltipocontacto[this.indice].contacto.con = con.con;
-       // Recargar la página
-       location.reload();
-      }
-
     });
   }
 
