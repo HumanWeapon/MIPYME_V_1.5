@@ -34,6 +34,8 @@ export class PermisosComponent implements OnInit, OnDestroy {
   roles: Roles[] = [];
   objetos: Objetos[] = [];
 
+  id_rol: number = 0;
+
   permisoeditando: Permisos = {
     id_permisos: 0,
     id_rol: 0,
@@ -142,6 +144,10 @@ export class PermisosComponent implements OnInit, OnDestroy {
     return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
   }
   
+  idRol(event: Event): void {
+    const idRol = (event.target as HTMLSelectElement).value;
+    this.id_rol = Number(idRol);
+  }
   filtrarObjetosPorTipo() {
     if (this.submenuSeleccionado) {
       // Filtrar los objetos por el tipo seleccionado (basado en el submenu)

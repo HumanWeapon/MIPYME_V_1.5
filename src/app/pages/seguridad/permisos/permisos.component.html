@@ -104,7 +104,8 @@
             <form (submit)="agregarNuevoPermiso()">                
                 <div class="form-group">
                   <label for="nuevoPermiso">Rol</label>
-                  <select [(ngModel)]="nuevoPermiso.id_rol" name="nuevoPermiso.id_rol" class="form-control" id="nuevo_rol">
+                  <select (change)="idRol($event)" name="nuevoPermiso.id_rol" class="form-control" id="nuevo_rol">
+                    <option selected disabled>Seleccionar</option>
                       <option *ngFor="let rol of roles" [value]="rol.id_rol">{{ rol.rol }}</option>
                   </select>
               </div>
