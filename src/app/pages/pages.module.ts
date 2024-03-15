@@ -36,6 +36,7 @@ import { SeguridadComponent } from './seguridad/seguridad.component';
 import { AdministracionComponent } from './administracion/administracion.component'
 import { MantenimientoComponent } from './mantenimiento/mantenimiento.component';
 import { OperacionesEmpresasComponent } from './empresas/operaciones-empresas/operaciones-empresas.component';
+import { TipoDireccionComponent } from './mantenimiento/tipo-direccion/tipo-direccion.component';
 
 
 
@@ -73,6 +74,7 @@ import { OperacionesEmpresasComponent } from './empresas/operaciones-empresas/op
     AdministracionComponent,
     MantenimientoComponent,
     OperacionesEmpresasComponent,
+    TipoDireccionComponent,
 
     
   ],

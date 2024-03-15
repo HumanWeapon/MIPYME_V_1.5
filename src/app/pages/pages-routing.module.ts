@@ -33,6 +33,7 @@ import { SeguridadComponent } from './seguridad/seguridad.component';
 import { AdministracionComponent } from './administracion/administracion.component';
 import { MantenimientoComponent } from './mantenimiento/mantenimiento.component';
 import { OperacionesEmpresasComponent } from './empresas/operaciones-empresas/operaciones-empresas.component';
+import { TipoDireccionComponent } from './mantenimiento/tipo-direccion/tipo-direccion.component';
 
 
 const routes: Routes = [
@@ -63,6 +64,7 @@ const routes: Routes = [
     { path: 'tipo_telefono', component:TipoTelefonoComponent, data:{titulo: 'Tipos de teléfono'}},
     { path: 'tipo_contacto', component:TipoContactoComponent, data:{titulo: 'Tipos de Contacto'}},
     { path: 'tipo_empresa', component:TipoEmpresaComponent, data:{titulo: 'Tipos de Empresa'}},
+    { path: 'tipo_direccion', component:TipoDireccionComponent, data:{titulo: 'Tipos de direcciones'}},
     { path: 'tipo_requisito', component:TipoRequisitosComponent, data:{titulo: 'Tipos de requisitos'}},
     
     { path: 'dashboard', component: DashboardComponent, data:{titulo: 'Dashboard'}},
