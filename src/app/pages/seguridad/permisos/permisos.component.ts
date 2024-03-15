@@ -15,7 +15,7 @@ import { Usuario } from 'src/app/interfaces/seguridad/usuario';
 import { HttpErrorResponse } from '@angular/common/http';
 import * as XLSX from 'xlsx';
 import { format } from 'date-fns';
-import { es } from 'date-fns/locale'; // Importa el idioma español
+import { da, es, th } from 'date-fns/locale'; // Importa el idioma español
 import { SubmenuData } from 'src/app/interfaces/subMenuData/subMenuData'; 
 import { ChangeDetectorRef } from '@angular/core';
 
@@ -35,6 +35,8 @@ export class PermisosComponent implements OnInit, OnDestroy {
   objetos: Objetos[] = [];
 
   id_rol: number = 0;
+  objetosSinRol: any[] = [];
+
 
   permisoeditando: Permisos = {
     id_permisos: 0,
@@ -132,11 +134,23 @@ export class PermisosComponent implements OnInit, OnDestroy {
     this.dtTrigger.unsubscribe();
   }
 
-  getAllRoles() {
-    this._rolesService.getAllRoles().subscribe(data => {
-      this.roles = data.filter(rol => rol.estado_rol == 1);
-    });
+  idRol(event: Event): void {
+    const idRol = (event.target as HTMLSelectElement).value;
+    this.id_rol = Number(idRol);
+    this.getobjetosSinRol();
   }
+  getobjetosSinRol(){
+    this._permService.objetosSinRol(this.id_rol).subscribe({
+      next: (data) => {
+        this.objetosSinRol = data;
+        console.log(this.objetosSinRol);
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    })
+  }
+
   getDate(): string {
     // Obtener la fecha actual
     const currentDate = new Date();
@@ -144,10 +158,12 @@ export class PermisosComponent implements OnInit, OnDestroy {
     return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
   }
   
-  idRol(event: Event): void {
-    const idRol = (event.target as HTMLSelectElement).value;
-    this.id_rol = Number(idRol);
+  getAllRoles() {
+    this._rolesService.getAllRoles().subscribe(data => {
+      this.roles = data.filter(rol => rol.estado_rol == 1);
+    });
   }
+
   filtrarObjetosPorTipo() {
     if (this.submenuSeleccionado) {
       // Filtrar los objetos por el tipo seleccionado (basado en el submenu)

@@ -112,8 +112,8 @@
               <!-- Selector de submenu -->
               <div class="form-group">
                 <label for="submenuSelector">Selecciona un Menu Principal</label>
-                <select [(ngModel)]="submenuSeleccionado" (change)="filtrarObjetosPorTipo()" name="submenuSelector" class="form-control" id="submenuSelector">
-                  <option *ngFor="let submenu of submenusData" [value]="submenu.descripcion">{{ submenu.descripcion }}</option>
+                <select (change)="filtrarObjetosPorTipo()" name="submenuSelector" class="form-control" id="submenuSelector">
+                  <option *ngFor="let submenu of objetosSinRol" [value]="submenu.descripcion">{{ submenu.nombre_objeto }}</option>
                 </select>
               </div>
               

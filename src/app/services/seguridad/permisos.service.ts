@@ -21,7 +21,7 @@ export class PermisosService {
 
    
 
-   addPermiso(permiso: Permisos): Observable<any> {
+  addPermiso(permiso: Permisos): Observable<any> {
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
     return this.http.post<Permisos>(`${this.myAppUrl}${this.myApiUrl}/postPermiso`, permiso, { headers: headers })
@@ -54,5 +54,12 @@ export class PermisosService {
 
    editarPermiso(permisos: Permisos): Observable<any> {
     return this.http.post<Permisos>(`${this.myAppUrl}${this.myApiUrl}/updatePermisos`, permisos)
+  }
+
+  //consulta los contactos registrados y no registrados de una empresa por el id
+  objetosSinRol(id: number): Observable<any[]> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<any[]>(`${this.myAppUrl}${this.myApiUrl}/objetosSinRol/${id}`, { headers: headers });
   }
 }
