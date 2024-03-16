@@ -7,11 +7,8 @@
               <div class="card-header">
                <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarContactoT">
                   <i class="fas fa-plus"></i> Nuevo</button>-->
-                  <button type="button" class="btn btn-primary custom-print-button btn-danger" title="Generar el Reporte" data-toggle="modal" data-target="#PDFTelefono">
-                    <i class="fas fa-file-pdf mr-2"></i>PDF</button>
-                    <button type="button" class="btn btn-primary custom-print-button btn-success" title="Generar el Reporte en Excel" data-toggle="modal" data-target="#ExcelTelefono">
-                      <i class="fas fa-file-excel mr-2"></i>Excel
-                  </button>
+                  <button type="button" class="btn btn-primary custom-print-button btn-primary" title="Generar el Reporte" data-toggle="modal" data-target="#PDFReQ">
+                    <i class="fas fa-print"></i> Generar Reporte</button>
               </div>
               <!-- /.card-header -->
               <div class="card-body">
@@ -34,14 +31,14 @@
                       <tbody>
                         <tr *ngFor="let conT of telefonosconcontacto; let i = index">
                           <td>{{ conT.id_telefono }}</td>
-                          <td>{{ conT.nombre }}</td>
-                          <td>{{ conT.telefono }}</td>
-                          <td>{{ conT.extencion }}</td>
-                          <td>{{ conT.descripcion }}</td>
-                          <td>{{ conT.creado_por}}</td>
-                          <td>{{ conT.fecha_creacion }}</td>
-                          <td>{{ conT.modificado_por}}</td>
-                          <td>{{ conT.fecha_modificacion}}</td>
+                          <td>{{ conT.nombre | uppercase }}</td>
+                          <td>{{ conT.telefono | uppercase }}</td>
+                          <td>{{ conT.extencion | uppercase }}</td>
+                          <td>{{ conT.descripcion | uppercase }}</td>
+                          <td>{{ conT.creado_por | uppercase }}</td>
+                          <td>{{ conT.fecha_creacion | date: 'yyyy-MM-dd' }}</td>
+                          <td>{{ conT.modificado_por | uppercase }}</td>
+                          <td>{{ conT.fecha_modificacion | date: 'yyyy-MM-dd' }}</td>
                           <td>
                             <ng-container *ngIf="conT.estado == 1">ACTIVO</ng-container>
                             <ng-container *ngIf="conT.estado == 2">INACTIVO</ng-container>
@@ -92,15 +89,15 @@
             <form (submit)="agregarNuevoContactoT()">
                 <div class="form-group">
                     <label for="nuevoContactoT">Teléfono:</label>
-                    <input type="text" [(ngModel)]="nuevoContactoT.telefono" name="nuevoContactoT.telefono" class="form-control" id="nuevoContactoT" placeholder="Teléfono">
+                    <input type="text" [(ngModel)]="nuevoContactoT.telefono" name="nuevoContactoT.telefono" class="form-control" id="nuevoContactoT" placeholder="Teléfono" (input)="convertirAMayusculas($event, 'telefono')" (input)="eliminarCaracteresEspeciales($event, 'telefono')">
                 </div>
                 <div class="form-group">
                   <label for="nuevoContactoT">Extención</label>
-                  <input type="text" [(ngModel)]="nuevoContactoT.extencion" name="nuevoContactoT.extencion"  class="form-control" id="nuevoContactoT" placeholder="Extención">
+                  <input type="text" [(ngModel)]="nuevoContactoT.extencion" name="nuevoContactoT.extencion"  class="form-control" id="nuevoContactoT" placeholder="Extención" (input)="convertirAMayusculas($event, 'extencion')" (input)="eliminarCaracteresEspeciales($event, 'extencion')">
               </div>  
                 <div class="form-group">
                     <label for="nuevoContactoT">Descripción</label>
-                    <input type="text" [(ngModel)]="nuevoContactoT.descripcion" name="nuevoContactoT.descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="nuevoContactoT" placeholder="Descripción">
+                    <textarea rows="4" type="text" [(ngModel)]="nuevoContactoT.descripcion" name="nuevoContactoT.descripcion" class="form-control" id="nuevoContactoT" placeholder="Descripción" (input)="convertirAMayusculas($event, 'descripcion')" (input)="eliminarCaracteresEspeciales($event, 'descripcion')"></textarea>
                 </div>
                 <div class="form-group">
                   <label for="editarRol">Contacto:</label>
@@ -111,7 +108,7 @@
             </form>
         </div>
         <div class="modal-footer justify-content-between">
-            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="cancelarInput()">Cancelar</button>
             <button type="button" (click)="agregarNuevoContactoT()" class="btn btn-success" data-dismiss="modal">Guardar</button>
         </div>
     </div>
@@ -133,22 +130,22 @@
         <div class="modal-body">
             <form>
               <div class="form-group">
+                <label for="editarRol">Contacto:</label>
+                <select class="form-control" id="editarTelefono" disabled="true" [(ngModel)]="contactoTEditando.id_contacto" name="contactoTEditando.id_contacto" class="form-control" >
+                  <option *ngFor="let item of list_contactos; let value = index" [value]="item.id_contacto">{{ item.contacto }}</option>
+                </select>
+              </div>
+              <div class="form-group">
                   <label for="contactoTEditando">Teléfono</label>
-                  <input type="text" [(ngModel)]="contactoTEditando.telefono" name="contactoTEditando.telefono" class="form-control" id="editarTelefono" placeholder="Teléfono" >
+                  <input type="text" [(ngModel)]="contactoTEditando.telefono" name="contactoTEditando.telefono" class="form-control" id="editarTelefono" placeholder="Teléfono" (input)="eliminarCaracteresEspeciales($event, 'telefono')">
               </div>
               <div class="form-group">
                   <label for="contactoTEditando">Extención</label>
-                  <input type="text" [(ngModel)]="contactoTEditando.extencion" name="contactoTEditando.extencion" class="form-control" id="editarExtencion" placeholder="Extención" >
+                  <input type="text" [(ngModel)]="contactoTEditando.extencion" name="contactoTEditando.extencion" class="form-control" id="editarExtencion" placeholder="Extención" (input)="eliminarCaracteresEspeciales($event, 'extencion')">
               </div>
               <div class="form-group">
                   <label for="contactoTEditando">Descripción:</label>
-                  <input type="text" [(ngModel)]="contactoTEditando.descripcion" name="contactoTEditando.descripcion"  class="form-control" id="editarDescripcion" placeholder="Descripción" (input)="onInputChange($event, 'descripcion')" >
-              </div>
-              <div class="form-group">
-                <label for="editarRol">Contacto:</label>
-                <select class="form-control" id="editarTelefono" [(ngModel)]="contactoTEditando.id_contacto" name="contactoTEditando.id_contacto" class="form-control" >
-                  <option *ngFor="let item of list_contactos; let value = index" [value]="item.id_contacto">{{ item.contacto }}</option>
-                </select>
+                  <input type="text" [(ngModel)]="contactoTEditando.descripcion" name="contactoTEditando.descripcion"  class="form-control" id="editarDescripcion" placeholder="Descripción" (input)="convertirAMayusculas($event, 'descripcion')" (input)="eliminarCaracteresEspeciales($event, 'descripcion')">
               </div>
             </form>
         </div>
@@ -162,7 +159,7 @@
 <!-- /Actualizar contacto Form -->
 
 <!-- Form Ver PDF-->
-<div class="modal fade" id="PDFTelefono">
+<div class="modal fade" id="PDFReQ">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
 
@@ -172,18 +169,21 @@
             <h4>Reporte de Teléfonos</h4> 
             <!-- Puedes agregar más detalles del reporte aquí si es necesario -->
             <p>Fecha: {{ getDate() }}</p>
+            <p>Usuario {{getUser.usuario}}</p>
         </div>
         <div style="flex: 0;">
             <img src="\assets\dist\img\pym.png" alt="Logo de Mi Pyme" style="width: 200px; height: auto;">
         </div>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
       
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary customn-print-button btn-danger" (click)="generatePDF()">
-          <i class="fas fa-file-pdf"></i>  Generar PDF</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-      </div>
+        <!-- Pie del modal -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary customn-print-button btn-danger" (click)="generatePDF()">
+            <i class="fas fa-file-pdf"></i>  Generar PDF</button>
+            <button type="button" class="btn btn-secondary customn-print-button btn-success" (click)="generateExcel()">
+              <i class="fas fa-file-excel"></i>  Generar Excel</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        </div>
 
     <!-- Contenido del modal -->
     <div class="modal-body">
@@ -191,23 +191,23 @@
       <table class="table table-striped">
         <thead class="thead-dark">
           <tr>
+            <th>ID</th>
             <th>Teléfono</th>
             <th>Extención</th>
             <th>Descripcion</th>
             <th>Creador</th>
             <th>Fecha Creación</th>
-           
             <th>Estado</th>
           </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let conT of listContactoT; let i = index">
+            <tr *ngFor="let conT of telefonosconcontacto; let i = index">
+              <td>{{ conT.id_telefono }}</td>
               <td>{{ conT.telefono }}</td>
               <td>{{ conT.extencion }}</td>
               <td>{{ conT.descripcion }}</td>
               <td>{{ conT.creado_por}}</td>
               <td>{{ conT.fecha_creacion }}</td>
-              
             <td>{{ getEstadoText(conT.estado) }}</td>
           </tr>
         </tbody>
@@ -233,36 +233,29 @@
             <h4>Reporte de Teléfonos</h4> 
             <!-- Puedes agregar más detalles del reporte aquí si es necesario -->
             <p>Fecha: {{ getDate() }}</p>
+            <p>Usuario {{getUser.usuario}}</p>
         </div>
         <div style="flex: 0;">
             <img src="\assets\dist\img\pym.png" alt="Logo de Mi Pyme" style="width: 200px; height: auto;">
         </div>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
-
-    <div class="modal-footer">
-      <button type="button" class="btn btn-secondary customn-print-button btn-success" (click)="generateExcel()">
-        <i class="fas fa-file-excel"></i>  Generar Excel</button>
-      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-    </div>
-
         <!-- Contenido del modal -->
         <div class="modal-body">
           <!-- Aquí puedes colocar tu DataTable o cualquier otro contenido que desees mostrar -->
           <table class="table table-striped">
             <thead class="thead-dark">
               <tr>
+                <th>ID</th>
                 <th>Teléfono</th>
                 <th>Extención</th>
                 <th>Descripcion</th>
                 <th>Creador</th>
-                <th>Fecha Creación</th>
-               
                 <th>Estado</th>
               </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let conT of listContactoT; let i = index">
+                <tr *ngFor="let conT of telefonosconcontacto; let i = index">
+                  <td>{{ conT.id_telefono }}</td>
                   <td>{{ conT.telefono }}</td>
                   <td>{{ conT.extencion }}</td>
                   <td>{{ conT.descripcion }}</td>

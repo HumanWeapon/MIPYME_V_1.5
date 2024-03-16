@@ -120,6 +120,7 @@ export class ContactoComponent implements OnInit{
     // Do not forget to unsubscribe the event
     this.dtTrigger.unsubscribe();
   }
+
   getTipoContactoActivos(){
     this._tipoContacto.getAllTipoContactosActicvos().subscribe({
       next: (data)=> {
@@ -131,20 +132,36 @@ export class ContactoComponent implements OnInit{
     });
   }
 
-  onInputChange(event: any, field: string) {
-    const inputValue = event.target.value; // Mueve esta línea fuera del condicional para definir inputValue independientemente del campo
-    
-    if (field === 'primer_nombre' || field === 'segundo_nombre'
-    || field === 'primer_apellido' || field === 'segundo_apellido'
-    || field === 'correo' || field === 'descripcion') {
-      const uppercaseValue = inputValue.toUpperCase();
-      event.target.value = uppercaseValue;
-    } else if (field === 'dni') {
-      // Convierte a mayúsculas y elimina espacios en blanco
-      const uppercaseValue = inputValue.replace(/\s/g, '');
-      event.target.value = uppercaseValue;
-    }
+  convertirAMayusculas(event: any, field: string) {
+    setTimeout(() => {
+      const inputValue = event.target.value;
+      event.target.value = inputValue.toUpperCase();
+    });
   }
+  
+  eliminarCaracteresEspeciales(event: any, field: string) {
+    setTimeout(() => {
+      let inputValue = event.target.value;
+  
+      // Elimina caracteres especiales dependiendo del campo
+      if (field === 'primer_nombre' || field === 'segundo_nombre' || field === 'primer_apellido' || field === 'segundo_apellido') {
+        inputValue = inputValue.replace(/[^a-zA-Z\s]/g, ''); // Solo permite letras y espacios en blanco
+      } else if (field === 'descripcion') {
+        inputValue = inputValue.replace(/[^a-zA-Z0-9\s]/g, ''); // Solo permite letras, números y espacios en blanco
+      }
+      event.target.value = inputValue;
+    });
+  }
+  
+  
+  cancelarInput(){
+     this.nuevoContacto.primer_nombre = '';
+     this.nuevoContacto.segundo_nombre = '';
+     this.nuevoContacto.primer_apellido = '';
+     this.nuevoContacto.segundo_apellido = '';
+     this.nuevoContacto.descripcion = '';
+    }
+
 
 // Variable de estado para alternar funciones
 

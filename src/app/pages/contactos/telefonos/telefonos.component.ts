@@ -14,6 +14,7 @@ import * as XLSX from 'xlsx';
 import { format } from 'date-fns';
 import { da, es } from 'date-fns/locale'; // Importa el idioma español
 import { ContactoService } from 'src/app/services/contacto/contacto.service';
+import { DatePipe } from '@angular/common';
 
 
 
@@ -82,7 +83,8 @@ export class TelefonosComponent implements OnInit{
     private _bitacoraService: BitacoraService,
     private _errorService: ErrorService,
     private _userService: UsuariosService,
-    private _contactoService: ContactoService
+    private _contactoService: ContactoService,
+    private _datePipe: DatePipe
   ) {}
 
   
@@ -190,6 +192,33 @@ export class TelefonosComponent implements OnInit{
     this.telefonosconcontacto[i].estado = 1;
     this.telefonosconcontacto[i].modificado_por = this.localUser;
   }
+
+  convertirAMayusculas(event: any, field: string) {
+    setTimeout(() => {
+      const inputValue = event.target.value;
+      event.target.value = inputValue.toUpperCase();
+    });
+  }
+  
+  eliminarCaracteresEspeciales(event: any, field: string) {
+    setTimeout(() => {
+      let inputValue = event.target.value;
+  
+      // Elimina caracteres especiales dependiendo del campo
+      if (field === 'telefono' || field === 'extencion') {
+        inputValue = inputValue.replace(/[^0-9]/g, ''); // Solo permite números
+      } else if (field === 'descripcion') {
+        inputValue = inputValue.replace(/[^a-zA-Z0-9\s]/g, ''); // Solo permite letras, números y espacios en blanco
+      }
+      event.target.value = inputValue;
+    });
+  }
+  
+  
+  cancelarInput(){
+     this.nuevoContactoT.telefono = '';
+     this.nuevoContactoT.descripcion = '';
+    }
 
 
   /*****************************************************************************************************/
@@ -311,40 +340,42 @@ export class TelefonosComponent implements OnInit{
 
 
   agregarNuevoContactoT() {
+    const userLocal = localStorage.getItem('usuario');
+    if (userLocal){
+      const fechaActual = new Date();
+      const fechaFormateada = this._datePipe.transform(fechaActual, 'yyyy-MM-dd');
+
     this.nuevoContactoT = {
       id_telefono: 0, 
-      id_contacto: this.nuevoContactoT.id_contacto,
+      id_contacto: 0,
       telefono: this.nuevoContactoT.telefono, 
       extencion: this.nuevoContactoT.extencion,
       descripcion:this.nuevoContactoT.descripcion,
-      creado_por: this.localUser,
-      fecha_creacion: new Date(), 
-      modificado_por: this.localUser,
-      fecha_modificacion: new Date(),
+      creado_por: userLocal,
+      fecha_creacion: fechaFormateada as unknown as Date, 
+      modificado_por: userLocal,
+      fecha_modificacion: fechaFormateada as unknown as Date, 
       estado: 1,
-    }
-    // Validar si el teléfono y la extensión contienen solo números y espacios en blanco
-    const telefonoValido = /^[0-9\s]+$/.test(this.nuevoContactoT.telefono);
-    const extencionValida = /^[0-9\s]+$/.test(this.nuevoContactoT.extencion);
-    if (!telefonoValido || !extencionValida) {
-      this.toastr.warning('El teléfono y la extensión deben contener solo números');
-  } else if (!this.nuevoContactoT.telefono || !this.nuevoContactoT.id_contacto) {
-      this.toastr.warning('Campos incompletos');
-  } else {
+    };
+    if (!this.nuevoContactoT.telefono || !this.nuevoContactoT.descripcion || !this.nuevoContactoT.extencion) {
+      this.toastr.warning('Debes completar los campos vacíos');
+      this.nuevoContactoT.telefono = '';
+      this.nuevoContactoT.descripcion = '';
+      this.nuevoContactoT.extencion = '';
+    }else{
       this._contactoTService.addContactoT(this.nuevoContactoT).subscribe({
           next: (data) => {
-              this.telefonosconcontacto.push(data);
-              console.log(data);
               this.insertBitacora(data);
               this.toastr.success('Contacto agregado con éxito');
+              this.telefonosconcontacto.push(data);
           },
           error: (e: HttpErrorResponse) => {
               this._errorService.msjError(e);
           }
-      });
-  }
-  }
-
+        });
+      }
+      }
+    }
 
   obtenerIdContactoT(contactoT: ContactoTelefono, i: any){
     this.contactoTEditando = {
@@ -366,6 +397,21 @@ export class TelefonosComponent implements OnInit{
 
 
   editarContactoTelefono(){
+
+    this.contactoTEditando.telefono = this.contactoTEditando.telefono.toUpperCase();
+    this.contactoTEditando.descripcion = this.contactoTEditando.descripcion.toUpperCase();
+
+    const esMismoTelefono = this.telefonosconcontacto[this.indice].telefono === this.contactoTEditando.telefono;
+
+        // Si el usuario no es el mismo, verifica si el nombre de usuario ya existe
+        if (!esMismoTelefono) {
+          const TelefonoExistente = this.telefonosconcontacto.some(user => user.telefono === this.contactoTEditando.telefono);
+          if (TelefonoExistente) {
+            this.toastr.error('El Telefono ya esta registrado. Por favor, elige otro Telefono.');
+            return;
+          }
+        }
+
     this._contactoTService.editarContactoTelefono(this.contactoTEditando).subscribe(data => {
       this.toastr.success('contacto editado con éxito');
       this.telefonosconcontacto[this.indice].telefono = this.contactoTEditando.telefono;

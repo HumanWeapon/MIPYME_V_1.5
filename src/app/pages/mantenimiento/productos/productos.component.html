@@ -31,13 +31,13 @@
                     <tbody>
                       <tr *ngFor="let produc of productos; let i = index">
                         <td>{{ produc.id_producto }}</td>
-                        <td>{{ produc.producto }}</td>
-                        <td>{{ produc.descripcion }}</td>
-                        <td>{{ produc.categoria.categoria }}</td>
-                        <td>{{ produc.creado_por }}</td>
-                        <td>{{ produc.fecha_creacion}}</td>
-                        <td>{{ produc.modificado_por}}</td>
-                        <td>{{ produc.fecha_modificacion}}</td>
+                        <td>{{ produc.producto | uppercase }}</td>
+                        <td>{{ produc.descripcion | uppercase }}</td>
+                        <td>{{ produc.categoria.categoria | uppercase }}</td>
+                        <td>{{ produc.creado_por | uppercase }}</td>
+                        <td>{{ produc.fecha_creacion | date: 'yyyy-MM-dd' }}</td>
+                        <td>{{ produc.modificado_por | uppercase }}</td>
+                        <td>{{ produc.fecha_modificacion | date: 'yyyy-MM-dd' }}</td>
                         <td>
                             <ng-container *ngIf="produc.estado === 1">ACTIVO</ng-container>
                             <ng-container *ngIf="produc.estado === 2">INACTIVO</ng-container>
@@ -186,16 +186,17 @@
         <table class="table table-striped">
           <thead class="thead-dark">
             <tr>
+              <th>ID</th>
               <th>Producto</th>
               <th>Descripción</th>
               <th>Creado</th>
               <th>Fecha Creación</th>
-            
               <th>Estado</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let produc of productos; let i = index">
+              <td>{{ produc.id_producto }}</td>
               <td>{{ produc.producto }}</td>
               <td>{{ produc.descripcion }}</td>
               <td>{{ produc.creado_por }}</td>
@@ -243,16 +244,17 @@
         <table class="table table-striped">
           <thead class="thead-dark">
             <tr>
+              <th>ID</th>
               <th>Producto</th>
               <th>Descripción</th>
               <th>Creado</th>
               <th>Fecha Creación</th>
-            
               <th>Estado</th>
             </tr>
           </thead>
           <tbody>
             <tr *ngFor="let produc of productos">
+              <td>{{ produc.id_producto }}</td>
               <td>{{ produc.producto }}</td>
               <td>{{ produc.descripcion }}</td>
               <td>{{ produc.creado_por }}</td>

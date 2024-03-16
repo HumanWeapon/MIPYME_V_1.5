@@ -32,8 +32,8 @@
                       <td>{{ paises.pais | uppercase }}</td>
                       <td>{{ paises.descripcion | uppercase }}</td>
                       <td>{{ paises.creado_por | uppercase }}</td>
-                      <td>{{ paises.fecha_creacion }}</td>
-                      <td>{{ paises.fecha_modificacion}}</td>
+                      <td>{{ paises.fecha_creacion | date: 'yyyy-MM-dd'}}</td>
+                      <td>{{ paises.fecha_modificacion | date: 'yyyy-MM-dd'}}</td>
                       <td>
                         <ng-container *ngIf="paises.estado === 1">ACTIVO</ng-container>
                         <ng-container *ngIf="paises.estado === 2">INACTIVO</ng-container>

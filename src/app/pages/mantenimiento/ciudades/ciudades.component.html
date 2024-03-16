@@ -31,12 +31,11 @@
                           <tr *ngFor="let ciu of ciudadesAllPaises; let i = index">
                             <td>{{ ciu.id_ciudad }}</td>
                             <td>{{ ciu.ciudad | uppercase }}</td>
-                            <td>{{ ciu.pais.pais | uppercase }}</td>
-                            <td>{{ ciu.descripcion | uppercase }}</td>
+                            <td>{{ ciu.pais?.pais | uppercase }}</td>                            <td>{{ ciu.descripcion | uppercase }}</td>
                             <td>{{ ciu.creado_por | uppercase }}</td>
-                            <td>{{ ciu.fecha_creacion }}</td>
+                            <td>{{ ciu.fecha_creacion | date: 'yyyy-MM-dd' }}</td>
                             <td>{{ ciu.modificado_por | uppercase }}</td>
-                            <td>{{ ciu.fecha_modificacion}}</td>
+                            <td>{{ ciu.fecha_modificacion | date: 'yyyy-MM-dd' }}</td>
                             <td>
                               <ng-container *ngIf="ciu.estado === 1">ACTIVO</ng-container>
                               <ng-container *ngIf="ciu.estado === 2">INACTIVO</ng-container>
@@ -68,11 +67,6 @@
     </section>
       <!-- /.content -->
   
-  
-  
-  
-  
-   
   <!-- Agregar Usuario Form -->
   <div class="modal fade" id="agregarCiudad">
   <div class="modal-dialog">

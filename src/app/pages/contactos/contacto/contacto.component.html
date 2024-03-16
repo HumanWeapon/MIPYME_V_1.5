@@ -7,11 +7,8 @@
                 <div class="card-header">
                   <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarContacto">
                     <i class="fas fa-plus"></i> Nuevo</button>
-                  <button type="button" class="btn btn-primary custom-print-button btn-danger" title="Generar el Reporte" data-toggle="modal" data-target="#PDFContactos">
-                    <i class="fas fa-file-pdf mr-2"></i>PDF</button>
-                    <button type="button" class="btn btn-primary custom-print-button btn-success" title="Generar el Reporte en Excel" data-toggle="modal" data-target="#ExcelContactos">
-                      <i class="fas fa-file-excel mr-2"></i>Excel
-                  </button>
+                    <button type="button" class="btn btn-primary custom-print-button btn-primary" title="Generar el Reporte" data-toggle="modal" data-target="#PDFReQ">
+                      <i class="fas fa-print"></i> Generar Reporte</button>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
@@ -27,22 +24,22 @@
                             <th>Modificado por</th>
                             <th>Fecha Modificación</th>
                             <th>Estado</th>
-                            <th>Aciones</th>
+                            <th>Acciones</th>
                           </tr>
                         </thead>
                         <tbody>
                           <tr *ngFor="let contac of listContacto; let i = index">
                             <td>{{ contac.id_contacto}}</td>
-                            <td>{{ contac.primer_nombre +" "+ contac.segundo_nombre+" "+ contac.primer_apellido +" "+contac.segundo_apellido }}</td>
-                            <td>{{ contac.tipo_contacto.tipo_contacto}}</td>
-                            <td>{{ contac.descripcion}}</td>
-                            <td>{{ contac.creado_por}}</td>
-                            <td>{{ contac.fecha_creacion }}</td>
-                            <td>{{ contac.modificado_por }}</td>
+                            <td>{{ contac.primer_nombre +" "+ contac.segundo_nombre+" "+ contac.primer_apellido +" "+contac.segundo_apellido | uppercase }}</td>
+                            <td>{{ contac.tipo_contacto.tipo_contacto | uppercase }}</td>
+                            <td>{{ contac.descripcion | uppercase }}</td>
+                            <td>{{ contac.creado_por | uppercase }}</td>
+                            <td>{{ contac.fecha_creacion | date: 'yyyy-MM-dd' }}</td>
+                            <td>{{ contac.modificado_por | uppercase }}</td>
                             <td>{{ contac.fecha_modificacion | date: 'yyyy-MM-dd'}}</td>
                             <td>
-                              <ng-container *ngIf="contac.estado === 1">Activo</ng-container>
-                              <ng-container *ngIf="contac.estado === 2">Inactivo</ng-container>
+                              <ng-container *ngIf="contac.estado === 1">ACTIVO</ng-container>
+                              <ng-container *ngIf="contac.estado === 2">INACTIVO</ng-container>
                             </td>
                             <td class="text-center">
                               <div class="btn-group">
@@ -89,23 +86,23 @@
               <form (submit)="agregarNuevoContacto()">
                   <div class="form-group">
                       <label for="nuevoContacto">Primer Nombre</label>
-                      <input type="text" [(ngModel)]="nuevoContacto.primer_nombre" name="nuevoContacto.primer_nombre" (input)="onInputChange($event, 'primer_nombre')" class="form-control" id="nuevoPN" placeholder="Primer Nombre">
+                      <input type="text" [(ngModel)]="nuevoContacto.primer_nombre" name="nuevoContacto.primer_nombre" class="form-control" id="nuevoPN" placeholder="Primer Nombre" (input)="convertirAMayusculas($event, 'primer_nombre')" (input)="eliminarCaracteresEspeciales($event, 'primer_nombre')">
                   </div>  
                   <div class="form-group">
                     <label for="nuevoContacto">Segundo Nombre:</label>
-                    <input type="text" [(ngModel)]="nuevoContacto.segundo_nombre" name="nuevoContacto.segundo_nombre" (input)="onInputChange($event, 'segundo_nombre')"  class="form-control" id="nuevoSN" placeholder="Segundo Nombre">
+                    <input type="text" [(ngModel)]="nuevoContacto.segundo_nombre" name="nuevoContacto.segundo_nombre" class="form-control" id="nuevoSN" placeholder="Segundo Nombre" (input)="convertirAMayusculas($event, 'segundo_nombre')" (input)="eliminarCaracteresEspeciales($event, 'segundo_nombre')">
                 </div>
                 <div class="form-group">
                     <label for="nuevoContacto">Primer Apellido</label>
-                    <input type="text" [(ngModel)]="nuevoContacto.primer_apellido" name="nuevoContacto.primer_apellido" (input)="onInputChange($event, 'primer_apellido')" class="form-control" id="nuevoPA" placeholder="Primer Apellido">
+                    <input type="text" [(ngModel)]="nuevoContacto.primer_apellido" name="nuevoContacto.primer_apellido" class="form-control" id="nuevoPA" placeholder="Primer Apellido" (input)="convertirAMayusculas($event, 'primer_apellido')" (input)="eliminarCaracteresEspeciales($event, 'primer_apellido')">
                 </div>  
                 <div class="form-group">
                     <label for="nuevoContacto">Segundo Apellido:</label>
-                    <input type="text" [(ngModel)]="nuevoContacto.segundo_apellido" name="nuevoContacto.segundo_apellido" (input)="onInputChange($event, 'segundo_apellido')"  class="form-control" id="nuevoSA" placeholder="Segundo Apellido">
+                    <input type="text" [(ngModel)]="nuevoContacto.segundo_apellido" name="nuevoContacto.segundo_apellido" class="form-control" id="nuevoSA" placeholder="Segundo Apellido" (input)="convertirAMayusculas($event, 'segundo_apellido')" (input)="eliminarCaracteresEspeciales($event, 'segundo_apellido')">
                 </div>
                 <div class="form-group">
                     <label for="nuevoContacto">Descripción</label>
-                    <input type="text" [(ngModel)]="nuevoContacto.descripcion" name="nuevoContacto.descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="nuevoDescripcion" placeholder="Descripción">
+                    <textarea rows="4" type="text" [(ngModel)]="nuevoContacto.descripcion" name="nuevoContacto.descripcion" class="form-control" id="nuevoDescripcion" placeholder="Descripción" (input)="convertirAMayusculas($event, 'descripcion')" (input)="eliminarCaracteresEspeciales($event, 'descripcion')"></textarea>
                 </div>   
                 <div class="form-group">
                   <label>Tipo de contacto</label>
@@ -116,7 +113,7 @@
               </form>
           </div>
           <div class="modal-footer justify-content-between">
-              <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+              <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="cancelarInput()">Cancelar</button>
               <button type="button" (click)="agregarNuevoContacto()" class="btn btn-success" data-dismiss="modal">Guardar</button>
           </div>
       </div>
@@ -139,23 +136,23 @@
               <form>
                 <div class="form-group">
                     <label for="contactoEditando">Primer Nombre</label>
-                    <input type="text" [(ngModel)]="contactoEditando.primer_nombre" name="contactoEditando.primer_nombre" (input)="onInputChange($event, 'primer_nombre')" class="form-control" id="editarPN" placeholder="Primer Nombre">
+                    <input type="text" [(ngModel)]="contactoEditando.primer_nombre" name="contactoEditando.primer_nombre" class="form-control" id="editarPN" placeholder="Primer Nombre" (input)="convertirAMayusculas($event, 'primer_nombre')" (input)="eliminarCaracteresEspeciales($event, 'primer_nombre')">
                 </div>  
                 <div class="form-group">
                   <label for="contactoEditando">Segundo Nombre:</label>
-                  <input type="text" [(ngModel)]="contactoEditando.segundo_nombre" name="contactoEditando.segundo_nombre" (input)="onInputChange($event, 'segundo_nombre')"  class="form-control" id="editarSN" placeholder="Segundo Nombre">
+                  <input type="text" [(ngModel)]="contactoEditando.segundo_nombre" name="contactoEditando.segundo_nombre" class="form-control" id="editarSN" placeholder="Segundo Nombre" (input)="convertirAMayusculas($event, 'segundo_nombre')" (input)="eliminarCaracteresEspeciales($event, 'segundo_nombre')">
               </div>
               <div class="form-group">
                   <label for="contactoEditando">Primer Apellido</label>
-                  <input type="text" [(ngModel)]="contactoEditando.primer_apellido" name="contactoEditando.primer_apellido" (input)="onInputChange($event, 'primer_apellido')" class="form-control" id="editarPA" placeholder="Primer Apellido">
+                  <input type="text" [(ngModel)]="contactoEditando.primer_apellido" name="contactoEditando.primer_apellido" class="form-control" id="editarPA" placeholder="Primer Apellido" (input)="convertirAMayusculas($event, 'primer_apellido')" (input)="eliminarCaracteresEspeciales($event, 'primer_apellido')">
               </div>  
               <div class="form-group">
                   <label for="contactoEditando">Segundo Apellido:</label>
-                  <input type="text" [(ngModel)]="contactoEditando.segundo_apellido" name="contactoEditando.segundo_apellido" (input)="onInputChange($event, 'segundo_apellido')"  class="form-control" id="editarSA" placeholder="Tipo Contacto">
+                  <input type="text" [(ngModel)]="contactoEditando.segundo_apellido" name="contactoEditando.segundo_apellido" class="form-control" id="editarSA" placeholder="Segundo Apellido" (input)="convertirAMayusculas($event, 'segundo_apellido')" (input)="eliminarCaracteresEspeciales($event, 'segundo_apellido')">
               </div>
               <div class="form-group">
                   <label for="contactoEditando">Descripción</label>
-                  <input type="text" [(ngModel)]="contactoEditando.descripcion" name="contactoEditando.descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="editarDescripcion" placeholder="Descripción">
+                  <input type="text" [(ngModel)]="contactoEditando.descripcion" name="contactoEditando.descripcion" class="form-control" id="editarDescripcion" placeholder="Descripción" (input)="convertirAMayusculas($event, 'descripcion')" (input)="eliminarCaracteresEspeciales($event, 'descripcion')">
               </div>
               <div class="form-group">
                 <label>Tipo de contacto</label>
@@ -178,7 +175,7 @@
 
 
 <!-- Form Ver PDF-->
-<div class="modal fade" id="PDFContactos">
+<div class="modal fade" id="PDFReQ">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
 
@@ -188,18 +185,21 @@
             <h4>Reporte de Contactos </h4> 
             <!-- Puedes agregar más detalles del reporte aquí si es necesario -->
             <p>Fecha: {{ getDate() }}</p>
+            <p>Usuario {{getUser.usuario}}</p>
         </div>
         <div style="flex: 0;">
             <img src="\assets\dist\img\pym.png" alt="Logo de Mi Pyme" style="width: 200px; height: auto;">
         </div>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
       
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary customn-print-button btn-danger" (click)="generatePDF()">
-          <i class="fas fa-file-pdf"></i>  Generar PDF</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-      </div>
+        <!-- Pie del modal -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary customn-print-button btn-danger" (click)="generatePDF()">
+            <i class="fas fa-file-pdf"></i>  Generar PDF</button>
+            <button type="button" class="btn btn-secondary customn-print-button btn-success" (click)="generateExcel()">
+              <i class="fas fa-file-excel"></i>  Generar Excel</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        </div>
 
         <!-- Contenido del modal -->
         <div class="modal-body">
@@ -207,16 +207,17 @@
           <table class="table table-striped">
             <thead class="thead-dark">
               <tr>
+                <th>ID</th>
                 <th>Nombre Completo</th> 
                 <th>Descripcion</th>
                 <th>Creador</th>
                 <th>Fecha Creación</th>
-              
                 <th>Estado</th>
               </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let contac of listContacto; let i = index">
+                    <td>{{ contac.id_contacto}}</td>
                     <td>{{ contac.primer_nombre +" "+ contac.segundo_nombre+" "+ contac.primer_apellido +" "+contac.segundo_apellido }}</td>
                     <td>{{ contac.descripcion}}</td>
                     <td>{{ contac.creado_por}}</td>
@@ -251,18 +252,12 @@
             <h4>Reporte de Contactos </h4> 
             <!-- Puedes agregar más detalles del reporte aquí si es necesario -->
             <p>Fecha: {{ getDate() }}</p>
+            <p>Usuario {{getUser.usuario}}</p>
         </div>
         <div style="flex: 0;">
             <img src="\assets\dist\img\pym.png" alt="Logo de Mi Pyme" style="width: 200px; height: auto;">
         </div>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
-
-    <div class="modal-footer">
-      <button type="button" class="btn btn-secondary customn-print-button btn-success" (click)="generateExcel()">
-        <i class="fas fa-file-excel"></i>  Generar Excel</button>
-      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-    </div>
 
         <!-- Contenido del modal -->
         <div class="modal-body">
@@ -270,16 +265,17 @@
           <table class="table table-striped">
             <thead class="thead-dark">
               <tr>
+                <th>ID</th>
                 <th>Nombre Completo</th> 
                 <th>Descripcion</th>
                 <th>Creador</th>
                 <th>Fecha Creación</th>
-              
                 <th>Estado</th>
               </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let contac of listContacto; let i = index">
+                    <td>{{ contac.id_contacto}}</td>
                     <td>{{ contac.primer_nombre +" "+ contac.segundo_nombre+" "+ contac.primer_apellido +" "+contac.segundo_apellido }}</td>
                     <td>{{ contac.descripcion}}</td>
                     <td>{{ contac.creado_por}}</td>

@@ -275,41 +275,47 @@ toggleFunction(paises: any, i: number) {
 
 /**************************************************************/
 
-  agregarNuevoPais() {
+agregarNuevoPais() {
+  const usuarioLocal = localStorage.getItem('usuario');
+  if (usuarioLocal) {
+    this.nuevoPais = {
+      id_pais: 0,
+      pais: this.nuevoPais.pais,
+      descripcion: this.nuevoPais.descripcion,
+      estado: 1,
+      creado_por: usuarioLocal,
+      fecha_creacion: new Date(),
+      modificado_por: usuarioLocal,
+      fecha_modificacion: new Date(),
+      cod_pais: this.nuevoPais.cod_pais
+    };
+    if (!this.nuevoPais.pais || !this.nuevoPais.descripcion) {
+      this.toastr.warning('Debes completar los campos vacíos');
+      this.nuevoPais.pais = '';
+      this.nuevoPais.descripcion = '';
+    } else {
+      // Verificar si el país ya existe antes de agregarlo
+      const paisExistente = this.listPaises.some(pais => pais.pais === this.nuevoPais.pais);
+      if (paisExistente) {
+        this.toastr.error('El país ya existe. Por favor, elige otro país.');
+        return;
+      }
 
-    const usuarioLocal = localStorage.getItem('usuario')
-    if(usuarioLocal){
-
-      this.nuevoPais = {
-        id_pais: 0,  
-        //id_contacto:0,
-        pais: this.nuevoPais.pais, 
-        descripcion:this.nuevoPais.descripcion, 
-        estado: 1,
-        creado_por: usuarioLocal, 
-        fecha_creacion: new Date(), 
-        modificado_por: usuarioLocal, 
-        fecha_modificacion: new Date(),
-        cod_pais: this.nuevoPais.cod_pais
-      };
-      if (!this.nuevoPais.pais || !this.nuevoPais.descripcion) {
-        this.toastr.warning('Debes completar los campos vacíos');
-        this.nuevoPais.pais = '';
-        this.nuevoPais.descripcion = '';
-      }else{
+      // Agregar el país si no existe
       this._paisService.addPais(this.nuevoPais).subscribe({
         next: (data) => {
           this.insertBitacora(data);
-          this.toastr.success('Pais agregado con éxito')
-          this.listPaises.push(this.nuevoPais)
+          this.toastr.success('País agregado con éxito');
+          this.listPaises.push(this.nuevoPais);
         },
         error: (e: HttpErrorResponse) => {
           this._errorService.msjError(e);
         }
       });
     }
-    }
   }
+}
+
 
 
   obtenerIdPais(paises: Paises, i: any){

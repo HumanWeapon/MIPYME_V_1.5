@@ -167,6 +167,7 @@
         <table class="table table-striped">
           <thead class="thead-dark">
             <tr>
+              <th>ID</th>
               <th>Tipo Empresa</th>
               <th>Descripcion</th>
               <th>Creador</th>
@@ -176,6 +177,7 @@
           </thead>
           <tbody>
             <tr *ngFor="let Tempre of listTipoE; let i = index">
+              <td>{{ Tempre.id_tipo_empresa }}</td>
               <td>{{ Tempre.tipo_empresa }}</td>
               <td>{{ Tempre.descripcion }}</td>
               <td>{{ Tempre.creado_por}}</td>
@@ -213,6 +215,7 @@
       <table class="table table-striped">
         <thead class="thead-dark">
           <tr>
+            <th>ID</th>
             <th>Tipo Empresa</th>
             <th>Descripcion</th>
             <th>Creador</th>
@@ -222,6 +225,7 @@
         </thead>
         <tbody>
           <tr *ngFor="let Tempre of listTipoE; let i = index">
+            <td>{{ Tempre.id_tipo_empresa }}</td>
             <td>{{ Tempre.tipo_empresa }}</td>
             <td>{{ Tempre.descripcion }}</td>
             <td>{{ Tempre.creado_por}}</td>

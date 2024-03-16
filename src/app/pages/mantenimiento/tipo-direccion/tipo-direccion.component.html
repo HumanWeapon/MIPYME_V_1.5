@@ -32,9 +32,9 @@
                       <td>{{ TipoD.tipo_direccion | uppercase }}</td>
                       <td>{{ TipoD.descripcion | uppercase }}</td>
                       <td>{{ TipoD.creado_por | uppercase }}</td>
-                      <td>{{ TipoD.fecha_creacion }}</td>
+                      <td>{{ TipoD.fecha_creacion | date: 'yyyy-MM-dd' }}</td>
                       <td>{{ TipoD.modificado_por | uppercase}}</td>
-                      <td>{{ TipoD.fecha_modificacion}}</td>
+                      <td>{{ TipoD.fecha_modificacion | date: 'yyyy-MM-dd' }}</td>
                       <td>
                         <ng-container *ngIf="TipoD.estado === 1">ACTIVO</ng-container>
                         <ng-container *ngIf="TipoD.estado === 2">INACTIVO</ng-container>

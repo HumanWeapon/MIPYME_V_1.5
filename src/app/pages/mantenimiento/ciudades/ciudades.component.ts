@@ -341,6 +341,9 @@ toggleFunction(ciu: any, i: number) {
           this.toastr.success('Ciudad agregada con éxito');
           this.ciudadesAllPaises.push(this.nuevoCiudad);
         },
+        error: (e: HttpErrorResponse) => {
+          this._errorService.msjError(e);
+        }
       });
     }
     }
