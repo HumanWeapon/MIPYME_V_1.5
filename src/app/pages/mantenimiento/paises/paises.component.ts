@@ -32,7 +32,7 @@ export class PaisesComponent implements OnInit{
 
   paisEditando: Paises = {
     id_pais: 0, 
-    id_contacto:0,
+    //id_contacto:0,
     pais:'', 
     descripcion: '', 
     creado_por: '', 
@@ -45,7 +45,7 @@ export class PaisesComponent implements OnInit{
 
   nuevoPais: Paises = {
     id_pais: 0,
-    id_contacto:0, 
+    //id_contacto:0, 
     pais:'', 
     descripcion: '', 
     creado_por: '', 
@@ -282,7 +282,7 @@ toggleFunction(paises: any, i: number) {
 
       this.nuevoPais = {
         id_pais: 0,  
-        id_contacto:0,
+        //id_contacto:0,
         pais: this.nuevoPais.pais, 
         descripcion:this.nuevoPais.descripcion, 
         estado: 1,
@@ -314,7 +314,7 @@ toggleFunction(paises: any, i: number) {
 
   obtenerIdPais(paises: Paises, i: any){
     this.paisEditando = {
-    id_contacto: paises.id_contacto,
+    //id_contacto: paises.id_contacto,
     id_pais: paises.id_pais,
     pais: paises.pais, 
     descripcion: paises.descripcion,  

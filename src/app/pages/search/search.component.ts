@@ -55,7 +55,7 @@ export class SearchComponent implements OnInit {
 
   paisEditando: Paises = {
     id_pais: 0, 
-    id_contacto:0,
+    //id_contacto: 0,
     pais:'', 
     descripcion: '', 
     creado_por: '', 
