@@ -35,6 +35,7 @@ export class PermisosComponent implements OnInit, OnDestroy {
   objetos: Objetos[] = [];
 
   id_rol: number = 0;
+  id_objeto: number = 0;
   objetosSinRol: any[] = [];
 
 
@@ -137,7 +138,13 @@ export class PermisosComponent implements OnInit, OnDestroy {
   idRol(event: Event): void {
     const idRol = (event.target as HTMLSelectElement).value;
     this.id_rol = Number(idRol);
+    console.log(this.id_rol);
     this.getobjetosSinRol();
+  }
+  idObjeto(event: Event): void{
+    const idObjeto = (event.target as HTMLSelectElement).value;
+    this.id_objeto = Number(idObjeto);
+    console.log(this.id_objeto);
   }
   getobjetosSinRol(){
     this._permService.objetosSinRol(this.id_rol).subscribe({
@@ -355,8 +362,8 @@ activarPermiso(permiso: any, i: number){
     if (LocalUser){
       const permisoEnviado: Permisos = {
         id_permisos: this.nuevoPermiso.id_permisos,
-        id_rol: this.nuevoPermiso.id_rol,
-        id_objeto: this.nuevoPermiso.id_objeto,
+        id_rol: this.id_rol,
+        id_objeto: this.id_objeto,
         permiso_consultar: this.nuevoPermiso.permiso_consultar,
         permiso_insercion: this.nuevoPermiso.permiso_insercion,
         permiso_actualizacion: this.nuevoPermiso.permiso_actualizacion,
@@ -372,6 +379,7 @@ activarPermiso(permiso: any, i: number){
       this._permService.addPermiso(permisoEnviado).subscribe({
         next: (data) => {
           this.insertBitacora(data);
+          this.listPermisos.push(data);
           this.toastr.success('Permiso agregado exitosamente', 'Éxito')
         },
         error: (e: HttpErrorResponse) => {

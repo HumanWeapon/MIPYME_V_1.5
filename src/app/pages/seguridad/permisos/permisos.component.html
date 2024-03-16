@@ -109,23 +109,15 @@
                       <option *ngFor="let rol of roles" [value]="rol.id_rol">{{ rol.rol }}</option>
                   </select>
               </div>
-              <!-- Selector de submenu -->
+              <!-- Selector de objeto -->
               <div class="form-group">
-                <label for="submenuSelector">Selecciona un Menu Principal</label>
-                <select (change)="filtrarObjetosPorTipo()" name="submenuSelector" class="form-control" id="submenuSelector">
-                  <option *ngFor="let submenu of objetosSinRol" [value]="submenu.descripcion">{{ submenu.nombre_objeto }}</option>
+                <label for="id_objeto">Selecciona un Menu Principal</label>
+                <select (change)="idObjeto($event)" name="id_objeto" class="form-control" id="submenuSelector">
+                  <option selected disabled>Seleccionar</option>
+                  <option *ngFor="let submenu of objetosSinRol" [value]="submenu.id_objeto">{{ submenu.nombre_objeto }}</option>
                 </select>
               </div>
-              
-              <div class="form-group">
-                <label for="submenuSelector" *ngIf="objetosFiltrados && objetosFiltrados.length > 0">Selecciona un Submenu:</label>
-                <div *ngIf="objetosFiltrados && objetosFiltrados.length > 0">
-                  <select class="form-control">
-                    <option *ngFor="let objeto of objetosFiltrados" [value]="objeto.id">{{ objeto.objeto }}</option>
-                  </select>
-                </div>
-              </div>
-  
+
               <div class="form-group">
                 <div class="form-check">
                   <input type="checkbox" [(ngModel)]="nuevoPermiso.permiso_consultar" name="nuevoPermiso.permiso_consultar" class="form-check-input" id="nuevoPermisoConsultar">
