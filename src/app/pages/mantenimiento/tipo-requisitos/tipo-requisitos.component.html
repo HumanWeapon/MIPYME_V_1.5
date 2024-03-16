@@ -89,7 +89,7 @@
                 </div>
                 <div class="form-group">
                   <label for="nuevoTipoRequisito">Descripción</label>
-                  <textarea [(ngModel)]="nuevoTipoRequisito.descripcion" rows="5" name="nuevoTipoRequisito.descripcion" (input)="eliminarCaracteresEspeciales($event, 'descripcion')" (input)="convertirAMayusculas($event, 'descripcion')" class="form-control" id="nuevoTipoRequisito" placeholder="Descripción"></textarea>
+                  <textarea [(ngModel)]="nuevoTipoRequisito.descripcion" rows="5" name="nuevoTipoRequisito.descripcion" class="form-control" id="nuevoTipoRequisito" placeholder="Descripción" (input)="eliminarCaracteresEspeciales($event, 'descripcion')" (input)="convertirAMayusculas($event, 'descripcion')"></textarea>
               </div>
                 
             </form>

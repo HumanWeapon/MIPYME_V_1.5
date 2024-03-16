@@ -320,6 +320,9 @@ getEstadoText(estado: number): string {
             this.toastr.success('Tipo de Requisito agregado con éxito')
             this.listTipoR.push(this.nuevoTipoRequisito)
           },
+          error: (e: HttpErrorResponse) => {
+            this._errorService.msjError(e);
+          }
         });
       }
       }

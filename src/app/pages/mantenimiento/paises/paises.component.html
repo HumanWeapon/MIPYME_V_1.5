@@ -6,11 +6,8 @@
           <div class="card-header">
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarPais">
               <i class="fas fa-plus"></i> Nuevo</button>
-              <button type="button" class="btn btn-primary custom-print-button btn-danger" title="Generar el Reporte" data-toggle="modal" data-target="#PDFPais">
-              <i class="fas fa-file-pdf mr-2"></i>PDF</button>
-              <button type="button" class="btn btn-primary custom-print-button btn-success" title="Generar el Reporte en Excel" data-toggle="modal" data-target="#ExcelPais">
-                <i class="fas fa-file-excel mr-2"></i>Excel
-            </button>
+              <button type="button" class="btn btn-primary custom-print-button btn-primary" title="Generar el Reporte" data-toggle="modal" data-target="#PDFReQ">
+                <i class="fas fa-print"></i> Generar Reporte</button>
           </div>
           <!-- /.card-header -->
           <div class="card-body">
@@ -32,9 +29,9 @@
                     <tr *ngFor="let paises of listPaises; let i = index">
                       <td>{{ paises.id_pais}}</td>
                       <td>{{ paises.cod_pais}}</td>
-                      <td>{{ paises.pais}}</td>
-                      <td>{{ paises.descripcion }}</td>
-                      <td>{{ paises.creado_por}}</td>
+                      <td>{{ paises.pais | uppercase }}</td>
+                      <td>{{ paises.descripcion | uppercase }}</td>
+                      <td>{{ paises.creado_por | uppercase }}</td>
                       <td>{{ paises.fecha_creacion }}</td>
                       <td>{{ paises.fecha_modificacion}}</td>
                       <td>
@@ -70,36 +67,39 @@
 
     <!-- Agregar Pais Form -->
 
-<div class="modal fade" id="agregarPais">
-  <div class="modal-dialog">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h4 class="modal-title">Agregar Pais</h4>
+    <div class="modal fade" id="agregarPais">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Agregar País</h4>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
+              <span aria-hidden="true">&times;</span>
             </button>
-        </div>
-        <div class="modal-body">
+          </div>
+          <div class="modal-body">
             <form (submit)="agregarNuevoPais()">
-  
-                <div class="form-group">
-                    <label for="nuevoPais">Nombre del Pais:</label>
-                    <input type="text" [(ngModel)]="nuevoPais.pais" name="nuevoPais.pais" (input)="onInputChange($event, 'pais')" class="form-control" id="nuevoPais" placeholder="Nombre del pais">
-                </div>
-                <div class="form-group">
-                    <label for="nuevaDescripcion">Descripción</label>
-                    <input type="text" [(ngModel)]="nuevoPais.descripcion" name="nuevoPais.descripcion" (input)="onInputChange($event, 'descripcion')" class="form-control" id="nuevadescripcion" placeholder="Descripción">
-                </div>
-                            
+              <div class="form-group">
+                <label for="nuevoPais">Nombre del País:</label>
+                <input type="text" [(ngModel)]="nuevoPais.pais" name="nuevoPais.pais" class="form-control" id="nuevoPais" placeholder="Nombre del país" (input)="convertirAMayusculas($event, 'pais')" (input)="eliminarCaracteresEspeciales($event, 'pais')">
+              </div>
+              <div class="form-group">
+                <label for="nuevaDescripcion">Descripción:</label>
+                <textarea rows="4" type="text" [(ngModel)]="nuevoPais.descripcion" name="nuevoPais.descripcion" class="form-control" id="nuevaDescripcion" placeholder="Descripción" (input)="eliminarCaracteresEspeciales($event, 'descripcion')" (input)="convertirAMayusculas($event, 'descripcion')"></textarea>
+              </div>
+              <div class="form-group">
+                <label for="nuevoCodPais">Código del País:</label>
+                <input type="text" [(ngModel)]="nuevoPais.cod_pais" name="nuevoPais.cod_pais" class="form-control" id="nuevoCodPais" placeholder="Código del país" maxlength="2" (input)="eliminarCaracteresEspeciales($event, 'cod_pais')" (input)="convertirAMayusculas($event, 'cod_pais')">
+              </div>
             </form>
-        </div>
-        <div class="modal-footer justify-content-between">
-            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+          </div>
+          <div class="modal-footer justify-content-between">
+            <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="cancelarInput()">Cancelar</button>
             <button type="button" (click)="agregarNuevoPais()" class="btn btn-success" data-dismiss="modal">Guardar</button>
+          </div>
         </div>
+      </div>
     </div>
-  </div>
-  </div>
+    
   <!-- /Agregar categoria Form -->
   
   
@@ -117,11 +117,11 @@
             <form>
               <div class="form-group">
                 <label for="paisEditando">Pais</label>
-                <input type="text" [(ngModel)]="paisEditando.pais" name="paisEditando.pais" class="form-control" id="editarPais" placeholder="Pais" (input)="onInputChange($event, 'Pais')" >
+                <input type="text" [(ngModel)]="paisEditando.pais" name="paisEditando.pais" class="form-control" id="editarPais" placeholder="Pais" (input)="convertirAMayusculas($event, 'pais')" (input)="eliminarCaracteresEspeciales($event, 'pais')">
               </div>
               <div class="form-group">
                 <label for="paisEditando">Descripción:</label>
-                <input type="text" [(ngModel)]="paisEditando.descripcion" name="paisEditando.descripcion"  class="form-control" id="editarDescripcion" placeholder="Descripción" (input)="onInputChange($event, 'Descripcion')" >
+                <textarea rows="4" type="text" [(ngModel)]="paisEditando.descripcion" name="paisEditando.descripcion"  class="form-control" id="editarDescripcion" placeholder="Descripción" (input)="eliminarCaracteresEspeciales($event, 'descripcion')" (input)="convertirAMayusculas($event, 'descripcion')"></textarea>
               </div>
             </form>
         </div>
@@ -138,7 +138,7 @@
   
 
   <!-- Form Ver PDF-->
-<div class="modal fade" id="PDFPais">
+<div class="modal fade" id="PDFReQ">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
 
@@ -148,39 +148,44 @@
             <h4>Reporte de Países</h4> 
             <!-- Puedes agregar más detalles del reporte aquí si es necesario -->
             <p>Fecha: {{ getDate() }}</p>
+            <p>Usuario {{getUser.usuario}}</p>
         </div>
         <div style="flex: 0;">
             <img src="\assets\dist\img\pym.png" alt="Logo de Mi Pyme" style="width: 200px; height: auto;">
         </div>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
       
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary customn-print-button btn-danger" (click)="generatePDF()">
-          <i class="fas fa-file-pdf"></i>  Generar PDF</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-      </div>
+        <!-- Pie del modal -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary customn-print-button btn-danger" (click)="generatePDF()">
+            <i class="fas fa-file-pdf"></i>  Generar PDF</button>
+            <button type="button" class="btn btn-secondary customn-print-button btn-success" (click)="generateExcel()">
+              <i class="fas fa-file-excel"></i>  Generar Excel</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        </div>
         <!-- Contenido del modal -->
         <div class="modal-body">
           <!-- Aquí puedes colocar tu DataTable o cualquier otro contenido que desees mostrar -->
           <table class="table table-striped">
             <thead class="thead-dark">
               <tr>
+                <th>ID</th>
+                <th>Codigo del Pais</th>
                 <th>Pais</th>
                 <th>Descripcion</th>
                 <th>Creador</th>
                 <th>Fecha Creación</th>
-               
                 <th>Estado</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let paises of listPaises; let i = index">
+                <td>{{ paises.id_pais }}</td>
+                <td>{{ paises.cod_pais }}</td>
                 <td>{{ paises.pais}}</td>
                 <td>{{ paises.descripcion }}</td>
                 <td>{{ paises.creado_por}}</td>
                 <td>{{ paises.fecha_creacion }}</td>
-               
                 <td>{{ getEstadoText(paises.estado) }}</td>
               </tr>
             </tbody>
@@ -210,35 +215,29 @@
         <div style="flex: 0;">
             <img src="\assets\dist\img\pym.png" alt="Logo de Mi Pyme" style="width: 200px; height: auto;">
         </div>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
 
-    <div class="modal-footer">
-      <button type="button" class="btn btn-secondary customn-print-button btn-success" (click)="generateExcelP()">
-        <i class="fas fa-file-excel"></i>  Generar Excel</button>
-      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-    </div>
            <!-- Contenido del modal -->
            <div class="modal-body">
             <!-- Aquí puedes colocar tu DataTable o cualquier otro contenido que desees mostrar -->
             <table class="table table-striped">
               <thead class="thead-dark">
                 <tr>
+                  <th>ID</th>
                   <th>Pais</th>
                   <th>Descripcion</th>
                   <th>Creador</th>
                   <th>Fecha Creación</th>
-                 
                   <th>Estado</th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let paises of listPaises; let i = index">
+                  <td>{{ paises.id_pais }}</td>
                   <td>{{ paises.pais}}</td>
                   <td>{{ paises.descripcion }}</td>
                   <td>{{ paises.creado_por}}</td>
                   <td>{{ paises.fecha_creacion }}</td>
-                 
                   <td>{{ getEstadoText(paises.estado) }}</td>
                 </tr>
               </tbody>

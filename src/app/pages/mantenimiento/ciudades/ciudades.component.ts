@@ -88,7 +88,20 @@ export class CiudadesComponent implements OnInit{
   
   ngOnInit(): void {
     this.getAllPaises();
-    this.getAllCiudades();
+    this.dtOptions = {
+      pagingType: 'full_numbers',
+      pageLength: 10,
+      language: {url:'//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'},
+      responsive: true
+    };
+    this._ciudadService.ciudadesAllPaises().subscribe({
+      next: (data) =>{
+        this.ciudadesAllPaises = data;
+        //this.listCiudades = data;
+        this.dtTrigger.next(0);      
+      },
+    });
+    
   }
 
   getAllPaises(){
@@ -96,25 +109,6 @@ export class CiudadesComponent implements OnInit{
       this.listPaises = data.filter(pais => pais.estado == 1);
     });
   }
-
-  getAllCiudades(){
-    this.dtOptions = {
-      pagingType: 'full_numbers',
-      pageLength: 10,
-      language: {url:'//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'},
-      responsive: true
-    };
-    this._ciudadService.getAllCiudades().subscribe({
-      next: (data) =>{
-        this.ciudadesAllPaises = data;
-        this.listCiudades = data;
-        this.dtTrigger.next(0);
-        console.log('Datos de ciudadesAllPaises después de obtener los datos actualizados:', this.ciudadesAllPaises); // Agregar este console.log
-      },
-    });
-    
-  }
-
 
   ngOnDestroy(): void {
     // Do not forget to unsubscribe the event
@@ -268,7 +262,8 @@ toggleFunction(ciu: any, i: number) {
       doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
       doc.text("Reporte de Ciudades", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
       doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
-  
+      doc.text("Usuario: " + this.getUser.usuario, centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+
       // Recorre los datos de tu lista de ciudades y agrégalo a la matriz 'data'
       this.ciudadesAllPaises.forEach((ciu, index) => {
         const row = [
@@ -317,11 +312,6 @@ toggleFunction(ciu: any, i: number) {
 
 
 /**************************************************************/
- 
- /* tipoEmpresaSeleccionado(event: Event): void {
-    const idPais = (event.target as HTMLSelectElement).value;
-    this.id_pais = Number(idPais);
-  }*/
 
   agregarNuevoCiudad() {
     const userLocal = localStorage.getItem('usuario');
@@ -329,7 +319,7 @@ toggleFunction(ciu: any, i: number) {
       const fechaActual = new Date();
       const fechaFormateada = this._datePipe.transform(fechaActual, 'yyyy-MM-dd');
   
-      const nuevaCiudad = {
+      this.nuevoCiudad = {
         id_ciudad: 0, 
         ciudad: this.nuevoCiudad.ciudad, 
         descripcion: this.nuevoCiudad.descripcion,
@@ -340,40 +330,22 @@ toggleFunction(ciu: any, i: number) {
         estado: 1,
         id_pais: this.nuevoCiudad.id_pais
       };
-  
-      console.log('Datos de la nueva ciudad:', nuevaCiudad); // Agregar esta línea para imprimir los datos en la consola
-  
-      if (!this.validarDatosCiudad(nuevaCiudad)) {
+      if (!this.nuevoCiudad.ciudad || !this.nuevoCiudad.descripcion) {
         this.toastr.warning('Debes completar los campos vacíos');
-        return;
-      }
-  
-      this._ciudadService.addCiudad(nuevaCiudad).subscribe({
+        this.nuevoCiudad.ciudad = '';
+        this.nuevoCiudad.descripcion = '';
+      }else{
+      this._ciudadService.addCiudad(this.nuevoCiudad).subscribe({
         next: (data) => {
           this.insertBitacora(data);
           this.toastr.success('Ciudad agregada con éxito');
-          this.ciudadesAllPaises.push(nuevaCiudad);
-          this.limpiarCampos();
+          this.ciudadesAllPaises.push(this.nuevoCiudad);
         },
-        error: (error) => {
-          this.toastr.error('Error al agregar la ciudad. Por favor, contacta al administrador.');
-          console.error(error);
-        }
       });
+    }
     }
   }
   
-  
-  validarDatosCiudad(ciudad: any): boolean {
-    return ciudad.ciudad && ciudad.descripcion && ciudad.id_pais;
-  }
-  
-  limpiarCampos() {
-    this.nuevoCiudad.ciudad = '';
-    this.nuevoCiudad.descripcion = '';
-  }
-  
-
   obtenerIdCiudad(ciudades: Ciudades, i: any){
     this.ciudadEditando = {
       id_ciudad: ciudades.id_ciudad, 
@@ -394,11 +366,11 @@ toggleFunction(ciu: any, i: number) {
     this.ciudadEditando.ciudad = this.ciudadEditando.ciudad.toUpperCase();
     this.ciudadEditando.descripcion = this.ciudadEditando.descripcion.toUpperCase();
 
-    const esMismaCiu = this.listCiudades[this.indice].ciudad === this.ciudadEditando.ciudad
+    const esMismaCiu = this.ciudadesAllPaises[this.indice].ciudad === this.ciudadEditando.ciudad
 
     // Si el usuario no es el mismo, verifica si el nombre de usuario ya existe
     if (!esMismaCiu) {
-      const CiuExistente = this.listCiudades.some(user => user.ciudad === this.ciudadEditando.ciudad);
+      const CiuExistente = this.ciudadesAllPaises.some(user => user.ciudad === this.ciudadEditando.ciudad);
       if (CiuExistente) {
         this.toastr.error('La Ciudad ya existe. Por favor, elige otra Ciudad.');
         return;

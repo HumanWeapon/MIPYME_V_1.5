@@ -85,14 +85,13 @@ export class PaisesComponent implements OnInit{
       language: {url:'//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'},
       responsive: true
     };
-    this._paisService.getAllPaises()
-      .subscribe((res: any) => {
-        this.listPaises= res;
-        console.log(res)
-        this.dtTrigger.next(null);
-      });
+    this._paisService.getAllPaises().subscribe({
+      next: (data) =>{
+        this.listPaises = data;
+        this.dtTrigger.next(0);
+      }
+    });
       this.getUsuario();
-
   }
 
   ngOnDestroy(): void {
@@ -100,16 +99,36 @@ export class PaisesComponent implements OnInit{
     this.dtTrigger.unsubscribe();
   }
 
-  onInputChange(event: any, field: string) {
-    const inputValue = event.target.value;
-    if (field === 'paises') {
-      // Convierte a mayúsculas y elimina espacios en blanco
-      event.target.value = inputValue.toUpperCase().replace(/\s/g, '')
-    } else if (field === 'paises'){
-      // Convierte a mayúsculas sin eliminar espacios en blanco
+  convertirAMayusculas(event: any, field: string) {
+    setTimeout(() => {
+      const inputValue = event.target.value;
       event.target.value = inputValue.toUpperCase();
-    }
+    });
   }
+  
+  eliminarCaracteresEspeciales(event: any, field: string) {
+    setTimeout(() => {
+      let inputValue = event.target.value;
+  
+      // Elimina caracteres especiales dependiendo del campo
+      if (field === 'pais') {
+        inputValue = inputValue.replace(/[^a-zA-Z0-9\s]/g, ''); // Solo permite letras y números
+      }else if (field === 'descripcion') {
+        inputValue = inputValue.replace(/[^a-zA-Z0-9\s]/g, ''); // Solo permite letras, números y espacios en blanco
+      }else if (field === 'cod_pais') {
+        inputValue = inputValue.replace(/[^a-zA-Z]/g, ''); // Solo permite letras sin espacios y sin caracteres especiales
+      }
+      event.target.value = inputValue;
+    });
+  }
+  
+  cancelarInput(){
+     this.nuevoPais.pais = '';
+     this.nuevoPais.descripcion = '';
+    }
+    
+
+
   
   // Variable de estado para alternar funciones
 
@@ -143,7 +162,7 @@ toggleFunction(paises: any, i: number) {
 
   /*****************************************************************************************************/
 
-  generateExcelP() {
+  generateExcel() {
     const headers = ['País', 'Descripción', 'Creador', 'Fecha de Creación', 'Estado'];
     const data: any[][] = [];
   
@@ -260,6 +279,7 @@ toggleFunction(paises: any, i: number) {
 
     const usuarioLocal = localStorage.getItem('usuario')
     if(usuarioLocal){
+
       this.nuevoPais = {
         id_pais: 0,  
         id_contacto:0,
@@ -270,21 +290,24 @@ toggleFunction(paises: any, i: number) {
         fecha_creacion: new Date(), 
         modificado_por: usuarioLocal, 
         fecha_modificacion: new Date(),
-        cod_pais: ''
+        cod_pais: this.nuevoPais.cod_pais
       };
-      console.log(this.nuevoPais);
+      if (!this.nuevoPais.pais || !this.nuevoPais.descripcion) {
+        this.toastr.warning('Debes completar los campos vacíos');
+        this.nuevoPais.pais = '';
+        this.nuevoPais.descripcion = '';
+      }else{
       this._paisService.addPais(this.nuevoPais).subscribe({
         next: (data) => {
           this.insertBitacora(data);
           this.toastr.success('Pais agregado con éxito')
+          this.listPaises.push(this.nuevoPais)
         },
         error: (e: HttpErrorResponse) => {
           this._errorService.msjError(e);
         }
       });
-      location.reload();
-      this.ngZone.run(() => {        
-      });
+    }
     }
   }
 
@@ -308,18 +331,28 @@ toggleFunction(paises: any, i: number) {
 
 
   editarPais(){
+
+    this.paisEditando.pais = this.paisEditando.pais.toUpperCase();
+    this.paisEditando.descripcion = this.paisEditando.descripcion.toUpperCase();
+
+    const esMismoPais = this.listPaises[this.indice].pais === this.paisEditando.pais;
+
+        // Si el usuario no es el mismo, verifica si el nombre de usuario ya existe
+        if (!esMismoPais) {
+          const PaisExistente = this.listPaises.some(user => user.pais === this.paisEditando.pais);
+          if (PaisExistente) {
+            this.toastr.error('El Pais ya existe. Por favor, elige otro Pais que no este registrado.');
+            return;
+          }
+        }
+
     this._paisService.editarPais(this.paisEditando).subscribe(data => {
       this.updateBitacora(data);
       this.toastr.success('Pais editado con éxito');
       this.listPaises[this.indice].pais = this.paisEditando.pais;
       this.listPaises[this.indice].pais = this.paisEditando.descripcion;
-        // Recargar la página
-        location.reload();
-        // Actualizar la vista
-              
-        });
-    
-    };
+      });
+    }
 
 /*************************************************************** Métodos de Bitácora ***************************************************************************/
 

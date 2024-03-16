@@ -1,1 +1,246 @@
-<p>tipo-direccion works!</p>
+ <!-- Main content -->
+ <section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarRequisito">
+                <i class="fas fa-plus"></i> Nuevo</button>
+                <button type="button" class="btn btn-primary custom-print-button btn-primary" title="Generar el Reporte" data-toggle="modal" data-target="#PDFReQ">
+                  <i class="fas fa-print"></i> Generar Reporte</button>
+            </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+            <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover">
+                <thead>
+                    <tr>
+                      <th>Id</th>
+                      <th>Tipo Direccion</th>
+                      <th>Descripción</th>
+                      <th>Creado</th>
+                      <th>Fecha Creación</th>
+                      <th>Modificado</th>
+                      <th>Fecha Modificación</th>
+                      <th>Estado</th>
+                      <th>Aciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let TipoD of listTipoDireccion; let i = index">
+                      <td>{{ TipoD.id_tipo_direccion }}</td>
+                      <td>{{ TipoD.tipo_direccion | uppercase }}</td>
+                      <td>{{ TipoD.descripcion | uppercase }}</td>
+                      <td>{{ TipoD.creado_por | uppercase }}</td>
+                      <td>{{ TipoD.fecha_creacion }}</td>
+                      <td>{{ TipoD.modificado_por | uppercase}}</td>
+                      <td>{{ TipoD.fecha_modificacion}}</td>
+                      <td>
+                        <ng-container *ngIf="TipoD.estado === 1">ACTIVO</ng-container>
+                        <ng-container *ngIf="TipoD.estado === 2">INACTIVO</ng-container>
+                        
+                      </td>
+                      <td class="text-center">
+                        <div class="btn-group">
+                          <div class="form-check form-switch ml-4">
+                            <input class="form-check-input" (click)="toggleFunction(TipoD, i)" [title]="TipoD.estado == 1 ? 'Desactivar' : 'Activar'" type="checkbox" 
+                              role="switch" id="flexSwitchCheckChecked" [checked]="TipoD.estado == 1">
+                          </div>
+                            <button type="button" (click)="obtenerIdTipoDireccion(TipoD, i)" title="Editar Tipo de Requisito" data-toggle="modal" data-target="#abrirModalEditarTipoRequisito"data-toggle="modal" data-target="#abrirModalEditarTipoRequisito" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
+                          </div>
+                      </td>
+                    </tr>
+                  </tbody>
+              </table>
+
+          </div>
+          <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+  </div>
+  <!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+
+
+
+
+
+
+<!-- Agregar Usuario Form -->
+<div class="modal fade" id="agregarRequisito">
+<div class="modal-dialog">
+<div class="modal-content">
+    <div class="modal-header">
+        <h4 class="modal-title">Agregar Tipo Requisito</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form (submit)="agregarNuevoTipoRequisito()">
+            <div class="form-group">
+                <label for="nuevoTipoDireccion">Tipo Direccion:</label>
+                <input type="text" [(ngModel)]="nuevoTipoDireccion.tipo_direccion" name="nuevoTipoRequisito.tipo_requisito" class="form-control" id="nuevoTipoRequisito" placeholder="Tipo Requisito" (input)="convertirAMayusculas($event, 'tipo_direccion')" (input)="eliminarCaracteresEspeciales($event, 'tipo_direccion')">
+            </div>
+            <div class="form-group">
+              <label for="nuevoTipoDireccion">Descripción</label>
+              <textarea [(ngModel)]="nuevoTipoDireccion.descripcion" rows="5" name="nuevoTipoRequisito.descripcion" class="form-control" id="nuevoTipoRequisito" placeholder="Descripción" (input)="eliminarCaracteresEspeciales($event, 'descripcion')" (input)="convertirAMayusculas($event, 'descripcion')"></textarea>
+          </div>
+            
+        </form>
+    </div>
+    <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="cancelarInput()">Cancelar</button>
+        <button type="button" (click)="agregarNuevoTipoRequisito()" class="btn btn-success" data-dismiss="modal">Guardar</button>
+    </div>
+</div>
+</div>
+</div>
+<!-- /Agregar ciudad Form -->
+
+
+<!-- Actualizar Usuario Form -->
+<div class="modal fade" id="abrirModalEditarTipoRequisito">
+<div class="modal-dialog">
+<div class="modal-content">
+    <div class="modal-header">
+        <h4 class="modal-title">Editar Tipo Direccion</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form>
+          <div class="form-group">
+              <label for="tipoRequisitoEditando">Tipo Direccion:</label>
+              <input type="text" [(ngModel)]="tipoDireccionEditando.tipo_direccion" name="tipoDireccionEditando.tipo_direccion" class="form-control" id="editartipoDireccion" placeholder="Nombre de la ciudad" (input)="convertirAMayusculas($event, 'tipo_direccion')" (input)="eliminarCaracteresEspeciales($event, 'tipo_direccion')" >
+          </div>
+          <div class="form-group">
+            <label for="tipoRequisitoEditando">Descripción:</label>
+            <textarea [(ngModel)]="tipoDireccionEditando.descripcion" name="tipoDireccionEditando.descripcion" class="form-control" id="editartipoDireccion" placeholder="Descripción" rows="3" (input)="convertirAMayusculas($event, 'descripcion')" (input)="eliminarCaracteresEspeciales($event, 'descripcion')"></textarea>
+        </div>
+    
+         
+        </form>
+    </div>
+    <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+        <button type="button" (click)="editarTipoDireccion()" class="btn btn-success" data-dismiss="modal">Guardar</button>
+    </div>
+</div>
+</div>
+</div>
+
+<!-- Form Ver PDF para Requisitos -->
+<div class="modal fade" id="PDFReQ">
+<div class="modal-dialog modal-xl">
+  <div class="modal-content">
+
+    <!-- Cabecera del modal -->
+    <div class="modal-header" style="display: flex; align-items: center;">
+      <div style="flex: 1; text-align: left; margin-right: 20px;">
+          <h1>Utilidad Mi Pyme</h1>
+          <h4>Reporte de Tipos de Direcciones</h4> 
+          <!-- Puedes agregar más detalles del reporte aquí si es necesario -->
+          <p>Fecha: {{ getDate() }}</p>
+          <p>Usuario {{getUser.usuario}}</p>
+      </div>
+
+      <div style="flex: 0;">
+          <img src="\assets\dist\img\pym.png" alt="Logo de Mi Pyme" style="width: 200px; height: auto;">
+      </div>
+    </div>
+    
+    <!-- Pie del modal -->
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary customn-print-button btn-danger" (click)="generatePDF()">
+        <i class="fas fa-file-pdf"></i>  Generar PDF</button>
+        <button type="button" class="btn btn-secondary customn-print-button btn-success" (click)="generateExcel()">
+          <i class="fas fa-file-excel"></i>  Generar Excel</button>
+      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+    </div>
+
+<!-- Contenido del modal -->
+<div class="modal-body">
+<!-- Aquí puedes colocar tu DataTable o cualquier otro contenido que desees mostrar -->
+<table class="table table-striped">
+  <thead class="thead-dark">
+    <tr>
+      <th>ID</th>
+      <th>Tipo Direccion</th>
+      <th>Descripcion</th>
+      <th>Creador</th>
+      <th>Fecha Creación</th>
+      <th>Estado</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let TipoD of listTipoDireccion; let i = index">
+      <td>{{ TipoD.id_tipo_direccion }}</td>
+      <td>{{ TipoD.tipo_direccion }}</td>
+      <td>{{ TipoD.descripcion }}</td>
+      <td>{{ TipoD.creado_por}}</td>
+      <td>{{ TipoD.fecha_creacion }}</td>
+      <td>{{ getEstadoText(TipoD.estado) }}</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
+
+
+
+
+<!-- Form Ver Excel-->
+<div class="modal fade" id="ExcelRequisito">
+<div class="modal-dialog modal-xl">
+<div class="modal-content">
+
+  <!-- Cabecera del modal -->
+  <div class="modal-header" style="display: flex; align-items: center;">
+    <div style="flex: 1; text-align: left; margin-right: 20px;">
+        <h1>Utilidad Mi Pyme</h1>
+        <h4>Reporte de Tipos de Direccion </h4> 
+        <!-- Puedes agregar más detalles del reporte aquí si es necesario -->
+        <p>Fecha: {{ getDate() }}</p>
+        <p>Usuario {{getUser.usuario}}</p>
+    </div>
+    <div style="flex: 0;">
+        <img src="\assets\dist\img\pym.png" alt="Logo de Mi Pyme" style="width: 200px; height: auto;">
+    </div>
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+  </div>
+  <!-- Contenido del modal -->
+<div class="modal-body">
+<!-- Aquí puedes colocar tu DataTable o cualquier otro contenido que desees mostrar -->
+<table class="table table-striped">
+  <thead class="thead-dark">
+    <tr>
+      <th>ID</th>
+      <th>Tipo Direccion</th>
+      <th>Descripcion</th>
+      <th>Creador</th>
+      <th>Fecha Creación</th>
+      <th>Estado</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let TipoD of listTipoDireccion; let i = index">
+      <td>{{ TipoD.id_tipo_direccion }}</td>
+      <td>{{ TipoD.tipo_direccion }}</td>
+      <td>{{ TipoD.descripcion }}</td>
+      <td>{{ TipoD.creado_por}}</td>
+      <td>{{ TipoD.fecha_creacion }}</td>
+      <td>{{ getEstadoText(TipoD.estado) }}</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</div>
