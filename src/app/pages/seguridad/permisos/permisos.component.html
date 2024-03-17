@@ -72,8 +72,8 @@
                               <input class="form-check-input" (click)="toggleFunction(permiso, i)" [title]="permiso.estado_permiso == 1 ? 'Desactivar' : 'Activar'" type="checkbox" 
                                 role="switch" id="flexSwitchCheckChecked" [checked]="permiso.estado_permiso == 1">
                             </div>
-                              <button type="button" (click)="obtenerIdPermiso(permiso, i)" title="Editar Permiso"  data-toggle="modal" data-target="#abrirModalEditarPermiso" class="btna" ><i class="fas fa-solid fa-pen"></i></button>                                
-                            </div>
+                              <button type="button" (click)="obtenerIdPermiso(permiso, i)" title="Editar Permiso"  data-toggle="modal" data-target="#abrirModalEditarPermiso" class="btna div-a-ocultar d-none" ><i class="fas fa-solid fa-pen"></i></button>                                
+                          </div>
                         </td>
                       </tr>
                     </tbody>
@@ -113,7 +113,7 @@
               </div>
               <!-- Selector de objeto -->
               <div class="form-group">
-                <label for="id_objeto">Selecciona un Menu Principal</label>
+                <label for="id_objeto">Objeto</label>
                 <select (change)="idObjeto($event)" name="id_objeto" class="form-control" id="submenuSelector">
                   <option selected disabled>Seleccionar</option>
                   <option *ngFor="let submenu of objetosSinRol" [value]="submenu.id_objeto">{{ submenu.nombre_objeto }}</option>
@@ -178,7 +178,7 @@
             <div class="form-group">
               <label for="permisoEditando">Objeto:</label>
               <select [(ngModel)]="permisoeditando.id_objeto" name="permisoEditando.id_objeto" class="form-control" id="editarid_objeto">
-                  <option *ngFor="let objeto of objetos" [value]="objeto.id_objeto">{{ objeto.objeto }}</option>
+                  <option *ngFor="let objeto of objetosSinRol" [value]="objeto.id_objeto">{{ objeto.objeto }}</option>
               </select>
           </div>
           <div class="form-group">
