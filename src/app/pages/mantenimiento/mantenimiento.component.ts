@@ -17,6 +17,8 @@ export class MantenimientoComponent implements OnInit {
   listObjetos: any[] = [];
   listObjetos2: any[] = [];
   mostrar: boolean = true;
+  submenu: string = "MANTENIMIENTO";
+  id_rol: string = '';
 
   constructor(
     private _seguridadService: ObjetosService,
@@ -29,6 +31,7 @@ export class MantenimientoComponent implements OnInit {
 
   ngOnInit(): void {
     this.getAllObjetosMenu();
+    this.parametrosGetObjetos();
     this.getAllObjetosMenuJSON();
   }
 
@@ -36,7 +39,6 @@ export class MantenimientoComponent implements OnInit {
     this._seguridadService.getAllObjetosMenu(this.tipo_objeto, this.estado_objeto).subscribe({
       next: (data: any) => {
         this.listObjetos = data;
-        console.log(this.listObjetos)
       },
       error: (e: HttpErrorResponse) => {
         this._errorService.msjError(e);
@@ -44,11 +46,18 @@ export class MantenimientoComponent implements OnInit {
     })
   }
 
+  parametrosGetObjetos(){
+    const localIdRol = localStorage.getItem('id_rol');
+    if (localIdRol) {
+      this.id_rol = localIdRol;
+      this.submenu = 'MANTENIMIENTO';
+    }
+  }
+
   getAllObjetosMenuJSON(){
-    this._seguridadService.objetosJSON().subscribe({
+    this._seguridadService.objetosJSON(this.id_rol, this.submenu).subscribe({
       next: (data: any) => {
         this.listObjetos2 = data;
-        console.log(this.listObjetos2)
       },
       error: (e: HttpErrorResponse) => {
         this._errorService.msjError(e);

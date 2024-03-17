@@ -23,6 +23,7 @@
                         <th>Id</th>
                         <th>Rol</th>
                         <th>Objeto</th>
+                        <th>Tipo de Objeto</th>
                         <th>Consultar</th> 
                         <th>Insertar</th>
                         <th>Actualizar</th>
@@ -38,9 +39,10 @@
                     <tbody>
                       <tr *ngFor="let permiso of listPermisos; let i = index">
                         <td>{{ permiso.id_permisos }}</td>                           
-                        <td>{{ getRolNombre(permiso.id_rol) }}</td>                          
-                        <td>{{ getObjetoNombre(permiso.id_objeto) }}</td>                          
-                        <td style="text-align: center;">                          
+                        <td>{{ getRolNombre(permiso.id_rol) }}</td>                       
+                        <td>{{ getObjetoNombre(permiso.id_objeto) }}</td>
+                        <td>{{ getObjetoTipo(permiso.id_objeto) }}</td>
+                        <td style="text-align: center;">
                           <ng-container *ngIf="permiso.permiso_consultar; else noCheckbox">{{ '✓' }}</ng-container>
                           <ng-template #noCheckbox>{{ 'X' }}</ng-template>
                         </td>
@@ -101,7 +103,7 @@
             </button>
         </div>
         <div class="modal-body">
-            <form (submit)="agregarNuevoPermiso()">                
+            <form id="formularioNuevoPermiso" (submit)="agregarNuevoPermiso()">                
                 <div class="form-group">
                   <label for="nuevoPermiso">Rol</label>
                   <select (change)="idRol($event)" name="nuevoPermiso.id_rol" class="form-control" id="nuevo_rol">

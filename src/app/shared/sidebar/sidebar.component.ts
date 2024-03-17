@@ -45,8 +45,6 @@ export class SidebarComponent implements OnInit{
 
   ngOnInit(): void {
     this.getUsuario();
-    
-
     this.menuItems = this._sideBarService.menu;
     const local = localStorage.getItem('usuario');
     if(local !== null){

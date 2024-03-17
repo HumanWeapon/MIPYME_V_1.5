@@ -138,19 +138,19 @@ export class PermisosComponent implements OnInit, OnDestroy {
   idRol(event: Event): void {
     const idRol = (event.target as HTMLSelectElement).value;
     this.id_rol = Number(idRol);
-    console.log(this.id_rol);
     this.getobjetosSinRol();
   }
   idObjeto(event: Event): void{
     const idObjeto = (event.target as HTMLSelectElement).value;
     this.id_objeto = Number(idObjeto);
-    console.log(this.id_objeto);
+  }
+  vaciarIdObjeto(){
+    this.objetosSinRol = [];
   }
   getobjetosSinRol(){
     this._permService.objetosSinRol(this.id_rol).subscribe({
       next: (data) => {
         this.objetosSinRol = data;
-        console.log(this.objetosSinRol);
       },
       error: (e: HttpErrorResponse) => {
         this._errorService.msjError(e);
@@ -374,18 +374,34 @@ activarPermiso(permiso: any, i: number){
         fecha_modificacion: new Date(),
         estado_permiso: 1,
       }
-      console.log(permisoEnviado);
-      console.log(this.objetosFiltrados);
       this._permService.addPermiso(permisoEnviado).subscribe({
         next: (data) => {
           this.insertBitacora(data);
           this.listPermisos.push(data);
-          this.toastr.success('Permiso agregado exitosamente', 'Éxito')
+          this.toastr.success('Permiso agregado exitosamente', 'Éxito');
+          this.vaciarIdObjeto();
         },
         error: (e: HttpErrorResponse) => {
           this._errorService.msjError(e);
         }
       });
+      // Después de enviar el registro, restablecer los valores del formulario
+      const formulario = document.getElementById('formularioNuevoPermiso') as HTMLFormElement;
+      formulario.reset();
+      this.nuevoPermiso = {
+        id_permisos: 0,
+        id_rol: 0,
+        id_objeto: 0,
+        permiso_consultar: false,
+        permiso_insercion: false,
+        permiso_actualizacion: false,
+        permiso_eliminacion: false,
+        estado_permiso: 0,
+        creado_por: '',
+        fecha_creacion: new Date(),
+        modificado_por: '',
+        fecha_modificacion: new Date(),
+      };;
     }
   }
 
@@ -424,6 +440,10 @@ activarPermiso(permiso: any, i: number){
   getObjetoNombre(idObjeto: number): string {
     const objeto = this.objetos.find(objeto => objeto.id_objeto === idObjeto);
     return objeto ? objeto.objeto : 'Objeto no encontrado';
+  }
+  getObjetoTipo(idObjeto: number): string {
+    const tipo_objeto = this.objetos.find(objeto => objeto.id_objeto === idObjeto);
+    return tipo_objeto ? tipo_objeto.tipo_objeto: 'Objeto no encontrado';
   }
 
 /*************************************************************** Métodos de Bitácora ***************************************************************************/
