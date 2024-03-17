@@ -1,53 +1,19 @@
-/* Estilo para el contenedor del select */
-  
-/* Estilo para los options */
-  #buscadores option {
-    color: #495057; /* Color del texto para opciones */
-  }
-  
-  /* Estilo para el select cuando está enfocado */
-  #buscadores:focus {
-    border-color: #1254a1;  /* Color del borde cuando está enfocado */
-  }
-  
-  /* Estilo para el select cuando está desplegado */
-  #buscadores:active, #buscadores:hover {
-    border-color: rgb(255, 174, 0) /* Color del borde cuando está activo o se pasa el ratón */
-  }
-
-  .productos-filtrados {
-    margin-top: 20px;
-    padding: 10px;
-    text-transform: capitalize;
-  }
-  
-  .producto-item {
-    list-style-type: none;
-    margin-bottom: 5px;
-    text-transform: capitalize;
-  }
-  
-  /* Estilos adicionales si es necesario */
-.custom-input {
-  border-radius: 8px; /* Borde redondeado */
-  padding: 10px; /* Espaciado interno */
-  /* Agrega más estilos según sea necesario */
+.table100.ver1 {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 40px 0 rgba(0,0,0,.15);
+    -moz-box-shadow: 0 0 40px 0 rgba(0, 0, 0, .15);
+    -webkit-box-shadow: 0 0 40px 0 rgba(0,0,0,.15);
+    -o-box-shadow: 0 0 40px 0 rgba(0, 0, 0, .15);
+    -ms-box-shadow: 0 0 40px 0 rgba(0, 0, 0, .15);
 }
-
-/* Estilos adicionales para el contenedor del input si es necesario */
-.form-group {
-  margin-bottom: 20px; /* Margen inferior */
-  /* Agrega más estilos según sea necesario */
+.table100 {
+    position: relative;
+    padding-top: 60px;
 }
-
-.custom-select{
-  border-radius: 7px; /* Borde redondeado */
-
+.table100 {
+    background-color: #fff;
 }
-
-.mensaje-no-resultados {
-  color: #ff0000; /* Cambia el color del texto a rojo o el color que prefieras */
-  font-size: 14px; /* Ajusta el tamaño de fuente según tus preferencias */
-  font-weight: bold; /* Puedes hacer que el texto sea negrita */
-  padding: 7px; /* Agrega relleno alrededor del mensaje */
+.m-b-110 {
+    margin-bottom: 110px;
 }

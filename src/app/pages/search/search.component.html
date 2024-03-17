@@ -1,181 +1,245 @@
-<section class="content">
-  <div class="container-fluid">
-  <h2 class="text-center display-4">Busqueda MIPYME</h2>
-  <br>
-  <br>
-  <form action="enhanced-results.html" data-select2-id="10">
-   <div class="row">
-   <div class="col-md-10 offset-md-1">
-   <div class="row">
-
-    <div class="col-6">
-      <div class="form-group">
-        <label>Busqueda por Categoria</label>
-        <select name="buscacategoria" class="form-control custom-select" id="buscadores" [(ngModel)]="opcionSeleccionada" (change)="filtrarProductosPorCategoria()">
-          <option value="0">Selecciona la Categoria</option>
-          <option *ngFor="let categoria of _listCategorias" [ngValue]="categoria.id_categoria">{{ categoria.categoria }}</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="col-6">
-      <div class="form-group">
-        <label>Busqueda por Pais</label>
-        <select name="buscacategoria" class="form-control custom-select" id="buscadores" [(ngModel)]="opcionSeleccionadaPais" (change)="filtrarProductosPorCategoria()">
-          <option value="0">Selecciona el Pais</option>
-          <option *ngFor="let pais of _listPaises" [ngValue]="pais.id_pais">{{ pais.pais }}</option>
-        </select>
-      </div>
-    </div>
-
-  </div>
-
-  <div class="form-group">
-    <input
-      type="search"
-      class="form-control custom-input"
-      placeholder="Buscar productos"
-      [(ngModel)]="searchTerm"
-      (input)="filtrarProductos()"
-      name="searchTerm"
-      [ngModelOptions]="{standalone: true}" 
-    />
-  </div>
-
-<!-- Mostrar los productos filtrados en una tabla -->
-<div class="productos-filtrados">
-  <h4>Resultados {{ categoriaSeleccionada ? Mayus1Letra(categoriaSeleccionada.categoria) : '' }}</h4>
-  <p>{{ categoriaSeleccionada ? categoriaSeleccionada.descripcion : '' }}</p>
-
-  <table class="table">
-    <thead>
-      <tr>
-        <th>Producto</th>
-        <th>Descripción</th>
-        <th>Mayor Informacion</th>
-      </tr>
-    </thead>
-    <tbody>
-      <!-- Mostrar mensaje si no se encontraron productos -->
-      <tr *ngIf="listOpProductos.length === 0">
-        <td colspan="3" class="text-center mensaje-no-resultados">
-          ¡No se encontraron productos..!
-        </td>
-      </tr>
-
-      <!-- Iterar sobre los productos -->
-      <tr *ngFor="let producto of listOpProductos" class="producto-item">
-        <td>{{ producto.producto }}</td>
-        <td>{{ producto.descripcion }}</td>
-        <td class="text-center">
-          <div class="btn-group">
-            <button type="button" title="Mayor Informacion" (click)="obtenerIdOpProducto(producto.contacto.dni, producto.producto, producto.contacto.id_contacto)" data-toggle="modal" data-target="#modal-xl" class="btna">
-              <i class="fas fa-search"></i>
-            </button>
-          </div>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+<div class="card-header">  
+  <p>Busqueda de empresas por producto</p>
 </div>
-
-
-  
-  <div class="modal fade show" id="modal-xl"  aria-modal="true" role="dialog">
-    <div class="modal-dialog modal-xl" style="font-size: 0.85em;">
-        <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title">Información de contacto para el producto<strong> {{ producto}}</strong></h4>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">×</span>
-            </button>
-        </div>
-        <div class="modal-body">
-            <div class="card card-primary card-outline card-outline-tabs">
-                <div class="card-header p-0 border-bottom-0">
-                    <ul class="nav nav-tabs" id="custom-tabs-four-tab" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link active" id="custom-tabs-four-contactos-tab" data-toggle="pill" href="#custom-tabs-four-contactos" role="tab" aria-controls="custom-tabs-four-contactos" aria-selected="true">Contactos</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="custom-tabs-four-direcciones-tab" data-toggle="pill" href="#custom-tabs-four-direcciones" role="tab" aria-controls="custom-tabs-four-direcciones" aria-selected="false">Direcciones</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="custom-tabs-four-telefonos-tab" data-toggle="pill" href="#custom-tabs-four-telefonos" role="tab" aria-controls="custom-tabs-four-telefonos" aria-selected="false">Teléfonos</a>
-                        </li>
-                    </ul>
-                </div>
-                
-                <div class="card-body">
-                    <div class="tab-content" id="custom-tabs-four-tabContent">
-                        <div class="tab-pane fade active show" id="custom-tabs-four-contactos" role="tabpanel" aria-labelledby="custom-tabs-four-profile-tab">
-                          <p>Aqui puedes ver los contactos registrados por producto</p>
-                            <table  class="table table-bordered table-striped row-border hover"> 
-                                <thead>
-                                <tr>
-                                    <th>NOMBRE</th> 
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr *ngFor="let contacto of listContactos; let i = index">
-                                    <td>{{ contacto.primer_nombre +" "+ contacto.segundo_nombre+" "+ contacto.primer_apellido +" "+contacto.segundo_apellido }}</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        
-                        <div class="tab-pane fade" id="custom-tabs-four-direcciones" role="tabpanel" aria-labelledby="custom-tabs-four-messages-tab">
-                          <p>Aqui puedes ver las direcciones registradas por producto</p>
-                          <table class="table table-bordered table-striped row-border hover"> 
-                                <thead>
-                                <tr>
-                                    <th>DIRECCIONES</th> 
-                                    <th>DESCRIPCIÓN</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr *ngFor="let direccion of listContactosDirecciones; let i = index">
-                                    <td>{{ direccion.direccion}}</td>
-                                    <td>{{ direccion.descripcion }}</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div class="tab-pane fade" id="custom-tabs-four-telefonos" role="tabpanel" aria-labelledby="custom-tabs-four-messages-tab">
-                          <p>Aqui puedes ver los telefonos registrados por producto</p>
-                          <table  class="table table-bordered table-striped row-border hover"> 
-                                <thead>
-                                <tr>
-                                    <th>TELÉFONO</th> 
-                                    <th>EXTENCIÓN</th> 
-                                    <th>DESCRIPCIÓN</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr *ngFor="let telefono of listContactosTelefonos; let i = index">
-                                    <td>{{ telefono.telefono}}</td>
-                                    <td>{{ telefono.extencion}}</td>
-                                    <td>{{ telefono.descripcion }}</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <!-- /.card -->
+<div class="card-body">
+  <div class="row">
+    <div class="card col-2" style="background-color: rgb(243, 243, 243); border-radius: 5px 0px 0px 5px;">
+      <section class="content">
+        <div class="container-fluid">
+        <h2 class="text-center display-6">Filtrar por</h2>
+          <form action="enhanced-results.html">
+            <div class="col">
+              <div class="form-group">
+                <label>Categoria:</label>
+                <select class="form-select" style="width: 100%;" aria-hidden="true">
+                  <option selected="">Todo</option>
+                  <option>Date</option>
+                  <option>Date2</option>
+                  <option>Date3</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Pais:</label>
+                <select class="form-select" style="width: 100%;" aria-hidden="true">
+                  <option selected="">Todo</option>
+                  <option>Date</option>
+                  <option>Date2</option>
+                  <option>Date3</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Ciudad:</label>
+                <select class="form-select" style="width: 100%;" aria-hidden="true">
+                  <option selected="">Todo</option>
+                  <option>Date</option>
+                  <option>Date2</option>
+                  <option>Date3</option>
+                </select>
+              </div>
             </div>
+          </form>
         </div>
-        <div class="modal-footer justify-content-between">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-        </div>
-        </div>
-        <!-- /.modal-content -->
+      </section>
     </div>
-    <!-- /.modal-dialog -->
- </div>
 
+    <div class="card col-10" style="background-color: white; border-radius: 0px 5px 5px 0px;">
+      <section class="content">
+        <div class="container-fluid">
+        <h2 class="text-center display-6">Productos</h2>
+          <form action="enhanced-results.html">
+            <div class="row">
+              <div class="form-group">
+                <div class="input-group input-group-lg">
+                  <input type="search" class="form-control form-control-lg" placeholder="Type your keywords here" value="Buscar productos"  style="background-color: rgba(238, 238, 238, 0.342);">
+                  <div class="input-group-append">
+                    <button type="submit" class="btn btn-lg btn-default">
+                      <i class="fa fa-search"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </section>
+      <section>
+        <div class="table100 ver1 m-b-110">
+          <div class="table100-head">
+          <table>
+          <thead>
+          <tr class="row100 head">
+          <th class="cell100 column1">Class name</th>
+          <th class="cell100 column2">Type</th>
+          <th class="cell100 column3">Hours</th>
+          <th class="cell100 column4">Trainer</th>
+          <th class="cell100 column5">Spots</th>
+          </tr>
+          </thead>
+          </table>
+          </div>
+          <div class="table100-body js-pscroll ps ps--active-y">
+          <table>
+          <tbody>
+          <tr class="row100 body">
+          <td class="cell100 column1">Like a butterfly</td>
+          <td class="cell100 column2">Boxing</td>
+          <td class="cell100 column3">9:00 AM - 11:00 AM</td>
+          <td class="cell100 column4">Aaron Chapman</td>
+          <td class="cell100 column5">10</td>
+          </tr>
+          <tr class="row100 body">
+          <td class="cell100 column1">Mind &amp; Body</td>
+          <td class="cell100 column2">Yoga</td>
+          <td class="cell100 column3">8:00 AM - 9:00 AM</td>
+          <td class="cell100 column4">Adam Stewart</td>
+          <td class="cell100 column5">15</td>
+          </tr>
+          <tr class="row100 body">
+          <td class="cell100 column1">Crit Cardio</td>
+          <td class="cell100 column2">Gym</td>
+          <td class="cell100 column3">9:00 AM - 10:00 AM</td>
+          <td class="cell100 column4">Aaron Chapman</td>
+          <td class="cell100 column5">10</td>
+          </tr>
+          <tr class="row100 body">
+          <td class="cell100 column1">Wheel Pose Full Posture</td>
+          <td class="cell100 column2">Yoga</td>
+          <td class="cell100 column3">7:00 AM - 8:30 AM</td>
+          <td class="cell100 column4">Donna Wilson</td>
+          <td class="cell100 column5">15</td>
+          </tr>
+          <tr class="row100 body">
+          <td class="cell100 column1">Playful Dancer's Flow</td>
+          <td class="cell100 column2">Yoga</td>
+          <td class="cell100 column3">8:00 AM - 9:00 AM</td>
+          <td class="cell100 column4">Donna Wilson</td>
+          <td class="cell100 column5">10</td>
+          </tr>
+          <tr class="row100 body">
+          <td class="cell100 column1">Zumba Dance</td>
+          <td class="cell100 column2">Dance</td>
+          <td class="cell100 column3">5:00 PM - 7:00 PM</td>
+          <td class="cell100 column4">Donna Wilson</td>
+          <td class="cell100 column5">20</td>
+          </tr>
+          <tr class="row100 body">
+          <td class="cell100 column1">Cardio Blast</td>
+          <td class="cell100 column2">Gym</td>
+          <td class="cell100 column3">5:00 PM - 7:00 PM</td>
+          <td class="cell100 column4">Randy Porter</td>
+          <td class="cell100 column5">10</td>
+          </tr>
+          <tr class="row100 body">
+          <td class="cell100 column1">Pilates Reformer</td>
+          <td class="cell100 column2">Gym</td>
+          <td class="cell100 column3">8:00 AM - 9:00 AM</td>
+          <td class="cell100 column4">Randy Porter</td>
+          <td class="cell100 column5">10</td>
+          </tr>
+          <tr class="row100 body">
+          <td class="cell100 column1">Supple Spine and Shoulders</td>
+          <td class="cell100 column2">Yoga</td>
+          <td class="cell100 column3">6:30 AM - 8:00 AM</td>
+          <td class="cell100 column4">Randy Porter</td>
+          <td class="cell100 column5">15</td>
+          </tr>
+          <tr class="row100 body">
+          <td class="cell100 column1">Yoga for Divas</td>
+          <td class="cell100 column2">Yoga</td>
+          <td class="cell100 column3">9:00 AM - 11:00 AM</td>
+          <td class="cell100 column4">Donna Wilson</td>
+          <td class="cell100 column5">20</td>
+          </tr>
+          <tr class="row100 body">
+          <td class="cell100 column1">Virtual Cycle</td>
+          <td class="cell100 column2">Gym</td>
+          <td class="cell100 column3">8:00 AM - 9:00 AM</td>
+          <td class="cell100 column4">Randy Porter</td>
+          <td class="cell100 column5">20</td>
+          </tr>
+          <tr class="row100 body">
+          <td class="cell100 column1">Like a butterfly</td>
+          <td class="cell100 column2">Boxing</td>
+          <td class="cell100 column3">9:00 AM - 11:00 AM</td>
+          <td class="cell100 column4">Aaron Chapman</td>
+          <td class="cell100 column5">10</td>
+          </tr>
+          <tr class="row100 body">
+          <td class="cell100 column1">Mind &amp; Body</td>
+          <td class="cell100 column2">Yoga</td>
+          <td class="cell100 column3">8:00 AM - 9:00 AM</td>
+          <td class="cell100 column4">Adam Stewart</td>
+          <td class="cell100 column5">15</td>
+          </tr>
+          <tr class="row100 body">
+          <td class="cell100 column1">Crit Cardio</td>
+          <td class="cell100 column2">Gym</td>
+          <td class="cell100 column3">9:00 AM - 10:00 AM</td>
+          <td class="cell100 column4">Aaron Chapman</td>
+          <td class="cell100 column5">10</td>
+          </tr>
+          <tr class="row100 body">
+          <td class="cell100 column1">Wheel Pose Full Posture</td>
+          <td class="cell100 column2">Yoga</td>
+          <td class="cell100 column3">7:00 AM - 8:30 AM</td>
+          <td class="cell100 column4">Donna Wilson</td>
+          <td class="cell100 column5">15</td>
+          </tr>
+          <tr class="row100 body">
+          <td class="cell100 column1">Playful Dancer's Flow</td>
+          <td class="cell100 column2">Yoga</td>
+          <td class="cell100 column3">8:00 AM - 9:00 AM</td>
+          <td class="cell100 column4">Donna Wilson</td>
+          <td class="cell100 column5">10</td>
+          </tr>
+          <tr class="row100 body">
+          <td class="cell100 column1">Zumba Dance</td>
+          <td class="cell100 column2">Dance</td>
+          <td class="cell100 column3">5:00 PM - 7:00 PM</td>
+          <td class="cell100 column4">Donna Wilson</td>
+          <td class="cell100 column5">20</td>
+          </tr>
+          <tr class="row100 body">
+          <td class="cell100 column1">Cardio Blast</td>
+          <td class="cell100 column2">Gym</td>
+          <td class="cell100 column3">5:00 PM - 7:00 PM</td>
+          <td class="cell100 column4">Randy Porter</td>
+          <td class="cell100 column5">10</td>
+          </tr>
+          <tr class="row100 body">
+          <td class="cell100 column1">Pilates Reformer</td>
+          <td class="cell100 column2">Gym</td>
+          <td class="cell100 column3">8:00 AM - 9:00 AM</td>
+          <td class="cell100 column4">Randy Porter</td>
+          <td class="cell100 column5">10</td>
+          </tr>
+          <tr class="row100 body">
+          <td class="cell100 column1">Supple Spine and Shoulders</td>
+          <td class="cell100 column2">Yoga</td>
+          <td class="cell100 column3">6:30 AM - 8:00 AM</td>
+          <td class="cell100 column4">Randy Porter</td>
+          <td class="cell100 column5">15</td>
+          </tr>
+          <tr class="row100 body">
+          <td class="cell100 column1">Yoga for Divas</td>
+          <td class="cell100 column2">Yoga</td>
+          <td class="cell100 column3">9:00 AM - 11:00 AM</td>
+          <td class="cell100 column4">Donna Wilson</td>
+          <td class="cell100 column5">20</td>
+          </tr>
+          <tr class="row100 body">
+          <td class="cell100 column1">Virtual Cycle</td>
+          <td class="cell100 column2">Gym</td>
+          <td class="cell100 column3">8:00 AM - 9:00 AM</td>
+          <td class="cell100 column4">Randy Porter</td>
+          <td class="cell100 column5">20</td>
+          </tr>
+          </tbody>
+          </table>
+          <div class="ps__rail-x" style="left: 0px; bottom: 0px;"><div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps__rail-y" style="top: 0px; height: 585px; right: 5px;"><div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 293px;"></div></div></div>
+          </div>
+      </section>
+    </div>
+
+  </div>
 </div>
-
-
-
