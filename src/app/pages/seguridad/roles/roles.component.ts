@@ -198,7 +198,7 @@ activarRol(rol: any, i: number){
     const { jsPDF } = require("jspdf");
     const doc = new jsPDF();
     const data: any[][] = [];
-    const headers = ['Nombre del Rol', 'Estado', 'Descripción', 'Creado por', 'Fecha de Creación', 'Modificado por', 'Fecha de Modificación'];
+    const headers = ['Id','Nombre del Rol', 'Descripción', 'Creado por', 'Fecha de Creación', 'Fecha de Modificación', 'Estado'];
   
     // Agregar el logo al PDF
     const logoImg = new Image();
@@ -212,17 +212,18 @@ activarRol(rol: any, i: number){
       doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
       doc.text("Reporte de Roles", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
       doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
-  
+      doc.text("Usuario: " + this.getUser.usuario, centerX, 50, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+
       // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
       this.listRoles.forEach((role, index) => {
         const row = [
+          role.id_rol,
           role.rol,
-          this.getEstadoText(role.estado_rol),
           role.descripcion,
           role.creado_por,
           role.fecha_creacion,
-          role.modificado_por,
           role.fecha_modificacion,
+          this.getEstadoText(role.estado_rol),
         ];
         data.push(row);
       });
@@ -245,14 +246,14 @@ activarRol(rol: any, i: number){
     return currentDate.toLocaleDateString(); // Retorna la fecha actual en formato local
   }
   
-  getEstadoText(estado: number): string {
-    switch (estado) {
+  getEstadoText(estado_rol: number): string {
+    switch (estado_rol) {
       case 1:
         return 'ACTIVO';
       case 2:
         return 'INACTIVO';
       default:
-        return 'DESCONOCIDO';
+        return 'Desconocido';
     }
   }
 

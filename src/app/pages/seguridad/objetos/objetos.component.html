@@ -7,12 +7,8 @@
                 <div class="card-header">
                   <!--<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarObjeto">
                     <i class="fas fa-plus"></i> Nuevo</button>-->
-                    <button type="button" class="btn btn-primary custom-print-button btn-danger" title="Generar el Reporte" data-toggle="modal" data-target="#PDFObjetos">
-                      <i class="fas fa-file-pdf mr-2"></i>PDF</button>
-                    
-                    <button type="button" class="btn btn-primary custom-print-button btn-success" title="Generar el Reporte en Excel" data-toggle="modal" data-target="#ExcelObjetos">
-                        <i class="fas fa-file-excel mr-2"></i>Excel
-                    </button>
+                    <button type="button" class="btn btn-primary custom-print-button btn-primary" title="Generar el Reporte" data-toggle="modal" data-target="#PDFReQ">
+                      <i class="fas fa-print"></i> Generar Reporte</button>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
@@ -38,8 +34,8 @@
                           <td>{{ obj.descripcion | uppercase }}</td>
                           <td>{{ obj.tipo_objeto | uppercase }}</td>
                           <td>{{ obj.creado_por | uppercase}}</td>
-                          <td>{{ obj.fecha_creacion }}</td>
-                          <td>{{ obj.fecha_modificacion}}</td>
+                          <td>{{ obj.fecha_creacion | date: 'yyyy-MM-dd' }}</td>
+                          <td>{{ obj.fecha_modificacion | date: 'yyyy-MM-dd' }}</td>
                           <td>
                               <ng-container *ngIf="obj.estado_objeto == 1">ACTIVO</ng-container>
                               <ng-container *ngIf="obj.estado_objeto == 2">INACTIVO</ng-container>
@@ -71,10 +67,6 @@
       <!-- /.content -->
   
   
-  
-  
-  
-   
   <!-- Agregar Usuario Form -->
   <div class="modal fade" id="agregarObjeto">
   <div class="modal-dialog">
@@ -136,7 +128,7 @@
                 </div>
                 <div class="form-group">
                     <label for="objetoEditando">Descripción:</label>
-                    <input type="text" [(ngModel)]="objetoEditando.descripcion" name="objetoEditando.descripcion" (input)="eliminarCaracteresEspeciales($event, 'descripcion')" class="form-control" id="editarDescripcion" placeholder="Descripción">
+                    <textarea rows="4" type="text" [(ngModel)]="objetoEditando.descripcion" name="objetoEditando.descripcion" (input)="eliminarCaracteresEspeciales($event, 'descripcion')" class="form-control" id="editarDescripcion" placeholder="Descripción"></textarea>
                 </div>
                
               </form>
@@ -152,31 +144,36 @@
 
 
 <!-- Form Ver PDF-->
-<div class="modal fade" id="PDFObjetos">
+<div class="modal fade" id="PDFReQ">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
 
       <div class="modal-header" style="display: flex; align-items: center;">
         <div style="flex: 1; text-align: left; margin-right: 20px;">
             <h1>Utilidad Mi Pyme</h1>
-            <h4>Reporte de Obejtos</h4> 
+            <h4>Reporte de Objetos</h4> 
             <!-- Puedes agregar más detalles del reporte aquí si es necesario -->
             <p>Fecha: {{ getDate() }}</p>
+            <p>Usuario {{getUser.usuario}}</p>
         </div>
         <div style="flex: 0;">
             <img src="\assets\dist\img\pym.png" alt="Logo de Mi Pyme" style="width: 200px; height: auto;">
         </div>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
       
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary customn-print-button btn-danger" (click)="generatePDF()">
-          <i class="fas fa-file-pdf"></i>  Generar PDF</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-      </div>
+        <!-- Pie del modal -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary customn-print-button btn-danger" (click)="generatePDF()">
+            <i class="fas fa-file-pdf"></i>  Generar PDF</button>
+            <button type="button" class="btn btn-secondary customn-print-button btn-success" (click)="generateExcel()">
+              <i class="fas fa-file-excel"></i>  Generar Excel</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        </div>
+
         <table class="table table-striped">
           <thead class="thead-dark">
             <tr>
+              <th>ID</th>
               <th>Nombre</th>
               <th>Descripción</th>
               <th>Tipo Objeto</th>
@@ -188,10 +185,11 @@
           </thead>
           <tbody>
             <tr *ngFor="let obj of listObjetos; let i = index">
-              <td>{{ obj.objeto }}</td>
-              <td>{{ obj.descripcion }}</td>
-              <td>{{ obj.tipo_objeto }}</td>
-              <td>{{ obj.creado_por}}</td>
+              <td>{{ obj.id_objeto }}</td>
+              <td>{{ obj.objeto | uppercase }}</td>
+              <td>{{ obj.descripcion | uppercase }}</td>
+              <td>{{ obj.tipo_objeto | uppercase }}</td>
+              <td>{{ obj.creado_por | uppercase }}</td>
               <td>{{ obj.fecha_creacion }}</td>
               <td>{{ obj.fecha_modificacion}}</td>
               <td>{{ getEstadoText(obj.estado_objeto) }}</td>
@@ -221,18 +219,12 @@
         <div style="flex: 0;">
             <img src="\assets\dist\img\pym.png" alt="Logo de Mi Pyme" style="width: 200px; height: auto;">
         </div>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div> 
       
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary customn-print-button btn-success" (click)="generateExcel(listObjetos, 'Reporte_Objetos.xlsx')">
-          <i class="fas fa-file-excel"></i> Generar Excel</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-      </div>
-
       <table class="table table-striped">
         <thead class="thead-dark">
           <tr>
+            <th>ID</th>
             <th>Nombre</th>
             <th>Descripción</th>
             <th>Tipo Objeto</th>
@@ -244,6 +236,7 @@
         </thead>
         <tbody>
           <tr *ngFor="let obj of listObjetos; let i = index">
+            <td>{{ obj.id_objeto }}</td>
             <td>{{ obj.objeto }}</td>
             <td>{{ obj.descripcion }}</td>
             <td>{{ obj.tipo_objeto }}</td>

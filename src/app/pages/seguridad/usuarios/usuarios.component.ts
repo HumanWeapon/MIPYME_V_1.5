@@ -35,6 +35,7 @@ export class UsuariosComponent {
   indiceUser: any;
   indiceRol: any;
   objectBitacora: any;
+  correo_electronico: string = '';
 
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
@@ -193,10 +194,9 @@ toggleFunction(user: any, i: number) {
  
   /*****************************************************************************************************/
 
-
    /*****************************************************************************************************/
    generateExcel() {
-    const headers = ['ID Usuario', 'Nombre Usuario', 'Correo Electronico', 'Rol', 'Creador', 'Ultima Conexion', 'Fecha de Vencimiento', 'Estado'];
+    const headers = ['ID', 'Usuario', 'Nombre Usuario', 'Correo Electronico', 'Rol', 'Creador', 'Ultima Conexion', 'Fecha de Vencimiento', 'Estado'];
     const data: any[][] = [];
 
     
@@ -204,6 +204,7 @@ toggleFunction(user: any, i: number) {
     // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
     this.usuariosAllRoles.forEach((user, index) => {
       const row = [
+        user.id_usuario,
         user.usuario,
         user.nombre_usuario,
         user.correo_electronico,
@@ -250,7 +251,7 @@ toggleFunction(user: any, i: number) {
     const { jsPDF } = require("jspdf");
     const doc = new jsPDF();
     const data: any[][] = [];
-    const headers = ['ID Usuario', 'Nombre Usuario', 'Correo Electronico', 'Rol', 'Creador', 'Ultima Conexion', 'Fecha de Vencimiento', 'Estado'];
+    const headers = ['ID','Usuario', 'Nombre Usuario', 'Correo Electronico', 'Rol', 'Creador', 'Ultima Conexion', 'Fecha de Vencimiento', 'Estado'];
   
     // Agregar el logo al PDF
     const logoImg = new Image();
@@ -264,10 +265,12 @@ toggleFunction(user: any, i: number) {
       doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
       doc.text("Reporte de Usuarios", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
       doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
-  
+      doc.text("Usuario: " + this.getUser.usuario, centerX, 50, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+
       // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
       this.usuariosAllRoles.forEach((user, index) => {
         const row = [
+          user.id_usuario,
           user.usuario,
           user.nombre_usuario,
           user.correo_electronico,
@@ -315,35 +318,42 @@ toggleFunction(user: any, i: number) {
   
 
 /**************************************************************/
+agregarNuevoUsuario() {
+  const LocalUser = localStorage.getItem('usuario');
+  if (LocalUser) {
+    this.newUser = {
+      id_usuario: 0,
+      creado_por: LocalUser,
+      fecha_creacion: new Date(),
+      modificado_por: LocalUser,
+      fecha_modificacion: new Date(),
+      usuario: this.newUser.usuario,
+      nombre_usuario: this.newUser.nombre_usuario,
+      correo_electronico: this.newUser.correo_electronico,
+      estado_usuario: 1,
+      contrasena: this.newUser.usuario,
+      id_rol: this.newUser.id_rol,
+      fecha_ultima_conexion: new Date(),
+      fecha_vencimiento: this.newUser.fecha_vencimiento,
+      intentos_fallidos: 0
+    };
 
-
-  agregarNuevoUsuario() {
-    const LocalUser = localStorage.getItem('usuario');
-    if (LocalUser){
-
-      this.newUser = {
-        id_usuario: 0,
-        creado_por: LocalUser,
-        fecha_creacion: new Date(),
-        modificado_por: LocalUser,
-        fecha_modificacion: new Date(),
-        usuario: this.newUser.usuario,
-        nombre_usuario: this.newUser.nombre_usuario,
-        correo_electronico: this.newUser.correo_electronico,
-        estado_usuario: 1,
-        contrasena: this.newUser.usuario,
-        id_rol: this.newUser.id_rol,
-        fecha_ultima_conexion: new Date(),
-        fecha_vencimiento: this.newUser.fecha_vencimiento,
-        intentos_fallidos: 0
-      };
-  
-      console.log(this.newUser);
+    if (!this.newUser.usuario || !this.newUser.nombre_usuario || !this.newUser.correo_electronico || !this.newUser.contrasena || !this.newUser.id_rol) {
+      this._toastr.warning('Debes completar los campos vacíos');
+      this.newUser.usuario = '';
+      this.newUser.nombre_usuario = '';
+      this.newUser.correo_electronico = '';
+      this.newUser.contrasena = '';
+    } else {
+      if (!this.validarCorreoElectronico(this.newUser.correo_electronico)) {
+        this._toastr.warning('Por favor, ingresa un correo electrónico válido.');
+        return;
+      }
       this._userService.addUsuario(this.newUser).subscribe({
         next: (data) => {
-          console.log(data);
           this.insertBitacora(data);
           this._toastr.success('Usuario agregado con éxito')
+          this.usuariosAllRoles.push(this.newUser)
         },
         error: (e: HttpErrorResponse) => {
           this._errorService.msjError(e);
@@ -351,6 +361,8 @@ toggleFunction(user: any, i: number) {
       });
     }
   }
+}
+
 
   obtenerIdUsuario(usuario: Usuario, i: any) {
     const localuser = localStorage.getItem('usuario');
@@ -401,14 +413,20 @@ toggleFunction(user: any, i: number) {
       }
     }
   
+    // Valida el formato del correo electrónico
+    if (!this.validarCorreoElectronico(this.editUser.correo_electronico)) {
+      this._toastr.warning('Por favor, ingresa un correo electrónico válido.');
+      return;
+    }
+  
     // Continúa con la edición si no hay conflictos de nombres de usuario o correos electrónicos
     const modificador = localStorage.getItem('usuario');
     const rolSeleccionado = this.listRol.find(rol => rol.id_rol == Id_Rol_Selected);
-    
+  
     if (!rolSeleccionado) {
       return;
     }
-    
+  
     this._userService.editarUsuario(this.editUser).subscribe(data => {
       this.updateBitacora(data);
       this._toastr.success('Usuario editado con éxito');
@@ -422,6 +440,12 @@ toggleFunction(user: any, i: number) {
       }
     });
   }
+  
+  validarCorreoElectronico(correo: string): boolean {
+    const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return re.test(correo);
+  }
+  
   
   
   

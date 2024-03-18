@@ -188,7 +188,7 @@ inactivarPregunta(pregunta: any, i: number){
     const { jsPDF } = require("jspdf");
     const doc = new jsPDF();
     const data: any[][] = [];
-    const headers = ['Código', 'Pregunta', 'Estado', 'Fecha de Creación', 'Fecha de Modificación'];
+    const headers = ['Id', 'Pregunta', 'Estado','Creador por', 'Fecha de Creación', 'Modificado por','Fecha de Modificación'];
   
     // Agregar el logo al PDF
     const logoImg = new Image();
@@ -202,14 +202,17 @@ inactivarPregunta(pregunta: any, i: number){
       doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
       doc.text("Reporte de Preguntas", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
       doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
-  
+      doc.text("Usuario: " + this.getUser.usuario, centerX, 50, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+
       // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
       this.listPreguntas.forEach((question, index) => {
         const row = [
           question.id_pregunta,
           question.pregunta,
           this.getEstadoText(question.estado_pregunta),
+          question.creado_por,
           question.fecha_creacion,
+          question.modificado_por,
           question.fecha_modificacion
         ];
         data.push(row);
@@ -275,9 +278,9 @@ agregarNuevoPregunta() {
   }
 }
 
-cancelarInput(){;
+cancelarInput(){
   this.newQuestion.pregunta ='';
-}
+ }
 
 obtenerIdPregunta(pregunta: Preguntas, i: any) {
   const localuser = localStorage.getItem('usuario');

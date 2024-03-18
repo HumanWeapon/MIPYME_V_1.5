@@ -15,6 +15,7 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale'; // Importa el idioma español
 import jsPDF from 'jspdf';
 import 'jspdf-autotable'; 
+import { DatePipe } from '@angular/common';
 
 
 @Component({
@@ -77,14 +78,15 @@ export class ParametrosComponent implements OnInit{
     private ngZone: NgZone,
     private _bitacoraService: BitacoraService,
     private _errorService: ErrorService,
-    private _userService: UsuariosService
+    private _userService: UsuariosService,
+    private _datePipe: DatePipe
     ) { }
 
   
   ngOnInit(): void {
     this.dtOptions = {
       pagingType: 'full_numbers',
-      pageLength: 5,
+      pageLength: 10,
       language: {url:'//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'},
       responsive: true
     };
@@ -100,15 +102,6 @@ export class ParametrosComponent implements OnInit{
   ngOnDestroy(): void {
     // Do not forget to unsubscribe the event
     this.dtTrigger.unsubscribe();
-  }
-
-
-  onInputChange(event: any, field: string) {
-    const inputValue = event.target.value;
-    if (field === 'parametro') {
-      // Convierte a mayúsculas y elimina espacios en blanco
-      event.target.value = inputValue.toUpperCase().replace(/\s/g, '')
-    }
   }
 
   cancelarInput(){;
@@ -148,8 +141,6 @@ toggleFunction(parametros: any, i: number) {
     this.activateParametro(parametros, i); // Ejecuta la segunda función
   }
 }
-
-
 
 inactivateParametro(parametro: any, i: number){
   this._parametroService.inactivateParametro(parametro).subscribe(data => {
@@ -241,7 +232,8 @@ generateExcel() {
       doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
       doc.text("Reporte de Parámetros", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
       doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
-  
+      doc.text("Usuario: " + this.getUser.usuario, centerX, 50, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+
       // Recorre los datos y agrégalos a la matriz 'data'
       this.listParametros.forEach((parametro, index) => {
         const row = [
@@ -290,6 +282,8 @@ generateExcel() {
     const LocalUser = localStorage.getItem('usuario')
     if (LocalUser){
 
+    const fechaActual = new Date();
+    const fechaFormateada = this._datePipe.transform(fechaActual, 'yyyy-MM-dd');
     const nuevoParametro = {
       id_parametro: 0,
       parametro: this.nuevoParametro.parametro,
@@ -297,24 +291,29 @@ generateExcel() {
       valor: this.nuevoParametro.valor,
       id_usuario: 0,
       creado_por: LocalUser,
-      fecha_creacion: new Date(),
+      fecha_creacion: fechaFormateada as unknown as Date,
       modificado_por: LocalUser,
-      fecha_modificacion: new Date(),
+      fecha_modificacion: fechaFormateada as unknown as Date,
       alerta_busqueda: 0, 
     };
-
+    if (!this.nuevoParametro.parametro || !this.nuevoParametro.valor) {
+      this.toastr.warning('Debes completar los campos vacíos');
+      this.nuevoParametro.parametro = '';
+      this.nuevoParametro.valor = 0;
+    }else{
     this._parametroService.addParametro(nuevoParametro).subscribe({
       next: (data) => {
-        this.toastr.success('Parametro agregado con éxito');
         this.insertBitacora(data);
+        this.toastr.success('Parametro agregado con éxito');
         this.listParametros.push(nuevoParametro)
       },
       error: (e: HttpErrorResponse) => {
         this._errorService.msjError(e);
       }
     });
-    }
   }
+  }
+}
 
 
   obtenerIdParametro(parametro: Parametros, i: any){

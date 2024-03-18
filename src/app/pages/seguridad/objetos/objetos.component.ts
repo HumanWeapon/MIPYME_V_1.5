@@ -179,13 +179,14 @@ filtrarObjetosUnicos() {
 
   /*****************************************************************************************************/
 
-  generateExcel(objects: any[], filename: string) {
-    const headers = ['Nombre', 'Descripción', 'Tipo Objeto', 'Creado', 'Fecha Creación', 'Fecha Modificación', 'Estado'];
+  generateExcel() {
+    const headers = ['Id','Nombre', 'Descripción', 'Tipo Objeto', 'Creado', 'Fecha Creación', 'Fecha Modificación', 'Estado'];
     const data: any[][] = [];
 
     // Convertir los objetos en una matriz de datos
-    objects.forEach(obj => {
+    this.listObjetos.forEach((obj, index) => {
         const row = [
+            obj.id_objeto,
             obj.objeto,
             obj.descripcion,
             obj.tipo_objeto,
@@ -214,7 +215,7 @@ filtrarObjetosUnicos() {
     // Crear un enlace para descargar el archivo Excel
     const a = document.createElement('a');
     a.href = url;
-    a.download = filename;
+    a.download = 'My Pyme-Reporte Objetos.xlsx';
 
     document.body.appendChild(a);
     a.click();
@@ -230,7 +231,7 @@ filtrarObjetosUnicos() {
   generatePDF() {
     const { jsPDF } = require("jspdf");
     const doc = new jsPDF();
-    const headers = ['Nombre', 'Descripción', 'Tipo', 'Creador', 'Fecha Creación', 'Modificado por', 'Fecha Modificación', 'Estado'];
+    const headers = ['Id','Nombre', 'Descripción', 'Tipo', 'Creador', 'Fecha Creación', 'Modificado por', 'Fecha Modificación', 'Estado'];
 
     // Agregar el logo al PDF
     const logoImg = new Image();
@@ -244,9 +245,11 @@ filtrarObjetosUnicos() {
         doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
         doc.text("Reporte de Objetos", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
         doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+        doc.text("Usuario: " + this.getUser.usuario, centerX, 50, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
 
         // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
         const data = this.listObjetos.map(obj => [
+            obj.id_objeto,
             obj.objeto,
             obj.descripcion,
             obj.tipo_objeto,
@@ -275,8 +278,8 @@ getCurrentDate(): string {
     return currentDate.toLocaleDateString(); // Retorna la fecha actual en formato local
 }
 
-getEstadoText(estado: number): string {
-    switch (estado) {
+getEstadoText(estado_objeto: number): string {
+    switch (estado_objeto) {
         case 1:
             return 'ACTIVO';
         case 2:
@@ -340,14 +343,9 @@ agregarNuevoObjeto() {
     this.indice = i;
   }
 
-
   editarObjeto(){
     this.objetoEditando.objeto = this.objetoEditando.objeto.toUpperCase();
     this.objetoEditando.descripcion = this.objetoEditando.descripcion.toUpperCase();
-    this.objetoEditando.tipo_objeto = this.objetoEditando.tipo_objeto.toUpperCase();
-    this.objetoEditando.modificado_por = this.objetoEditando.modificado_por.toUpperCase();
-    this.objetoEditando.creado_por = this.objetoEditando.creado_por.toUpperCase();
-
 
     const esMismoObjeto = this.listObjetos[this.indice].objeto === this.objetoEditando.objeto;
   
@@ -364,12 +362,8 @@ agregarNuevoObjeto() {
     this._objService.editarObjeto(this.objetoEditando).subscribe(data => {
       this.updateBitacora(data);
       this.toastr.success('Objeto editado con éxito');
-      this.listObjetos[this.indice].objeto = this.objetoEditando.objeto;
-      this.listObjetos[this.indice].descripcion = this.objetoEditando.descripcion;
-      this.listObjetos[this.indice].estado_objeto = this.objetoEditando.estado_objeto;
-      // Actualizar la vista
-      this._ngZone.run(() => {        
-      });
+      this.listObjetos[this.indice].objeto = this.objetoEditando.objeto.toUpperCase();
+      this.listObjetos[this.indice].descripcion = this.objetoEditando.descripcion.toUpperCase();      // Actualizar la vista
     });
   }
 

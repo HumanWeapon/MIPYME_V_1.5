@@ -235,7 +235,7 @@ generatePDF() {
     doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
     doc.text("Reporte de Tipos de Requisito", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
     doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
-    doc.text("Usuario: " + this.getUser.usuario, centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+    doc.text("Usuario: " + this.getUser.usuario, centerX, 50, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
 
     // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
     this.tipoRequisitoAll.forEach((TipoR, index) => {

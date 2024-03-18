@@ -306,7 +306,8 @@ activarPermiso(permiso: any, i: number){
       doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
       doc.text("Reporte de Permisos", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
       doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
-  
+      doc.text("Usuario: " + this.getUser.usuario, centerX, 50, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+
       // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
       this.listPermisos.forEach((perm, index) => {
         const row = [
@@ -353,8 +354,18 @@ activarPermiso(permiso: any, i: number){
         return 'DESCONOCIDO';
     }
   }
-  
 
+  
+cancelarInput(){
+  this.nuevoPermiso.id_rol = -1;
+  this.nuevoPermiso.id_objeto = -1;
+  this.nuevoPermiso.id_objeto = -1;
+  this.nuevoPermiso.permiso_consultar = false,
+  this.nuevoPermiso.permiso_insercion = false,
+  this.nuevoPermiso.permiso_actualizacion = false,
+  this.nuevoPermiso.permiso_eliminacion = false
+
+ }
 
 /**************************************************************/
   agregarNuevoPermiso() {
@@ -373,7 +384,10 @@ activarPermiso(permiso: any, i: number){
         modificado_por: LocalUser,
         fecha_modificacion: new Date(),
         estado_permiso: 1,
-      }
+      };
+      if (!this.nuevoPermiso.id_rol || !this.nuevoPermiso.id_objeto) {
+        this.toastr.warning('Debes completar los campos vacíos');
+      }else{
       this._permService.addPermiso(permisoEnviado).subscribe({
         next: (data) => {
           this.insertBitacora(data);
@@ -402,7 +416,7 @@ activarPermiso(permiso: any, i: number){
         modificado_por: '',
         fecha_modificacion: new Date(),
       };;
-    }
+    }}
   }
 
   obtenerIdPermiso(permisos: Permisos, i: any) {

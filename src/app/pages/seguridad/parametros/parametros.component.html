@@ -6,12 +6,9 @@
               <div class="card">
                 <div class="card-header">
                   <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarParametro">
-                    <i class="fas fa-user-plus"></i> Nuevo</button>
-                    <button type="button" class="btn btn-primary custom-print-button btn-danger" title="Generar el Reporte" data-toggle="modal" data-target="#PDFParametro">
-                      <i class="fas fa-file-pdf mr-2"></i>PDF</button>
-                      <button type="button" class="btn btn-primary custom-print-button btn-success" title="Generar el Reporte en Excel" data-toggle="modal" data-target="#ExcelParametro">
-                        <i class="fas fa-file-excel mr-2"></i>Excel
-                    </button>
+                    <i class="fas fa-plus"></i> Nuevo</button>
+                    <button type="button" class="btn btn-primary custom-print-button btn-primary" title="Generar el Reporte" data-toggle="modal" data-target="#PDFReQ">
+                      <i class="fas fa-print"></i> Generar Reporte</button>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
@@ -33,12 +30,12 @@
                       <tbody>
                         <tr *ngFor="let parametros of listParametros; let i = index">
                           <td>{{ parametros.id_parametro }}</td>
-                          <td>{{ parametros.parametro }}</td>
+                          <td>{{ parametros.parametro | uppercase }}</td>
                           <td>{{ parametros.valor }}</td>
                           <td>{{ parametros.creado_por | uppercase }}</td>
-                          <td>{{ parametros.fecha_creacion | date:'YYYY-MM-dd' }}</td>
+                          <td>{{ parametros.fecha_creacion | date: 'yyyy-MM-dd' }}</td>
                           <td>{{ parametros.modificado_por | uppercase }}</td>
-                          <td>{{ parametros.fecha_modificacion | date:'YYYY-MM-dd' }}</td>
+                          <td>{{ parametros.fecha_modificacion | date: 'yyyy-MM-dd' }}</td>
                           <td>
                             <ng-container *ngIf="parametros.estado_parametro == 1">ACTIVO</ng-container>
                             <ng-container *ngIf="parametros.estado_parametro == 2">INACTIVO</ng-container>
@@ -69,11 +66,6 @@
     </section>
       <!-- /.content -->
 
-
-
-
-
-   
 <!-- Agregar Parametro  Form -->
 <div class="modal fade" id="agregarParametro">
   <div class="modal-dialog">
@@ -88,7 +80,7 @@
               <form (ngSubmit)="agregarNuevoParametro()">
                   <div class="form-group">
                       <label for="nuevoParametro">Parametro:</label>
-                      <input type="text" [(ngModel)]="nuevoParametro.parametro"name="nuevoParametro.parametro" (input)="eliminarCaracteresEspeciales($event, 'parametro')"  class="form-control" id="nuevoParametro" placeholder="Parametro">
+                      <input type="text" [(ngModel)]="nuevoParametro.parametro"name="nuevoParametro.parametro" (input)="eliminarCaracteresEspeciales($event, 'parametro')"  class="form-control" id="nuevoParametro" placeholder="Parametro" (input)="convertirAMayusculas($event, 'parametro')">
                   </div>
                   <div class="form-group">
                       <label for="nuevoParametro">Valor:</label>
@@ -106,7 +98,6 @@
 </div>
 <!-- /Agregar Parametro  Form -->
 
-
 <!-- Actualizar Parametro  Form -->
 <div class="modal fade" id="abrirModalEditarParametro">
   <div class="modal-dialog">
@@ -121,11 +112,11 @@
               <form>
                 <div class="form-group">
                     <label for="parametroEditando">Parametro:</label>
-                    <input type="text" [(ngModel)]="parametroEditando.parametro" (input)="eliminarCaracteresEspeciales($event, 'parametro')" name="parametroEditando.parametro" (input)="onInputChange($event, 'parametro')" class="form-control" id="editarParametro" placeholder="Parametro">
+                    <input type="text" [(ngModel)]="parametroEditando.parametro" (input)="eliminarCaracteresEspeciales($event, 'parametro')" name="parametroEditando.parametro"  class="form-control" id="editarParametro" placeholder="Parametro" (input)="convertirAMayusculas($event, 'parametro')">
                 </div>
                 <div class="form-group">
                     <label for="parametroEditando">Valor:</label>
-                    <input type="text" [(ngModel)]="parametroEditando.valor" (input)="eliminarCaracteresEspeciales($event, 'valor')" name="parametroEditando.valor" class="form-control" id="editarValor" placeholder="Valor">
+                    <input type="text" [(ngModel)]="parametroEditando.valor" (input)="eliminarCaracteresEspeciales($event, 'valor')" name="parametroEditando.valor" class="form-control" id="editarValor" placeholder="Valor" (input)="convertirAMayusculas($event, 'valor')">
                 </div>
               </form>
           </div>
@@ -137,6 +128,69 @@
   </div>
 </div>
 <!-- /Actualizar Parametro Form -->
+
+<!-- Form Ver PDF para Requisitos -->
+<div class="modal fade" id="PDFReQ">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+
+      <!-- Cabecera del modal -->
+      <div class="modal-header" style="display: flex; align-items: center;">
+        <div style="flex: 1; text-align: left; margin-right: 20px;">
+            <h1>Utilidad Mi Pyme</h1>
+            <h4>Reporte de Parametros</h4> 
+            <!-- Puedes agregar más detalles del reporte aquí si es necesario -->
+            <p>Fecha: {{ getDate() }}</p>
+            <p>Usuario {{getUser.usuario}}</p>
+        </div>
+
+        <div style="flex: 0;">
+            <img src="\assets\dist\img\pym.png" alt="Logo de Mi Pyme" style="width: 200px; height: auto;">
+        </div>
+      </div>
+      
+      <!-- Pie del modal -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary customn-print-button btn-danger" (click)="generatePDF()">
+          <i class="fas fa-file-pdf"></i>  Generar PDF</button>
+          <button type="button" class="btn btn-secondary customn-print-button btn-success" (click)="generateExcel()">
+            <i class="fas fa-file-excel"></i>  Generar Excel</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      </div>
+
+<!-- Contenido del modal -->
+<div class="modal-body">
+  <!-- Aquí puedes colocar tu DataTable o cualquier otro contenido que desees mostrar -->
+  <table class="table table-striped">
+    <thead class="thead-dark">
+      <tr>
+        <th>ID</th>
+        <th>PARAMETRO</th>
+        <th>VALOR</th>
+        <th>CREADO POR</th>
+        <th>FECHA CREACION</th>
+        <th>MODIFICADO POR</th>
+        <th>FECHA MODIFICACION</th>
+        <th>ESTADO</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let parametros of listParametros; let i = index">
+        <td>{{ parametros.id_parametro }}</td>
+        <td>{{ parametros.parametro | uppercase }}</td>
+        <td>{{ parametros.valor }}</td>
+        <td>{{ parametros.creado_por | uppercase }}</td>
+        <td>{{ parametros.fecha_creacion | date: 'yyyy-MM-dd' }}</td>
+        <td>{{ parametros.modificado_por | uppercase }}</td>
+        <td>{{ parametros.fecha_modificacion | date: 'yyyy-MM-dd' }}</td>
+        <td>{{ getEstadoText(parametros.estado_parametro) }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</div>
+</div>
+
 
 
 

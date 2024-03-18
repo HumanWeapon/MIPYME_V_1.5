@@ -8,11 +8,8 @@
               <div class="card-header">
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarPermiso">
                   <i class="fas fa-plus"></i> Nuevo</button>
-                <button type="button" class="btn btn-primary custom-print-button btn-danger" title="Generar el Reporte" data-toggle="modal" data-target="#PDFPermiso">
-                  <i class="fas fa-file-pdf mr-2"></i>PDF</button>
-                  <button type="button" class="btn btn-primary custom-print-button btn-success" title="Generar el Reporte en Excel" data-toggle="modal" data-target="#ExcelPermiso">
-                    <i class="fas fa-file-excel mr-2"></i>Excel
-                </button>
+                  <button type="button" class="btn btn-primary custom-print-button btn-primary" title="Generar el Reporte" data-toggle="modal" data-target="#PDFReQ">
+                    <i class="fas fa-print"></i> Generar Reporte</button>
               </div>
               <!-- /.card-header -->
               <div class="card-body">
@@ -39,9 +36,9 @@
                     <tbody>
                       <tr *ngFor="let permiso of listPermisos; let i = index">
                         <td>{{ permiso.id_permisos }}</td>                           
-                        <td>{{ getRolNombre(permiso.id_rol) }}</td>                       
-                        <td>{{ getObjetoNombre(permiso.id_objeto) }}</td>
-                        <td>{{ getObjetoTipo(permiso.id_objeto) }}</td>
+                        <td>{{ getRolNombre(permiso.id_rol) | uppercase }}</td>                       
+                        <td>{{ getObjetoNombre(permiso.id_objeto) | uppercase }}</td>
+                        <td>{{ getObjetoTipo(permiso.id_objeto) | uppercase }}</td>
                         <td style="text-align: center;">
                           <ng-container *ngIf="permiso.permiso_consultar; else noCheckbox">{{ '✓' }}</ng-container>
                           <ng-template #noCheckbox>{{ 'X' }}</ng-template>
@@ -62,10 +59,10 @@
                           <ng-container *ngIf="permiso.estado_permiso == 1">ACTIVO</ng-container>
                           <ng-container *ngIf="permiso.estado_permiso == 2">INACTIVO</ng-container>
                         </td>                         
-                        <td>{{ permiso.creado_por}}</td>
-                        <td>{{ permiso.fecha_creacion }}</td>
-                        <td>{{ permiso.modificado_por}}</td>
-                        <td>{{ permiso.fecha_modificacion}}</td>
+                        <td>{{ permiso.creado_por | uppercase }}</td>
+                        <td>{{ permiso.fecha_creacion | date: 'yyyy-MM-dd' }}</td>
+                        <td>{{ permiso.modificado_por | uppercase }}</td>
+                        <td>{{ permiso.fecha_modificacion | date: 'yyyy-MM-dd' }}</td>
                         <td class="text-center">
                           <div class="btn-group">
                             <div class="form-check form-switch ml-4">
@@ -107,7 +104,7 @@
                 <div class="form-group">
                   <label for="nuevoPermiso">Rol</label>
                   <select (change)="idRol($event)" name="nuevoPermiso.id_rol" class="form-control" id="nuevo_rol">
-                    <option selected disabled>Seleccionar</option>
+                    <option [ngValue]="-1" selected disabled>Seleccionar</option>
                       <option *ngFor="let rol of roles" [value]="rol.id_rol">{{ rol.rol }}</option>
                   </select>
               </div>
@@ -115,7 +112,7 @@
               <div class="form-group">
                 <label for="id_objeto">Objeto</label>
                 <select (change)="idObjeto($event)" name="id_objeto" class="form-control" id="submenuSelector">
-                  <option selected disabled>Seleccionar</option>
+                  <option selected disabled [ngValue]="-1">Seleccionar</option>
                   <option *ngFor="let submenu of objetosSinRol" [value]="submenu.id_objeto">{{ submenu.nombre_objeto }}</option>
                 </select>
               </div>
@@ -150,7 +147,7 @@
             </form>
         </div>
         <div class="modal-footer justify-content-between">
-            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="cancelarInput()">Cancelar</button>
             <button type="button" (click)="agregarNuevoPermiso()" class="btn btn-success" data-dismiss="modal">Guardar</button>
         </div>
     </div>
@@ -220,8 +217,7 @@
 <!-- /Actualizar Permiso Form -->
 
 <!-- Form Ver PDF-->
-<div class="modal fade" id="PDFPermiso">
-
+<div class="modal fade" id="PDFReQ">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
 
@@ -231,18 +227,22 @@
             <h4>Reporte de Permisos</h4> 
             <!-- Puedes agregar más detalles del reporte aquí si es necesario -->
             <p>Fecha: {{ getDate() }}</p>
+            <p>Usuario {{getUser.usuario}}</p>
         </div>
         <div style="flex: 0;">
             <img src="\assets\dist\img\pym.png" alt="Logo de Mi Pyme" style="width: 200px; height: auto;">
         </div>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
       
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary customn-print-button btn-danger" (click)="generatePDF()">
-          <i class="fas fa-file-pdf"></i>  Generar PDF</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-      </div>
+        <!-- Pie del modal -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary customn-print-button btn-danger" (click)="generatePDF()">
+            <i class="fas fa-file-pdf"></i>  Generar PDF</button>
+            <button type="button" class="btn btn-secondary customn-print-button btn-success" (click)="generateExcel()">
+              <i class="fas fa-file-excel"></i>  Generar Excel</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        </div>
+
       <!-- Contenido del modal -->
       <div class="modal-body">
         <!-- Aquí puedes colocar tu DataTable o cualquier otro contenido que desees mostrar -->
@@ -265,16 +265,15 @@
           <tbody>
             <tr *ngFor="let perm of listPermisos; let i = index">                          
               <td>{{ perm.id_permisos }}</td>
-              <td>{{ getRolNombre(perm.id_rol) }}</td>                          
-              <td>{{ getObjetoNombre(perm.id_objeto) }}</td> 
+              <td>{{ getRolNombre(perm.id_rol) | uppercase }}</td>                          
+              <td>{{ getObjetoNombre(perm.id_objeto) | uppercase }}</td> 
               <td>{{ perm.permiso_consultar }}</td>
               <td>{{ perm.permiso_insercion }}</td>
               <td>{{ perm.permiso_actualizacion }}</td>
               <td>{{ perm.permiso_eliminacion }}</td>
               <td>{{ getEstadoText(perm.estado_permiso) }}</td>
-              <td>{{ perm.creado_por }}</td>
+              <td>{{ perm.creado_por | uppercase }}</td>
               <td>{{ perm.fecha_creacion }}</td>
-             
             </tr>
           </tbody>
         </table>
@@ -297,18 +296,13 @@
             <h4>Reporte de Usuario</h4> 
             <!-- Puedes agregar más detalles del reporte aquí si es necesario -->
             <p>Fecha: {{ getDate() }}</p>
+            <p>Usuario {{getUser.usuario}}</p>
         </div>
         <div style="flex: 0;">
             <img src="\assets\dist\img\pym.png" alt="Logo de Mi Pyme" style="width: 200px; height: auto;">
         </div>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
 
-    <div class="modal-footer">
-      <button type="button" class="btn btn-secondary customn-print-button btn-success" (click)="generateExcel()">
-        <i class="fas fa-file-excel"></i>  Generar Excel</button>
-      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-    </div>
     <!-- Contenido del modal -->
     <div class="modal-body">
       <!-- Aquí puedes colocar tu DataTable o cualquier otro contenido que desees mostrar -->
