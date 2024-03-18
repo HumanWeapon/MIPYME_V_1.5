@@ -11,6 +11,8 @@ export class SearchComponent implements OnInit {
   list_categorias: any[]=[];
   list_paises: any[]=[];
   list_ciudades: any[]=[];
+
+  
   constructor(){}
 
   ngOnInit(): void {
