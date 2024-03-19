@@ -154,7 +154,8 @@
               </div>
               <div class="form-group">
                   <label for="contactoEditando">Descripción</label>
-                  <input type="text" [(ngModel)]="contactoEditando.descripcion" name="contactoEditando.descripcion" class="form-control" id="editarDescripcion" placeholder="Descripción" (input)="convertirAMayusculas($event, 'descripcion')" (input)="eliminarCaracteresEspeciales($event, 'descripcion')">
+                  <textarea type="text" [(ngModel)]="contactoEditando.descripcion" name="contactoEditando.descripcion" class="form-control" id="editarDescripcion" placeholder="Descripción" (input)="convertirAMayusculas($event, 'descripcion')" (input)="eliminarCaracteresEspeciales($event, 'descripcion')">
+                  </textarea>
               </div>
               <div class="form-group">
                 <label>Tipo de contacto</label>
