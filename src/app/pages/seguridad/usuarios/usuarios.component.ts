@@ -389,11 +389,20 @@ agregarNuevoUsuario() {
 
   
   editarUsuario(Id_Rol_Selected: any) {
+
+
+    if (!this.editUser.usuario || !this.editUser.nombre_usuario || !this.editUser.correo_electronico || !this.editUser.fecha_vencimiento) {
+      this._toastr.error('No pueden quedar campos vacíos. Por favor, completa todos los campos.');
+      return;
+  }
+
     // Verifica si el usuario actual es el mismo que el usuario que se está editando
     const esMismoUsuario = this.usuariosAllRoles[this.indiceUser].usuario === this.editUser.usuario;
   
     // Verifica si el correo electrónico actual es el mismo que el correo electrónico que se está editando
     const esMismoCorreo = this.usuariosAllRoles[this.indiceUser].correo_electronico === this.editUser.correo_electronico;
+
+    
   
     // Si el usuario no es el mismo, verifica si el nombre de usuario ya existe
     if (!esMismoUsuario) {

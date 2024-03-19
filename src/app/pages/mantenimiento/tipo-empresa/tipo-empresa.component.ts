@@ -316,6 +316,10 @@ getEstadoText(estado: number): string {
     
     
       editarTipoEmpresa(){
+        if (!this.tipoEmpresaEditando.tipo_empresa || !this.tipoEmpresaEditando.descripcion) {
+          this.toastr.error('No pueden quedar campos vacíos. Por favor, completa todos los campos.');
+          return;
+      }
         this.tipoEmpresaEditando.tipo_empresa = this.tipoEmpresaEditando.tipo_empresa.toUpperCase();
         this.tipoEmpresaEditando.descripcion = this.tipoEmpresaEditando.descripcion.toUpperCase();
 

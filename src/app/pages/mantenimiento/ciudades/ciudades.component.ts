@@ -365,29 +365,37 @@ toggleFunction(ciu: any, i: number) {
   }
 
 
-  editarCiudad(){
+  editarCiudad() {
+    if (!this.ciudadEditando.ciudad || !this.ciudadEditando.descripcion) {
+        this.toastr.error('No pueden quedar campos vacíos. Por favor, completa todos los campos.');
+        return;
+    }
     this.ciudadEditando.ciudad = this.ciudadEditando.ciudad.toUpperCase();
     this.ciudadEditando.descripcion = this.ciudadEditando.descripcion.toUpperCase();
 
-    const esMismaCiu = this.ciudadesAllPaises[this.indice].ciudad === this.ciudadEditando.ciudad
+    const esMismaCiu = this.ciudadesAllPaises[this.indice].ciudad === this.ciudadEditando.ciudad;
 
-    // Si el usuario no es el mismo, verifica si el nombre de usuario ya existe
     if (!esMismaCiu) {
-      const CiuExistente = this.ciudadesAllPaises.some(user => user.ciudad === this.ciudadEditando.ciudad);
-      if (CiuExistente) {
-        this.toastr.error('La Ciudad ya existe. Por favor, elige otra Ciudad.');
-        return;
-      }
+        const CiuExistente = this.ciudadesAllPaises.some(user => user.ciudad === this.ciudadEditando.ciudad);
+        if (CiuExistente) {
+            this.toastr.error('La Ciudad ya existe. Por favor, elige otra Ciudad.');
+            return;
+        }
     }
 
-    this._ciudadService.editarCiudad(this.ciudadEditando).subscribe(data => {
-      this.updateBitacora(data);
-      this.toastr.success('Ciudad editada con éxito');
-      this.ciudadesAllPaises[this.indice].ciudad = this.ciudadEditando.ciudad;
-      this.ciudadesAllPaises[this.indice].descripcion = this.ciudadEditando.descripcion;
-    
+    this._ciudadService.editarCiudad(this.ciudadEditando).subscribe({
+        next: (data) => {
+            this.updateBitacora(data);
+            this.toastr.success('Ciudad editada con éxito');
+        },
+        error: (e: HttpErrorResponse) => {
+            this._errorService.msjError(e);
+        }
     });
-  }
+    this.ciudadesAllPaises[this.indice].ciudad = this.ciudadEditando.ciudad;
+    this.ciudadesAllPaises[this.indice].descripcion = this.ciudadEditando.descripcion;
+}
+
 
  /***************************************************************
  * Métodos de Bitácora

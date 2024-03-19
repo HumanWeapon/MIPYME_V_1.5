@@ -26,7 +26,7 @@ goToLogin() {
   nombre_pyme: string = '';
   rtn: string = '';
   loading: boolean = false;
-  ultimaConexion: string = '';
+  fecha_ultima_conexion: string = '';
 
   metodoSeleccionado: string = '';
 
@@ -103,11 +103,11 @@ goToLogin() {
     this._pymeService.loginPyme(pyme).subscribe({
       next: (token) => {
         localStorage.setItem('token', token);
-        this.ultimaConexion = token
+        this.fecha_ultima_conexion = token
 
         this.getPymes();
         
-        if(this.ultimaConexion == null){
+        if(this.fecha_ultima_conexion == null){
           localStorage.setItem('firstLogin', this.nombre_pyme);
           this.router.navigate(['/firstlogin'])
         }

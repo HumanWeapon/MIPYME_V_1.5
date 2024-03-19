@@ -300,6 +300,10 @@ obtenerIdPregunta(pregunta: Preguntas, i: any) {
 }
 
   editarPregunta(){
+    if (!this.editQuestion.pregunta) {
+      this.toastr.error('No pueden quedar campos vacíos. Por favor, completa todos los campos.');
+      return;
+  }
     this.editQuestion.pregunta = this.editQuestion.pregunta.toUpperCase();
 
     const esMismaPregunta = this.listPreguntas[this.indice].pregunta === this.editQuestion.pregunta;
