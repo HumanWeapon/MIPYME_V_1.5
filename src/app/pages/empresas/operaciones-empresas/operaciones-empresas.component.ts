@@ -1,15 +1,21 @@
+import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { da } from 'date-fns/locale';
 import { data, error } from 'jquery';
 import { ToastrService } from 'ngx-toastr';
+import { Contacto } from 'src/app/interfaces/contacto/contacto';
 import { Empresa } from 'src/app/interfaces/empresa/empresas';
+import { Categoria } from 'src/app/interfaces/mantenimiento/categoria';
 import { BitacoraService } from 'src/app/services/administracion/bitacora.service';
+import { ContactoService } from 'src/app/services/contacto/contacto.service';
 import { ContactoTService } from 'src/app/services/contacto/contactoTelefono.service';
 import { EmpresaService } from 'src/app/services/empresa/empresa.service';
 import { ErrorService } from 'src/app/services/error.service';
+import { CategoriaService } from 'src/app/services/mantenimiento/categoria.service';
 import { ProductosService } from 'src/app/services/mantenimiento/producto.service';
+import { TipoContactoService } from 'src/app/services/mantenimiento/tipoContacto.service';
 import { EmpresasContactosService } from 'src/app/services/operaciones/empresas-contactos.service';
 import { EmpresasProdcutosService } from 'src/app/services/operaciones/empresas-prodcutos.service';
 import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
@@ -25,7 +31,11 @@ export class OperacionesEmpresasComponent {
   nombreEmpresa: string = '';
   descripcionEmpresa: string = '';
   usuario: string = '';
-
+  productos: any[] = [];
+  listCategorias: Categoria[] = [];
+  listContacto: any[] = [];
+  listContactosActivos: any[]=[];
+  indice: any;//indice de contactos
   
   productosEmpresa: any[] = [];//Obtiene los productos registrados de la Empresa y los muestra en la tabla.
   productosContactos: any[] = [];//Obtiene los contactos registrados de la Empresa y los muestra en la tabla.
@@ -91,8 +101,40 @@ export class OperacionesEmpresasComponent {
     estado: 1
   }
 
+  nuevoContacto: Contacto = {
+    id_contacto: 0,
+    id_empresa:0,
+    id_tipo_contacto: 0,
+    primer_nombre: '',
+    segundo_nombre: '',
+    primer_apellido: '',
+    segundo_apellido: '',
+    descripcion: '',
+    creado_por: '',
+    fecha_creacion: new Date(), 
+    modificado_por: '',
+    fecha_modificacion:new Date(), 
+    estado: 0,
+  };
+  contactoEditando: Contacto = {
+    id_contacto: 0,
+    id_empresa: 0,
+    id_tipo_contacto: 0,
+    primer_nombre: '',
+    segundo_nombre: '',
+    primer_apellido: '',
+    segundo_apellido: '',
+    descripcion: '',
+    creado_por: '',
+    fecha_creacion: new Date(), 
+    modificado_por: '',
+    fecha_modificacion:new Date(), 
+    estado: 0,
+  };
   ngOnInit(){
     this.getProductos();
+    this.getAllCategorias();
+    this.getTipoContactoActivos();
     //this.getEmpresasProductos();
     const EmpresaId = localStorage.getItem('idEmpresa');
     const EmpresaNombre = localStorage.getItem('nombreEmpresa');
@@ -120,7 +162,11 @@ export class OperacionesEmpresasComponent {
     private _productoService: ProductosService,
     private _empresasProductosService: EmpresasProdcutosService,
     private _empresasContactosService: EmpresasContactosService,
-    private _telefonosService: ContactoTService
+    private _telefonosService: ContactoTService,
+    private _datePipe: DatePipe,
+    private _categoriaProductos: CategoriaService,
+    private _contactoService: ContactoService,
+    private _tipoContacto: TipoContactoService,
   ) {}
 
   //busca los productos de la tabla principal de los productos
@@ -203,7 +249,47 @@ export class OperacionesEmpresasComponent {
     }
   };
 
+  agregarNuevoProducto() {
+    const usuarioLocal = localStorage.getItem('usuario')
+    if(usuarioLocal){
+      const fechaActual = new Date();
+      const fechaFormateada = this._datePipe.transform(fechaActual, 'yyyy-MM-dd');
+      this.nuevoProducto = {
+        id_producto: 0, 
+        id_contacto:0,
+        id_pais:0,
+        id_categoria: this.nuevoProducto.id_categoria,
+        producto: this.nuevoProducto.producto, 
+        descripcion:this.nuevoProducto.descripcion, 
+        estado: 1,
+        creado_por: usuarioLocal, 
+        fecha_creacion: fechaFormateada as unknown as Date,
+        modificado_por: usuarioLocal, 
+        fecha_modificacion: fechaFormateada as unknown as Date,
 
+      };
+      if (!this.nuevoProducto.producto || !this.nuevoProducto.descripcion) {
+        this._toastr.warning('Debes completar los campos vacíos');
+      }else{
+        this._productoService.addProducto(this.nuevoProducto).subscribe({
+          next: (data) => {
+            console.log(data);
+            this._toastr.success('Producto agregado con éxito');
+            this.productos.push(data);
+            this.getProductosNoRegistradosPorId();
+          },
+          error: (e: HttpErrorResponse) => {
+            this._errorService.msjError(e);
+          }
+        });
+      }
+    }
+  }
+  getAllCategorias(){
+    this._categoriaProductos.getAllCategorias().subscribe(data => {
+      this.listCategorias = data.filter(categoria => categoria.estado == 1);
+    });
+  }
   /**
    * Tab Productos
    * Se muestran los métodos para obtener los productos de la base de datos.
@@ -232,6 +318,59 @@ export class OperacionesEmpresasComponent {
       }
     });
   }
+  agregarNuevoContacto() {
+    const userLocal = localStorage.getItem('usuario');
+    if (userLocal){
+      this.nuevoContacto = {
+        id_contacto: 0,
+        id_empresa: this.nuevoContacto.id_empresa,
+        id_tipo_contacto: this.nuevoContacto.id_tipo_contacto, 
+        primer_nombre: this.nuevoContacto.primer_nombre,
+        segundo_nombre: this.nuevoContacto.segundo_nombre, 
+        primer_apellido: this.nuevoContacto.primer_apellido,
+        segundo_apellido: this.nuevoContacto.segundo_apellido,   
+        descripcion:this.nuevoContacto.descripcion,
+        creado_por: userLocal,
+        fecha_creacion: new Date(), 
+        modificado_por: userLocal, 
+        fecha_modificacion: new Date(),
+        estado: 1,
+  
+      };
+      if (!this.nuevoContacto.primer_nombre || !this.nuevoContacto.primer_apellido || !this.nuevoContacto.descripcion || !this.nuevoContacto.descripcion) {
+        this._toastr.warning('Campos vacíos');
+      }
+      else{
+        this._contactoService.addContacto(this.nuevoContacto).subscribe({
+          next: (data) => {
+            console.log(data);
+            this._toastr.success('Contacto Agregado Exitosamente');
+            this.listContacto.push(data);
+          },
+          error: (e: HttpErrorResponse) => {
+            this._errorService.msjError(e);
+          }
+        });
+      }
+    }
+  }
+  cancelarInput(){
+    this.nuevoContacto.primer_nombre = '';
+    this.nuevoContacto.segundo_nombre = '';
+    this.nuevoContacto.primer_apellido = '';
+    this.nuevoContacto.segundo_apellido = '';
+    this.nuevoContacto.descripcion = '';
+ }
+ getTipoContactoActivos(){
+  this._tipoContacto.getAllTipoContactosActicvos().subscribe({
+    next: (data)=> {
+      this.listContactosActivos = data
+    },
+    error: (e: HttpErrorResponse) => {
+      this._errorService.msjError(e);
+    }
+  });
+}
   //Obtiene todos los contactos registrados a una empresa
   getEmpresasContactosPorId() {
     this._empresasContactosService.consultarContactosPorId(this.idEmpresa).subscribe({
@@ -298,7 +437,6 @@ export class OperacionesEmpresasComponent {
         this.insertarProducto(producto);
       }
     });
-  
     productosDesmarcados.forEach(producto => {
       if (producto.id_empresa) {
         // Si el producto tenía un ID de empresa (estaba activo anteriormente),
@@ -306,6 +444,26 @@ export class OperacionesEmpresasComponent {
         this.eliminarProducto(producto);
       }
     });
+  }
+
+  obtenerIdContacto(contac: any, i: any){
+    this.contactoEditando = {
+      id_contacto: contac.id_contacto,
+      id_empresa: contac.id_empresa,
+      id_tipo_contacto: contac.tipo_contacto.id_tipo_contacto,
+      primer_nombre: contac.primer_nombre,
+      segundo_nombre: contac.segundo_nombre,
+      primer_apellido: contac.primer_apellido,
+      segundo_apellido: contac.segundo_nombre,
+      descripcion: contac.descripcion,
+      creado_por: contac.creado_por,
+      fecha_creacion: contac.fecha_creacion, 
+      modificado_por: this.usuario,
+      fecha_modificacion: new Date(), 
+      estado: contac.estado,
+
+    };
+    this.indice = i;
   }
   // Método para enviar una solicitud para insertar el registro en la base de datos
   insertarProducto(producto: any) {
@@ -415,4 +573,79 @@ export class OperacionesEmpresasComponent {
     this.getEmpresasContactosPorId();
     this.getContactosNoRegistradosPorId();
   }
+  eliminarCaracteresEspeciales(event: any, field: string) {
+    setTimeout(() => {
+      let inputValue = event.target.value;
+  
+      // Elimina caracteres especiales dependiendo del campo
+      if (field === 'producto') {
+        inputValue = inputValue.replace(/[^a-zA-Z0-9\s]/g, ''); // Solo permite letras y números y espacios en blanco
+      }else if (field === 'descripcion') {
+        inputValue = inputValue.replace(/[^a-zA-Z0-9\s]/g, ''); // Solo permite letras, números y espacios en blanco
+      }
+      event.target.value = inputValue;
+    });
+  }
+  convertirAMayusculas(event: any, field: string) {
+    setTimeout(() => {
+      const inputValue = event.target.value;
+      event.target.value = inputValue.toUpperCase();
+    });
+  }
+  toggleFunction(contac: any, i: number) {
+
+    // Ejecuta una función u otra según el estado
+    if (contac.estado == 1 ) {
+      this.inactivarContacto(contac, i); // Ejecuta la primera función
+    } else {
+      this.activarContacto(contac, i); // Ejecuta la segunda función
+    }
+  }
+  inactivarContacto(contacto: Contacto, i: any){
+    const inactivarC: Contacto = {
+      id_contacto: contacto.id_contacto,
+      id_empresa: contacto.id_empresa,
+      id_tipo_contacto: contacto.id_tipo_contacto,
+      primer_nombre: contacto.primer_nombre,
+      segundo_nombre: contacto.segundo_nombre,
+      primer_apellido: contacto.primer_apellido,
+      segundo_apellido: contacto.segundo_apellido,
+      descripcion: contacto.descripcion,
+      creado_por: contacto.creado_por,
+      fecha_creacion: contacto.fecha_creacion, 
+      modificado_por: contacto.modificado_por,
+      fecha_modificacion: contacto.fecha_modificacion, 
+      estado: 2,
+    };
+    console.log(inactivarC);
+    this._contactoService.inactivarContacto(inactivarC).subscribe(data => {
+    this._toastr.success('El contacto: '+ contacto.primer_nombre + ' ha sido inactivado');
+    //this.inactivarBitacora(data);
+  });
+    this.productosContactos[i].estado = 2; 
+  }
+  activarContacto(contacto: Contacto, i: any){
+    const activarC: Contacto = {
+      id_contacto: contacto.id_contacto,
+      id_empresa: contacto.id_empresa,
+      id_tipo_contacto: contacto.id_tipo_contacto,
+      primer_nombre: contacto.primer_nombre,
+      segundo_nombre: contacto.segundo_nombre,
+      primer_apellido: contacto.primer_apellido,
+      segundo_apellido: contacto.segundo_apellido,
+      descripcion: contacto.descripcion,
+      creado_por: contacto.creado_por,
+      fecha_creacion: contacto.fecha_creacion, 
+      modificado_por: contacto.modificado_por,
+      fecha_modificacion: contacto.fecha_modificacion, 
+      estado: 1,
+    };
+    console.log(activarC);
+    this._contactoService.activarContacto(activarC).subscribe(data => {
+    this._toastr.success('El contacto: '+ contacto.primer_nombre + ' ha sido activado');
+    //this.activarBitacora(data);
+  });
+    this.productosContactos[i].estado = 1;
+  }
+
 }

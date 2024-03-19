@@ -41,6 +41,7 @@ export class ContactoComponent implements OnInit{
   
   contactoEditando: Contacto = {
     id_contacto: 0,
+    id_empresa: 0,
     id_tipo_contacto: 0,
     primer_nombre: '',
     segundo_nombre: '',
@@ -56,6 +57,7 @@ export class ContactoComponent implements OnInit{
 
   nuevoContacto: Contacto = {
     id_contacto: 0,
+    id_empresa:0,
     id_tipo_contacto: 0,
     primer_nombre: '',
     segundo_nombre: '',
@@ -67,8 +69,8 @@ export class ContactoComponent implements OnInit{
     modificado_por: '',
     fecha_modificacion:new Date(), 
     estado: 0,
-
   };
+  
   indice: any;
 
   dtOptions: DataTables.Settings = {};
@@ -309,6 +311,7 @@ agregarNuevoContacto() {
   if (userLocal){
     this.nuevoContacto = {
       id_contacto: 0,
+      id_empresa: this.nuevoContacto.id_empresa,
       id_tipo_contacto: this.nuevoContacto.id_tipo_contacto, 
       primer_nombre: this.nuevoContacto.primer_nombre,
       segundo_nombre: this.nuevoContacto.segundo_nombre, 
@@ -345,6 +348,7 @@ agregarNuevoContacto() {
   obtenerIdContacto(contac: any, i: any){
     this.contactoEditando = {
       id_contacto: contac.id_contacto,
+      id_empresa: contac.id_empresa,
       id_tipo_contacto: contac.tipo_contacto.id_tipo_contacto,
       primer_nombre: contac.primer_nombre,
       segundo_nombre: contac.segundo_nombre,

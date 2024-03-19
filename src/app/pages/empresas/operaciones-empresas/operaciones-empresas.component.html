@@ -32,9 +32,14 @@
                   <div class="input-group input-group-sm" >
                     <div class="ml-auto"> <!-- Agrega la clase ml-auto aquí -->
                       <button type="button" class="btn btn-primary form-control float-righ" data-toggle="modal" data-target="#agregarProducto">
+                        Nuevo Producto
+                      </button>
+                    </div>
+                    <div class="ml-left ml-3"> <!-- Agrega la clase ml-auto aquí -->
+                      <button type="button" class="btn btn-primary form-control float-righ" data-toggle="modal" data-target="#gestionarProducto">
                         Editar Productos
                       </button>
-                  </div>
+                    </div>
                   </div>
                 </div>
 
@@ -62,6 +67,7 @@
                     <table class="table table-head-fixed text-nowrap">
                       <thead>
                         <tr>
+                          <th>Id</th>
                           <th>Producto</th>
                           <th>Categoría</th>
                           <th>Descripción</th>
@@ -71,6 +77,7 @@
                       </thead>
                       <tbody>
                         <tr *ngFor="let obj of productosEmpresa; let i = index">
+                          <td>{{ obj.id_producto }}</td>
                           <td>{{ obj.producto.producto }}</td>
                           <td>{{ obj.producto.categoria.categoria }}</td>
                           <td>{{ obj.producto.descripcion }}</td>
@@ -96,9 +103,9 @@
                     <div class="input-group input-group-sm" >
                       <div class="ml-auto"> <!-- Agrega la clase ml-auto aquí -->
                         <button type="button" class="btn btn-primary form-control float-righ" data-toggle="modal" data-target="#agregarContacto">
-                          Editar Contactos
+                          <i class="fas fa-plus"></i> Nuevo
                         </button>
-                    </div>
+                      </div>
                     </div>
                   </div>
   
@@ -126,23 +133,40 @@
                       <table class="table table-head-fixed text-nowrap">
                         <thead>
                           <tr>
+                            <th>Id</th>
                             <th>Nombre</th>
-                            <th>Tipo de contacto</th>
+                            <th>Tipo persona</th>
                             <th>Descripción</th>
                             <th>Agregado por</th>
                             <th>Fecha</th>
+                            <th>Estado</th>
                             <th class="text-center">Ver Teléfonos</th>
+                            <th>Acciones</th>
                           </tr>
                         </thead>
                         <tbody>
                           <tr *ngFor="let obj of productosContactos; let i = index">
+                            <td>{{ obj.id_contacto }}</td>
                             <td>{{ obj.nombre_completo }}</td>
                             <td>{{ obj.tipo_contacto }}</td>
                             <td>{{ obj.descripcion }}</td>
                             <td>{{ obj.creado_por }}</td>
                             <td>{{ obj.fecha_creacion | date:'dd/MM/yyyy'}}</td>
+                            <td>
+                              <ng-container *ngIf="obj.estado === 1">ACTIVO</ng-container>
+                              <ng-container *ngIf="obj.estado === 2">INACTIVO</ng-container>
+                            </td>
                             <td class="text-center">
-                              <button type="button" (click)="buscarTelefonos(obj.id_contacto)" class="btn btn-primary btn-sm"><i class="fas fa-solid fa-phone" data-toggle="modal" data-target="#ver_telefonos"></i></button>
+                              <button type="button" (click)="buscarTelefonos(obj.id_contacto)" class="btna"data-toggle="modal" data-target="#ver_telefonos"><i class="fas fa-solid fa-phone"></i></button>
+                            </td>
+                            <td class="text-center">
+                              <div class="btn-group">
+                                <div class="form-check form-switch ml-4">
+                                  <input class="form-check-input" (click)="toggleFunction(obj, i)" [title]="obj.estado == 1 ? 'Desactivar' : 'Activar'" type="checkbox" 
+                                    role="switch" id="flexSwitchCheckChecked" [checked]="obj.estado == 1">
+                                  </div>
+                                  <button type="button" (click)="obtenerIdContacto(obj, i)" data-toggle="modal" title="Editar Contacto" data-target="#abrirModalEditarContacto"data-toggle="modal" data-target="#abrirModalEditarContacto" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
+                                </div>
                             </td>
                           </tr>
                         </tbody>
@@ -233,7 +257,47 @@
 
   <!-- Modales -->
   <!-- Agregar producto Form -->
-  <div class="modal fade" id="agregarProducto">
+<div class="modal fade" id="agregarProducto">
+  <div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">Agregar Producto</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form (submit)="agregarNuevoProducto()">
+  
+                <div class="form-group">
+                    <label for="nuevoProducto">Nombre del Producto:</label>
+                    <input type="text" [(ngModel)]="nuevoProducto.producto" name="nuevoProducto.producto" (input)="eliminarCaracteresEspeciales($event, 'producto')" (input)="convertirAMayusculas($event, 'descripcion')" class="form-control" id="nuevoProducto" placeholder="Nombre del producto">
+                </div>
+                <div class="form-group">
+                    <label for="nuevoDescripcion">Descripción</label>
+                    <textarea type="text" [(ngModel)]="nuevoProducto.descripcion" name="nuevoProducto.descripcion" class="form-control" id="nuevodescripcion" placeholder="Descripción" (input)="convertirAMayusculas($event, 'descripcion')" (input)="eliminarCaracteresEspeciales($event, 'descripcion')">
+                    </textarea>
+                </div>
+  
+              <div class="form-group">
+                <label for="nuevaCategoria">Categoría:</label>
+                <select class="form-control" id="editarRol" [(ngModel)]="nuevoProducto.id_categoria" name="id_categoria">
+                  <option value="0">Seleccione la Categoria</option>
+                  <option *ngFor="let item of listCategorias" [ngValue]="item.id_categoria">{{ item.categoria }}</option>
+                </select>
+              </div>
+            </form>
+        </div>
+        <div class="modal-footer justify-content-between">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+            <button type="button" (click)="agregarNuevoProducto()" class="btn btn-success" data-dismiss="modal">Guardar</button>
+        </div>
+    </div>
+  </div>
+  </div>
+  <!-- /Agregar Usuario Form -->
+  <!-- Gestionar producto Form -->
+  <div class="modal fade" id="gestionarProducto">
     <div class="modal-dialog">
       <div class="modal-content">
           <div class="modal-header" style="background-color: #1254a1; color: white;">
@@ -293,70 +357,57 @@
       </div>
     </div>
   </div>
-  <!-- /Agregar Producto Form -->
+  <!-- /Gestionar Producto Form -->
 
-  <!-- Agregar contacto Form -->
-  <div class="modal fade" id="agregarContacto" >
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-          <div class="modal-header" style="background-color: #1254a1; color: white;">
-              <h4 class="modal-title">Agregar Contactos</h4>
-              <button type="button" class="close" style="background-color: #1254a1; color: white;" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-              </button>
-          </div>
-          <div class="modal-body">
-
-            <div class="container mt-0 pt-0 bt-0">
-              <div class="row">
-                <div class="card-tools">
-                  <div class="input-group input-group-sm mb-2">
-                    <input type="text" name="table_search" class="form-control float-right" placeholder="Buscar" [(ngModel)]="filtroModalCont" (input)="buscarContactosModal()">
-                    <div class="input-group-append">
-                      <button type="button" class="btn btn-default" (click)="buscarContactosModal()">
-                        <i class="fas fa-search"></i>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-12">
-                  <div class="card-body table-responsive p-0" style="height: 300px;">
-                    <table class="table table-head-fixed text-nowrap">
-                      <thead>
-                          <tr>
-                              <th scope="col">Seleccionar</th>
-                              <th scope="col">Contacto</th>
-                              <th scope="col">Tipo de contacto</th>
-                          </tr>
-                      </thead>
-                      <tbody>
-                          <tr *ngFor="let contacto of listNuevosContactos">
-                              <td>
-                                  <div class="custom-control custom-checkbox">
-                                      <input type="checkbox" class="custom-control-input" id="customCheck{{contacto.id_contacto}}" [checked]="contacto.posee_contacto" (change)="contacto.posee_contacto ? desmarcarContacto(contacto) : marcarContacto(contacto)">
-                                      <label class="custom-control-label" for="customCheck{{contacto.id_contacto}}"></label>
-                                  </div>
-                              </td>
-                              <td>{{contacto.nombre_completo}}</td>
-                              <td>{{contacto.tipo_contacto}}</td>
-                          </tr>
-                      </tbody>
-                    </table>
-                  
-                  </div>
-                </div>
-              </div>
+  <!-- Agregar Contacto Form -->
+  <div class="modal fade" id="agregarContacto">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Agregar Contacto</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-
-          </div>
-          <div class="modal-footer justify-content-between">
-              <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-              <button type="button" class="btn btn-success" (click)="EditarContactos()" data-dismiss="modal">Guardar</button>
-          </div>
-      </div>
+            <div class="modal-body">
+                <form (submit)="agregarNuevoContacto()">
+                    <div class="form-group">
+                        <label for="nuevoContacto">Primer Nombre</label>
+                        <input type="text" [(ngModel)]="nuevoContacto.primer_nombre" name="nuevoContacto.primer_nombre" class="form-control" id="nuevoPN" placeholder="Primer Nombre" (input)="convertirAMayusculas($event, 'primer_nombre')" (input)="eliminarCaracteresEspeciales($event, 'primer_nombre')">
+                    </div>  
+                    <div class="form-group">
+                      <label for="nuevoContacto">Segundo Nombre:</label>
+                      <input type="text" [(ngModel)]="nuevoContacto.segundo_nombre" name="nuevoContacto.segundo_nombre" class="form-control" id="nuevoSN" placeholder="Segundo Nombre" (input)="convertirAMayusculas($event, 'segundo_nombre')" (input)="eliminarCaracteresEspeciales($event, 'segundo_nombre')">
+                  </div>
+                  <div class="form-group">
+                      <label for="nuevoContacto">Primer Apellido</label>
+                      <input type="text" [(ngModel)]="nuevoContacto.primer_apellido" name="nuevoContacto.primer_apellido" class="form-control" id="nuevoPA" placeholder="Primer Apellido" (input)="convertirAMayusculas($event, 'primer_apellido')" (input)="eliminarCaracteresEspeciales($event, 'primer_apellido')">
+                  </div>  
+                  <div class="form-group">
+                      <label for="nuevoContacto">Segundo Apellido:</label>
+                      <input type="text" [(ngModel)]="nuevoContacto.segundo_apellido" name="nuevoContacto.segundo_apellido" class="form-control" id="nuevoSA" placeholder="Segundo Apellido" (input)="convertirAMayusculas($event, 'segundo_apellido')" (input)="eliminarCaracteresEspeciales($event, 'segundo_apellido')">
+                  </div>
+                  <div class="form-group">
+                      <label for="nuevoContacto">Descripción</label>
+                      <textarea rows="4" type="text" [(ngModel)]="nuevoContacto.descripcion" name="nuevoContacto.descripcion" class="form-control" id="nuevoDescripcion" placeholder="Descripción" (input)="convertirAMayusculas($event, 'descripcion')" (input)="eliminarCaracteresEspeciales($event, 'descripcion')"></textarea>
+                  </div>   
+                  <div class="form-group">
+                    <label>Tipo de contacto</label>
+                    <select class="form-control" [(ngModel)]="nuevoContacto.id_tipo_contacto" name="id_tipo_contacto">
+                      <option *ngFor="let obj of listContactosActivos" [value]="obj.id_tipo_contacto">{{obj.tipo_contacto}}</option>
+                    </select>
+                  </div>
+                </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="cancelarInput()">Cancelar</button>
+                <button type="button" (click)="agregarNuevoContacto()" class="btn btn-success" data-dismiss="modal">Guardar</button>
+            </div>
+        </div>
     </div>
-  </div>
-  <!-- /Agregar Producto Form -->
+    </div>
+    <!-- /Agregar contacto Form -->
+
 
    <!-- Ver Teléfonos de contactos -->
    <div class="modal fade" id="ver_telefonos">
@@ -398,6 +449,8 @@
     </div>
   </div>
   <!-- /Ver Teléfonos de contactos -->
+
+
 
   <!-- /.Modales -->
 </div>

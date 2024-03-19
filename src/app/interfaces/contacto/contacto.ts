@@ -1,5 +1,6 @@
 export interface Contacto {
     id_contacto: number,
+    id_empresa: number,
     id_tipo_contacto: number,
     primer_nombre: string,
     segundo_nombre: string,
