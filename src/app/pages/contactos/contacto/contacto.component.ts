@@ -15,6 +15,7 @@ import { da } from 'date-fns/locale';
 import * as XLSX from 'xlsx';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale'; // Importa el idioma español
+import { EmpresasContactosService } from 'src/app/services/operaciones/empresas-contactos.service';
 
 
 
@@ -70,7 +71,7 @@ export class ContactoComponent implements OnInit{
     fecha_modificacion:new Date(), 
     estado: 0,
   };
-  
+
   indice: any;
 
   dtOptions: DataTables.Settings = {};
@@ -90,7 +91,8 @@ export class ContactoComponent implements OnInit{
     private _userService: UsuariosService,
     private _tipoContacto: TipoContactoService,
     private toastr: ToastrService,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private _operacionesContactos: EmpresasContactosService
     ) { }
 
   
@@ -104,9 +106,10 @@ export class ContactoComponent implements OnInit{
       language: {url:'//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'},
       responsive: true
     };
-    this._contactoService.getAllContactosconTipoContacto()
+    this._operacionesContactos.ReporteContactos()
       .subscribe((res: any) => {
         this.listContacto = res;
+        console.log(res)
         this.dtTrigger.next(null);
       });
       this.getUsuario();
@@ -162,7 +165,7 @@ export class ContactoComponent implements OnInit{
      this.nuevoContacto.primer_apellido = '';
      this.nuevoContacto.segundo_apellido = '';
      this.nuevoContacto.descripcion = '';
-    }
+  }
 
 
 // Variable de estado para alternar funciones
@@ -198,16 +201,21 @@ toggleFunction(contac: any, i: number) {
 
 
   generateExcel() {
-    const headers = ['Nombre', 'Descripción', 'Creado Por', 'Fecha de Creación', 'Estado'];
+    const headers = ['ID','NOMBRE COMPLETO', 'TIPO DE PERSONA', 'EMPRESA', 'DESCRIPCION', 'CREADO POR', 'FECHA DE CREACION','MODIFICADO POR', 'FECHA DE MODIFICACION', 'ESTADO'];
     const data: any[][] = [];
   
     // Recorre los datos de tu lista de contactos y agrégalo a la matriz 'data'
     this.listContacto.forEach((contac, index) => {
       const row = [
-        `${contac.primer_nombre} ${contac.segundo_nombre} ${contac.primer_apellido} ${contac.segundo_apellido}`,
+        contac.id_contacto,
+        contac.nombre_completo,
+        contac.tipo_contacto,
+        contac.nombre_empresa,
         contac.descripcion,
         contac.creado_por,
         contac.fecha_creacion,
+        contac.modificado_por,
+        contac.fecha_modificacion,
         this.getEstadoText(contac.estado)
       ];
       data.push(row);
@@ -248,7 +256,7 @@ generatePDF() {
   const { jsPDF } = require("jspdf");
   const doc = new jsPDF();
   const data: any[][] = [];
-  const headers = ['Nombre', 'Descripción', 'Creado Por', 'Fecha de Creación', 'Estado'];
+  const headers = ['ID','NOMBRE COMPLETO', 'TIPO DE PERSONA', 'EMPRESA', 'DESCRIPCION', 'CREADO POR', 'FECHA DE CREACION','MODIFICADO POR', 'FECHA DE MODIFICACION', 'ESTADO'];
 
   // Agregar el logo al PDF
   const logoImg = new Image();
@@ -266,10 +274,15 @@ generatePDF() {
     // Recorre los datos de usuarios y agrégalo a la matriz 'data'
     this.listContacto.forEach((contac, index) => {
       const row = [
-        `${contac.primer_nombre} ${contac.segundo_nombre} ${contac.primer_apellido} ${contac.segundo_apellido}`,
+        contac.id_contacto,
+        contac.nombre_completo,
+        contac.tipo_contacto,
+        contac.nombre_empresa,
         contac.descripcion,
         contac.creado_por,
         contac.fecha_creacion,
+        contac.modificado_por,
+        contac.fecha_modificacion,
         this.getEstadoText(contac.estado)
       ];
       data.push(row);
@@ -364,56 +377,27 @@ agregarNuevoContacto() {
     };
     this.indice = i;
   }
-  editarContacto() {
-    // Verificar si hay campos vacíos antes de continuar
-    if (!this.contactoEditando.primer_nombre || !this.contactoEditando.segundo_nombre || !this.contactoEditando.primer_apellido || !this.contactoEditando.segundo_apellido || !this.contactoEditando.descripcion) {
-        this.toastr.error('No pueden quedar campos vacíos. Por favor, completa todos los campos.');
-        return;
-    }
-
-    // Convertir campos a mayúsculas
-    this.contactoEditando.primer_nombre = this.contactoEditando.primer_nombre.toUpperCase();
-    this.contactoEditando.segundo_nombre = this.contactoEditando.segundo_nombre.toUpperCase();
-    this.contactoEditando.primer_apellido = this.contactoEditando.primer_apellido.toUpperCase();
-    this.contactoEditando.segundo_apellido = this.contactoEditando.segundo_apellido.toUpperCase();
-    this.contactoEditando.descripcion = this.contactoEditando.descripcion.toUpperCase();
-
-    // Verificar si el contacto ya existe
-    const contactoExistente = this.listContacto.some(user => 
-        user.primer_nombre === this.contactoEditando.primer_nombre &&
-        user.segundo_nombre === this.contactoEditando.segundo_nombre &&
-        user.primer_apellido === this.contactoEditando.primer_apellido &&
-        user.segundo_apellido === this.contactoEditando.segundo_apellido
-    );
-
-    if (contactoExistente) {
-        this.toastr.error('El contacto ya existe. Por favor, elige otro nombre de contacto.');
-        return;
-    }
-
-    // Continuar con la edición si no hay conflictos
+  editarContacto(){
     this._contactoService.editarContacto(this.contactoEditando).subscribe({
-        next: (data) => {
-            this.updateBitacora(data);
-            this.toastr.success('Contacto editado con éxito');
-        },
-        error: (e: HttpErrorResponse) => {
-            this._errorService.msjError(e);
-        }
+      next: (data) => {
+        //this.listContacto[this.indice].tipo_contacto =
+        this.updateBitacora(data);
+        this.toastr.success('contacto editado con éxito');
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
     });
-
-    // Actualizar los datos del contacto en la lista
     const tipoContacto = this.listContactosActivos.find(contacto => contacto.id_tipo_contacto == this.contactoEditando.id_tipo_contacto);
-    this.listContacto[this.indice].primer_nombre = this.contactoEditando.primer_nombre;
-    this.listContacto[this.indice].segundo_nombre = this.contactoEditando.segundo_nombre;
-    this.listContacto[this.indice].primer_apellido = this.contactoEditando.primer_apellido;
-    this.listContacto[this.indice].segundo_apellido = this.contactoEditando.segundo_apellido;
-    this.listContacto[this.indice].descripcion = this.contactoEditando.descripcion;
-    this.listContacto[this.indice].modificado_por = this.contactoEditando.modificado_por;
-    this.listContacto[this.indice].fecha_modificacion = this.contactoEditando.fecha_modificacion;
-    this.listContacto[this.indice].tipo_contacto = tipoContacto;
-}
-
+    this.listContacto[this.indice].primer_nombre = this.contactoEditando.primer_nombre.toUpperCase();
+    this.listContacto[this.indice].segundo_nombre = this.contactoEditando.segundo_nombre.toUpperCase();
+    this.listContacto[this.indice].primer_apellido = this.contactoEditando.primer_apellido.toUpperCase();
+    this.listContacto[this.indice].segundo_apellido = this.contactoEditando.segundo_apellido.toUpperCase();
+    this.listContacto[this.indice].descripcion = this.contactoEditando.descripcion.toUpperCase();
+    this.listContacto[this.indice].modificado_por = this.contactoEditando.modificado_por.toUpperCase();
+    this.listContacto[this.indice].fecha_modificacion = this.contactoEditando.fecha_modificacion,
+    this.listContacto[this.indice].tipo_contacto = tipoContacto
+  }
 
   obtenerNombreTipoContacto(idTipoContacto: number): string {
     const tipoContacto = this.listContactosActivos.find(contacto => contacto.id_tipo_contacto == idTipoContacto);

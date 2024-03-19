@@ -19,7 +19,12 @@ export class EmpresasContactosService {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.get<any[]>(`${this.apiUrl}/consultarContactosActivosporId/${id}`, { headers });
   }
-
+  //consulta los contactos registrados de una empresa por el id
+  ReporteContactos(): Observable<any[]> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<any[]>(`${this.apiUrl}/ReporteContactos`, { headers });
+  }
   //consulta los contactos registrados y no registrados de una empresa por el id
   consultarContactosNoRegistradosPorId(id: number): Observable<any[]> {
     const token = localStorage.getItem('token');

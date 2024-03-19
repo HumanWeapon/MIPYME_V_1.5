@@ -17,7 +17,8 @@
                           <tr>
                             <th>Id</th>
                             <th>Nombre Completo</th>
-                            <th>Tipo de contacto</th>
+                            <th>Tipo de persona</th>
+                            <th>Empresa</th>
                             <th>Descripción</th>
                             <th>Creado</th>
                             <th>Fecha Creación</th>
@@ -30,8 +31,9 @@
                         <tbody>
                           <tr *ngFor="let contac of listContacto; let i = index">
                             <td>{{ contac.id_contacto}}</td>
-                            <td>{{ contac.primer_nombre +" "+ contac.segundo_nombre+" "+ contac.primer_apellido +" "+contac.segundo_apellido | uppercase }}</td>
-                            <td>{{ contac.tipo_contacto.tipo_contacto | uppercase }}</td>
+                            <td>{{ contac.nombre_completo | uppercase }}</td>
+                            <td>{{ contac.tipo_contacto | uppercase }}</td>
+                            <td>{{ contac.nombre_empresa | uppercase }}</td>
                             <td>{{ contac.descripcion | uppercase }}</td>
                             <td>{{ contac.creado_por | uppercase }}</td>
                             <td>{{ contac.fecha_creacion | date: 'yyyy-MM-dd' }}</td>
@@ -208,20 +210,28 @@
             <thead class="thead-dark">
               <tr>
                 <th>ID</th>
-                <th>Nombre Completo</th> 
+                <th>Nombre completo</th>
+                <th>Tipo de persona</th>
+                <th>Empresa</th>
                 <th>Descripcion</th>
-                <th>Creador</th>
-                <th>Fecha Creación</th>
+                <th>Creado por</th>
+                <th>Fecha creación</th>
+                <th>Modificado por</th>
+                <th>Fecha modificación</th>
                 <th>Estado</th>
               </tr>
             </thead>
             <tbody>
                 <tr *ngFor="let contac of listContacto; let i = index">
                     <td>{{ contac.id_contacto}}</td>
-                    <td>{{ contac.primer_nombre +" "+ contac.segundo_nombre+" "+ contac.primer_apellido +" "+contac.segundo_apellido }}</td>
+                    <td>{{ contac.nombre_completo }}</td>
+                    <td>{{ contac.tipo_contacto }}</td>
+                    <td>{{ contac.nombre_empresa }}</td>
                     <td>{{ contac.descripcion}}</td>
                     <td>{{ contac.creado_por}}</td>
                     <td>{{ contac.fecha_creacion }}</td>
+                    <td>{{ contac.modificado_por}}</td>
+                    <td>{{ contac.fecha_modificacion }}</td>
                     
                 <td>{{ getEstadoText(contac.estado) }}</td>
               </tr>
