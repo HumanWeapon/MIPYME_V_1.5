@@ -346,6 +346,10 @@ getEstadoText(estado: number): string {
       }
     
       editarTipoRequisito(){
+        if (!this.tipoRequisitoEditando.tipo_requisito || !this.tipoRequisitoEditando.descripcion) {
+          this.toastr.error('No pueden quedar campos vacíos. Por favor, completa todos los campos.');
+          return;
+      }
     
     this.tipoRequisitoEditando.tipo_requisito = this.tipoRequisitoEditando.tipo_requisito.toUpperCase();
     this.tipoRequisitoEditando.descripcion = this.tipoRequisitoEditando.descripcion.toUpperCase();

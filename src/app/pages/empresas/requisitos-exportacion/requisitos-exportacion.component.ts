@@ -10,6 +10,11 @@ import { BitacoraService } from 'src/app/services/administracion/bitacora.servic
 import { ErrorService } from 'src/app/services/error.service';
 import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 import { Usuario } from 'src/app/interfaces/seguridad/usuario';
+import * as XLSX from 'xlsx';
+import { format } from 'date-fns';
+import { es } from 'date-fns/locale'; // Importa el idioma español
+import { DatePipe } from '@angular/common';
+
 
 
 @Component({
@@ -93,44 +98,112 @@ onInputChange(event: any, field: string) {
   }
 }
 
-/*****************************************************************************************************/
 
-generatePDF() {
 
-  const {jsPDF} = require ("jspdf");
- 
-  const doc = new jsPDF();
-  const data: any[][] =[]
-  const headers = ['Nombre Requisito', 'Descripcion', 'Creador', 'Fecha', 'Modificado por', 'Fecha', 'Estado'];
 
-  // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
-  this.listrequisito.forEach((Trequi, index) => {
+generateExcel() {
+  const headers = ['Id','Tipo de Requisito', 'Descripción', 'Creado por', 'Fecha de Creación', 'Estado'];
+  const data: any[][] = [];
+
+  // Recorre los datos de tu lista de requisitos y agrégalos a la matriz 'data'
+  this.listrequisito.forEach((requisito, index) => {
     const row = [
-      Trequi.tipo_requisito,
-      Trequi.descripcion,
-      Trequi.creado_por,
-      Trequi.fecha_creacion,
-      Trequi.modificado_por,
-      Trequi.fecha_modificacion,
-      this.getEstadoText(Trequi.estado) // Función para obtener el texto del estado
+      requisito.id_tipo_requisito,
+      requisito.tipo_requisito,
+      requisito.descripcion,
+      requisito.creado_por,
+      requisito.fecha_creacion,
+          this.getEstadoText(requisito.estado) // Función para obtener el texto del estado
     ];
     data.push(row);
   });
 
-  doc.autoTable({
-    head: [headers],
-    body: data,
-  });
+  // Crea un nuevo libro de Excel
+  const workbook = XLSX.utils.book_new();
+  const worksheet = XLSX.utils.aoa_to_sheet([headers, ...data]);
 
-  doc.output('dataurlnewwindow', null, 'Pymes.pdf');
+  // Agrega la hoja al libro de Excel
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Requisitos');
+
+  // Guarda el libro de Excel como un archivo binario
+  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+  const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+  // Crea un objeto URL para el blob
+  const url = window.URL.createObjectURL(blob);
+
+  // Crea un enlace para descargar el archivo Excel
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'Reporte de Requisitos.xlsx';
+
+  document.body.appendChild(a);
+  a.click();
+
+  // Limpia el objeto URL creado
+  window.URL.revokeObjectURL(url);
+  document.body.removeChild(a);
+}
+
+/*****************************************************************************************************/
+
+generatePDF() {
+  const { jsPDF } = require("jspdf");
+  const doc = new jsPDF();
+  const data: any[][] = [];
+  const headers = ['Id', 'Tipo de Requisito', 'Descripción', 'Creado por', 'Fecha de Creación', 'Estado'];
+
+  // Agregar el logo al PDF
+  const logoImg = new Image();
+  logoImg.onload = () => {
+    // Dibujar el logo en el PDF
+    doc.addImage(logoImg, 'PNG', 10, 10, 50, 20); // Ajusta las coordenadas y dimensiones según tu diseño
+
+    // Agregar los comentarios al PDF centrados horizontalmente
+    const centerX = doc.internal.pageSize.getWidth() / 2;
+    doc.setFontSize(12);
+    doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+    doc.text("Reporte de Requisitos", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+    doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+    doc.text("Usuario: " + this.getUser.usuario, centerX, 50, { align: 'center' }); 
+
+    // Recorre los datos de la lista de requisitos y agrégalo a la matriz 'data'
+    this.listrequisito.forEach((requisito, index) => {
+      const row = [
+        requisito.id_tipo_requisito,
+        requisito.tipo_requisito,
+        requisito.descripcion,
+        requisito.creado_por,
+        requisito.fecha_creacion,
+        this.getEstadoText(requisito.estado) // Función para obtener el texto del estado
+      ];
+      data.push(row);
+    });
+
+    // Agregar la tabla al PDF
+    doc.autoTable({
+      head: [headers],
+      body: data,
+      startY: 70 // Ajusta la posición inicial de la tabla según tu diseño
+    });
+
+    // Guardar el PDF
+    doc.save('My Pyme-Reporte Requisitos.pdf');
+  };
+  logoImg.src = '/assets/dist/img/pym.png'; // Ruta del logo
+}
+
+getCurrentDate(): string {
+  const currentDate = new Date();
+  return currentDate.toLocaleDateString(); // Retorna la fecha actual en formato local
 }
 
 getEstadoText(estado: number): string {
   switch (estado) {
     case 1:
-      return 'ACTIVO';
+      return 'Activo';
     case 2:
-      return 'INACTIVO';;
+      return 'Inactivo';
     default:
       return 'Desconocido';
   }
@@ -164,37 +237,43 @@ inactivarRequisito(tipo_requisito: any, i: number) {
   this.listrequisito[i].estado = 2;
 }
 
-  agregarRequisito() {
 
-    const userLocal = localStorage.getItem('usuario');
-    if (userLocal){
-    this.nuevoRequisito = {
-      id_tipo_requisito: 0, 
-      tipo_requisito: this.nuevoRequisito.tipo_requisito, 
-      descripcion:this.nuevoRequisito.descripcion,
-      creado_por: userLocal, 
-      fecha_creacion: new Date(), 
-      modificado_por: userLocal, 
-      fecha_modificacion: new Date(),
-      estado: 1,
-
-    };
-
-    this._requisitoService.addRequisito(this.nuevoRequisito).subscribe({
-    next: (data) => {
-      this.insertBitacora(data);
-      this.toastr.success('requisito agregado con éxito');
-    },
-    error: (e: HttpErrorResponse) => {
-      this._errorService.msjError(e);
-    }
-  });
-  location.reload();
-  this.ngZone.run(() => {        
-  });
- }
+getDate(): string {
+  // Obtener la fecha actual
+  const currentDate = new Date();
+  // Formatear la fecha en el formato deseado
+  return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
 }
 
+
+agregarRequisito() {
+  const userLocal = localStorage.getItem('usuario');
+  if (userLocal) {
+    this.nuevoRequisito = {
+      id_tipo_requisito: 0,
+      tipo_requisito: this.nuevoRequisito.tipo_requisito,
+      descripcion: this.nuevoRequisito.descripcion,
+      creado_por: userLocal,
+      fecha_creacion: new Date(),
+      modificado_por: userLocal,
+      fecha_modificacion: new Date(),
+      estado: 1,
+    };
+    if (!this.nuevoRequisito.tipo_requisito || !this.nuevoRequisito.descripcion) {
+      this.toastr.warning('Debes completar los campos vacíos');
+      this.nuevoRequisito.tipo_requisito = '';
+      this.nuevoRequisito.descripcion = '';
+    } else {
+      this._requisitoService.addRequisito(this.nuevoRequisito).subscribe({
+        next: (data) => {
+          this.insertBitacora(data);
+          this.toastr.success('Requisito agregado exitosamente');
+          // Agrega el nuevo requisito a la lista de requisitos si es necesario
+        },
+      });
+    }
+  }
+}
 
 
   obtenerIdTipoRequisito(tipoR: Requisito, i: any){
@@ -215,16 +294,42 @@ inactivarRequisito(tipo_requisito: any, i: number) {
   }
 
 
-  editarRequisito(){
-    this._requisitoService.editarRequisito(this.RequisitoEditando).subscribe(data => {
-      this.updateBitacora(data);
-      this.toastr.success('Requisito editado con éxito');
-      this.listrequisito[this.indice].tipo_requisito = this.RequisitoEditando.tipo_requisito;
-      this.listrequisito[this.indice].descripcion = this.RequisitoEditando.descripcion;      
-    }, error => {
-      this.toastr.error('Hubo un error al editar el requisito');
+  editarRequisito() {
+    if (!this.RequisitoEditando.tipo_requisito || !this.RequisitoEditando.descripcion) {
+      this.toastr.error('No pueden quedar campos vacíos. Por favor, completa todos los campos.');
+      return;
+    }
+  
+    this.RequisitoEditando.tipo_requisito = this.RequisitoEditando.tipo_requisito.toUpperCase();
+    this.RequisitoEditando.descripcion = this.RequisitoEditando.descripcion.toUpperCase();
+  
+    const esMismoRequisito = this.listrequisito[this.indice].tipo_requisito === this.RequisitoEditando.tipo_requisito;
+  
+    // Verifica si el requisito editado ya existe
+    if (!esMismoRequisito) {
+      const requisitoExistente = this.listrequisito.some(requisito => requisito.tipo_requisito === this.RequisitoEditando.tipo_requisito);
+      if (requisitoExistente) {
+        this.toastr.error('El requisito ya existe. Por favor, elige otro requisito.');
+        return;
+      }
+    }
+  
+    // Llama al servicio para editar el requisito
+    this._requisitoService.editarRequisito(this.RequisitoEditando).subscribe({
+      next: (data) => {
+        this.updateBitacora(data);
+        this.toastr.success('Requisito editado con éxito');
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
     });
+  
+    // Actualiza los datos en la lista local
+    this.listrequisito[this.indice].tipo_requisito = this.RequisitoEditando.tipo_requisito.toUpperCase();
+    this.listrequisito[this.indice].descripcion = this.RequisitoEditando.descripcion.toUpperCase();
   }
+  
 
 /*************************************************************** Métodos de Bitácora ***************************************************************************/
 

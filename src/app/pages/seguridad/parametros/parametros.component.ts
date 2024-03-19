@@ -334,6 +334,10 @@ generateExcel() {
 
 
   editarParametro(){
+    if (!this.parametroEditando.parametro || !this.parametroEditando.valor) {
+      this.toastr.error('No pueden quedar campos vacíos. Por favor, completa todos los campos.');
+      return;
+  }
     this.parametroEditando.parametro = this.parametroEditando.parametro.toUpperCase();
     this.parametroEditando.creado_por = this.parametroEditando.creado_por.toUpperCase();
     this.parametroEditando.modificado_por = this.parametroEditando.modificado_por.toUpperCase();
@@ -347,12 +351,19 @@ generateExcel() {
       }
     }
 
-    this._parametroService.editarParametro(this.parametroEditando).subscribe(data => {
-      this.updateBitacora(data);
-      this.toastr.success('Parametro editado con éxito');
-      this.listParametros[this.indice].parametro = this.parametroEditando.parametro;
-      this.listParametros[this.indice].valor = this.parametroEditando.valor;
+    this._parametroService.editarParametro(this.parametroEditando).subscribe({
+      next: (data) => {
+        //this.listContacto[this.indice].tipo_contacto =
+        this.toastr.success('Parametro editado con éxito');
+        this.updateBitacora(data);
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
     });
+    this.listParametros[this.indice].parametro = this.parametroEditando.parametro.toUpperCase();
+    this.listParametros[this.indice].valor = this.parametroEditando.valor
+  
   }
 
    /*************************************************************** Métodos de Bitácora ***************************************************************************/

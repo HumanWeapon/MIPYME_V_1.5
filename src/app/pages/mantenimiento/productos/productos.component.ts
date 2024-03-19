@@ -210,6 +210,11 @@ export class ProductosComponent implements OnInit{
 
 
   editarProducto(id_categoria_selected: any) {
+    if (!this.productoEditando.producto || !this.productoEditando.descripcion) {
+      this.toastr.error('No pueden quedar campos vacíos. Por favor, completa todos los campos.');
+      return;
+  }
+
     this.productoEditando.producto = this.productoEditando.producto.toUpperCase();
     this.productoEditando.descripcion = this.productoEditando.descripcion.toUpperCase();
 
@@ -228,14 +233,24 @@ export class ProductosComponent implements OnInit{
         if (!categoriaSeleccionada) {
           return;
         }
-    this._productoService.editarProducto(this.productoEditando).subscribe(data => {
-        this.updateBitacora(data);
-        this.toastr.success('Producto editado con éxito');
-        this.productos[this.indice].producto = this.productoEditando.producto;
-        this.productos[this.indice].descripcion = this.productoEditando.descripcion;
-        this.productos[this.indice].categoria = categoriaSeleccionada;
-    });
-  }
+    
+        this._productoService.editarProducto(this.productoEditando).subscribe({
+        next: (data) => {
+          //this.listContacto[this.indice].tipo_contacto =
+          this.updateBitacora(data);
+          this.toastr.success('Producto editado con éxito');
+        },
+        error: (e: HttpErrorResponse) => {
+          this._errorService.msjError(e);
+        }
+      });
+
+      this.productos[this.indice].producto = this.productoEditando.producto.toUpperCase();
+      this.productos[this.indice].descripcion = this.productoEditando.descripcion.toUpperCase();
+    
+    }
+  
+
 
   /**********************************************************/
 // Variable de estado para alternar funciones

@@ -323,6 +323,10 @@ getEstadoText(estado: number): string {
    }
 
   editarTipoContacto(){
+    if (!this.tipoContactoEditando.tipo_contacto || !this.tipoContactoEditando.descripcion) {
+      this.toastr.error('No pueden quedar campos vacíos. Por favor, completa todos los campos.');
+      return;
+  }
     this.tipoContactoEditando.tipo_contacto = this.tipoContactoEditando.tipo_contacto.toUpperCase();
     this.tipoContactoEditando.descripcion = this.tipoContactoEditando.descripcion.toUpperCase();
     

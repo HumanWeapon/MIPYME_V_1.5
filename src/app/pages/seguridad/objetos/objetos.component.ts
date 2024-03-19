@@ -344,6 +344,10 @@ agregarNuevoObjeto() {
   }
 
   editarObjeto(){
+    if (!this.objetoEditando.objeto || !this.objetoEditando.descripcion) {
+      this.toastr.error('No pueden quedar campos vacíos. Por favor, completa todos los campos.');
+      return;
+  }
     this.objetoEditando.objeto = this.objetoEditando.objeto.toUpperCase();
     this.objetoEditando.descripcion = this.objetoEditando.descripcion.toUpperCase();
 

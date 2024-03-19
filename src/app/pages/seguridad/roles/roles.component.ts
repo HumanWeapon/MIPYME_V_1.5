@@ -318,6 +318,10 @@ agregarNuevoRol() {
 
 
   editarRol(){
+    if (!this.rolEditando.rol || !this.rolEditando.descripcion) {
+      this._toastr.error('No pueden quedar campos vacíos. Por favor, completa todos los campos.');
+      return;
+  }
     this.rolEditando.rol = this.rolEditando.rol.toUpperCase();
     this.rolEditando.descripcion = this.rolEditando.descripcion.toUpperCase();
     this.rolEditando.creado_por = this.rolEditando.creado_por.toUpperCase();

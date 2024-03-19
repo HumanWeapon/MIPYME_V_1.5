@@ -339,20 +339,24 @@ agregarNuevoTipoRequisito() {
       }
     
       editarTipoDireccion(){
+        if (!this.tipoDireccionEditando.tipo_direccion || !this.tipoDireccionEditando.descripcion) {
+          this.toastr.error('No pueden quedar campos vacíos. Por favor, completa todos los campos.');
+          return;
+      }
     
-    this.tipoDireccionEditando.tipo_direccion = this.tipoDireccionEditando.tipo_direccion.toUpperCase();
-    this.tipoDireccionEditando.descripcion = this.tipoDireccionEditando.descripcion.toUpperCase();
+            this.tipoDireccionEditando.tipo_direccion = this.tipoDireccionEditando.tipo_direccion.toUpperCase();
+            this.tipoDireccionEditando.descripcion = this.tipoDireccionEditando.descripcion.toUpperCase();
 
-    const esMismoTipo = this.listTipoDireccion[this.indice].tipo_direccion === this.tipoDireccionEditando.tipo_direccion;
+            const esMismoTipo = this.listTipoDireccion[this.indice].tipo_direccion === this.tipoDireccionEditando.tipo_direccion;
 
-        // Si el usuario no es el mismo, verifica si el nombre de usuario ya existe
-        if (!esMismoTipo) {
-          const TipoRExistente = this.listTipoDireccion.some(user => user.tipo_direccion === this.tipoDireccionEditando.tipo_direccion);
-          if (TipoRExistente) {
-            this.toastr.error('El Tipo de Direccion ya existe. Por favor, elige otro Tipo de Direccion.');
-            return;
-          }
-        }
+                // Si el usuario no es el mismo, verifica si el nombre de usuario ya existe
+                if (!esMismoTipo) {
+                  const TipoRExistente = this.listTipoDireccion.some(user => user.tipo_direccion === this.tipoDireccionEditando.tipo_direccion);
+                  if (TipoRExistente) {
+                    this.toastr.error('El Tipo de Direccion ya existe. Por favor, elige otro Tipo de Direccion.');
+                    return;
+                  }
+                }
 
         this._tipoDireccionService.editarTipoDireccion(this.tipoDireccionEditando).subscribe(data => {
           this.updateBitacora(data);

@@ -360,27 +360,56 @@ agregarNuevoContacto() {
     };
     this.indice = i;
   }
-  editarContacto(){
+  editarContacto() {
+    // Verificar si hay campos vacíos antes de continuar
+    if (!this.contactoEditando.primer_nombre || !this.contactoEditando.segundo_nombre || !this.contactoEditando.primer_apellido || !this.contactoEditando.segundo_apellido || !this.contactoEditando.descripcion) {
+        this.toastr.error('No pueden quedar campos vacíos. Por favor, completa todos los campos.');
+        return;
+    }
+
+    // Convertir campos a mayúsculas
+    this.contactoEditando.primer_nombre = this.contactoEditando.primer_nombre.toUpperCase();
+    this.contactoEditando.segundo_nombre = this.contactoEditando.segundo_nombre.toUpperCase();
+    this.contactoEditando.primer_apellido = this.contactoEditando.primer_apellido.toUpperCase();
+    this.contactoEditando.segundo_apellido = this.contactoEditando.segundo_apellido.toUpperCase();
+    this.contactoEditando.descripcion = this.contactoEditando.descripcion.toUpperCase();
+
+    // Verificar si el contacto ya existe
+    const contactoExistente = this.listContacto.some(user => 
+        user.primer_nombre === this.contactoEditando.primer_nombre &&
+        user.segundo_nombre === this.contactoEditando.segundo_nombre &&
+        user.primer_apellido === this.contactoEditando.primer_apellido &&
+        user.segundo_apellido === this.contactoEditando.segundo_apellido
+    );
+
+    if (contactoExistente) {
+        this.toastr.error('El contacto ya existe. Por favor, elige otro nombre de contacto.');
+        return;
+    }
+
+    // Continuar con la edición si no hay conflictos
     this._contactoService.editarContacto(this.contactoEditando).subscribe({
-      next: (data) => {
-        //this.listContacto[this.indice].tipo_contacto =
-        this.updateBitacora(data);
-        this.toastr.success('contacto editado con éxito');
-      },
-      error: (e: HttpErrorResponse) => {
-        this._errorService.msjError(e);
-      }
+        next: (data) => {
+            this.updateBitacora(data);
+            this.toastr.success('Contacto editado con éxito');
+        },
+        error: (e: HttpErrorResponse) => {
+            this._errorService.msjError(e);
+        }
     });
+
+    // Actualizar los datos del contacto en la lista
     const tipoContacto = this.listContactosActivos.find(contacto => contacto.id_tipo_contacto == this.contactoEditando.id_tipo_contacto);
-    this.listContacto[this.indice].primer_nombre = this.contactoEditando.primer_nombre.toUpperCase();
-    this.listContacto[this.indice].segundo_nombre = this.contactoEditando.segundo_nombre.toUpperCase();
-    this.listContacto[this.indice].primer_apellido = this.contactoEditando.primer_apellido.toUpperCase();
-    this.listContacto[this.indice].segundo_apellido = this.contactoEditando.segundo_apellido.toUpperCase();
-    this.listContacto[this.indice].descripcion = this.contactoEditando.descripcion.toUpperCase();
-    this.listContacto[this.indice].modificado_por = this.contactoEditando.modificado_por.toUpperCase();
-    this.listContacto[this.indice].fecha_modificacion = this.contactoEditando.fecha_modificacion,
-    this.listContacto[this.indice].tipo_contacto = tipoContacto
-  }
+    this.listContacto[this.indice].primer_nombre = this.contactoEditando.primer_nombre;
+    this.listContacto[this.indice].segundo_nombre = this.contactoEditando.segundo_nombre;
+    this.listContacto[this.indice].primer_apellido = this.contactoEditando.primer_apellido;
+    this.listContacto[this.indice].segundo_apellido = this.contactoEditando.segundo_apellido;
+    this.listContacto[this.indice].descripcion = this.contactoEditando.descripcion;
+    this.listContacto[this.indice].modificado_por = this.contactoEditando.modificado_por;
+    this.listContacto[this.indice].fecha_modificacion = this.contactoEditando.fecha_modificacion;
+    this.listContacto[this.indice].tipo_contacto = tipoContacto;
+}
+
 
   obtenerNombreTipoContacto(idTipoContacto: number): string {
     const tipoContacto = this.listContactosActivos.find(contacto => contacto.id_tipo_contacto == idTipoContacto);

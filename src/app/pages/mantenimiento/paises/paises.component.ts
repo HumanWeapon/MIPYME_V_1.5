@@ -337,6 +337,10 @@ agregarNuevoPais() {
 
 
   editarPais(){
+    if (!this.paisEditando.pais || !this.paisEditando.descripcion) {
+      this.toastr.error('No pueden quedar campos vacíos. Por favor, completa todos los campos.');
+      return;
+  }
 
     this.paisEditando.pais = this.paisEditando.pais.toUpperCase();
     this.paisEditando.descripcion = this.paisEditando.descripcion.toUpperCase();
@@ -352,13 +356,23 @@ agregarNuevoPais() {
           }
         }
 
-    this._paisService.editarPais(this.paisEditando).subscribe(data => {
-      this.updateBitacora(data);
-      this.toastr.success('Pais editado con éxito');
-      this.listPaises[this.indice].pais = this.paisEditando.pais;
-      this.listPaises[this.indice].pais = this.paisEditando.descripcion;
-      });
-    }
+
+
+        this._paisService.editarPais(this.paisEditando).subscribe({
+          next: (data) => {
+            //this.listContacto[this.indice].tipo_contacto =
+            this.updateBitacora(data);
+            this.toastr.success('Pais editado con éxito');
+          },
+          error: (e: HttpErrorResponse) => {
+            this._errorService.msjError(e);
+          }
+        });
+        this.listPaises[this.indice].pais = this.paisEditando.pais.toUpperCase();
+        this.listPaises[this.indice].descripcion = this.paisEditando.descripcion.toUpperCase();
+      
+      }
+
 
 /*************************************************************** Métodos de Bitácora ***************************************************************************/
 

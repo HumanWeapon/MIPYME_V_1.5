@@ -328,6 +328,11 @@ getDate(): string {
 
 
   editarCategoriaProducto(){
+
+    if (!this.CategoriaEditando.categoria || !this.CategoriaEditando.descripcion) {
+      this._toastr.error('No pueden quedar campos vacíos. Por favor, completa todos los campos.');
+      return;
+  }
     this.CategoriaEditando.categoria = this.CategoriaEditando.categoria.toUpperCase();
     this.CategoriaEditando.descripcion = this.CategoriaEditando.descripcion.toUpperCase();
 
@@ -342,13 +347,20 @@ getDate(): string {
           }
         }
 
-    this._categoriaService.editarCategoriaProducto(this.CategoriaEditando).subscribe(data => {
-      this.updateBitacora(data);
-      this._toastr.success('Categoria editada con éxito');
-      this.listCate[this.indice].categoria = this.CategoriaEditando.categoria;
-      this.listCate[this.indice].categoria = this.CategoriaEditando.descripcion;
-    });
-  }
+        this._categoriaService.editarCategoriaProducto(this.CategoriaEditando).subscribe({
+          next: (data) => {
+            //this.listContacto[this.indice].tipo_contacto =
+            this.updateBitacora(data);
+            this._toastr.success('Categoria-producto editado con éxito');
+          },
+          error: (e: HttpErrorResponse) => {
+            this._errorService.msjError(e);
+          }
+        });
+        this.listCate[this.indice].categoria = this.CategoriaEditando.categoria.toUpperCase();
+        this.listCate[this.indice].descripcion = this.CategoriaEditando.descripcion.toUpperCase();
+      
+      }
 
   /*************************************************************** Métodos de Bitácora ***************************************************************************/
 
