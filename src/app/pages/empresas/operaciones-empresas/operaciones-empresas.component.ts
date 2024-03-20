@@ -317,7 +317,7 @@ export class OperacionesEmpresasComponent {
     if (userLocal){
       this.nuevoContacto = {
         id_contacto: 0,
-        id_empresa: this.nuevoContacto.id_empresa,
+        id_empresa: this.idEmpresa,
         id_tipo_contacto: this.nuevoContacto.id_tipo_contacto, 
         nombre_completo: this.nuevoContacto.nombre_completo, 
         descripcion:this.nuevoContacto.descripcion,
@@ -326,7 +326,6 @@ export class OperacionesEmpresasComponent {
         modificado_por: userLocal, 
         fecha_modificacion: new Date(),
         estado: 1,
-  
       };
       if (!this.nuevoContacto.nombre_completo || !this.nuevoContacto.descripcion || !this.nuevoContacto.descripcion) {
         this._toastr.warning('Campos vacíos');
@@ -337,6 +336,7 @@ export class OperacionesEmpresasComponent {
             console.log(data);
             this._toastr.success('Contacto Agregado Exitosamente');
             this.listContacto.push(data);
+            this.actualizarTabla();
           },
           error: (e: HttpErrorResponse) => {
             this._errorService.msjError(e);
@@ -534,9 +534,12 @@ export class OperacionesEmpresasComponent {
       }
     });
   }
+  
   tipoContactoSeleccionado(event: Event): void {
-    const idTipoEmpresa = (event.target as HTMLSelectElement).value;
-    this.contactoEditando.id_tipo_contacto = Number(idTipoEmpresa);
+    const idTipoContacto = (event.target as HTMLSelectElement).value;
+    this.contactoEditando.id_tipo_contacto = Number(idTipoContacto);
+    this.nuevoContacto.id_tipo_contacto = Number(idTipoContacto);
+    
   }
   editarContacto(){
     this._contactoService.editarContacto(this.contactoEditando).subscribe({
