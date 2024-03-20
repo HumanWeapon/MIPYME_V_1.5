@@ -130,8 +130,8 @@
                   </textarea>
               </div>
               <div class="form-group">
-                <label>Tipo de contacto</label>
-                <select class="form-control" (change)="tipoContactoSeleccionado($event)" name="id_tipo_contacto">
+                <label for="inputStatus">Tipo de contacto</label>
+                <select id="inputStatus" class="form-control custom-select" [(ngModel)]="contactoEditando.id_tipo_contacto" name="contactoEditando.id_tipo_contacto">
                   <option *ngFor="let obj of listContactosActivos" [value]="obj.id_tipo_contacto">{{obj.tipo_contacto}}</option>
                 </select>
               </div>

@@ -103,7 +103,6 @@ export class ContactoComponent implements OnInit{
     this._operacionesContactos.ReporteContactos()
       .subscribe((res: any) => {
         this.listContacto = res;
-        console.log(res)
         this.dtTrigger.next(null);
       });
       this.getUsuario();
@@ -332,7 +331,6 @@ agregarNuevoContacto() {
     else{
       this._contactoService.addContacto(this.nuevoContacto).subscribe({
         next: (data) => {
-          console.log(data);
           this.insertBitacora(data);
           this.toastr.success('Contacto Agregado Exitosamente');
           this.listContacto.push(data);
@@ -350,14 +348,14 @@ agregarNuevoContacto() {
     this.contactoEditando = {
       id_contacto: contac.id_contacto,
       id_empresa: contac.id_empresa,
-      id_tipo_contacto: contac.tipo_contacto.id_tipo_contacto,
+      id_tipo_contacto: contac.id_tipo_contacto,
       nombre_completo: contac.nombre_completo,
       descripcion: contac.descripcion,
       creado_por: contac.creado_por,
       fecha_creacion: contac.fecha_creacion, 
       modificado_por: this.usuario,
       fecha_modificacion: new Date(), 
-      estado: contac.estado,
+      estado: contac.estado
 
     };
     this.indice = i;
