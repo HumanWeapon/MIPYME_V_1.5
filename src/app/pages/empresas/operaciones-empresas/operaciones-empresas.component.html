@@ -13,9 +13,9 @@
       <!-- /.Encabezado -->
       <div class="card-header p-2">
         <ul class="nav nav-pills">
-          <li class="nav-item"><a class="nav-link active" href="#PRODUCTOS" data-toggle="tab">PRODUCTOS</a></li>
-          <li class="nav-item"><a class="nav-link" href="#CONTACTOS" data-toggle="tab">CONTACTOS</a></li>
-          <li class="nav-item"><a class="nav-link" href="#DIRECCIÓN" data-toggle="tab">DIRECCIONES</a></li>
+          <li class="nav-item"><a class="nav-link custom-color active" href="#PRODUCTOS" data-toggle="tab">PRODUCTOS</a></li>
+          <li class="nav-item"><a class="nav-link custom-color" href="#CONTACTOS" data-toggle="tab">CONTACTOS</a></li>
+          <li class="nav-item"><a class="nav-link custom-color" href="#DIRECCIÓN" data-toggle="tab">DIRECCIONES</a></li>
           <!--<li class="nav-item"><a class="nav-link" href="#REQUISITOS" data-toggle="tab">REQUISITOS DE EXPORTACIÓN</a></li>-->
         </ul>
       </div>
@@ -30,13 +30,9 @@
               <div class="col-12">
                 <div class="mb-2 mt-0">
                   <div class="input-group input-group-sm" >
-                    <div class="ml-auto"> <!-- Agrega la clase ml-auto aquí -->
-                      <button type="button" class="btn btn-primary form-control float-righ" data-toggle="modal" data-target="#agregarProducto">
-                        Nuevo Producto
-                      </button>
-                    </div>
-                    <div class="ml-left ml-3"> <!-- Agrega la clase ml-auto aquí -->
-                      <button type="button" class="btn btn-primary form-control float-righ" data-toggle="modal" data-target="#gestionarProducto">
+
+                    <div class="ml-auto ml-left ml-3"> <!-- Agrega la clase ml-auto aquí -->
+                      <button type="button" class="btn btn-block btn_color_blue btn-sm" data-toggle="modal" data-target="#gestionarProducto">
                         Editar Productos
                       </button>
                     </div>
@@ -102,7 +98,7 @@
                   <div class="mb-2 mt-0">
                     <div class="input-group input-group-sm" >
                       <div class="ml-auto"> <!-- Agrega la clase ml-auto aquí -->
-                        <button type="button" class="btn btn-primary form-control float-righ" data-toggle="modal" data-target="#agregarContacto">
+                        <button type="button" class="btn btn-block btn_color_blue btn-sm" data-toggle="modal" data-target="#agregarContacto">
                           <i class="fas fa-plus"></i> Nuevo
                         </button>
                       </div>
@@ -188,7 +184,7 @@
                   <div class="mb-2 mt-0">
                     <div class="input-group input-group-sm" >
                       <div class="ml-auto"> <!-- Agrega la clase ml-auto aquí -->
-                        <button type="button" class="btn btn-primary form-control float-righ" data-toggle="modal" data-target="#agregarContacto">
+                        <button type="button" class="btn btn-block btn_color btn-sm" data-toggle="modal" data-target="#agregarContacto">
                           Editar Direcciones
                         </button>
                     </div>
@@ -256,46 +252,6 @@
 
 
   <!-- Modales -->
-  <!-- Agregar producto Form -->
-<div class="modal fade" id="agregarProducto">
-  <div class="modal-dialog">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h4 class="modal-title">Agregar Producto</h4>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        <div class="modal-body">
-            <form (submit)="agregarNuevoProducto()">
-  
-                <div class="form-group">
-                    <label for="nuevoProducto">Nombre del Producto:</label>
-                    <input type="text" [(ngModel)]="nuevoProducto.producto" name="nuevoProducto.producto" (input)="eliminarCaracteresEspeciales($event, 'producto')" (input)="convertirAMayusculas($event, 'descripcion')" class="form-control" id="nuevoProducto" placeholder="Nombre del producto">
-                </div>
-                <div class="form-group">
-                    <label for="nuevoDescripcion">Descripción</label>
-                    <textarea type="text" [(ngModel)]="nuevoProducto.descripcion" name="nuevoProducto.descripcion" class="form-control" id="nuevodescripcion" placeholder="Descripción" (input)="convertirAMayusculas($event, 'descripcion')" (input)="eliminarCaracteresEspeciales($event, 'descripcion')">
-                    </textarea>
-                </div>
-  
-              <div class="form-group">
-                <label for="nuevaCategoria">Categoría:</label>
-                <select class="form-control" id="editarRol" [(ngModel)]="nuevoProducto.id_categoria" name="id_categoria">
-                  <option value="0">Seleccione la Categoria</option>
-                  <option *ngFor="let item of listCategorias" [ngValue]="item.id_categoria">{{ item.categoria }}</option>
-                </select>
-              </div>
-            </form>
-        </div>
-        <div class="modal-footer justify-content-between">
-            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-            <button type="button" (click)="agregarNuevoProducto()" class="btn btn-success" data-dismiss="modal">Guardar</button>
-        </div>
-    </div>
-  </div>
-  </div>
-  <!-- /Agregar Usuario Form -->
   <!-- Gestionar producto Form -->
   <div class="modal fade" id="gestionarProducto">
     <div class="modal-dialog">
@@ -305,6 +261,11 @@
               <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="background-color: #1254a1; color: white;">
                   <span aria-hidden="true">&times;</span>
               </button>
+          </div>
+          <div class="card-header"> <!-- Agrega la clase ml-auto aquí -->
+            <button type="button" id="fifth" class="btn btn-block btn_color_blue btn-sm"  data-dismiss="modal" data-toggle="modal" data-target="#agregarProducto">
+              Nuevo Producto
+            </button>
           </div>
           <div class="modal-body">
 
@@ -358,6 +319,46 @@
     </div>
   </div>
   <!-- /Gestionar Producto Form -->
+  <!-- Agregar producto Form -->
+<div class="modal fade" id="agregarProducto">
+  <div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header" style="background-color: #1254a1; color: white;">
+            <h4 class="modal-title">Agregar Producto</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form (submit)="agregarNuevoProducto()">
+  
+                <div class="form-group">
+                    <label for="nuevoProducto">Nombre del Producto:</label>
+                    <input type="text" [(ngModel)]="nuevoProducto.producto" name="nuevoProducto.producto" (input)="eliminarCaracteresEspeciales($event, 'producto')" (input)="convertirAMayusculas($event, 'descripcion')" class="form-control" id="nuevoProducto" placeholder="Nombre del producto">
+                </div>
+                <div class="form-group">
+                    <label for="nuevoDescripcion">Descripción</label>
+                    <textarea type="text" [(ngModel)]="nuevoProducto.descripcion" name="nuevoProducto.descripcion" class="form-control" id="nuevodescripcion" placeholder="Descripción" (input)="convertirAMayusculas($event, 'descripcion')" (input)="eliminarCaracteresEspeciales($event, 'descripcion')">
+                    </textarea>
+                </div>
+  
+              <div class="form-group">
+                <label for="nuevaCategoria">Categoría:</label>
+                <select class="form-control" id="editarRol" [(ngModel)]="nuevoProducto.id_categoria" name="id_categoria">
+                  <option value="0">Seleccione la Categoria</option>
+                  <option *ngFor="let item of listCategorias" [ngValue]="item.id_categoria">{{ item.categoria }}</option>
+                </select>
+              </div>
+            </form>
+        </div>
+        <div class="modal-footer justify-content-between">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+            <button type="button" (click)="agregarNuevoProducto()" class="btn btn-success" data-dismiss="modal">Guardar</button>
+        </div>
+    </div>
+  </div>
+  </div>
+  <!-- /Agregar producto Form -->
 
   <!-- Agregar Contacto Form -->
   <div class="modal fade" id="agregarContacto">
@@ -372,21 +373,9 @@
             <div class="modal-body">
                 <form (submit)="agregarNuevoContacto()">
                     <div class="form-group">
-                        <label for="nuevoContacto">Primer Nombre</label>
-                        <input type="text" [(ngModel)]="nuevoContacto.primer_nombre" name="nuevoContacto.primer_nombre" class="form-control" id="nuevoPN" placeholder="Primer Nombre" (input)="convertirAMayusculas($event, 'primer_nombre')" (input)="eliminarCaracteresEspeciales($event, 'primer_nombre')">
+                        <label for="nuevoContacto">Nombre completo</label>
+                        <input type="text" [(ngModel)]="nuevoContacto.nombre_completo" name="nuevoContacto.primer_nombre" class="form-control" id="nuevoPN" placeholder="Primer Nombre" (input)="convertirAMayusculas($event, 'primer_nombre')" (input)="eliminarCaracteresEspeciales($event, 'primer_nombre')">
                     </div>  
-                    <div class="form-group">
-                      <label for="nuevoContacto">Segundo Nombre:</label>
-                      <input type="text" [(ngModel)]="nuevoContacto.segundo_nombre" name="nuevoContacto.segundo_nombre" class="form-control" id="nuevoSN" placeholder="Segundo Nombre" (input)="convertirAMayusculas($event, 'segundo_nombre')" (input)="eliminarCaracteresEspeciales($event, 'segundo_nombre')">
-                  </div>
-                  <div class="form-group">
-                      <label for="nuevoContacto">Primer Apellido</label>
-                      <input type="text" [(ngModel)]="nuevoContacto.primer_apellido" name="nuevoContacto.primer_apellido" class="form-control" id="nuevoPA" placeholder="Primer Apellido" (input)="convertirAMayusculas($event, 'primer_apellido')" (input)="eliminarCaracteresEspeciales($event, 'primer_apellido')">
-                  </div>  
-                  <div class="form-group">
-                      <label for="nuevoContacto">Segundo Apellido:</label>
-                      <input type="text" [(ngModel)]="nuevoContacto.segundo_apellido" name="nuevoContacto.segundo_apellido" class="form-control" id="nuevoSA" placeholder="Segundo Apellido" (input)="convertirAMayusculas($event, 'segundo_apellido')" (input)="eliminarCaracteresEspeciales($event, 'segundo_apellido')">
-                  </div>
                   <div class="form-group">
                       <label for="nuevoContacto">Descripción</label>
                       <textarea rows="4" type="text" [(ngModel)]="nuevoContacto.descripcion" name="nuevoContacto.descripcion" class="form-control" id="nuevoDescripcion" placeholder="Descripción" (input)="convertirAMayusculas($event, 'descripcion')" (input)="eliminarCaracteresEspeciales($event, 'descripcion')"></textarea>
@@ -407,7 +396,44 @@
     </div>
     </div>
     <!-- /Agregar contacto Form -->
-
+  <!-- Actualizar contacto Form -->
+  <div class="modal fade" id="abrirModalEditarContacto">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Editar Contacto</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+              <form>
+                <div class="form-group">
+                    <label for="contactoEditando">Nombre completo</label>
+                    <input type="text" [(ngModel)]="contactoEditando.nombre_completo" name="contactoEditando.primer_nombre" class="form-control" id="editarPN" placeholder="Primer Nombre" (input)="convertirAMayusculas($event, 'primer_nombre')" (input)="eliminarCaracteresEspeciales($event, 'primer_nombre')">
+                </div>  
+  
+                <div class="form-group">
+                    <label for="contactoEditando">Descripción</label>
+                    <textarea type="text" [(ngModel)]="contactoEditando.descripcion" name="contactoEditando.descripcion" class="form-control" id="editarDescripcion" placeholder="Descripción" (input)="convertirAMayusculas($event, 'descripcion')" (input)="eliminarCaracteresEspeciales($event, 'descripcion')">
+                    </textarea>
+                </div>
+                <div class="form-group">
+                  <label for="inputStatus">Tipo de contacto</label>
+                  <select id="inputStatus" class="form-control custom-select" [(ngModel)]="contactoEditando.id_tipo_contacto" name="contactoEditando.id_tipo_contacto">
+                    <option *ngFor="let obj of listContactosActivos" [value]="obj.id_tipo_contacto">{{obj.tipo_contacto}}</option>
+                  </select>
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                <button type="button" (click)="editarContacto()" class="btn btn-success" data-dismiss="modal">Guardar</button>
+            </div>
+        </div>
+    </div>
+    </div>
+    <!-- /Actualizar contacto Form -->
 
    <!-- Ver Teléfonos de contactos -->
    <div class="modal fade" id="ver_telefonos">

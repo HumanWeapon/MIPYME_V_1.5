@@ -105,10 +105,7 @@ export class OperacionesEmpresasComponent {
     id_contacto: 0,
     id_empresa:0,
     id_tipo_contacto: 0,
-    primer_nombre: '',
-    segundo_nombre: '',
-    primer_apellido: '',
-    segundo_apellido: '',
+    nombre_completo: '',
     descripcion: '',
     creado_por: '',
     fecha_creacion: new Date(), 
@@ -120,10 +117,7 @@ export class OperacionesEmpresasComponent {
     id_contacto: 0,
     id_empresa: 0,
     id_tipo_contacto: 0,
-    primer_nombre: '',
-    segundo_nombre: '',
-    primer_apellido: '',
-    segundo_apellido: '',
+    nombre_completo: '',
     descripcion: '',
     creado_por: '',
     fecha_creacion: new Date(), 
@@ -325,10 +319,7 @@ export class OperacionesEmpresasComponent {
         id_contacto: 0,
         id_empresa: this.nuevoContacto.id_empresa,
         id_tipo_contacto: this.nuevoContacto.id_tipo_contacto, 
-        primer_nombre: this.nuevoContacto.primer_nombre,
-        segundo_nombre: this.nuevoContacto.segundo_nombre, 
-        primer_apellido: this.nuevoContacto.primer_apellido,
-        segundo_apellido: this.nuevoContacto.segundo_apellido,   
+        nombre_completo: this.nuevoContacto.nombre_completo, 
         descripcion:this.nuevoContacto.descripcion,
         creado_por: userLocal,
         fecha_creacion: new Date(), 
@@ -337,7 +328,7 @@ export class OperacionesEmpresasComponent {
         estado: 1,
   
       };
-      if (!this.nuevoContacto.primer_nombre || !this.nuevoContacto.primer_apellido || !this.nuevoContacto.descripcion || !this.nuevoContacto.descripcion) {
+      if (!this.nuevoContacto.nombre_completo || !this.nuevoContacto.descripcion || !this.nuevoContacto.descripcion) {
         this._toastr.warning('Campos vacíos');
       }
       else{
@@ -355,10 +346,7 @@ export class OperacionesEmpresasComponent {
     }
   }
   cancelarInput(){
-    this.nuevoContacto.primer_nombre = '';
-    this.nuevoContacto.segundo_nombre = '';
-    this.nuevoContacto.primer_apellido = '';
-    this.nuevoContacto.segundo_apellido = '';
+    this.nuevoContacto.nombre_completo = '';
     this.nuevoContacto.descripcion = '';
  }
  getTipoContactoActivos(){
@@ -450,11 +438,8 @@ export class OperacionesEmpresasComponent {
     this.contactoEditando = {
       id_contacto: contac.id_contacto,
       id_empresa: contac.id_empresa,
-      id_tipo_contacto: contac.tipo_contacto.id_tipo_contacto,
-      primer_nombre: contac.primer_nombre,
-      segundo_nombre: contac.segundo_nombre,
-      primer_apellido: contac.primer_apellido,
-      segundo_apellido: contac.segundo_nombre,
+      id_tipo_contacto: contac.id_tipo_contacto,
+      nombre_completo: contac.nombre_completo,
       descripcion: contac.descripcion,
       creado_por: contac.creado_por,
       fecha_creacion: contac.fecha_creacion, 
@@ -549,6 +534,24 @@ export class OperacionesEmpresasComponent {
       }
     });
   }
+  tipoContactoSeleccionado(event: Event): void {
+    const idTipoEmpresa = (event.target as HTMLSelectElement).value;
+    this.contactoEditando.id_tipo_contacto = Number(idTipoEmpresa);
+  }
+  editarContacto(){
+    this._contactoService.editarContacto(this.contactoEditando).subscribe({
+      next: (data) => {
+        //this.listContacto[this.indice].tipo_contacto =
+        this._toastr.success('contacto editado con éxito');
+        this.actualizarTabla();
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
+
+  }
+
   eliminarContacto(contacto: any) {
     // Realizar una solicitud HTTP DELETE a la API para eliminar el registro
     this._empresasContactosService.eliminarOperacionEmpresaContacto(contacto.id_emp_contactos).subscribe({
@@ -562,10 +565,6 @@ export class OperacionesEmpresasComponent {
       }
     });
   }
-
-
-
-
   actualizarTabla() {
     // Llamar a los métodos para obtener los datos actualizados
     this.getEmpresasProductosPorId();
@@ -606,10 +605,7 @@ export class OperacionesEmpresasComponent {
       id_contacto: contacto.id_contacto,
       id_empresa: contacto.id_empresa,
       id_tipo_contacto: contacto.id_tipo_contacto,
-      primer_nombre: contacto.primer_nombre,
-      segundo_nombre: contacto.segundo_nombre,
-      primer_apellido: contacto.primer_apellido,
-      segundo_apellido: contacto.segundo_apellido,
+      nombre_completo: contacto.nombre_completo,
       descripcion: contacto.descripcion,
       creado_por: contacto.creado_por,
       fecha_creacion: contacto.fecha_creacion, 
@@ -619,7 +615,7 @@ export class OperacionesEmpresasComponent {
     };
     console.log(inactivarC);
     this._contactoService.inactivarContacto(inactivarC).subscribe(data => {
-    this._toastr.success('El contacto: '+ contacto.primer_nombre + ' ha sido inactivado');
+    this._toastr.success('El contacto: '+ contacto.nombre_completo + ' ha sido inactivado');
     //this.inactivarBitacora(data);
   });
     this.productosContactos[i].estado = 2; 
@@ -629,10 +625,7 @@ export class OperacionesEmpresasComponent {
       id_contacto: contacto.id_contacto,
       id_empresa: contacto.id_empresa,
       id_tipo_contacto: contacto.id_tipo_contacto,
-      primer_nombre: contacto.primer_nombre,
-      segundo_nombre: contacto.segundo_nombre,
-      primer_apellido: contacto.primer_apellido,
-      segundo_apellido: contacto.segundo_apellido,
+      nombre_completo: contacto.nombre_completo,
       descripcion: contacto.descripcion,
       creado_por: contacto.creado_por,
       fecha_creacion: contacto.fecha_creacion, 
@@ -642,7 +635,7 @@ export class OperacionesEmpresasComponent {
     };
     console.log(activarC);
     this._contactoService.activarContacto(activarC).subscribe(data => {
-    this._toastr.success('El contacto: '+ contacto.primer_nombre + ' ha sido activado');
+    this._toastr.success('El contacto: '+ contacto.nombre_completo + ' ha sido activado');
     //this.activarBitacora(data);
   });
     this.productosContactos[i].estado = 1;

@@ -5,9 +5,9 @@
             <div class="col-12">
               <div class="card">
                 <div class="card-header">
-                  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarContacto">
+                  <button type="button" class="btn btn_color_blue btn-sm" data-toggle="modal" data-target="#agregarContacto">
                     <i class="fas fa-plus"></i> Nuevo</button>
-                    <button type="button" class="btn btn-primary custom-print-button btn-primary" title="Generar el Reporte" data-toggle="modal" data-target="#PDFReQ">
+                    <button type="button" class="btn btn_color_blue btn-sm custom-print-button" title="Generar el Reporte" data-toggle="modal" data-target="#PDFReQ">
                       <i class="fas fa-print"></i> Generar Reporte</button>
                 </div>
                 <!-- /.card-header -->
@@ -68,12 +68,7 @@
         <!-- /.container-fluid -->
     </section>
       <!-- /.content -->
-  
-  
-  
-  
-  
-   
+
   <!-- Agregar Contacto Form -->
   <div class="modal fade" id="agregarContacto">
   <div class="modal-dialog">
@@ -86,22 +81,10 @@
           </div>
           <div class="modal-body">
               <form (submit)="agregarNuevoContacto()">
-                  <div class="form-group">
-                      <label for="nuevoContacto">Primer Nombre</label>
-                      <input type="text" [(ngModel)]="nuevoContacto.primer_nombre" name="nuevoContacto.primer_nombre" class="form-control" id="nuevoPN" placeholder="Primer Nombre" (input)="convertirAMayusculas($event, 'primer_nombre')" (input)="eliminarCaracteresEspeciales($event, 'primer_nombre')">
-                  </div>  
-                  <div class="form-group">
-                    <label for="nuevoContacto">Segundo Nombre:</label>
-                    <input type="text" [(ngModel)]="nuevoContacto.segundo_nombre" name="nuevoContacto.segundo_nombre" class="form-control" id="nuevoSN" placeholder="Segundo Nombre" (input)="convertirAMayusculas($event, 'segundo_nombre')" (input)="eliminarCaracteresEspeciales($event, 'segundo_nombre')">
-                </div>
                 <div class="form-group">
-                    <label for="nuevoContacto">Primer Apellido</label>
-                    <input type="text" [(ngModel)]="nuevoContacto.primer_apellido" name="nuevoContacto.primer_apellido" class="form-control" id="nuevoPA" placeholder="Primer Apellido" (input)="convertirAMayusculas($event, 'primer_apellido')" (input)="eliminarCaracteresEspeciales($event, 'primer_apellido')">
+                    <label for="nuevoContacto">Primer Nombre</label>
+                    <input type="text" [(ngModel)]="nuevoContacto.nombre_completo" name="nuevoContacto.primer_nombre" class="form-control" id="nuevoPN" placeholder="Primer Nombre" (input)="convertirAMayusculas($event, 'primer_nombre')" (input)="eliminarCaracteresEspeciales($event, 'primer_nombre')">
                 </div>  
-                <div class="form-group">
-                    <label for="nuevoContacto">Segundo Apellido:</label>
-                    <input type="text" [(ngModel)]="nuevoContacto.segundo_apellido" name="nuevoContacto.segundo_apellido" class="form-control" id="nuevoSA" placeholder="Segundo Apellido" (input)="convertirAMayusculas($event, 'segundo_apellido')" (input)="eliminarCaracteresEspeciales($event, 'segundo_apellido')">
-                </div>
                 <div class="form-group">
                     <label for="nuevoContacto">Descripción</label>
                     <textarea rows="4" type="text" [(ngModel)]="nuevoContacto.descripcion" name="nuevoContacto.descripcion" class="form-control" id="nuevoDescripcion" placeholder="Descripción" (input)="convertirAMayusculas($event, 'descripcion')" (input)="eliminarCaracteresEspeciales($event, 'descripcion')"></textarea>
@@ -124,7 +107,7 @@
   <!-- /Agregar contacto Form -->
   
   
-  <!-- Actualizar Usuario Form -->
+  <!-- Actualizar contacto Form -->
   <div class="modal fade" id="abrirModalEditarContacto">
   <div class="modal-dialog">
       <div class="modal-content">
@@ -135,23 +118,12 @@
               </button>
           </div>
           <div class="modal-body">
-              <form>
-                <div class="form-group">
-                    <label for="contactoEditando">Primer Nombre</label>
-                    <input type="text" [(ngModel)]="contactoEditando.primer_nombre" name="contactoEditando.primer_nombre" class="form-control" id="editarPN" placeholder="Primer Nombre" (input)="convertirAMayusculas($event, 'primer_nombre')" (input)="eliminarCaracteresEspeciales($event, 'primer_nombre')">
-                </div>  
-                <div class="form-group">
-                  <label for="contactoEditando">Segundo Nombre:</label>
-                  <input type="text" [(ngModel)]="contactoEditando.segundo_nombre" name="contactoEditando.segundo_nombre" class="form-control" id="editarSN" placeholder="Segundo Nombre" (input)="convertirAMayusculas($event, 'segundo_nombre')" (input)="eliminarCaracteresEspeciales($event, 'segundo_nombre')">
-              </div>
+            <form>
               <div class="form-group">
-                  <label for="contactoEditando">Primer Apellido</label>
-                  <input type="text" [(ngModel)]="contactoEditando.primer_apellido" name="contactoEditando.primer_apellido" class="form-control" id="editarPA" placeholder="Primer Apellido" (input)="convertirAMayusculas($event, 'primer_apellido')" (input)="eliminarCaracteresEspeciales($event, 'primer_apellido')">
+                  <label for="contactoEditando">Nombre completo</label>
+                  <input type="text" [(ngModel)]="contactoEditando.nombre_completo" name="contactoEditando.primer_nombre" class="form-control" id="editarPN" placeholder="Primer Nombre" (input)="convertirAMayusculas($event, 'primer_nombre')" (input)="eliminarCaracteresEspeciales($event, 'primer_nombre')">
               </div>  
-              <div class="form-group">
-                  <label for="contactoEditando">Segundo Apellido:</label>
-                  <input type="text" [(ngModel)]="contactoEditando.segundo_apellido" name="contactoEditando.segundo_apellido" class="form-control" id="editarSA" placeholder="Segundo Apellido" (input)="convertirAMayusculas($event, 'segundo_apellido')" (input)="eliminarCaracteresEspeciales($event, 'segundo_apellido')">
-              </div>
+
               <div class="form-group">
                   <label for="contactoEditando">Descripción</label>
                   <textarea type="text" [(ngModel)]="contactoEditando.descripcion" name="contactoEditando.descripcion" class="form-control" id="editarDescripcion" placeholder="Descripción" (input)="convertirAMayusculas($event, 'descripcion')" (input)="eliminarCaracteresEspeciales($event, 'descripcion')">
@@ -159,7 +131,7 @@
               </div>
               <div class="form-group">
                 <label>Tipo de contacto</label>
-                <select class="form-control" [(ngModel)]="contactoEditando.id_tipo_contacto" name="id_tipo_contacto">
+                <select class="form-control" (change)="tipoContactoSeleccionado($event)" name="id_tipo_contacto">
                   <option *ngFor="let obj of listContactosActivos" [value]="obj.id_tipo_contacto">{{obj.tipo_contacto}}</option>
                 </select>
               </div>

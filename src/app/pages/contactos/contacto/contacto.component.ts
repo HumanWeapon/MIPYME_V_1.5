@@ -44,10 +44,7 @@ export class ContactoComponent implements OnInit{
     id_contacto: 0,
     id_empresa: 0,
     id_tipo_contacto: 0,
-    primer_nombre: '',
-    segundo_nombre: '',
-    primer_apellido: '',
-    segundo_apellido: '',
+    nombre_completo: '',
     descripcion: '',
     creado_por: '',
     fecha_creacion: new Date(), 
@@ -60,10 +57,7 @@ export class ContactoComponent implements OnInit{
     id_contacto: 0,
     id_empresa:0,
     id_tipo_contacto: 0,
-    primer_nombre: '',
-    segundo_nombre: '',
-    primer_apellido: '',
-    segundo_apellido: '',
+    nombre_completo: '',
     descripcion: '',
     creado_por: '',
     fecha_creacion: new Date(), 
@@ -160,10 +154,7 @@ export class ContactoComponent implements OnInit{
   
   
   cancelarInput(){
-     this.nuevoContacto.primer_nombre = '';
-     this.nuevoContacto.segundo_nombre = '';
-     this.nuevoContacto.primer_apellido = '';
-     this.nuevoContacto.segundo_apellido = '';
+     this.nuevoContacto.nombre_completo = '';
      this.nuevoContacto.descripcion = '';
   }
 
@@ -182,14 +173,14 @@ toggleFunction(contac: any, i: number) {
 
   inactivarContacto(contacto: Contacto, i: any){
     this._contactoService.inactivarContacto(contacto).subscribe(data => {
-    this.toastr.success('El contacto: '+ contacto.primer_nombre + ' ha sido inactivado');
+    this.toastr.success('El contacto: '+ contacto.nombre_completo + ' ha sido inactivado');
     this.inactivarBitacora(data);
   });
     this.listContacto[i].estado = 2; 
   }
   activarContacto(contacto: Contacto, i: any){
     this._contactoService.activarContacto(contacto).subscribe(data => {
-    this.toastr.success('El contacto: '+ contacto.primer_nombre + ' ha sido activado');
+    this.toastr.success('El contacto: '+ contacto.nombre_completo + ' ha sido activado');
     this.activarBitacora(data);
   });
     this.listContacto[i].estado = 1;
@@ -326,10 +317,7 @@ agregarNuevoContacto() {
       id_contacto: 0,
       id_empresa: this.nuevoContacto.id_empresa,
       id_tipo_contacto: this.nuevoContacto.id_tipo_contacto, 
-      primer_nombre: this.nuevoContacto.primer_nombre,
-      segundo_nombre: this.nuevoContacto.segundo_nombre, 
-      primer_apellido: this.nuevoContacto.primer_apellido,
-      segundo_apellido: this.nuevoContacto.segundo_apellido,   
+      nombre_completo: this.nuevoContacto.nombre_completo,  
       descripcion:this.nuevoContacto.descripcion,
       creado_por: userLocal,
       fecha_creacion: new Date(), 
@@ -338,7 +326,7 @@ agregarNuevoContacto() {
       estado: 1,
 
     };
-    if (!this.nuevoContacto.primer_nombre || !this.nuevoContacto.primer_apellido || !this.nuevoContacto.descripcion || !this.nuevoContacto.descripcion) {
+    if (!this.nuevoContacto.nombre_completo || !this.nuevoContacto.descripcion || !this.nuevoContacto.descripcion) {
       this.toastr.warning('Campos vacíos');
     }
     else{
@@ -363,10 +351,7 @@ agregarNuevoContacto() {
       id_contacto: contac.id_contacto,
       id_empresa: contac.id_empresa,
       id_tipo_contacto: contac.tipo_contacto.id_tipo_contacto,
-      primer_nombre: contac.primer_nombre,
-      segundo_nombre: contac.segundo_nombre,
-      primer_apellido: contac.primer_apellido,
-      segundo_apellido: contac.segundo_nombre,
+      nombre_completo: contac.nombre_completo,
       descripcion: contac.descripcion,
       creado_por: contac.creado_por,
       fecha_creacion: contac.fecha_creacion, 
@@ -376,6 +361,10 @@ agregarNuevoContacto() {
 
     };
     this.indice = i;
+  }
+  tipoContactoSeleccionado(event: Event): void {
+    const idTipoEmpresa = (event.target as HTMLSelectElement).value;
+    this.contactoEditando.id_tipo_contacto = Number(idTipoEmpresa);
   }
   editarContacto(){
     this._contactoService.editarContacto(this.contactoEditando).subscribe({
@@ -389,14 +378,11 @@ agregarNuevoContacto() {
       }
     });
     const tipoContacto = this.listContactosActivos.find(contacto => contacto.id_tipo_contacto == this.contactoEditando.id_tipo_contacto);
-    this.listContacto[this.indice].primer_nombre = this.contactoEditando.primer_nombre.toUpperCase();
-    this.listContacto[this.indice].segundo_nombre = this.contactoEditando.segundo_nombre.toUpperCase();
-    this.listContacto[this.indice].primer_apellido = this.contactoEditando.primer_apellido.toUpperCase();
-    this.listContacto[this.indice].segundo_apellido = this.contactoEditando.segundo_apellido.toUpperCase();
+    this.listContacto[this.indice].nombre_completo = this.contactoEditando.nombre_completo.toUpperCase();
     this.listContacto[this.indice].descripcion = this.contactoEditando.descripcion.toUpperCase();
     this.listContacto[this.indice].modificado_por = this.contactoEditando.modificado_por.toUpperCase();
     this.listContacto[this.indice].fecha_modificacion = this.contactoEditando.fecha_modificacion,
-    this.listContacto[this.indice].tipo_contacto = tipoContacto
+    this.listContacto[this.indice].tipo_contacto = tipoContacto.tipo_contacto
   }
 
   obtenerNombreTipoContacto(idTipoContacto: number): string {
@@ -460,10 +446,7 @@ agregarNuevoContacto() {
       id_objeto: 17,
       accion: 'INSERTAR',
       descripcion: `SE AGREGÓ UN NUEVO CONTACTO:
-                    Primer Nombre: ${dataContacto.primer_nombre},
-                    Segundo Nombre: ${dataContacto.segundo_nombre},
-                    Primer Apellido: ${dataContacto.primer_apellido},
-                    Segundo Apellido: ${dataContacto.segundo_apellido},
+                    Nombre completo: ${dataContacto.nombre_completo},
                     Descripción: ${dataContacto.descripcion},
                     }`
     };
@@ -482,17 +465,8 @@ agregarNuevoContacto() {
   
     // Comparar los datos anteriores con los nuevos datos
     const cambios = [];
-    if (contactoAnterior.primer_nombre !== dataContacto.primer_nombre) {
-      cambios.push(`Primer nombre anterior: ${contactoAnterior.primer_nombre} -> Nuevo primer nombre: ${dataContacto.primer_nombre}`);
-    }
-    if (contactoAnterior.segundo_nombre !== dataContacto.segundo_nombre) {
-      cambios.push(`Segundo nombre anterior: ${contactoAnterior.segundo_nombre} -> Nuevo segundo nombre: ${dataContacto.segundo_nombre}`);
-    }
-    if (contactoAnterior.primer_apellido !== dataContacto.primer_apellido) {
-      cambios.push(`Primer apellido anterior: ${contactoAnterior.primer_apellido} -> Nuevo primer apellido: ${dataContacto.primer_apellido}`);
-    }
-    if (contactoAnterior.segundo_apellido !== dataContacto.segundo_apellido) {
-      cambios.push(`Segundo apellido anterior: ${contactoAnterior.segundo_apellido} -> Nuevo segundo apellido: ${dataContacto.segundo_apellido}`);
+    if (contactoAnterior.nombre_completo !== dataContacto.nombre_completo) {
+      cambios.push(`Primer nombre anterior: ${contactoAnterior.primer_nombre} -> Nuevo primer nombre: ${dataContacto.nombre_completo}`);
     }
     if (contactoAnterior.descripcion !== dataContacto.descripcion) {
       cambios.push(`Descripción anterior: ${contactoAnterior.descripcion} -> Nueva descripción: ${dataContacto.descripcion}`);
@@ -527,7 +501,7 @@ agregarNuevoContacto() {
         id_usuario: this.getUser.id_usuario,
         id_objeto: 17,
         accion: 'ACTIVAR',
-        descripcion: 'SE ACTIVA EL CONTACTO DE: '+ dataContacto.primer_nombre + dataContacto.primer_apellido
+        descripcion: 'SE ACTIVA EL CONTACTO DE: '+ dataContacto.nombre_completo
       }
       this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
       })
@@ -539,7 +513,7 @@ agregarNuevoContacto() {
         id_usuario: this.getUser.id_usuario,
         id_objeto: 17,
         accion: 'INACTIVAR',
-        descripcion: 'SE INACTIVA EL CONTACTO DE: '+ dataContacto.primer_nombre + dataContacto.primer_apellido
+        descripcion: 'SE INACTIVA EL CONTACTO DE: '+ dataContacto.nombre_completo
       }
       this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
       })
@@ -550,7 +524,7 @@ agregarNuevoContacto() {
         id_usuario: this.getUser.id_usuario,
         id_objeto: 17,
         accion: 'ELIMINAR',
-        descripcion: 'SE ELIMINA EL CONTACTO DE: '+ dataContacto.primer_nombre + dataContacto.primer_apellido
+        descripcion: 'SE ELIMINA EL CONTACTO DE: '+ dataContacto.nombre_completo
       }
       this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
       })
