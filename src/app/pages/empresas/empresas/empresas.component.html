@@ -4,7 +4,7 @@
         <div class="col-12">
           <div class="card">
             <div class="card-header">
-              <button type="button"  data-toggle="modal" data-target="#agregarEmpresa" class="btn btn-primary" >
+              <button type="button"  data-toggle="modal" data-target="#agregarEmpresa" class="btn btn_color_blue btn-sm" >
                 <i class="fas fa-plus"></i> NUEVO
               </button>
             
@@ -23,10 +23,10 @@
                         <th>NOMBRE</th>
                         <th>TIPO</th>
                         <th>DESCRIPCION</th>
-                        <th>CREADOR</th>
-                        <th>Fecha Creación</th>
-                        <th>MODIFICADOR</th>
-                        <th>Fecha modificación</th>
+                        <th>CREADO POR</th>
+                        <th>FECHA CREACIÓN</th>
+                        <th>MODIFICADO POR</th>
+                        <th>FECHA MODIFICACIÓN</th>
                         <th>ESTADO</th>
                         <th>ACCIONES</th>
                       </tr>
@@ -50,10 +50,12 @@
                             <div class="form-check form-switch ml-4">
                               <input class="form-check-input" (click)="toggleFunction(empresa, i)" [title]="empresa.estado == 1 ? 'Desactivar' : 'Activar'" type="checkbox" 
                                 role="switch" id="flexSwitchCheckChecked" [checked]="empresa.estado == 1">
+                              <label class="form-check-label" for="flexSwitchCheckChecked"></label>
                             </div>
+                            
                               <button type="button" (click)="obtenerIdEmpresa(empresa, i)" title="Editar Empresa" data-toggle="modal" data-target="#abrirModalEditarEmpresa" data-toggle="modal" data-target="#abrirModalEditarEmpresa" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
                               <button type="button" (click)="deleteEmpresa(empresa.id_empresa)" class="btna" title="Eliminar Empresa"><i class=" fas fa-solid fa-trash" style="color: #E74C3C;"></i></button>
-                              <button type="button" (click)="navigateToOperacionesEmpresas(empresa.id_empresa, empresa.nombre_empresa, empresa.descripcion)"class="btna" title="Gestionar"><i class="fas fa-solid fa-bars" style="color: #3c3fe7;"></i></button>
+                              <button type="button" (click)="navigateToOperacionesEmpresas(empresa.id_empresa, empresa.nombre_empresa, empresa.descripcion)"class="btn btn2_color_blue" title="Gestionar"><i class="fas fa-solid fa-bars" style="color: #3c3fe7;"></i></button>
                             </div>
                         </td>
                       </tr>

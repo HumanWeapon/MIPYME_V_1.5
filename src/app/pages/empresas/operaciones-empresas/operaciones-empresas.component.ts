@@ -39,6 +39,7 @@ export class OperacionesEmpresasComponent {
   
   productosEmpresa: any[] = [];//Obtiene los productos registrados de la Empresa y los muestra en la tabla.
   productosContactos: any[] = [];//Obtiene los contactos registrados de la Empresa y los muestra en la tabla.
+  direccionesEmpresa: any[] = [];//Obtiene los contactos registrados de la Empresa y los muestra en la tabla.
   contactosActivos: any[] = []; //Obtiene los contactos activos de la Empresa y los muestra en la tabla.
   telefonosContactos: any[] = [];//Obtiene los telefonos registrados para cada contacto.
 
@@ -55,8 +56,10 @@ export class OperacionesEmpresasComponent {
   //Obtiene la información del buscador de mi tabla productos
   filtro_prod: string = '';
   filtro_contact: string = '';
+  filtro_direc: string = '';
   todosLosProductos: any[] = [];
   todosLosContactos: any[] = [];
+  todasLasDirecciones: any[] = [];
   filtroModalProd: string = '';
   filtroModalCont: string = '';
 
@@ -204,6 +207,16 @@ export class OperacionesEmpresasComponent {
       this.listNuevosContactos = this.listEditandoContactos.filter(contacto => {
         // Filtrar por el nombre del producto
         return contacto.nombre_completo.toLowerCase().includes(this.filtroModalCont.trim().toLowerCase());
+      });
+    }
+  }
+  buscarCDirecciones() {
+    if (this.filtro_direc.trim() === '') {
+      this.direccionesEmpresa = this.todasLasDirecciones; // Si el filtro está vacío, muestra todos los productos
+    } else {
+      this.direccionesEmpresa = this.todasLasDirecciones.filter(contacto => {
+        // Filtrar por el nombre del producto
+        return contacto.nombre_completo.toLowerCase().includes(this.filtro_direc.trim().toLowerCase());
       });
     }
   }

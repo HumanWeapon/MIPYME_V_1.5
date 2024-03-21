@@ -201,7 +201,7 @@
                             <input type="text" name="table_search" class="form-control float-right" placeholder="Buscar" [(ngModel)]="filtro_contact" (input)="buscarContactos()">
     
                             <div class="input-group-append">
-                              <button type="button" class="btn btn-default" (click)="buscarContactos()">
+                              <button type="button" class="btn btn-default" (click)="buscarCDirecciones()">
                                 <i class="fas fa-search"></i>
                               </button>
                             </div>
@@ -215,15 +215,20 @@
                       <table class="table table-head-fixed text-nowrap">
                         <thead>
                           <tr>
-                            <th>Nombre</th>
-                            <th>Tipo de contacto</th>
+                            <th>Id</th>
+                            <th>Dirección</th>
+                            <th>Tipo de dirección</th>
                             <th>Descripción</th>
-                            <th>Agregado por</th>
-                            <th>Fecha</th>
+                            <th>País</th>
+                            <th>Ciudad</th>
+                            <th>Creado por</th>
+                            <th>Fecha creación</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
                           </tr>
                         </thead>
                         <tbody>
-                          <tr *ngFor="let obj of productosContactos; let i = index">
+                          <tr *ngFor="let obj of direccionesEmpresa; let i = index">
                             <td>{{ obj.nombre_completo }}</td>
                             <td>{{ obj.tipo_contacto }}</td>
                             <td>{{ obj.descripcion }}</td>
