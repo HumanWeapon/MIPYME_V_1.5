@@ -8,8 +8,8 @@ import { ToastrService } from 'ngx-toastr';
 import { Roles } from 'src/app/interfaces/seguridad/roles';
 import { RolesService } from 'src/app/services/seguridad/roles.service';
 import { DomSanitizer } from '@angular/platform-browser';
-import { error } from 'jquery';
 import { Router } from '@angular/router';
+import { PreguntasService } from 'src/app/services/seguridad/preguntas.service';
 
 
 
@@ -27,11 +27,14 @@ export class PerfilComponent  implements OnInit{
 /*************************************************************/
   inputDeshabilitadoPassword: boolean = true; // input Deshabilitado/bloqueado Password
   inputDeshabilitado: boolean = true; // input Deshabilitado/bloqueado
+  inputDeshabilitadoP: boolean = true; // input Deshabilitado/bloqueado
   inputDeshabilitadoU: boolean = true; // input Deshabilitado/bloqueado
   botonDeshabilitado: boolean = true;
+  botonDeshabilitadoP: boolean = true;
   mostrarBoton: boolean = false; //Oculta el Boton de Cancelar
   mostrarCamposContrasena = false;
   mostrarEditarUsuario = true;
+  mostrarEditarPreguntas = true;
   mostrarBotonGuardar: boolean = true;
   mostrarGuardar: boolean = true;
   public imagenes: any = [];
@@ -40,6 +43,14 @@ export class PerfilComponent  implements OnInit{
 /********************************************************************************************** */
 
  listRoles: Roles [] = [];
+
+ loading: boolean = false;
+ listPreguntasUsuario: Preguntas_Usuario[] = [];
+ listPreguntas: Preguntas[] = [];
+ preguntasFiltradas: Preguntas[] = [];
+ pregunta: Preguntas[] = [];
+ selectedValue: any;
+ respuestaValid: boolean = false; 
 
   usuario: Usuario = {
     id_usuario: 0,
@@ -58,6 +69,27 @@ export class PerfilComponent  implements OnInit{
     intentos_fallidos: 0
   };
 
+  preguntasUsuario: Preguntas = {
+     id_pregunta: 0,
+     pregunta:'',
+     estado_pregunta: 0,
+     creado_por: '',
+     fecha_creacion: new Date(),
+     fecha_modificacion: new Date(),
+     modificado_por: '',
+  };
+
+  NewpreguntasUsuario: Preguntas_Usuario = {
+    id_preguntas_usuario: 0,
+    id_pregunta: 0,
+    id_usuario: 0,
+    respuesta: '',
+    creado_por: '',
+    fecha_creacion: new Date(),
+    modificado_por: '',
+    fecha_modificacion: new Date()
+ };
+
   rolEditando: Roles = {
     id_rol: 0, 
     rol: '', 
@@ -69,11 +101,9 @@ export class PerfilComponent  implements OnInit{
     fecha_modificacion: new Date(),
   };
 
-  preguntas: Preguntas_Usuario[] = [];
-  listPreguntas: any[] = [];
-
   constructor(
     private _preguntasUsuarioService: PreguntasUsuarioService,
+    private _preguntasService: PreguntasService,
     private _userService: UsuariosService,
     private toastr: ToastrService,
     private _rolService: RolesService,
@@ -95,8 +125,52 @@ export class PerfilComponent  implements OnInit{
       this._userService.getUsuario(this.usuario).subscribe(data => {
         this.usuario = data;
         this.usuarioOriginal = { ...this.usuario }; // Copia del usuario original
+        this.getPreguntasUsuario(); // Llama a getPreguntasUsuario después de que usuario se inicialice
+        this.getPreguntas(); // Llama a getPreguntas después de que usuario se inicialice
       });
     }
+  }
+
+  conbinarPreguntas(){
+    for(const item1 of this.listPreguntas){
+      for(const item2 of this.listPreguntasUsuario){
+        if(item1.id_pregunta === item2.id_pregunta){
+          this.preguntasFiltradas.push(item1)
+        }
+      }
+    }
+    console.log('Estas son las preguntas del Usuario' + this.preguntasFiltradas);
+  }
+
+  getPreguntas() {
+    this._preguntasService.getPreguntas().subscribe(data => {
+      // Filtrar las preguntas activas
+      this.listPreguntas = data.filter(pregunta => pregunta.estado_pregunta == 1);
+  
+      // Almacena una copia de las preguntas originales antes de filtrarlas
+      this.conbinarPreguntas();
+    });
+  }
+
+  getPreguntasUsuario() {
+    const preguntasUsuario: Preguntas_Usuario = {
+      id_preguntas_usuario: 0,
+      id_pregunta: 0,
+      id_usuario: this.usuario.id_usuario,
+      respuesta: '',
+      creado_por: '',
+      fecha_creacion: new Date(),
+      modificado_por: '' ,
+      fecha_modificacion: new Date()
+    }
+
+    this._preguntasUsuarioService.getPreguntasUsuario(preguntasUsuario).subscribe(data => {
+      this.listPreguntasUsuario = (data); // Accede a la propiedad _pregunta del objeto de respuesta
+
+    }, error => {
+      // Manejar cualquier error aquí, si es necesario
+      console.error('Error al obtener preguntas de usuario:', error);
+    });
   }
 
   getRoles() {
@@ -135,6 +209,11 @@ habilitarInput() {
   this.toggleInputType('password');
   this.toggleInputTypeN('password');
   this.toggleInputTypeC('password');
+}
+
+habilitarInputPreguntas() {
+  this.mostrarEditarPreguntas = false;
+  this.inputDeshabilitadoP = false;
 }
 
 habilitarInputPassword() {
@@ -187,7 +266,6 @@ this.toggleInputType('password');
 this.toggleInputTypeN('password');
 this.toggleInputTypeC('password');
 }
-//Fin Metodo de Ocultar/Mostrar Boton
 
 // Función para validar el formato de correo electrónico
 validateEmailFormat(email: string): boolean {
@@ -195,20 +273,11 @@ validateEmailFormat(email: string): boolean {
   return emailRegex.test(email);
 }
 
-
 validarCambios() {
   // Convierte los campos a mayúsculas
   this.usuario.usuario = this.usuario.usuario.toUpperCase();
   this.usuario.nombre_usuario = this.usuario.nombre_usuario.toUpperCase();
   this.usuario.correo_electronico = this.usuario.correo_electronico.toUpperCase();
-
-  // Verifica si se han realizado cambios
-  /*const cambiosRealizados = this.hanCambiadoLosDatos();
-
-  if (!cambiosRealizados) {
-    this.toastr.warning('No se han realizado cambios');
-    return; // No hace nada más si no se han realizado cambios
-  }*/
 
   // Continúa con la validación y procesamiento si se han realizado cambios
   if (this.usuario.usuario === '' || this.usuario.nombre_usuario === '' || this.usuario.correo_electronico === '') {
@@ -238,15 +307,6 @@ validarCambios() {
   this.nuevaContrasena='';
 
 }
-
-// Función para verificar si se han realizado cambios en los datos
-/*hanCambiadoLosDatos() {
-  return this.usuario.usuario !== this.usuarioOriginal.usuario ||
-         this.usuario.nombre_usuario !== this.usuarioOriginal.nombre_usuario ||
-         this.usuario.correo_electronico !== this.usuarioOriginal.correo_electronico;
-}*/
-
-
 
 validarPassword() {
   // Obtener la contraseña almacenada en el Local Storage
@@ -360,6 +420,19 @@ eliminarEspaciosBlanco(event: any, field: string) {
   });
 }
 
+eliminarCaracteresEspeciales(event: any, field: string) {
+  setTimeout(() => {
+    let inputValue = event.target.value;
+
+    // Elimina caracteres especiales dependiendo del campo
+    if (field === 'respuestaPregunta1' || 'respuestaPregunta2' || 'respuestaPregunta3') {
+      inputValue = inputValue.replace(/[^a-zA-Z0-9\s]/g, ''); // Solo permite letras, números y espacios en blanco
+    }
+    event.target.value = inputValue;
+  });
+}
+
+
 convertirAMayusculas(event: any, field: string) {
   const inputValue = event.target.value;
   event.target.value = inputValue.toUpperCase();
@@ -374,6 +447,107 @@ onInputChange(event: any, field: string) {
   }
 }
 /************************************************************************************/
+
+modoEdicionPregunta1: boolean = false;
+modoEdicionPregunta2: boolean = false;
+modoEdicionPregunta3: boolean = false;
+preguntaSeleccionada1: Preguntas | null = null;
+preguntaSeleccionada2: Preguntas | null = null;
+preguntaSeleccionada3: Preguntas | null = null;
+mostrarBotonCancelar1: boolean = false; //Oculta el Boton de Cancelar Pregunta 1
+mostrarBotonCancelar2: boolean = false; //Oculta el Boton de Cancelar Pregunta 2
+mostrarBotonCancelar3: boolean = false; //Oculta el Boton de Cancelar Pregunta 3
+respuestaPregunta1: string = '';
+respuestaPregunta2: string = '';
+respuestaPregunta3: string = '';
+
+/****************************************************/
+editarPregunta1() {
+  this.modoEdicionPregunta1 = true;
+  this.mostrarBotonCancelar1 = true; // Mostrar el botón de cancelar al editar la pregunta
+}
+cancelarEdicionPregunta1() {
+  this.modoEdicionPregunta1 = false;
+  this.preguntaSeleccionada1 = null;
+  this.mostrarBotonCancelar1 = false; // Ocultar el botón de cancelar al cancelar la edición
+}
+/*****************************************************/
+
+/*****************************************************/
+editarPregunta2() {
+  this.modoEdicionPregunta2 = true;
+  this.mostrarBotonCancelar2 = true; // Mostrar el botón de cancelar al editar la pregunta
+}
+cancelarEdicionPregunta2() {
+  this.modoEdicionPregunta2 = false;
+  this.preguntaSeleccionada2 = null;
+  this.mostrarBotonCancelar2 = false; // Ocultar el botón de cancelar al cancelar la edición
+}
+/*****************************************************/
+
+/*****************************************************/
+editarPregunta3() {
+  this.modoEdicionPregunta3 = true;
+  this.mostrarBotonCancelar3 = true; // Mostrar el botón de cancelar al editar la pregunta
+}
+cancelarEdicionPregunta3() {
+  this.modoEdicionPregunta3 = false;
+  this.preguntaSeleccionada3 = null;
+  this.mostrarBotonCancelar3 = false; // Ocultar el botón de cancelar al cancelar la edición
+}
+/*****************************************************/
+
+selectedPregunta(e: any){
+  this.pregunta[0] = this.pregunta[0];
+  this.pregunta[1] = this.pregunta[1];
+  this.pregunta[2] = this.pregunta[2];
+
+  this.selectedValue = e.target.value;
+  console.log(this.selectedValue)
+}
+
+guardarPreguntas1(){
+
+}
+
+guardarPreguntas2(){
+  
+}
+
+guardarPreguntas3() {
+  const userLocal = localStorage.getItem('usuario');
+  if (userLocal && this.preguntaSeleccionada3) {
+    // Extrayendo el ID de pregunta seleccionada
+    const idPreguntaSeleccionada = this.preguntaSeleccionada3.id_pregunta;
+
+    // Crear un objeto para almacenar la nueva pregunta y respuesta
+    this.NewpreguntasUsuario = {
+      id_preguntas_usuario: 0,
+      id_pregunta: idPreguntaSeleccionada,
+      id_usuario: this.usuario.id_usuario,
+      respuesta: this.respuestaPregunta3.trim(), // Trimming para eliminar espacios en blanco al inicio y al final
+      creado_por: userLocal,
+      fecha_creacion: new Date(),
+      modificado_por: userLocal,
+      fecha_modificacion: new Date()
+    };
+
+    // Llamar al método en el servicio para guardar la nueva pregunta y respuesta
+    this._preguntasUsuarioService.postPreguntasUsuario(this.NewpreguntasUsuario).subscribe({
+      next: (data) => {
+        this.toastr.success('La pregunta y respuesta se guardaron correctamente');
+      },
+      error: (error) => {
+        this.toastr.error('Error al guardar la pregunta y respuesta');
+        console.error('Error al guardar la pregunta y respuesta:', error);
+      }
+    });
+  } else {
+    // Manejar el caso en que no se ha seleccionado ninguna pregunta
+    this.toastr.error('Selecciona una pregunta antes de guardar');
+  }
+}
+
 
 
 }

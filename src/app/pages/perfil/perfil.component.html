@@ -61,8 +61,8 @@
   <div class="tab-content">
   <div class="tab-pane" id="activity"></div>
   <div class="tab-pane active" id="settings">
-  <form class="form-horizontal">
-
+  
+<form class="form-horizontal">
 <div class="offset-sm9 col-sm-11 text-right">
 
   <div class="form-group row">
@@ -140,13 +140,151 @@
     </button>
   </div>
 </div>
-
   </form>
+  
   </div>
   </div>
   </div>
   </div>
+
+  <!-- Preguntas Usuario -->
+    <div class="card">
+  
+    <div class="config">
+    <h4>Preguntas Usuario</h4>
+    </div>
+  
+    <div class="card-body">
+    <div class="tab-content">
+    <div class="tab-pane" id="activity"></div>
+    <div class="tab-pane active" id="settings">
+   
+  <form class="form-horizontal">
+  <div class="offset-sm9 col-sm-11 text-right">
+
+<!-- Pregunta #1 -->
+<div *ngIf="!modoEdicionPregunta1">
+  <div class="form-group row">
+    <label for="inputName" class="col-sm-2 col-form-label">Pregunta #1</label>
+    <div class="col-sm-10">
+      <input class="form-control" id="pregunta0" [disabled]="inputDeshabilitadoP" [value]="preguntasFiltradas[0]?.pregunta?.toUpperCase()" name="pregunta0" (input)="selectedPregunta($event)">
+    </div>
   </div>
+  <button type="button" class="btn btn-info btn-sm ml-2" (click)="editarPregunta1()">
+    <i class="fas fa-user-edit"></i> Editar Pregunta #1
+  </button></div>
+
+<div *ngIf="modoEdicionPregunta1">
+  <div class="form-group row">
+    <label for="inputName" class="col-sm-2 col-form-label">Pregunta #1</label>
+    <div class="col-sm-10">
+      <select class="form-control" id="pregunta0" [disabled]="inputDeshabilitadoP" [(ngModel)]="preguntaSeleccionada1" (change)="selectedPregunta($event)">
+        <option *ngFor="let pregunta of listPreguntas" [ngValue]="pregunta">{{ pregunta.pregunta }}</option>
+      </select>
+    </div>
   </div>
+    <!-- Nuevo input para la respuesta a la pregunta #3 -->
+    <div class="form-group row">
+      <label for="respuesta1" class="col-sm-2 col-form-label">Respuesta</label>
+      <div class="col-sm-10">
+        <input class="form-control" id="respuesta0" name="respuesta0" [(ngModel)]="respuestaPregunta1" (input)="convertirAMayusculas($event,'respuestaPregunta1')" (input)="eliminarCaracteresEspeciales($event, 'respuestaPregunta1')">
+      </div>
+    </div>
+  <button type="button" class="btn btn-danger btn-sm ml-2" *ngIf="mostrarBotonCancelar1" (click)="cancelarEdicionPregunta1()">
+    <i class="fa fa-times"></i> Cancelar
+  </button>
+  <button type="button" class="btn btn-success btn-sm ml-2" *ngIf="mostrarBotonCancelar1" (click)="guardarPreguntas1()">
+    <i class="fa fa-check"></i> Guardar
+  </button>
+</div>
+<br>
+<br>
+
+<!-- Pregunta #2 -->
+<div *ngIf="!modoEdicionPregunta2">
+  <div class="form-group row">
+    <label for="inputName" class="col-sm-2 col-form-label">Pregunta #2</label>
+    <div class="col-sm-10">
+      <input class="form-control" id="pregunta1" [disabled]="inputDeshabilitadoP" [value]="preguntasFiltradas[1]?.pregunta?.toUpperCase()"  name="pregunta1" (input)="selectedPregunta($event)">
+    </div>
   </div>
+  <button type="button" class="btn btn-info btn-sm ml-2" (click)="editarPregunta2()">
+    <i class="fas fa-user-edit"></i> Editar Pregunta #2
+  </button></div>
+
+<div *ngIf="modoEdicionPregunta2">
+  <div class="form-group row">
+    <label for="inputName" class="col-sm-2 col-form-label">Pregunta #2</label>
+    <div class="col-sm-10">
+      <select class="form-control" id="pregunta1" [disabled]="inputDeshabilitadoP" [(ngModel)]="preguntaSeleccionada2" (change)="selectedPregunta($event)">
+        <option *ngFor="let pregunta of listPreguntas" [ngValue]="pregunta">{{ pregunta.pregunta }}</option>
+      </select>
+    </div>
+  </div>
+    <!-- Nuevo input para la respuesta a la pregunta #3 -->
+    <div class="form-group row">
+      <label for="respuesta2" class="col-sm-2 col-form-label">Respuesta</label>
+      <div class="col-sm-10">
+        <input class="form-control" id="respuesta1" name="respuesta1" [(ngModel)]="respuestaPregunta2" (input)="convertirAMayusculas($event,'respuestaPregunta2')" (input)="eliminarCaracteresEspeciales($event, 'respuestaPregunta2')">
+      </div>
+    </div>
+  <button type="button" class="btn btn-danger btn-sm ml-2" *ngIf="mostrarBotonCancelar2" (click)="cancelarEdicionPregunta2()">
+    <i class="fa fa-times"></i> Cancelar
+  </button>
+  <button type="button" class="btn btn-success btn-sm ml-2" *ngIf="mostrarBotonCancelar2" (click)="guardarPreguntas2()">
+    <i class="fa fa-check"></i> Guardar
+  </button>
+</div>
+<br>
+<br>
+
+<div *ngIf="!modoEdicionPregunta3">
+  <div class="form-group row">
+    <label for="inputName" class="col-sm-2 col-form-label">Pregunta #3</label>
+    <div class="col-sm-10">
+      <input class="form-control" id="pregunta2" [disabled]="inputDeshabilitadoP" [value]="preguntasFiltradas[2]?.pregunta?.toUpperCase()" name="pregunta2" (input)="selectedPregunta($event)">
+    </div>
+  </div>
+  <button type="button" class="btn btn-info btn-sm ml-2" (click)="editarPregunta3()">
+    <i class="fas fa-user-edit"></i> Editar Pregunta #3
+  </button>
+</div>
+
+<div *ngIf="modoEdicionPregunta3">
+  <div class="form-group row">
+    <label for="inputName" class="col-sm-2 col-form-label">Pregunta #3</label>
+    <div class="col-sm-10">
+      <select class="form-control" id="pregunta2" [disabled]="inputDeshabilitadoP" [(ngModel)]="pregunta[2]" name="pregunta[0]" (change)="selectedPregunta($event)">
+        <option *ngFor="let pregunta of listPreguntas" [ngValue]="pregunta">{{ pregunta.pregunta }}</option>
+      </select>
+    </div>
+  </div>
+  <!-- Nuevo input para la respuesta a la pregunta #3 -->
+  <div class="form-group row">
+    <label for="respuesta3" class="col-sm-2 col-form-label">Respuesta</label>
+    <div class="col-sm-10">
+      <input class="form-control" id="respuesta2" name="respuesta2" [(ngModel)]="respuestaPregunta3"  (input)="convertirAMayusculas($event,'respuestaPregunta3')" (input)="eliminarCaracteresEspeciales($event, 'respuestaPregunta3')">
+    </div>
+  </div>
+  <button type="button" class="btn btn-danger btn-sm ml-2" *ngIf="mostrarBotonCancelar3" (click)="cancelarEdicionPregunta3()">
+    <i class="fa fa-times"></i> Cancelar
+  </button>
+  <button type="button" class="btn btn-success btn-sm ml-2" *ngIf="mostrarBotonCancelar3" (click)="guardarPreguntas3()">
+    <i class="fa fa-check"></i> Guardar
+  </button>
+</div>
+
+
+
+</div> 
+</form>
+    </div>
+    </div>
+    </div>
+    </div>
+  </div>
+</div>
+</div>
+  <!-- Fin preguntas Usuario-->
   </section>
+  
