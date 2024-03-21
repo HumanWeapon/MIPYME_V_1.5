@@ -3,6 +3,13 @@
     margin-left: 5px; /* Agrega un pequeño margen entre los botones */
   }
   
+
+
+.thead-blue {
+  background-color:  #3370e2 !important; /* Cambiar el color de fondo del encabezado a azul */
+  color: white; /* Cambiar el color del texto a blanco para mejorar la legibilidad */
+}
+
   /* Estilos para la tabla */
   .modal-content table {
     width: 100%; /* La tabla ocupa todo el ancho del contenedor */
