@@ -15,7 +15,7 @@ import { PreguntasService } from 'src/app/services/seguridad/preguntas.service';
 
 @Component({
   selector: 'app-perfil',
-  templateUrl: './perfil.component.html',
+  templateUrl:'./perfil.component.html',
   styleUrls: ['./perfil.component.css']
 })
 

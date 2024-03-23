@@ -8,6 +8,7 @@ import { Observable, catchError } from 'rxjs';
   providedIn: 'root'
 })
 export class PermisosService {
+ 
 
   public permisos: Permisos | undefined;
   

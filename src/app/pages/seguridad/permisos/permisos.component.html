@@ -57,7 +57,7 @@
                         </td>                         
                         <td class="text-center">
                           <div class="btn-group">
-                            <button type="button" title="Ver Usuario" class="btna" data-toggle="modal" data-target="#VistaPermiso">
+                            <button type="button" (click)="obtenerPermiso(permiso, i)" title="Ver Permiso" class="btna" data-toggle="modal" data-target="#VistaPermiso">
                               <i class="far fa-eye"></i> <!-- Cambiar el icono a un ojo -->
                             </button>
                             <div class="form-check form-switch ml-4">
@@ -344,45 +344,39 @@
 
 
 <div class="modal fade" id="VistaPermiso">
-  <div class="modal-dialog modal-xl"> <!-- Cambiar a modal-xl para un modal extra grande -->
+  <div class="modal-dialog modal-xl">
     <div class="modal-content">
-      <div class="modal-header bg-primary"> <!-- Cambiar el color de fondo del encabezado a azul -->
-        <h4 class="modal-title text-white">Datos Adicionales de Permisos </h4> 
+      <div class="modal-header bg-primary">
+        <h4 class="modal-title text-white">Datos Adicionales del Permiso</h4>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <div class="table-responsive">
-          <table class="table table-bordered table-striped" style="width: 100%;"> <!-- Ajustar el ancho de la tabla -->
-            <thead class="thead-blue"> <!-- Añadir una clase para el color de fondo azul -->
+        <div *ngIf="permisoSeleccionado">
+          <table class="table table-bordered table-striped" style="width: 100%;">
+            <thead class="bg-primary text-white">
               <tr>
-                <th style="width: 10%;">ROL</th>
-                <th style="width: 10%;">OBJETO</th> 
-                <th style="width: 10%;">TIPO OBJETO</th>  <!-- Ajustar el ancho de las columnas según sea necesario -->
                 <th style="width: 10%;">CREADOR</th>
                 <th style="width: 10%;">FECHA CREACIÓN</th>
                 <th style="width: 10%;">MODIFICADOR</th>
                 <th style="width: 10%;">FECHA MODIFICACIÓN</th>
-              
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let permiso of listPermisos; let i = index">
-                <td>{{ getRolNombre(permiso.id_rol) | uppercase }}</td> 
-                <td>{{ getObjetoNombre(permiso.id_objeto) | uppercase }}</td>
-                <td>{{ getObjetoTipo(permiso.id_objeto) | uppercase }}</td>
-                <td>{{ permiso.creado_por | uppercase }}</td>
-                <td>{{ permiso.fecha_creacion | date: 'yyyy-MM-dd' }}</td>
-                <td>{{ permiso.modificado_por | uppercase }}</td>
-                <td>{{ permiso.fecha_modificacion | date: 'yyyy-MM-dd' }}</td>
-               
+              <tr>
+                <td>{{ permisoSeleccionado.creado_por | uppercase }}</td>
+                <td>{{ permisoSeleccionado.fecha_creacion | date: 'yyyy-MM-dd' }}</td>
+                <td>{{ permisoSeleccionado.modificado_por | uppercase }}</td>
+                <td>{{ permisoSeleccionado.fecha_modificacion | date: 'yyyy-MM-dd' }}</td>               
               </tr>
             </tbody>
           </table>
         </div>
       </div>
-    
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      </div>
     </div>
   </div>
 </div>

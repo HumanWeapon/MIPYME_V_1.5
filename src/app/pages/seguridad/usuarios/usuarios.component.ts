@@ -21,6 +21,8 @@ import { es } from 'date-fns/locale'; // Importa el idioma español
 })
 export class UsuariosComponent {
 
+  usuarioSeleccionado: any;
+
   getDate(): string {
     // Obtener la fecha actual
     const currentDate = new Date();
@@ -363,6 +365,28 @@ agregarNuevoUsuario() {
   }
 }
 
+obtenerUsuario(usuario: Usuario, i: any) {
+  const localuser = localStorage.getItem('usuario');
+  if(localuser){
+    this.usuarioSeleccionado = {
+      id_usuario: usuario.id_usuario,
+      creado_por: usuario.creado_por,
+      fecha_creacion: usuario.fecha_creacion,
+      modificado_por: localuser,
+      fecha_modificacion: usuario.fecha_modificacion,
+      usuario: usuario.usuario,
+      nombre_usuario: usuario.nombre_usuario,
+      correo_electronico: usuario.correo_electronico,
+      estado_usuario: usuario.estado_usuario,
+      contrasena: usuario.contrasena,
+      id_rol: usuario.id_rol,
+      fecha_ultima_conexion: usuario.fecha_ultima_conexion,
+      fecha_vencimiento: usuario.fecha_vencimiento,
+      intentos_fallidos: usuario.intentos_fallidos,
+    };
+  }
+  this.indiceUser = i;
+}
 
   obtenerIdUsuario(usuario: Usuario, i: any) {
     const localuser = localStorage.getItem('usuario');

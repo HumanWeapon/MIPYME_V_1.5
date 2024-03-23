@@ -33,6 +33,7 @@ export class PermisosComponent implements OnInit, OnDestroy {
   objetosFiltrados: any[] | undefined; // Lista de objetos filtrados
   roles: Roles[] = [];
   objetos: Objetos[] = [];
+  permisoSeleccionado: any;
 
   id_rol: number = 0;
   id_objeto: number = 0;
@@ -90,6 +91,7 @@ export class PermisosComponent implements OnInit, OnDestroy {
   listPermisos: Permisos[] = [];
   data: any;
   dtTrigger: Subject<any> = new Subject<any>();
+
 
   constructor(
     private _permService: PermisosService, 
@@ -419,6 +421,31 @@ cancelarInput(){
     }}
   }
 
+
+ 
+
+  
+  obtenerPermiso(permisos: Permisos, i: any) {
+    this.permisoSeleccionado = {
+      id_permisos: permisos.id_permisos,
+      id_rol: permisos.id_rol,
+      id_objeto: permisos.id_objeto,
+      permiso_consultar: permisos.permiso_consultar,
+      permiso_insercion: permisos.permiso_insercion,
+      permiso_actualizacion: permisos.permiso_actualizacion,
+      permiso_eliminacion: permisos.permiso_eliminacion,
+      estado_permiso: permisos.estado_permiso,
+      creado_por: permisos.creado_por,
+      fecha_creacion: permisos.fecha_creacion,
+      modificado_por: permisos.modificado_por,
+      fecha_modificacion: permisos.fecha_modificacion,
+
+    };
+    
+    this.indice = i;
+  }
+
+
   obtenerIdPermiso(permisos: Permisos, i: any) {
     this.permisoeditando = {
       id_permisos: permisos.id_permisos,
@@ -436,6 +463,8 @@ cancelarInput(){
     };
     this.indice = i;
   }
+
+
 
   editarPermiso() {
     this._permService.editarPermiso(this.permisoeditando).subscribe(() => {

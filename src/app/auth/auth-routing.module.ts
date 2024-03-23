@@ -10,6 +10,9 @@ import { PreguntasUsuarioComponent } from './login/preguntas-usuario/preguntas-u
 import { LoginPymeComponent } from './login-pyme/login-pyme.component';
 import { PasswordEmailComponent } from './login/password-email/password-email.component';
 import { ResetPasswordComponent } from '../auth/login/reset-password/reset-password.component';
+import { SearchComponent } from '../pages/search/search.component';
+import { DashboardComponent } from '../pages/dashboard/dashboard.component';
+import { PymeComponent } from '../pages/pyme/pyme.component';
 
 
 const routes: Routes =[
@@ -21,7 +24,11 @@ const routes: Routes =[
   {path: 'firstlogin', component: FirstLoginComponent},
   {path: 'login-pyme', component: LoginPymeComponent},
   {path: 'password-email', component: PasswordEmailComponent},
-  {path: 'resetPassword/:token', component: ResetPasswordComponent }
+  {path: 'resetPassword/:token', component: ResetPasswordComponent },
+  {path: 'search', component: SearchComponent },
+  {path: 'dashboard', component: DashboardComponent },
+  {path: 'pymes', component: PymeComponent }
+
 
 ];
 
