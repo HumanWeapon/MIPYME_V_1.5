@@ -6,17 +6,20 @@ import { da } from 'date-fns/locale';
 import { data, error } from 'jquery';
 import { ToastrService } from 'ngx-toastr';
 import { Contacto } from 'src/app/interfaces/contacto/contacto';
+import { ContactoDirecciones } from 'src/app/interfaces/contacto/contactoDirecciones';
 import { Empresa } from 'src/app/interfaces/empresa/empresas';
 import { Categoria } from 'src/app/interfaces/mantenimiento/categoria';
 import { BitacoraService } from 'src/app/services/administracion/bitacora.service';
 import { ContactoService } from 'src/app/services/contacto/contacto.service';
 import { ContactoTService } from 'src/app/services/contacto/contactoTelefono.service';
+import { DireccionesService } from 'src/app/services/contacto/direcciones.service';
 import { EmpresaService } from 'src/app/services/empresa/empresa.service';
 import { ErrorService } from 'src/app/services/error.service';
 import { CategoriaService } from 'src/app/services/mantenimiento/categoria.service';
 import { ProductosService } from 'src/app/services/mantenimiento/producto.service';
 import { TipoContactoService } from 'src/app/services/mantenimiento/tipoContacto.service';
 import { EmpresasContactosService } from 'src/app/services/operaciones/empresas-contactos.service';
+import { EmpresasDireccionesService } from 'src/app/services/operaciones/empresas-direcciones.service';
 import { EmpresasProdcutosService } from 'src/app/services/operaciones/empresas-prodcutos.service';
 import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 
@@ -36,6 +39,11 @@ export class OperacionesEmpresasComponent {
   listContacto: any[] = [];
   listContactosActivos: any[]=[];
   indice: any;//indice de contactos
+
+  //Variablñes utilizadas para enviar una dirección nueva a la DBA
+  id_tipo_direccion: any;
+  id_ciudad: any;
+  id_pais: any;
   
   productosEmpresa: any[] = [];//Obtiene los productos registrados de la Empresa y los muestra en la tabla.
   productosContactos: any[] = [];//Obtiene los contactos registrados de la Empresa y los muestra en la tabla.
@@ -128,6 +136,20 @@ export class OperacionesEmpresasComponent {
     fecha_modificacion:new Date(), 
     estado: 0,
   };
+  direccionEditando: ContactoDirecciones = {
+    id_direccion: 0, 
+    id_tipo_direccion: 0,
+    id_ciudad: 0,
+    id_pais: 0,
+    id_empresa: 0,
+    direccion:'', 
+    descripcion: '', 
+    creado_por: '', 
+    fecha_creacion: new Date(), 
+    modificado_por: '', 
+    fecha_modificacion: new Date(), 
+    estado: 0
+  };
   ngOnInit(){
     this.getProductos();
     this.getAllCategorias();
@@ -147,6 +169,7 @@ export class OperacionesEmpresasComponent {
     this.getProductosNoRegistradosPorId();
     this.getEmpresasContactosPorId();
     this.getContactosNoRegistradosPorId();
+    this.getDireccionesEmpresaporID();
   }
 
   constructor(
@@ -159,11 +182,13 @@ export class OperacionesEmpresasComponent {
     private _productoService: ProductosService,
     private _empresasProductosService: EmpresasProdcutosService,
     private _empresasContactosService: EmpresasContactosService,
+    private _empresasDireccionesService: EmpresasDireccionesService,
     private _telefonosService: ContactoTService,
     private _datePipe: DatePipe,
     private _categoriaProductos: CategoriaService,
     private _contactoService: ContactoService,
     private _tipoContacto: TipoContactoService,
+    private _direccionesService: DireccionesService
   ) {}
 
   //busca los productos de la tabla principal de los productos
@@ -210,7 +235,18 @@ export class OperacionesEmpresasComponent {
       });
     }
   }
-  buscarCDirecciones() {
+  //busca las direcciones de la tabla principal de los direcciones
+  buscarDirecciones() {
+    if (this.filtro_direc.trim() === '') {
+      this.direccionesEmpresa = this.todasLasDirecciones; // Si el filtro está vacío, muestra todos los productos
+    } else {
+      this.direccionesEmpresa = this.todasLasDirecciones.filter(direccion => {
+        // Filtrar por el nombre del producto
+        return direccion.direccion.toLowerCase().includes(this.filtro_direc.trim().toLowerCase());
+      });
+    }
+  }
+  buscarDireccionesporId() {
     if (this.filtro_direc.trim() === '') {
       this.direccionesEmpresa = this.todasLasDirecciones; // Si el filtro está vacío, muestra todos los productos
     } else {
@@ -408,7 +444,18 @@ export class OperacionesEmpresasComponent {
       }
     });
   }
-
+  //Obtiene todos los contactos registrados a una empresa
+  getDireccionesEmpresaporID() {
+    this._empresasDireccionesService.consultarDireccionesPorId(this.idEmpresa).subscribe({
+      next: (data: any) => {
+        this.direccionesEmpresa = data;
+        this.todasLasDirecciones = data;
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
+  }
 
   //Funciones para marcar o desmarcar en el modal
   marcarProducto(producto: any) {
@@ -460,6 +507,23 @@ export class OperacionesEmpresasComponent {
       fecha_modificacion: new Date(), 
       estado: contac.estado,
 
+    };
+    this.indice = i;
+  }
+  obtenerIdDireccion(direccion: any, i: any){
+    this.direccionEditando = {
+    id_direccion: direccion.id_direccion,
+    id_tipo_direccion: this.id_tipo_direccion, 
+    id_ciudad: this.id_ciudad,
+    id_pais: this.id_pais,
+    id_empresa: this.idEmpresa,
+    direccion: direccion.direccion, 
+    descripcion: direccion.descripcion,  
+    creado_por: direccion.creado_por, 
+    fecha_creacion: direccion.fecha_creacion, 
+    modificado_por: direccion.modificado_por, 
+    fecha_modificacion: direccion.fecha_modificacion,
+    estado: direccion.estado
     };
     this.indice = i;
   }
@@ -656,5 +720,56 @@ export class OperacionesEmpresasComponent {
   });
     this.productosContactos[i].estado = 1;
   }
-
+  toggleFunctionDirerccion(contac: any, i: number) {
+  // Ejecuta una función u otra según el estado
+  if (contac.estado == 1 ) {
+    this.inactivarDireccion(contac, i); // Ejecuta la primera función
+  } else {
+    this.activarDireccion(contac, i); // Ejecuta la segunda función
+  }
+  }
+  inactivarDireccion(contacto: any, i: any){
+    const inactivarD: any = {
+      id_direccion: contacto.id_direccion,
+      direccion: contacto.direccion,
+      descripcion: contacto.descripcion,
+      creado_por: contacto.creado_por,
+      fecha_creacion: contacto.fecha_creacion, 
+      modificado_por: contacto.modificado_por,
+      fecha_modificacion: contacto.fecha_modificacion, 
+      estado: 2,
+      id_tipo_direccion: contacto.id_tipo_direccion,
+      id_empresa: this.idEmpresa,
+      id_pais: contacto.id_pais,
+      id_ciudad: contacto.id_ciudad,
+    };
+    console.log(inactivarD);
+    this._direccionesService.inactivarDireccion(inactivarD).subscribe(data => {
+    this._toastr.success('Dirección inactivada');
+    //this.inactivarBitacora(data);
+  });
+    this.direccionesEmpresa[i].estado = 2; 
+  }
+  activarDireccion(contacto: any, i: any){
+    const activarD: any = {
+      id_direccion: contacto.id_direccion,
+      direccion: contacto.direccion,
+      descripcion: contacto.descripcion,
+      creado_por: contacto.creado_por,
+      fecha_creacion: contacto.fecha_creacion, 
+      modificado_por: contacto.modificado_por,
+      fecha_modificacion: contacto.fecha_modificacion, 
+      estado: 1,
+      id_tipo_direccion: contacto.id_tipo_direccion,
+      id_empresa: this.idEmpresa,
+      id_pais: contacto.id_pais,
+      id_ciudad: contacto.id_ciudad,
+    };
+    console.log(activarD);
+    this._direccionesService.activarDireccion(activarD).subscribe(data => {
+    this._toastr.success('EDirección activada');
+    //this.activarBitacora(data);
+  });
+    this.direccionesEmpresa[i].estado = 1;
+  }
 }

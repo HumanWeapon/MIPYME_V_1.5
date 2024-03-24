@@ -32,15 +32,15 @@ export class DireccionesService {
    }
   
 
-   inactivarDireccion(direccion: ContactoDirecciones): Observable<ContactoDirecciones>{
+   inactivarDireccion(direccion: any): Observable<any>{
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.post<ContactoDirecciones>(`${this.myAppUrl}${this.myApiUrl}/inactivateDirecContactos`, direccion, { headers: headers })
+    return this.http.post<any>(`${this.myAppUrl}${this.myApiUrl}/inactivateDirecion`, direccion, { headers: headers })
    }
-   activarDireccion(direccion: ContactoDirecciones): Observable<ContactoDirecciones>{
+   activarDireccion(direccion: any): Observable<any>{
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.post<ContactoDirecciones>(`${this.myAppUrl}${this.myApiUrl}/activateDirecContactos`, direccion, { headers: headers })
+    return this.http.post<any>(`${this.myAppUrl}${this.myApiUrl}/activateDireccion`, direccion, { headers: headers })
    }
 
    editarDireccion(direccion: ContactoDirecciones): Observable<any> {

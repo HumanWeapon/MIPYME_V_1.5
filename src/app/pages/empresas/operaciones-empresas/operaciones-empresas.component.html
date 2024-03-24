@@ -184,8 +184,8 @@
                   <div class="mb-2 mt-0">
                     <div class="input-group input-group-sm" >
                       <div class="ml-auto"> <!-- Agrega la clase ml-auto aquí -->
-                        <button type="button" class="btn btn-block btn_color btn-sm" data-toggle="modal" data-target="#agregarContacto">
-                          Editar Direcciones
+                        <button type="button" class="btn btn-block btn_color_blue btn-sm"data-toggle="modal" data-target="#agregarDireccion">
+                          <i class="fas fa-plus"></i> Nuevo
                         </button>
                     </div>
                     </div>
@@ -198,10 +198,10 @@
                         <div class="row">
                           <div class="input-group input-group-sm" style="width: 200px;">
                           
-                            <input type="text" name="table_search" class="form-control float-right" placeholder="Buscar" [(ngModel)]="filtro_contact" (input)="buscarContactos()">
+                            <input type="text" name="table_search" class="form-control float-right" placeholder="Buscar" [(ngModel)]="filtro_direc" (input)="buscarDirecciones()">
     
                             <div class="input-group-append">
-                              <button type="button" class="btn btn-default" (click)="buscarCDirecciones()">
+                              <button type="button" class="btn btn-default">
                                 <i class="fas fa-search"></i>
                               </button>
                             </div>
@@ -229,11 +229,27 @@
                         </thead>
                         <tbody>
                           <tr *ngFor="let obj of direccionesEmpresa; let i = index">
-                            <td>{{ obj.nombre_completo }}</td>
-                            <td>{{ obj.tipo_contacto }}</td>
+                            <td>{{ obj.id_direccion }}</td>
+                            <td>{{ obj.direccion }}</td>
+                            <td>{{ obj.tipo_direccion }}</td>
                             <td>{{ obj.descripcion }}</td>
+                            <td>{{ obj.pais }}</td>
+                            <td>{{ obj.ciudad }}</td>
                             <td>{{ obj.creado_por }}</td>
                             <td>{{ obj.fecha_creacion | date:'dd/MM/yyyy'}}</td>
+                            <td>
+                              <ng-container *ngIf="obj.estado === 1">ACTIVO</ng-container>
+                              <ng-container *ngIf="obj.estado === 2">INACTIVO</ng-container>
+                            </td>
+                            <td class="text-center">
+                              <div class="btn-group">
+                                <div class="form-check form-switch ml-4">
+                                  <input class="form-check-input" (click)="toggleFunctionDirerccion(obj, i)" [title]="obj.estado == 1 ? 'Desactivar' : 'Activar'" type="checkbox" 
+                                    role="switch" id="flexSwitchCheckChecked" [checked]="obj.estado == 1">
+                                  </div>
+                                  <button type="button" (click)="obtenerIdDireccion(obj, i)" data-toggle="modal" title="Editar Contacto" data-target="#abrirModalEditarDireccion"data-toggle="modal" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
+                                </div>
+                            </td>
                           </tr>
                         </tbody>
                       </table>
@@ -481,6 +497,50 @@
     </div>
   </div>
   <!-- /Ver Teléfonos de contactos -->
+
+
+  <!-- Agregar dirección Form -->
+<div class="modal fade" id="agregarDireccion">
+  <div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <!--<h4 class="modal-title">Agregar Dirección</h4> -->
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form>
+            </form>
+        </div>
+        <div class="modal-footer justify-content-between">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-success" data-dismiss="modal">Guardar</button>
+        </div>
+    </div>
+  </div>
+  </div>
+  <!-- /Agregar Dirección Form -->
+  <!-- Actualizar Dirección Form -->
+<div class="modal fade" id="abrirModalEditarDireccion">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title">Editar Direccion</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <form>
+
+              </form>
+          </div>
+
+      </div>
+  </div>
+</div>
+<!-- /Actualizar Dirección Form -->
 
 
 

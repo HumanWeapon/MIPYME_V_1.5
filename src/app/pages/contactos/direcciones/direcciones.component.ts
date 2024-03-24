@@ -33,6 +33,8 @@ export class DireccionesComponent {
     id_direccion: 0, 
     id_tipo_direccion: 0,
     id_ciudad: 0,
+    id_pais: 0,
+    id_empresa: 0,
     direccion:'', 
     descripcion: '', 
     creado_por: '', 
@@ -40,13 +42,14 @@ export class DireccionesComponent {
     modificado_por: '', 
     fecha_modificacion: new Date(), 
     estado: 0
-
   };
 
   nuevaDireccion: ContactoDirecciones = {
     id_direccion: 0, 
     id_tipo_direccion: 0,
     id_ciudad: 0,
+    id_pais: 0,
+    id_empresa: 0,
     direccion:'', 
     descripcion: '', 
     creado_por: '', 
@@ -175,6 +178,8 @@ export class DireccionesComponent {
         id_direccion: 0, 
         id_tipo_direccion: this.id_tipo_direccion,
         id_ciudad: this.id_ciudad,
+        id_pais: 0,
+        id_empresa: 0,
         direccion: this.nuevaDireccion.direccion, 
         descripcion:this.nuevaDireccion.descripcion, 
         estado: 1,
@@ -204,6 +209,8 @@ export class DireccionesComponent {
     id_direccion: direccion.id_direccion,
     id_tipo_direccion: this.nuevaDireccion.id_tipo_direccion, 
     id_ciudad: this.nuevaDireccion.id_ciudad,
+    id_pais: 0,
+    id_empresa: 0,
     direccion: direccion.direccion, 
     descripcion: direccion.descripcion,  
     creado_por: direccion.creado_por, 
@@ -365,169 +372,155 @@ generatePDF() {
   logoImg.src = '/assets/dist/img/pym.png'; // Ruta del logo
 }
 
-getCurrentDate(): string {
-  const currentDate = new Date();
-  return currentDate.toLocaleDateString(); // Retorna la fecha actual en formato local
-}
-
-getEstadoText(estado: number): string {
-  switch (estado) {
-    case 1:
-      return 'Activo';
-    case 2:
-      return 'Inactivo';
-    default:
-      return 'Desconocido';
+  getCurrentDate(): string {
+    const currentDate = new Date();
+    return currentDate.toLocaleDateString(); // Retorna la fecha actual en formato local
   }
-} 
 
-
-
-/**************************************************************/
+  getEstadoText(estado: number): string {
+    switch (estado) {
+      case 1:
+        return 'Activo';
+      case 2:
+        return 'Inactivo';
+      default:
+        return 'Desconocido';
+    }
+  } 
 
 
 /*************************************************************** Métodos de Bitácora ***************************************************************************/
 
-getUser: Usuario = {
-  id_usuario: 0,
-  creado_por: '',
-  fecha_creacion: new Date(),
-  modificado_por: '',
-  fecha_modificacion: new Date(),
-  usuario: '',
-  nombre_usuario: '',
-  correo_electronico: '',
-  estado_usuario: 0,
-  contrasena: '',
-  id_rol: 0,
-  fecha_ultima_conexion: new Date(),
-  fecha_vencimiento: new Date(),
-  intentos_fallidos: 0
-};
-
-getUsuario(){
-  const userlocal = localStorage.getItem('usuario');
-  if(userlocal){
-    this.getUser = {
-      usuario: userlocal,
-      id_usuario: 0,
-      creado_por: '',
-      fecha_creacion: new Date(),
-      modificado_por: '',
-      fecha_modificacion: new Date(),
-      nombre_usuario: '',
-      correo_electronico: '',
-      estado_usuario: 0,
-      contrasena: '',
-      id_rol: 0,
-      fecha_ultima_conexion: new Date(),
-      fecha_vencimiento: new Date(),
-      intentos_fallidos: 0
-  }
- }
-
- this._userService.getUsuario(this.getUser).subscribe({
-   next: (data) => {
-     this.getUser = data;
-   },
-   error: (e: HttpErrorResponse) => {
-     this._errorService.msjError(e);
-   }
- });
-}
-
-insertBitacora(dataDireccion: ContactoDirecciones) {
-  const bitacora = {
-    fecha: new Date(),
-    id_usuario: this.getUser.id_usuario,
-    id_objeto: 6,
-    accion: 'INSERTAR',
-    descripcion: `SE AGREGÓ UNA NUEVA DIRECCIÓN:
-                  Direccion: ${dataDireccion.direccion},
-                  Descripción: ${dataDireccion.descripcion}`
+  getUser: Usuario = {
+    id_usuario: 0,
+    creado_por: '',
+    fecha_creacion: new Date(),
+    modificado_por: '',
+    fecha_modificacion: new Date(),
+    usuario: '',
+    nombre_usuario: '',
+    correo_electronico: '',
+    estado_usuario: 0,
+    contrasena: '',
+    id_rol: 0,
+    fecha_ultima_conexion: new Date(),
+    fecha_vencimiento: new Date(),
+    intentos_fallidos: 0
   };
 
-  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
-    // Manejar la respuesta si es necesario
+  getUsuario(){
+    const userlocal = localStorage.getItem('usuario');
+    if(userlocal){
+      this.getUser = {
+        usuario: userlocal,
+        id_usuario: 0,
+        creado_por: '',
+        fecha_creacion: new Date(),
+        modificado_por: '',
+        fecha_modificacion: new Date(),
+        nombre_usuario: '',
+        correo_electronico: '',
+        estado_usuario: 0,
+        contrasena: '',
+        id_rol: 0,
+        fecha_ultima_conexion: new Date(),
+        fecha_vencimiento: new Date(),
+        intentos_fallidos: 0
+    }
+  }
+
+  this._userService.getUsuario(this.getUser).subscribe({
+    next: (data) => {
+      this.getUser = data;
+    },
+    error: (e: HttpErrorResponse) => {
+      this._errorService.msjError(e);
+    }
   });
-}
-
-
-
-updateBitacora(dataDireccion: ContactoDirecciones) {
-  // Guardar la dirección actual antes de actualizarla
-  const direccionAnterior = { ...this.getDireccion };
-
-  // Actualizar la dirección
-  this.getDireccion = dataDireccion;
-
-  // Comparar los datos anteriores con los nuevos datos
-  const cambios = [];
-  if (direccionAnterior.direccion !== dataDireccion.direccion) {
-    cambios.push(`Dirección anterior: ${direccionAnterior.direccion} -> Nueva dirección: ${dataDireccion.direccion}`);
-  }
-  if (direccionAnterior.descripcion !== dataDireccion.descripcion) {
-    cambios.push(`Descripción anterior: ${direccionAnterior.descripcion} -> Nueva descripción: ${dataDireccion.descripcion}`);
   }
 
-  // Si se realizaron cambios, registrar en la bitácora
-  if (cambios.length > 0) {
-    // Crear la descripción para la bitácora
-    const descripcion = `Se actualizaron los siguientes campos:\n${cambios.join('\n')}`;
-
-    // Crear el objeto bitácora
+  insertBitacora(dataDireccion: ContactoDirecciones) {
     const bitacora = {
       fecha: new Date(),
-      id_usuario: this.getUser.usuario,
+      id_usuario: this.getUser.id_usuario,
       id_objeto: 6,
-      accion: 'ACTUALIZAR',
-      descripcion: descripcion
+      accion: 'INSERTAR',
+      descripcion: `SE AGREGÓ UNA NUEVA DIRECCIÓN:
+                    Direccion: ${dataDireccion.direccion},
+                    Descripción: ${dataDireccion.descripcion}`
     };
 
-    // Insertar la bitácora
     this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
       // Manejar la respuesta si es necesario
     });
   }
-}
+  updateBitacora(dataDireccion: ContactoDirecciones) {
+    // Guardar la dirección actual antes de actualizarla
+    const direccionAnterior = { ...this.getDireccion };
 
+    // Actualizar la dirección
+    this.getDireccion = dataDireccion;
 
-activarBitacora(dataDireccion: ContactoDirecciones){
-  const bitacora = {
-    fecha: new Date(),
-    id_usuario: this.getUser.id_usuario,
-    id_objeto: 6,
-    accion: 'ACTIVAR',
-    descripcion: 'SE ACTIVA LA DIRECCION: '+ dataDireccion.direccion
+    // Comparar los datos anteriores con los nuevos datos
+    const cambios = [];
+    if (direccionAnterior.direccion !== dataDireccion.direccion) {
+      cambios.push(`Dirección anterior: ${direccionAnterior.direccion} -> Nueva dirección: ${dataDireccion.direccion}`);
+    }
+    if (direccionAnterior.descripcion !== dataDireccion.descripcion) {
+      cambios.push(`Descripción anterior: ${direccionAnterior.descripcion} -> Nueva descripción: ${dataDireccion.descripcion}`);
+    }
+
+    // Si se realizaron cambios, registrar en la bitácora
+    if (cambios.length > 0) {
+      // Crear la descripción para la bitácora
+      const descripcion = `Se actualizaron los siguientes campos:\n${cambios.join('\n')}`;
+
+      // Crear el objeto bitácora
+      const bitacora = {
+        fecha: new Date(),
+        id_usuario: this.getUser.usuario,
+        id_objeto: 6,
+        accion: 'ACTUALIZAR',
+        descripcion: descripcion
+      };
+
+      // Insertar la bitácora
+      this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+        // Manejar la respuesta si es necesario
+      });
+    }
   }
-  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-  })
-}
-inactivarBitacora(dataDireccion: ContactoDirecciones){
-  const bitacora = {
-    fecha: new Date(),
-    id_usuario: this.getUser.id_usuario,
-    id_objeto: 6,
-    accion: 'INACTIVAR',
-    descripcion: 'SE INACTIVA LA DIRECCION: '+ dataDireccion.direccion
+  activarBitacora(dataDireccion: ContactoDirecciones){
+    const bitacora = {
+      fecha: new Date(),
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 6,
+      accion: 'ACTIVAR',
+      descripcion: 'SE ACTIVA LA DIRECCION: '+ dataDireccion.direccion
+    }
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+    })
   }
-  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-  })
-}
-deleteBitacora(dataDireccion: ContactoDirecciones){
-  const bitacora = {
-    fecha: new Date(),
-    id_usuario: this.getUser.id_usuario,
-    id_objeto: 6,
-    accion: 'ELIMINAR',
-    descripcion: 'SE ELIMINA LA DIRECCION CON EL ID: '+ dataDireccion.direccion
+  inactivarBitacora(dataDireccion: ContactoDirecciones){
+    const bitacora = {
+      fecha: new Date(),
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 6,
+      accion: 'INACTIVAR',
+      descripcion: 'SE INACTIVA LA DIRECCION: '+ dataDireccion.direccion
+    }
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+    })
   }
-  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-  })
+  deleteBitacora(dataDireccion: ContactoDirecciones){
+    const bitacora = {
+      fecha: new Date(),
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 6,
+      accion: 'ELIMINAR',
+      descripcion: 'SE ELIMINA LA DIRECCION CON EL ID: '+ dataDireccion.direccion
+    }
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+    })
+  }
 }
-  /*************************************************************** Fin Métodos de Bitácora ***************************************************************************/
-
-}
-
-
-
