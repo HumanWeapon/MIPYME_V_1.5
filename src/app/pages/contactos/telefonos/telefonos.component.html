@@ -29,9 +29,9 @@
                         </tr>
                       </thead>
                       <tbody>
-                        <tr *ngFor="let conT of list_contactos; let i = index">
+                        <tr *ngFor="let conT of telefonosAllContactos let i = index">
                           <td>{{ conT.id_telefono }}</td>
-                          <td>{{ conT.nombre | uppercase }}</td>
+                          <td>{{ conT.nombre_completo | uppercase }}</td>
                           <td>{{ conT.telefono | uppercase }}</td>
                           <td>{{ conT.cod_area | uppercase }}</td>
                           <td>{{ conT.descripcion | uppercase }}</td>
@@ -201,9 +201,9 @@
           </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let conT of telefonosconcontacto; let i = index">
+            <tr *ngFor="let conT of telefonosAllContactos; let i = index">
               <td>{{ conT.id_telefono }}</td>
-              <td>{{ conT.telefono }}</td>
+              <td>{{ conT.contacto.nombre_completo }}</td>
               <td>{{ conT.extencion }}</td>
               <td>{{ conT.descripcion }}</td>
               <td>{{ conT.creado_por}}</td>
@@ -254,7 +254,7 @@
               </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let conT of telefonosconcontacto; let i = index">
+                <tr *ngFor="let conT of telefonosAllContactos; let i = index">
                   <td>{{ conT.id_telefono }}</td>
                   <td>{{ conT.telefono }}</td>
                   <td>{{ conT.extencion }}</td>

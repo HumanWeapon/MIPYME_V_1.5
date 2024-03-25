@@ -69,7 +69,13 @@ export class ContactoTService {
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
     return this.http.get<any[]>(`${this.myAppUrl}${this.myApiUrl}/telefonosconcontacto`, { headers: headers })
    }
+
+  telefonosAllContactos(): Observable<ContactoTelefono[]> {
+    const token = localStorage.getItem('token')
+    const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
+   return this.http.get<ContactoTelefono[]>(`${this.myAppUrl}${this.myApiUrl}/telefonosAllContactos`, { headers: headers })
+}
+
 }
 /*                                          FRANKLIN ALEXANDER MURILLO CRUZ
-                                                CUENTA: 20151021932
- */
+                                                CUENTA: 20151021932*/

@@ -26,7 +26,7 @@ import { DatePipe } from '@angular/common';
 export class TelefonosComponent implements OnInit{
 
   getTelefono: any;
-  telefonosconcontacto: any[] = [];
+  telefonosAllContactos: any[] = [];
   localUser: string = '';
   list_contactos: any[] = [];
 
@@ -76,8 +76,6 @@ export class TelefonosComponent implements OnInit{
   // thus we ensure the data is fetched before rendering
   dtTrigger: Subject<any> = new Subject<any>();
 
-
-
   constructor(
     private _contactoTService: ContactoTService,
     private toastr: ToastrService,
@@ -92,6 +90,9 @@ export class TelefonosComponent implements OnInit{
   
   ngOnInit(): void {
     this.getUsuario();
+  }
+
+  getAllTelefonosContacto(){
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 10,
@@ -99,16 +100,13 @@ export class TelefonosComponent implements OnInit{
       responsive: true
     };
 
-    this._contactoTService.getAllContactosTelefono().subscribe({
+    this._contactoTService.telefonosAllContactos().subscribe({
       next: (data) =>{
-        this.telefonosconcontacto = data;
-        this.list_contactos = data;
+        this.telefonosAllContactos = data;
         this.dtTrigger.next(0);
       }
     });
   }
-
-
 
   ngOnDestroy(): void {
     // Do not forget to unsubscribe the event
@@ -145,8 +143,8 @@ export class TelefonosComponent implements OnInit{
     this._errorService.msjError(e);
   }
   });
-    this.telefonosconcontacto[i].estado = 2;
-    this.telefonosconcontacto[i].modificado_por = this.localUser;
+    this.telefonosAllContactos[i].estado = 2;
+    this.telefonosAllContactos[i].modificado_por = this.localUser;
   }
 
   activarContactoTelefono(contactoTelefono: ContactoTelefono, i: any){
@@ -159,8 +157,8 @@ export class TelefonosComponent implements OnInit{
         this._errorService.msjError(e);
       }
     });
-    this.telefonosconcontacto[i].estado = 1;
-    this.telefonosconcontacto[i].modificado_por = this.localUser;
+    this.telefonosAllContactos[i].estado = 1;
+    this.telefonosAllContactos[i].modificado_por = this.localUser;
   }
 
   convertirAMayusculas(event: any, field: string) {
@@ -199,7 +197,7 @@ export class TelefonosComponent implements OnInit{
     const data: any[][] = [];
 
     // Recorre los datos y agrégalos a la matriz 'data'
-    this.telefonosconcontacto.forEach((conT, index) => {
+    this.telefonosAllContactos.forEach((conT, index) => {
         const row = [
             conT.telefono,
             conT.cod_area,
@@ -260,7 +258,7 @@ export class TelefonosComponent implements OnInit{
     doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
 
     // Recorre los datos y agrégalos a la matriz 'data'
-    this.telefonosconcontacto.forEach((conT, index) => {
+    this.telefonosAllContactos.forEach((conT, index) => {
       const row = [
         conT.telefono,
         conT.cod_area,
@@ -339,7 +337,7 @@ export class TelefonosComponent implements OnInit{
           next: (data) => {
               this.insertBitacora(data);
               this.toastr.success('Contacto agregado con éxito');
-              this.telefonosconcontacto.push(data);
+              this.telefonosAllContactos.push(data);
           },
           error: (e: HttpErrorResponse) => {
               this._errorService.msjError(e);
@@ -374,11 +372,11 @@ export class TelefonosComponent implements OnInit{
     this.contactoTEditando.telefono = this.contactoTEditando.telefono.toUpperCase();
     this.contactoTEditando.descripcion = this.contactoTEditando.descripcion.toUpperCase();
 
-    const esMismoTelefono = this.telefonosconcontacto[this.indice].telefono === this.contactoTEditando.telefono;
+    const esMismoTelefono = this.telefonosAllContactos[this.indice].telefono === this.contactoTEditando.telefono;
 
         // Si el usuario no es el mismo, verifica si el nombre de usuario ya existe
         if (!esMismoTelefono) {
-          const TelefonoExistente = this.telefonosconcontacto.some(user => user.telefono === this.contactoTEditando.telefono);
+          const TelefonoExistente = this.telefonosAllContactos.some(user => user.telefono === this.contactoTEditando.telefono);
           if (TelefonoExistente) {
             this.toastr.error('El Telefono ya esta registrado. Por favor, elige otro Telefono.');
             return;
@@ -387,10 +385,10 @@ export class TelefonosComponent implements OnInit{
 
     this._contactoTService.editarContactoTelefono(this.contactoTEditando).subscribe(data => {
       this.toastr.success('contacto editado con éxito');
-      this.telefonosconcontacto[this.indice].telefono = this.contactoTEditando.telefono;
-      this.telefonosconcontacto[this.indice].cod_area = this.contactoTEditando.cod_area;
-      this.telefonosconcontacto[this.indice].descripcion = this.contactoTEditando.descripcion.toUpperCase();
-      this.telefonosconcontacto[this.indice].nombre = data.contacto.toUpperCase();
+      this.telefonosAllContactos[this.indice].telefono = this.contactoTEditando.telefono;
+      this.telefonosAllContactos[this.indice].cod_area = this.contactoTEditando.cod_area;
+      this.telefonosAllContactos[this.indice].descripcion = this.contactoTEditando.descripcion.toUpperCase();
+      this.telefonosAllContactos[this.indice].nombre = data.contacto.toUpperCase();
       console.log(data);
     });
   }
