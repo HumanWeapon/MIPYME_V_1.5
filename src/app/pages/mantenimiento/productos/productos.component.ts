@@ -135,9 +135,9 @@ export class ProductosComponent implements OnInit{
   
       // Elimina caracteres especiales dependiendo del campo
       if (field === 'producto') {
-        inputValue = inputValue.replace(/[^a-zA-Z0-9\s]/g, ''); // Solo permite letras y números y espacios en blanco
+        inputValue = inputValue.replace(/[^a-zA-ZñÑ0-9\s]/g, '');  // Solo permite letras y números y espacios en blanco
       }else if (field === 'descripcion') {
-        inputValue = inputValue.replace(/[^a-zA-Z0-9\s]/g, ''); // Solo permite letras, números y espacios en blanco
+        inputValue = inputValue.replace(/[^a-zA-ZñÑ0-9\s]/g, ''); // Solo permite letras, números y espacios en blanco
       }
       event.target.value = inputValue;
     });

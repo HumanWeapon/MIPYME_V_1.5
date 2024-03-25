@@ -69,15 +69,14 @@ export class RegisterPymeComponent implements OnInit{
   
       // Elimina caracteres especiales dependiendo del campo
       if (field === 'nombre_pyme') {
-        inputValue = inputValue.replace(/[^a-zA-Z0-9]/g, ''); // Solo permite letras y números
-      } else if (field === 'rtn') {
-        inputValue = inputValue.replace(/[^a-zA-Z0-9@.]/g, ''); // Solo permite letras, números, @ y .
-      } else if (field === 'confirmar_rtn') {
-        inputValue = inputValue.replace(/[^a-zA-Z0-9@.]/g, ''); // Solo permite letras, números, @ y .
+        inputValue = inputValue.replace(/[^a-zA-Z0-9ñÑ]/g, ''); // Permite letras, números y ñ/Ñ
+      } else if (field === 'rtn' || field === 'confirmar_rtn') {
+        inputValue = inputValue.replace(/[^\d]/g, ''); // Solo permite números
       }
       event.target.value = inputValue;
     });
-  }
+}
+
   
 
 

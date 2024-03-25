@@ -57,13 +57,14 @@ export class LoginPymeComponent implements OnDestroy {
   
       // Elimina caracteres especiales dependiendo del campo
       if (field === 'nombre_pyme') {
-        inputValue = inputValue.replace(/[^a-zA-Z0-9ñÑ]/ug, ''); // Solo permite letras, números y ñ
-      } else if (field === 'rtn') {
-        inputValue = inputValue.replace(/[^a-zA-Z0-9@.ñÑ]/ug, ''); // Solo permite letras, números, @, . y ñ
+        inputValue = inputValue.replace(/[^a-zA-Z0-9ñÑ]/g, ''); // Permite letras, números y ñ/Ñ
+      } else if (field === 'rtn' || field === 'confirmar_rtn') {
+        inputValue = inputValue.replace(/[^\d]/g, ''); // Solo permite números
       }
       event.target.value = inputValue;
     });
-  }
+}
+
   
   irLogin() {
     this.router.navigate(['/login']);

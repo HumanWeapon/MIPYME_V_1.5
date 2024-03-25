@@ -124,11 +124,11 @@ export class UsuariosComponent {
 
     // Elimina caracteres especiales dependiendo del campo
     if (field === 'usuario') {
-      inputValue = inputValue.replace(/[^a-zA-Z0-9]/g, ''); // Solo permite letras y números
+      inputValue = inputValue.replace(/[^a-zA-ZñÑ0-9\s]/g, '');  // Solo permite letras y números
     } else if (field === 'correo') {
-      inputValue = inputValue.replace(/[^a-zA-Z0-9@.]/g, ''); // Solo permite letras, números, @ y .
+      inputValue = inputValue.replace(/[^a-zA-ZñÑ0-9\s]/g, ''); // Solo permite letras, números, @ y .
     }else if (field === 'nombre_usuario') {
-      inputValue = inputValue.replace(/[^a-zA-Z0-9\s]/g, ''); // Solo permite letras, números, @ y .
+      inputValue = inputValue.replace(/[^a-zA-ZñÑ0-9\s]/g, '');// Solo permite letras, números, @ y .
     }
     event.target.value = inputValue;
   });

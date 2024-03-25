@@ -126,12 +126,13 @@ export class CiudadesComponent implements OnInit{
     setTimeout(() => {
       let inputValue = event.target.value;
   
-      // Elimina caracteres especiales dependiendo del campo
-      if (field === 'ciudad') {
-        inputValue = inputValue.replace(/[^a-zA-Z0-9\s]/g, ''); // Solo permite letras y números
-      }else if (field === 'descripcion') {
-        inputValue = inputValue.replace(/[^a-zA-Z0-9\s]/g, ''); // Solo permite letras, números y espacios en blanco
+       // Elimina caracteres especiales dependiendo del campo
+       if (field === 'ciudad') {
+        inputValue = inputValue.replace(/[^a-zA-ZñÑ0-9\s]/g, ''); // Permite letras, números, espacios en blanco y ñ/Ñ
+      } else if (field === 'descripcion') {
+        inputValue = inputValue.replace(/[^a-zA-ZñÑ0-9\s]/g, ''); // Permite letras, números, espacios en blanco y ñ/Ñ
       }
+      
       event.target.value = inputValue;
     });
   }

@@ -115,7 +115,7 @@ export class ParametrosComponent implements OnInit{
   
       // Elimina caracteres especiales dependiendo del campo
       if (field === 'parametro' || field === 'valor') {
-        inputValue = inputValue.replace(/[^a-zA-Z0-9\s]/g, '');// Solo permite letras y números
+        inputValue = inputValue.replace(/[^a-zA-ZñÑ0-9\s]/g, ''); // Solo permite letras y números
       }
       event.target.value = inputValue;
     });

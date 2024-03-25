@@ -143,14 +143,14 @@ export class ContactoComponent implements OnInit{
   
       // Elimina caracteres especiales dependiendo del campo
       if (field === 'primer_nombre' || field === 'segundo_nombre' || field === 'primer_apellido' || field === 'segundo_apellido') {
-        inputValue = inputValue.replace(/[^a-zA-Z\s]/g, ''); // Solo permite letras y espacios en blanco
+        inputValue = inputValue.replace(/[^a-zA-ZñÑ\s]/g, ''); // Permite letras, espacios en blanco y ñ/Ñ
       } else if (field === 'descripcion') {
         inputValue = inputValue.replace(/[^a-zA-Z0-9\s]/g, ''); // Solo permite letras, números y espacios en blanco
       }
       event.target.value = inputValue;
     });
-  }
-  
+}
+
   
   cancelarInput(){
      this.nuevoContacto.nombre_completo = '';

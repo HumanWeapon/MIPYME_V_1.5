@@ -103,9 +103,9 @@ export class TipoContactoComponent implements OnInit{
   
       // Elimina caracteres especiales dependiendo del campo
       if (field === 'tipo_contacto') {
-        inputValue = inputValue.replace(/[^a-zA-Z0-9\s]/g, ''); // Solo permite letras y números
+        inputValue = inputValue.replace(/[^a-zA-ZñÑ0-9\s]/g, '');  // Solo permite letras y números
       }else if (field === 'descripcion') {
-        inputValue = inputValue.replace(/[^a-zA-Z0-9\s]/g, ''); // Solo permite letras, números y espacios en blanco
+        inputValue = inputValue.replace(/[^a-zA-ZñÑ0-9\s]/g, '');  // Solo permite letras, números y espacios en blanco
       }
       event.target.value = inputValue;
     });

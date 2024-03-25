@@ -148,9 +148,9 @@ toggleFunction(pyme: any, i: number) {
   
       // Elimina caracteres especiales dependiendo del campo
       if (field === 'nombre_pyme') {
-        inputValue = inputValue.replace(/[^a-zA-Z0-9]/g, ''); // Solo permite letras y números
+        inputValue = inputValue.replace(/[^a-zA-ZñÑ0-9\s]/g, ''); // Solo permite letras y números
       } else if (field === 'rtn') {
-        inputValue = inputValue.replace(/[^a-zA-Z0-9@.]/g, ''); // Solo permite letras, números, @ y .
+        inputValue = inputValue.replace(/[^a-zA-ZñÑ0-9\s]/g, '');  // Solo permite letras, números, @ y .
       }
       event.target.value = inputValue;
     });
