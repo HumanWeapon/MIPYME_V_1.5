@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Usuario } from 'src/app/interfaces/seguridad/usuario';
@@ -33,6 +33,9 @@ export class PasswordEmailComponent implements OnInit {
   constructor(private router: Router, private usuarioService: UsuariosService,
     private toastr: ToastrService) { }
 
+      // Referencia al modal
+  @ViewChild('correoEnviadoModal') correoEnviadoModal: any;
+
   ngOnInit() {
     const usuario: Usuario = history.state.usuario;
     if (usuario) {
@@ -57,13 +60,10 @@ export class PasswordEmailComponent implements OnInit {
       this.toastr.error('El correo electrónico ingresado no coincide con el del usuario.');
       return;
     }
-
-    this.toastr.success('El correo electrónico coincide con el del usuario.');
-
     // Llamar al servicio para enviar el correo electrónico
     this.usuarioService.forgotPassword(this.correoElectronico).subscribe(
       response => {
-        this.toastr.success('Correo Enviado');
+        this.correoEnviadoModal.nativeElement.style.display = 'block';
         // Aquí puedes navegar a la siguiente página o mostrar otro mensaje según la respuesta del servicio
       },
       error => {
@@ -92,6 +92,11 @@ export class PasswordEmailComponent implements OnInit {
   navigateMetodo() {
     this.router.navigate(['/metodo']);
   }
+
+  cerrarModal() {
+    this.correoEnviadoModal.nativeElement.style.display = 'none';
+    window.close();
+  }  
 
 }
 

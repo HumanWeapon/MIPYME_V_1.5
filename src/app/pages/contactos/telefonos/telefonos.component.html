@@ -18,22 +18,22 @@
                           <th>Id</th>
                           <th>Contacto</th>
                           <th>Teléfono</th>
-                          <th>Extención</th>
+                          <th>Cod_area</th>
                           <th>Descripción</th>
                           <th>Creado</th>
                           <th>Fecha Creación</th>
                           <th>Modificado</th>
                           <th>Fecha Modificación</th>
                           <th>Estado</th>
-                          <th>Aciones</th>
+                          <th>Acciones</th>
                         </tr>
                       </thead>
                       <tbody>
-                        <tr *ngFor="let conT of telefonosconcontacto; let i = index">
+                        <tr *ngFor="let conT of list_contactos; let i = index">
                           <td>{{ conT.id_telefono }}</td>
                           <td>{{ conT.nombre | uppercase }}</td>
                           <td>{{ conT.telefono | uppercase }}</td>
-                          <td>{{ conT.extencion | uppercase }}</td>
+                          <td>{{ conT.cod_area | uppercase }}</td>
                           <td>{{ conT.descripcion | uppercase }}</td>
                           <td>{{ conT.creado_por | uppercase }}</td>
                           <td>{{ conT.fecha_creacion | date: 'yyyy-MM-dd' }}</td>
@@ -93,7 +93,7 @@
                 </div>
                 <div class="form-group">
                   <label for="nuevoContactoT">Extención</label>
-                  <input type="text" [(ngModel)]="nuevoContactoT.extencion" name="nuevoContactoT.extencion"  class="form-control" id="nuevoContactoT" placeholder="Extención" (input)="convertirAMayusculas($event, 'extencion')" (input)="eliminarCaracteresEspeciales($event, 'extencion')">
+                  <input type="text" [(ngModel)]="nuevoContactoT.cod_area" name="nuevoContactoT.extencion"  class="form-control" id="nuevoContactoT" placeholder="Extención" (input)="convertirAMayusculas($event, 'extencion')" (input)="eliminarCaracteresEspeciales($event, 'extencion')">
               </div>  
                 <div class="form-group">
                     <label for="nuevoContactoT">Descripción</label>
@@ -141,7 +141,7 @@
               </div>
               <div class="form-group">
                   <label for="contactoTEditando">Extención</label>
-                  <input type="text" [(ngModel)]="contactoTEditando.extencion" name="contactoTEditando.extencion" class="form-control" id="editarExtencion" placeholder="Extención" (input)="eliminarCaracteresEspeciales($event, 'extencion')">
+                  <input type="text" [(ngModel)]="contactoTEditando.cod_area" name="contactoTEditando.extencion" class="form-control" id="editarExtencion" placeholder="Extención" (input)="eliminarCaracteresEspeciales($event, 'extencion')">
               </div>
               <div class="form-group">
                   <label for="contactoTEditando">Descripción:</label>

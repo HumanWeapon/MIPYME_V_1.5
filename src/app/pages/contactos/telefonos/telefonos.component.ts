@@ -42,8 +42,9 @@ export class TelefonosComponent implements OnInit{
   contactoTEditando: ContactoTelefono = {
     id_telefono: 0, 
     id_contacto: 0,
+    id_pais: 0,
     telefono: '', 
-    extencion: '',
+    cod_area: '',
     descripcion:'',
     creado_por: '', 
     fecha_creacion: new Date(), 
@@ -55,8 +56,9 @@ export class TelefonosComponent implements OnInit{
   nuevoContactoT: ContactoTelefono = {
     id_telefono: 0, 
     id_contacto: 0,
+    id_pais: 0,
     telefono: '', 
-    extencion: '',
+    cod_area: '',
     descripcion:'',
     creado_por: '', 
     fecha_creacion: new Date(), 
@@ -89,8 +91,7 @@ export class TelefonosComponent implements OnInit{
 
   
   ngOnInit(): void {
-    this.contactosActivos();
-    this.inicializarVariables();
+    this.getUsuario();
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 10,
@@ -98,26 +99,20 @@ export class TelefonosComponent implements OnInit{
       responsive: true
     };
 
-    this._contactoTService.telefonosconcontacto()
-      .subscribe((res: any) => {
-        console.log(res);
-        this.telefonosconcontacto = res;
-        this.dtTrigger.next(null);
-      });
-
-      this.getUsuario();
+    this._contactoTService.getAllContactosTelefono().subscribe({
+      next: (data) =>{
+        this.telefonosconcontacto = data;
+        this.list_contactos = data;
+        this.dtTrigger.next(0);
+      }
+    });
   }
+
+
 
   ngOnDestroy(): void {
     // Do not forget to unsubscribe the event
     this.dtTrigger.unsubscribe();
-  }
-
-  inicializarVariables(){
-    const userLocal = localStorage.getItem('usuario');
-    if (userLocal){
-      this.localUser = userLocal
-    }
   }
 
   onInputChange(event: any, field: string) {
@@ -140,54 +135,29 @@ export class TelefonosComponent implements OnInit{
     }
   }
 
-  contactosActivos(){
-    this._contactoService.getcontactosActivos().subscribe({
-      next: (data) =>{
-        this.list_contactos = data;
+  inactivarContactoTelefono(contactoTelefono: ContactoTelefono, i: any){
+    this._contactoTService.inactivarContactoTelefono(contactoTelefono).subscribe({
+      next: (data) => {
+        this.inactivarBitacora(data);
+        this.toastr.success('El telefono: '+ contactoTelefono.telefono + ' ha sido inactivado')
       },
-      error: (e: HttpErrorResponse) => {
-        this._errorService.msjError(e);
-      }
-    });
+    error: (e: HttpErrorResponse) => {
+    this._errorService.msjError(e);
   }
-
-  inactivarContactoTelefono(contactoTelefono: any, i: any){
-    const inactivarTelefono: ContactoTelefono = {
-      id_telefono: contactoTelefono.id_telefono,
-      id_contacto: contactoTelefono.id_contacto,
-      telefono: contactoTelefono.telefono,
-      extencion: contactoTelefono.extencion,
-      descripcion: contactoTelefono.descripcion,
-      creado_por: contactoTelefono.creado_por,
-      fecha_creacion: contactoTelefono.fecha_creacion,
-      modificado_por: this.localUser,
-      fecha_modificacion: new Date(),
-      estado: 2
-    };
-    this._contactoTService.inactivarContactoTelefono(inactivarTelefono).subscribe(data => {
-      this.inactivarBitacora(data);
-    this.toastr.success('El telefono: '+ contactoTelefono.telefono + ' ha sido inactivado')
   });
     this.telefonosconcontacto[i].estado = 2;
     this.telefonosconcontacto[i].modificado_por = this.localUser;
   }
 
-  activarContactoTelefono(contactoTelefono: any, i: any){
-    const activarTelefono: ContactoTelefono = {
-      id_telefono: contactoTelefono.id_telefono,
-      id_contacto: contactoTelefono.id_contacto,
-      telefono: contactoTelefono.telefono,
-      extencion: contactoTelefono.extencion,
-      descripcion: contactoTelefono.descripcion,
-      creado_por: contactoTelefono.creado_por,
-      fecha_creacion: contactoTelefono.fecha_creacion,
-      modificado_por: this.localUser,
-      fecha_modificacion: new Date(),
-      estado: 1
-    }
-    this._contactoTService.activarContactoTelefono(activarTelefono).subscribe(data => {
-      this.activarBitacora(data);
-      this.toastr.success('La telefono: '+ contactoTelefono.telefono  + ' ha sido activado')
+  activarContactoTelefono(contactoTelefono: ContactoTelefono, i: any){
+    this._contactoTService.activarContactoTelefono(contactoTelefono).subscribe({
+      next: (data) => {
+       this.activarBitacora(data);
+       this.toastr.success('El telefono: '+ contactoTelefono.telefono  + ' ha sido activado')
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
     });
     this.telefonosconcontacto[i].estado = 1;
     this.telefonosconcontacto[i].modificado_por = this.localUser;
@@ -232,7 +202,7 @@ export class TelefonosComponent implements OnInit{
     this.telefonosconcontacto.forEach((conT, index) => {
         const row = [
             conT.telefono,
-            conT.extencion,
+            conT.cod_area,
             conT.descripcion,
             conT.creado_por,
             conT.fecha_creacion,
@@ -274,7 +244,7 @@ export class TelefonosComponent implements OnInit{
   const { jsPDF } = require("jspdf");
   const doc = new jsPDF();
   const data: any[][] = [];
-  const headers = ['Telefono', 'Extensión', 'Descripción', 'Creado por', 'Fecha de Creación', 'Modificado por', 'Fecha de modificación', 'Estado'];
+  const headers = ['Telefono', 'Cod_area', 'Descripción', 'Creado por', 'Fecha de Creación', 'Modificado por', 'Fecha de modificación', 'Estado'];
 
   // Agregar el logo al PDF
   const logoImg = new Image();
@@ -293,7 +263,7 @@ export class TelefonosComponent implements OnInit{
     this.telefonosconcontacto.forEach((conT, index) => {
       const row = [
         conT.telefono,
-        conT.extencion,
+        conT.cod_area,
         conT.descripcion,
         conT.creado_por,
         conT.fecha_creacion,
@@ -349,8 +319,9 @@ export class TelefonosComponent implements OnInit{
     this.nuevoContactoT = {
       id_telefono: 0, 
       id_contacto: 0,
+      id_pais: 0,
       telefono: this.nuevoContactoT.telefono, 
-      extencion: this.nuevoContactoT.extencion,
+      cod_area: this.nuevoContactoT.cod_area,
       descripcion:this.nuevoContactoT.descripcion,
       creado_por: userLocal,
       fecha_creacion: fechaFormateada as unknown as Date, 
@@ -358,11 +329,11 @@ export class TelefonosComponent implements OnInit{
       fecha_modificacion: fechaFormateada as unknown as Date, 
       estado: 1,
     };
-    if (!this.nuevoContactoT.telefono || !this.nuevoContactoT.descripcion || !this.nuevoContactoT.extencion) {
+    if (!this.nuevoContactoT.telefono || !this.nuevoContactoT.descripcion || !this.nuevoContactoT.cod_area) {
       this.toastr.warning('Debes completar los campos vacíos');
       this.nuevoContactoT.telefono = '';
       this.nuevoContactoT.descripcion = '';
-      this.nuevoContactoT.extencion = '';
+      this.nuevoContactoT.cod_area = '';
     }else{
       this._contactoTService.addContactoT(this.nuevoContactoT).subscribe({
           next: (data) => {
@@ -382,8 +353,9 @@ export class TelefonosComponent implements OnInit{
     this.contactoTEditando = {
       id_telefono: contactoT.id_telefono, 
       id_contacto: contactoT.id_contacto,
+      id_pais:contactoT.id_pais,
       telefono: contactoT.telefono, 
-      extencion: contactoT.extencion,
+      cod_area: contactoT.cod_area,
       descripcion: contactoT.descripcion,
       creado_por: contactoT.creado_por, 
       fecha_creacion: contactoT.fecha_creacion, 
@@ -416,7 +388,7 @@ export class TelefonosComponent implements OnInit{
     this._contactoTService.editarContactoTelefono(this.contactoTEditando).subscribe(data => {
       this.toastr.success('contacto editado con éxito');
       this.telefonosconcontacto[this.indice].telefono = this.contactoTEditando.telefono;
-      this.telefonosconcontacto[this.indice].extencion = this.contactoTEditando.extencion;
+      this.telefonosconcontacto[this.indice].cod_area = this.contactoTEditando.cod_area;
       this.telefonosconcontacto[this.indice].descripcion = this.contactoTEditando.descripcion.toUpperCase();
       this.telefonosconcontacto[this.indice].nombre = data.contacto.toUpperCase();
       console.log(data);
@@ -481,7 +453,7 @@ insertBitacora(dataTelefonos: ContactoTelefono){
     accion: 'INSERTAR',
     descripcion: `SE INSERTA EL TELEFONO:
                   Teléfono: ${dataTelefonos.telefono},
-                  Extensión: ${dataTelefonos.extencion},
+                  Extensión: ${dataTelefonos.cod_area},
                   Descripción: ${dataTelefonos.descripcion}`
   }
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
@@ -502,8 +474,8 @@ updateBitacora(dataTelefono: ContactoTelefono) {
   if (telefonoAnterior.telefono !== dataTelefono.telefono) {
     cambios.push(`Teléfono anterior: ${telefonoAnterior.telefono} -> Nuevo Teléfono: ${dataTelefono.telefono}`);
   }
-  if (telefonoAnterior.extencion !== dataTelefono.extencion) {
-    cambios.push(`Extensión anterior: ${telefonoAnterior.extencion} -> Nueva extensión: ${dataTelefono.extencion}`);
+  if (telefonoAnterior.cod_area !== dataTelefono.cod_area) {
+    cambios.push(`Extensión anterior: ${telefonoAnterior.cod_area} -> Nueva extensión: ${dataTelefono.cod_area}`);
   }
   if (telefonoAnterior.descripcion !== dataTelefono.descripcion) {
     cambios.push(`Descripción anterior: ${telefonoAnterior.descripcion} -> Nueva descripción: ${dataTelefono.descripcion}`);
