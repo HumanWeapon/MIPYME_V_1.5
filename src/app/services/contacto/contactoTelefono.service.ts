@@ -60,11 +60,11 @@ export class ContactoTService {
     return this.http.post<ContactoTelefono>(`${this.myAppUrl}${this.myApiUrl}/updateContactoTelefono`, contactoTelefono, { headers: headers })
   }
 
-  telefonosdeContactosPorId(idContacto: number): Observable<any[]> {
+  /*telefonosdeContactosPorId(idContacto: number): Observable<any[]> {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.post<any[]>(`${this.myAppUrl}${this.myApiUrl}/telefonosdeContactosPorId?id_contacto=${idContacto}`, { headers: headers });
-  }
+  }*/
 
   telefonosconcontacto(): Observable<any[]> {
     const token = localStorage.getItem('token')
@@ -77,6 +77,14 @@ export class ContactoTService {
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
    return this.http.get<ContactoTelefono[]>(`${this.myAppUrl}${this.myApiUrl}/telefonosAllContactos`, { headers: headers })
 }
+
+telefonosdeContactosPorId(idContacto: number): Observable<any[]> {
+  const token = localStorage.getItem('token');
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  const body = { id_contacto: idContacto }; // Envía el id_contacto en el cuerpo de la solicitud
+  return this.http.post<any[]>(`${this.myAppUrl}${this.myApiUrl}/telefonosdeContactosPorId`, body, { headers: headers });
+}
+
 
 }
 /*                                          FRANKLIN ALEXANDER MURILLO CRUZ
