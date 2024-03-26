@@ -78,6 +78,12 @@ export class ContactoTService {
    return this.http.get<ContactoTelefono[]>(`${this.myAppUrl}${this.myApiUrl}/telefonosAllContactos`, { headers: headers })
 }
 
+telefonosAllContactosPais(): Observable<ContactoTelefono[]> {
+  const token = localStorage.getItem('token');
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  return this.http.get<ContactoTelefono[]>(`${this.myAppUrl}${this.myApiUrl}/telefonosAllContactosPais`, { headers: headers });
+}
+
 telefonosdeContactosPorId(idContacto: number): Observable<any[]> {
   const token = localStorage.getItem('token');
   const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);

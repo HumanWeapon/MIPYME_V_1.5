@@ -102,7 +102,7 @@ export class TelefonosComponent implements OnInit{
       responsive: true
     };
 
-    this._contactoTService.telefonosAllContactos().subscribe({
+    this._contactoTService.telefonosAllContactosPais().subscribe({
       next: (data) =>{
         this.telefonosAllContactos = data; // Asigna los datos obtenidos del servicio a la variable telefonosAllContactos
         this.dtTrigger.next(0); // Notifica al DataTables que los datos han sido cargados

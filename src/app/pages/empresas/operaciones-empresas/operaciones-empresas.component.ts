@@ -8,12 +8,14 @@ import { ToastrService } from 'ngx-toastr';
 import { Contacto } from 'src/app/interfaces/contacto/contacto';
 import { ContactoDirecciones } from 'src/app/interfaces/contacto/contactoDirecciones';
 import { Empresa } from 'src/app/interfaces/empresa/empresas';
+import { Paises } from 'src/app/interfaces/empresa/paises';
 import { Categoria } from 'src/app/interfaces/mantenimiento/categoria';
 import { BitacoraService } from 'src/app/services/administracion/bitacora.service';
 import { ContactoService } from 'src/app/services/contacto/contacto.service';
 import { ContactoTService } from 'src/app/services/contacto/contactoTelefono.service';
 import { DireccionesService } from 'src/app/services/contacto/direcciones.service';
 import { EmpresaService } from 'src/app/services/empresa/empresa.service';
+import { PaisesService } from 'src/app/services/empresa/paises.service';
 import { ErrorService } from 'src/app/services/error.service';
 import { CategoriaService } from 'src/app/services/mantenimiento/categoria.service';
 import { ProductosService } from 'src/app/services/mantenimiento/producto.service';
@@ -58,7 +60,8 @@ export class OperacionesEmpresasComponent {
 
   //Obtiene los contactos no registrados para la empresa y mostrarlos en el modal de agregar productos.
   listNuevosContactos: any[] = []; //guarda los registros de mi consulta a la api
-  listEditandoContactos: any[] = []; //Guardan la misma información, luego se comparan 
+  listEditandoContactos: any[] = []; //Guardan la misma información, luego se comparan
+  listPaises: Paises [] = [];
   posee_contacto = true;
 
   //Obtiene la información del buscador de mi tabla productos
@@ -154,6 +157,7 @@ export class OperacionesEmpresasComponent {
     this.getProductos();
     this.getAllCategorias();
     this.getTipoContactoActivos();
+    this.getAllPaises();
     //this.getEmpresasProductos();
     const EmpresaId = localStorage.getItem('idEmpresa');
     const EmpresaNombre = localStorage.getItem('nombreEmpresa');
@@ -177,6 +181,7 @@ export class OperacionesEmpresasComponent {
     private _errorService: ErrorService,
     private _router: Router,
     private _empresaService: EmpresaService,
+    private _paisService: PaisesService,
     private _bitacoraService: BitacoraService,
     private _userService: UsuariosService,
     private _productoService: ProductosService,
@@ -191,6 +196,12 @@ export class OperacionesEmpresasComponent {
     private _direccionesService: DireccionesService,
     private _contactoTService: ContactoTService,
   ) {}
+
+  getAllPaises(){
+    this._paisService.getAllPaises().subscribe(data => {
+      this.listPaises = data.filter(paises => paises.estado == 1);
+    });
+  }
 
   //busca los productos de la tabla principal de los productos
   buscarProductos() {
@@ -330,6 +341,7 @@ export class OperacionesEmpresasComponent {
       }
     }
   }
+
   getAllCategorias(){
     this._categoriaProductos.getAllCategorias().subscribe(data => {
       this.listCategorias = data.filter(categoria => categoria.estado == 1);

@@ -477,6 +477,8 @@
                       <thead>
                           <tr>
                               <th scope="col">Id_Contacto</th>
+                              <th scope="col">Pais</th>
+                              <th scope="col">Cod_pais</th>
                               <th scope="col">Cod_area</th>
                               <th scope="col">Teléfono</th>
                           </tr>
@@ -484,6 +486,8 @@
                       <tbody>
                           <tr *ngFor="let producto of telefonosContactos">
                               <td>{{producto.id_contacto}}</td>
+                              <td>{{producto.paises.pais}}</td>
+                              <td>{{producto.paises.cod_pais}}</td>
                               <td>{{producto.cod_area}}</td>
                               <td>{{producto.telefono}}</td>
                           </tr>

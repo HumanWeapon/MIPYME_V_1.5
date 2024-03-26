@@ -19,6 +19,7 @@
                           <th>Contacto</th>
                           <th>Teléfono</th>
                           <th>Cod_area</th>
+                          <th>Pais</th>
                           <th>Descripción</th>
                           <th>Creado</th>
                           <th>Fecha Creación</th>
@@ -34,6 +35,7 @@
                           <td>{{ conT.contacto.nombre_completo | uppercase }}</td>
                           <td>{{ conT.telefono | uppercase }}</td>
                           <td>{{ conT.cod_area | uppercase }}</td>
+                          <td>{{ conT.paises.pais | uppercase }}</td>
                           <td>{{ conT.descripcion | uppercase }}</td>
                           <td>{{ conT.creado_por | uppercase }}</td>
                           <td>{{ conT.fecha_creacion | date: 'yyyy-MM-dd' }}</td>
