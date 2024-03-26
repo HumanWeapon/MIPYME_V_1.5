@@ -59,11 +59,13 @@ export class ContactoTService {
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
     return this.http.post<ContactoTelefono>(`${this.myAppUrl}${this.myApiUrl}/updateContactoTelefono`, contactoTelefono, { headers: headers })
   }
-  telefonosdeContactosPorId(id: number): Observable<any[]> {
+  
+  telefonosdeContactosPorId(idContacto: number): Observable<any[]> {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.get<any[]>(`${this.myAppUrl}${this.myApiUrl}/telefonosdeContactosPorId/${id}`, { headers: headers });
+    return this.http.get<any[]>(`${this.myAppUrl}${this.myApiUrl}/telefonosdeContactosPorId?id_contacto=${idContacto}`, { headers: headers });
   }
+
   telefonosconcontacto(): Observable<any[]> {
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)

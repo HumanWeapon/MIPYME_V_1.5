@@ -188,7 +188,8 @@ export class OperacionesEmpresasComponent {
     private _categoriaProductos: CategoriaService,
     private _contactoService: ContactoService,
     private _tipoContacto: TipoContactoService,
-    private _direccionesService: DireccionesService
+    private _direccionesService: DireccionesService,
+    private _contactoTService: ContactoTService,
   ) {}
 
   //busca los productos de la tabla principal de los productos
@@ -256,6 +257,7 @@ export class OperacionesEmpresasComponent {
       });
     }
   }
+
   buscarTelefonos(id_contacto: any){
     this._telefonosService.telefonosdeContactosPorId(id_contacto).subscribe({
       next: (data) =>{

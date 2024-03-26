@@ -31,7 +31,7 @@
                       <tbody>
                         <tr *ngFor="let conT of telefonosAllContactos let i = index">
                           <td>{{ conT.id_telefono }}</td>
-                          <td>{{ conT.nombre_completo | uppercase }}</td>
+                          <td>{{ conT.contacto.nombre_completo | uppercase }}</td>
                           <td>{{ conT.telefono | uppercase }}</td>
                           <td>{{ conT.cod_area | uppercase }}</td>
                           <td>{{ conT.descripcion | uppercase }}</td>

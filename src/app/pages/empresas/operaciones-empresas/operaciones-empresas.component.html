@@ -463,6 +463,7 @@
       <div class="modal-content">
           <div class="modal-header" style="background-color: #1254a1; color: white;">
               <h4 class="modal-title">Lista de telefonos asignados</h4>
+
               <button type="button" class="close" data-dismiss="modal" style="background-color: #1254a1; color: white;" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
               </button>
@@ -475,14 +476,16 @@
                     <table class="table table-head-fixed text-nowrap">
                       <thead>
                           <tr>
+                              <th scope="col">Id_Contacto</th>
+                              <th scope="col">Cod_area</th>
                               <th scope="col">Teléfono</th>
-                              <th scope="col">Extención</th>
                           </tr>
                       </thead>
                       <tbody>
                           <tr *ngFor="let producto of telefonosContactos">
+                              <td>{{producto.id_contacto}}</td>
+                              <td>{{producto.cod_area}}</td>
                               <td>{{producto.telefono}}</td>
-                              <td>{{producto.extencion}}</td>
                           </tr>
                       </tbody>
                     </table>

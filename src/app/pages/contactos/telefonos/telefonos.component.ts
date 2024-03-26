@@ -90,6 +90,8 @@ export class TelefonosComponent implements OnInit{
   
   ngOnInit(): void {
     this.getUsuario();
+    this.getAllTelefonosContacto();
+    this.getAllContactos();
   }
 
   getAllTelefonosContacto(){
@@ -102,9 +104,20 @@ export class TelefonosComponent implements OnInit{
 
     this._contactoTService.telefonosAllContactos().subscribe({
       next: (data) =>{
-        this.telefonosAllContactos = data;
-        this.dtTrigger.next(0);
+        this.telefonosAllContactos = data; // Asigna los datos obtenidos del servicio a la variable telefonosAllContactos
+        this.dtTrigger.next(0); // Notifica al DataTables que los datos han sido cargados
+        console.log(data);
+      },
+      error: (error) => {
+        console.error('Hubo un error al obtener los contactos:', error);
       }
+    });
+}
+
+
+  getAllContactos(){
+    this._contactoService.getAllContactos().subscribe(data => {
+      this.list_contactos = data
     });
   }
 
