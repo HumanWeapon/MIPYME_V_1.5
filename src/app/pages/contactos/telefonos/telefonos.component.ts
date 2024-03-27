@@ -202,6 +202,20 @@ export class TelefonosComponent implements OnInit{
      this.nuevoContactoT.descripcion = '';
     }
 
+    formatPhoneNumber(phoneNumber: string | null): string {
+      if (phoneNumber === null || phoneNumber === undefined) {
+          return ''; // Retorna una cadena vacía si phoneNumber es null o undefined
+      }
+  
+      // Eliminar caracteres que no sean números
+      const cleanedNumber = phoneNumber.replace(/\D/g, '');
+      
+      // Separar el número cada cuatro dígitos con el signo "-"
+      const formattedNumber = cleanedNumber.match(/.{1,4}/g)?.join('-') || ''; // Usa el operador de opción segura (?.) y el operador de fusión nula (||)
+      
+      return formattedNumber;
+  }
+
 
   /*****************************************************************************************************/
 

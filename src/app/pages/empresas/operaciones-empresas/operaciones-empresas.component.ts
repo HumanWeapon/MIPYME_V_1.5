@@ -8,6 +8,7 @@ import { data, error } from 'jquery';
 import { ToastrService } from 'ngx-toastr';
 import { Contacto } from 'src/app/interfaces/contacto/contacto';
 import { ContactoDirecciones } from 'src/app/interfaces/contacto/contactoDirecciones';
+import { ContactoTelefono } from 'src/app/interfaces/contacto/contactoTelefono';
 import { Empresa } from 'src/app/interfaces/empresa/empresas';
 import { Paises } from 'src/app/interfaces/empresa/paises';
 import { Categoria } from 'src/app/interfaces/mantenimiento/categoria';
@@ -52,6 +53,7 @@ export class OperacionesEmpresasComponent {
   id_tipo_direccion: any;
   id_ciudad: any;
   id_pais: any;
+  localUser: string = '';
   
   productosEmpresa: any[] = [];//Obtiene los productos registrados de la Empresa y los muestra en la tabla.
   productosContactos: any[] = [];//Obtiene los contactos registrados de la Empresa y los muestra en la tabla.
@@ -172,6 +174,35 @@ export class OperacionesEmpresasComponent {
     fecha_modificacion: new Date(), 
     estado: 0
   };
+
+  contactoTEditando: ContactoTelefono = {
+    id_telefono: 0, 
+    id_contacto: 0,
+    id_pais: 0,
+    telefono: '', 
+    cod_area: '',
+    descripcion:'',
+    creado_por: '', 
+    fecha_creacion: new Date(), 
+    modificado_por: '', 
+    fecha_modificacion: new Date(),
+    estado: 0,
+  };
+
+  nuevoContactoT: ContactoTelefono = {
+    id_telefono: 0, 
+    id_contacto: 0,
+    id_pais: 0,
+    telefono: '', 
+    cod_area: '',
+    descripcion:'',
+    creado_por: '', 
+    fecha_creacion: new Date(), 
+    modificado_por: '', 
+    fecha_modificacion: new Date(),
+    estado: 0,
+  };
+
   ngOnInit(){
     this.getProductos();
     this.getAllCategorias();
@@ -534,6 +565,29 @@ export class OperacionesEmpresasComponent {
     contacto.posee_contacto = false; // Desmarcar el contacto
   }
 
+  editarContactoTelefono(){
+
+    this.contactoTEditando.telefono = this.contactoTEditando.telefono.toUpperCase();
+    this.contactoTEditando.cod_area = this.contactoTEditando.cod_area.toUpperCase();
+
+    const esMismoTelefono = this.telefonosContactos[this.indice].telefono === this.contactoTEditando.telefono;
+
+        // Si el usuario no es el mismo, verifica si el nombre de usuario ya existe
+        if (!esMismoTelefono) {
+          const TelefonoExistente = this.telefonosContactos.some(user => user.telefono === this.contactoTEditando.telefono);
+          if (TelefonoExistente) {
+            this._toastr.error('El Telefono ya esta registrado. Por favor, elige otro Telefono.');
+            return;
+          }
+        }
+
+    this._contactoTService.editarContactoTelefono(this.contactoTEditando).subscribe(data => {
+      this._toastr.success('contacto editado con éxito');
+      this.telefonosContactos[this.indice].telefono = this.contactoTEditando.telefono;
+      this.telefonosContactos[this.indice].cod_area = this.contactoTEditando.cod_area;
+      console.log(data);
+    });
+  }
 
 
   EditarProductos() {
@@ -715,6 +769,26 @@ export class OperacionesEmpresasComponent {
     this.getContactosNoRegistradosPorId();
     this.getDireccionesEmpresaporID();
   }
+
+  obtenerIdContactoT(contactoT: ContactoTelefono, i: any){
+    this.contactoTEditando = {
+      id_telefono: contactoT.id_telefono, 
+      id_contacto: contactoT.id_contacto,
+      id_pais:contactoT.id_pais,
+      telefono: contactoT.telefono, 
+      cod_area: contactoT.cod_area,
+      descripcion: contactoT.descripcion,
+      creado_por: contactoT.creado_por, 
+      fecha_creacion: contactoT.fecha_creacion, 
+      modificado_por: contactoT.modificado_por, 
+      fecha_modificacion: contactoT.fecha_modificacion, 
+      estado: contactoT.estado,
+    
+
+    };
+    this.indice = i;
+  }
+
   eliminarCaracteresEspeciales(event: any, field: string) {
     setTimeout(() => {
       let inputValue = event.target.value;
@@ -743,6 +817,43 @@ export class OperacionesEmpresasComponent {
       this.activarContacto(contac, i); // Ejecuta la segunda función
     }
   }
+
+  toggleFunctionT(producto: any, i: number) {
+
+    // Ejecuta una función u otra según el estado
+    if (producto.estado == 1 ) {
+      this.inactivarContactoTelefono(producto, i); // Ejecuta la primera función
+    } else {
+      this.activarContactoTelefono(producto, i); // Ejecuta la segunda función
+    }
+  }
+
+  inactivarContactoTelefono(contactoTelefono: ContactoTelefono, i: any){
+    this._contactoTService.inactivarContactoTelefono(contactoTelefono).subscribe({
+      next: (data) => {
+        this._toastr.success('El telefono: '+ contactoTelefono.telefono + ' ha sido inactivado')
+      },
+    error: (e: HttpErrorResponse) => {
+    this._errorService.msjError(e);
+  }
+  });
+    this.telefonosContactos[i].estado = 2;
+    this.telefonosContactos[i].modificado_por = this.localUser;
+  }
+
+  activarContactoTelefono(contactoTelefono: ContactoTelefono, i: any){
+    this._contactoTService.activarContactoTelefono(contactoTelefono).subscribe({
+      next: (data) => {
+       this._toastr.success('El telefono: '+ contactoTelefono.telefono  + ' ha sido activado')
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
+    this.telefonosContactos[i].estado = 1;
+    this.telefonosContactos[i].modificado_por = this.localUser;
+  }
+
   inactivarContacto(contacto: Contacto, i: any){
     const inactivarC: Contacto = {
       id_contacto: contacto.id_contacto,
@@ -911,4 +1022,19 @@ export class OperacionesEmpresasComponent {
       }
     });
   }
+
+  formatPhoneNumber(phoneNumber: string | null): string {
+    if (phoneNumber === null || phoneNumber === undefined) {
+        return ''; // Retorna una cadena vacía si phoneNumber es null o undefined
+    }
+
+    // Eliminar caracteres que no sean números
+    const cleanedNumber = phoneNumber.replace(/\D/g, '');
+    
+    // Separar el número cada cuatro dígitos con el signo "-"
+    const formattedNumber = cleanedNumber.match(/.{1,4}/g)?.join('-') || ''; // Usa el operador de opción segura (?.) y el operador de fusión nula (||)
+    
+    return formattedNumber;
+}
+
 }

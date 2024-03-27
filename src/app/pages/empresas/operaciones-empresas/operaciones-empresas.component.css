@@ -15,3 +15,14 @@ h4 {
 .custom-color.active {
   background-color: #1254a1;
 }
+
+/* Modifica el ancho del modal */
+.modal-dialog {
+  max-width: 45%; /* Establece el ancho máximo del modal */
+}
+
+/* Personaliza el cuerpo del modal */
+.custom-modal-body {
+  max-height: 300px; /* Establece la altura máxima del cuerpo del modal */
+  overflow-y: auto; /* Agrega scroll vertical si el contenido excede la altura máxima */
+}
