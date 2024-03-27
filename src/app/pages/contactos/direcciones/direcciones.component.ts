@@ -191,7 +191,7 @@ export class DireccionesComponent {
         this.nuevaDireccion.direccion = '';
         this.nuevaDireccion.descripcion = '';
       }else{
-      this._objService.addDireccion(this.nuevaDireccion).subscribe({
+      this._objService.postDireccion(this.nuevaDireccion).subscribe({
         next: (data) => {
           this.insertBitacora(data);
           this.toastr.success('Direccion agregado con éxito')
@@ -239,7 +239,7 @@ export class DireccionesComponent {
       }
     }
 
-    this._objService.editarDireccion(this.direccionEditando).subscribe(data => {
+    this._objService.putDireccion(this.direccionEditando).subscribe(data => {
       this.toastr.success('Direccion editado con éxito');
       this.listDirecciones[this.indice].direccion = this.direccionEditando.direccion;
       this.Alltipocontacto[this.indice].descripcion = this.direccionEditando.descripcion;

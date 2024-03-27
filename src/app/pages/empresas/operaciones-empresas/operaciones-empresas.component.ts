@@ -1,6 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { da } from 'date-fns/locale';
 import { data, error } from 'jquery';
@@ -18,8 +19,10 @@ import { EmpresaService } from 'src/app/services/empresa/empresa.service';
 import { PaisesService } from 'src/app/services/empresa/paises.service';
 import { ErrorService } from 'src/app/services/error.service';
 import { CategoriaService } from 'src/app/services/mantenimiento/categoria.service';
+import { CiudadesService } from 'src/app/services/mantenimiento/ciudades.service';
 import { ProductosService } from 'src/app/services/mantenimiento/producto.service';
 import { TipoContactoService } from 'src/app/services/mantenimiento/tipoContacto.service';
+import { TipoDireccionService } from 'src/app/services/mantenimiento/tipoDireccion.service';
 import { EmpresasContactosService } from 'src/app/services/operaciones/empresas-contactos.service';
 import { EmpresasDireccionesService } from 'src/app/services/operaciones/empresas-direcciones.service';
 import { EmpresasProdcutosService } from 'src/app/services/operaciones/empresas-prodcutos.service';
@@ -31,6 +34,7 @@ import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
   styleUrls: ['./operaciones-empresas.component.css']
 })
 export class OperacionesEmpresasComponent {
+  @ViewChild('miFormulario') miFormulario!: NgForm;
   // Variables obtenidas del Local Store, Información de la Empresa.
   idEmpresa: any;
   nombreEmpresa: string = '';
@@ -40,6 +44,8 @@ export class OperacionesEmpresasComponent {
   listCategorias: Categoria[] = [];
   listContacto: any[] = [];
   listContactosActivos: any[]=[];
+  listCiudadesActivas: any[]=[];
+  listTipoDireccionesActivas: any[]=[];
   indice: any;//indice de contactos
 
   //Variablñes utilizadas para enviar una dirección nueva a la DBA
@@ -114,7 +120,20 @@ export class OperacionesEmpresasComponent {
     fecha_modificacion: new Date(),
     estado: 1
   }
-
+  nuevaDireccion: ContactoDirecciones = {
+    id_direccion: 0, 
+    id_tipo_direccion: 0,
+    id_ciudad: 0,
+    id_pais: 0,
+    id_empresa: 0,
+    direccion:'', 
+    descripcion: '', 
+    creado_por: '', 
+    fecha_creacion: new Date(), 
+    modificado_por: '', 
+    fecha_modificacion: new Date(), 
+    estado: 0
+  };
   nuevoContacto: Contacto = {
     id_contacto: 0,
     id_empresa:0,
@@ -174,6 +193,8 @@ export class OperacionesEmpresasComponent {
     this.getEmpresasContactosPorId();
     this.getContactosNoRegistradosPorId();
     this.getDireccionesEmpresaporID();
+    this.getCiudadesActivas();
+    this.getTipoDireccionesActivas();
   }
 
   constructor(
@@ -195,14 +216,41 @@ export class OperacionesEmpresasComponent {
     private _tipoContacto: TipoContactoService,
     private _direccionesService: DireccionesService,
     private _contactoTService: ContactoTService,
+    private _tipoDireccionService: TipoDireccionService
   ) {}
 
   getAllPaises(){
-    this._paisService.getAllPaises().subscribe(data => {
-      this.listPaises = data.filter(paises => paises.estado == 1);
+    this._paisService.getAllPaises().subscribe({
+      next: (data) =>{
+        this.listPaises = data.filter(paises => paises.estado == 1);
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
     });
   }
-
+  getCiudadesActivas(){
+    this._direccionesService.getCiudades().subscribe({
+      next: (data) =>{
+        this.listCiudadesActivas = data;
+        console.log(data);
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
+  }
+  getTipoDireccionesActivas(){
+    this._tipoDireccionService.getTipoDirecciones().subscribe({
+      next: (data) =>{
+        this.listTipoDireccionesActivas = data;
+        console.log(data);
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
+  }
   //busca los productos de la tabla principal de los productos
   buscarProductos() {
     if (this.filtro_prod.trim() === '') {
@@ -527,10 +575,10 @@ export class OperacionesEmpresasComponent {
   obtenerIdDireccion(direccion: any, i: any){
     this.direccionEditando = {
     id_direccion: direccion.id_direccion,
-    id_tipo_direccion: this.id_tipo_direccion, 
-    id_ciudad: this.id_ciudad,
-    id_pais: this.id_pais,
-    id_empresa: this.idEmpresa,
+    id_tipo_direccion: direccion.id_tipo_direccion, 
+    id_ciudad: direccion.id_ciudad,
+    id_pais: direccion.id_pais,
+    id_empresa: direccion.idEmpresa,
     direccion: direccion.direccion, 
     descripcion: direccion.descripcion,  
     creado_por: direccion.creado_por, 
@@ -665,6 +713,7 @@ export class OperacionesEmpresasComponent {
     this.getProductosNoRegistradosPorId();
     this.getEmpresasContactosPorId();
     this.getContactosNoRegistradosPorId();
+    this.getDireccionesEmpresaporID();
   }
   eliminarCaracteresEspeciales(event: any, field: string) {
     setTimeout(() => {
@@ -785,5 +834,81 @@ export class OperacionesEmpresasComponent {
     //this.activarBitacora(data);
   });
     this.direccionesEmpresa[i].estado = 1;
+  }
+  paisSeleccionado(event: Event): void {
+    const idPais = (event.target as HTMLSelectElement).value;
+    this.nuevaDireccion.id_pais = Number(idPais);
+    this.direccionEditando.id_pais = Number(idPais);
+    console.log("ID_PAIS: "+idPais);
+  }
+  ciudadSeleccionada(event: Event): void {
+    const idCiudad = (event.target as HTMLSelectElement).value;
+    this.nuevaDireccion.id_ciudad = Number(idCiudad);
+    this.direccionEditando.id_ciudad = Number(idCiudad);
+    console.log("ID_CIUDAD: "+idCiudad);
+  }
+  tipoDireccionSeleccionada(event: Event): void {
+    const idTipoDireccion = (event.target as HTMLSelectElement).value;
+    this.nuevaDireccion.id_tipo_direccion = Number(idTipoDireccion);
+    this.direccionEditando.id_tipo_direccion = Number(idTipoDireccion);
+    console.log("ID_TIPO_DIRECCION: "+idTipoDireccion);
+  }
+  agregarNuevaDireccion() {
+    const usuarioLocal = localStorage.getItem('usuario')
+    if(usuarioLocal){
+      const fechaActual = new Date();
+      const fechaFormateada = this._datePipe.transform(fechaActual, 'yyyy-MM-dd');
+      this.nuevaDireccion = {
+        id_direccion: 0, 
+        id_tipo_direccion: this.nuevaDireccion.id_tipo_direccion,
+        id_ciudad: this.nuevaDireccion.id_ciudad,
+        id_pais: this.nuevaDireccion.id_pais,
+        id_empresa: this.idEmpresa,
+        direccion: this.nuevaDireccion.direccion.toUpperCase(), 
+        descripcion:this.nuevaDireccion.descripcion.toUpperCase(), 
+        estado: 1,
+        creado_por: usuarioLocal, 
+        fecha_creacion: fechaFormateada as unknown as Date, 
+        modificado_por: usuarioLocal, 
+        fecha_modificacion: fechaFormateada as unknown as Date,
+      };
+      if (!this.nuevaDireccion.direccion || !this.nuevaDireccion.descripcion) {
+        this._toastr.warning('Debes completar los campos vacíos');
+        this.resetFormulario();
+      }else{
+        if(this.nuevaDireccion.id_ciudad == 0 || this.nuevaDireccion.id_pais == 0 || this.nuevaDireccion.id_tipo_direccion == 0){
+          this._toastr.warning('Debes completar los campos vacíos');
+          this.resetFormulario();
+        }
+        else{
+          this._direccionesService.postDireccion(this.nuevaDireccion).subscribe({
+            next: (data) => {
+              this._toastr.success('Direccion agregado con éxito')
+              this.actualizarTabla();
+              this.resetFormulario();
+            },
+            error: (e: HttpErrorResponse) => {
+              this._errorService.msjError(e);
+            }
+          });
+        }
+      }
+    }
+  }
+  resetFormulario() {
+    this.miFormulario.resetForm();
+  }
+  editarDireccion() {
+    this.direccionEditando.id_empresa = this.idEmpresa;
+    this._direccionesService.putDireccion(this.direccionEditando).subscribe({
+      next: (data) => {
+        this._toastr.success('Direccion editada con éxito')
+        this.actualizarTabla();
+        this.resetFormulario();
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
   }
 }

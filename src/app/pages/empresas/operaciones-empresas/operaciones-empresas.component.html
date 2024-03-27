@@ -477,8 +477,6 @@
                       <thead>
                           <tr>
                               <th scope="col">Id_Contacto</th>
-                              <th scope="col">Pais</th>
-                              <th scope="col">Cod_pais</th>
                               <th scope="col">Cod_area</th>
                               <th scope="col">Teléfono</th>
                           </tr>
@@ -486,8 +484,6 @@
                       <tbody>
                           <tr *ngFor="let producto of telefonosContactos">
                               <td>{{producto.id_contacto}}</td>
-                              <td>{{producto.paises.pais}}</td>
-                              <td>{{producto.paises.cod_pais}}</td>
                               <td>{{producto.cod_area}}</td>
                               <td>{{producto.telefono}}</td>
                           </tr>
@@ -517,17 +513,47 @@
             </button>
         </div>
         <div class="modal-body">
-            <form>
-            </form>
+          <form #miFormulario="ngForm" (submit)="agregarNuevaDireccion()">  
+            <div class="form-group">
+              <label for="inputStatus">País</label>
+              <select id="inputStatus" class="form-control custom-select" (change)="paisSeleccionado($event)">
+                <option selected disabled>Seleccionar</option>
+                <option *ngFor="let obj of listPaises" [value]="obj.id_pais">{{obj.pais}}</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="inputStatus">Ciudad</label>
+              <select id="inputStatus" class="form-control custom-select" (change)="ciudadSeleccionada($event)">
+                <option selected disabled>Seleccionar</option>
+                <option *ngFor="let obj of listCiudadesActivas" [value]="obj.id_ciudad">{{ obj.ciudad }}</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="inputStatus">Tipo de dirección</label>
+              <select id="inputStatus" class="form-control custom-select" (change)="tipoDireccionSeleccionada($event)">
+                <option selected disabled>Seleccionar</option>
+                <option *ngFor="let obj of listTipoDireccionesActivas" [value]="obj.id_tipo_direccion" >{{obj.tipo_direccion}}</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="nuevaDireccion.direccion">Dirección</label>
+              <input type="text" [(ngModel)]="nuevaDireccion.direccion" name="nuevaDireccion.direccion" class="form-control" placeholder="Dirección" (input)="convertirAMayusculas($event, 'Dirección')">
+            </div>
+            <div class="form-group">
+                <label for="nuevaDireccion.descripcion">Descripción</label>
+                <textarea rows="4" type="text" [(ngModel)]="nuevaDireccion.descripcion" name="nuevaDireccion.descripcion" class="form-control" placeholder="Descripción" (input)="convertirAMayusculas($event, 'descripcion')"></textarea>
+            </div>   
+          </form>
         </div>
         <div class="modal-footer justify-content-between">
             <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-success" data-dismiss="modal">Guardar</button>
+            <button type="submit" (click)="agregarNuevaDireccion()" class="btn btn-success" data-dismiss="modal">Guardar</button>
         </div>
     </div>
   </div>
   </div>
   <!-- /Agregar Dirección Form -->
+
   <!-- Actualizar Dirección Form -->
 <div class="modal fade" id="abrirModalEditarDireccion">
   <div class="modal-dialog">
@@ -539,9 +565,38 @@
               </button>
           </div>
           <div class="modal-body">
-              <form>
-
-              </form>
+            <form #editarFormulario="ngForm">
+              <div class="form-group">
+                <label for="editarPais">País</label>
+                <select id="editarPais" class="form-control custom-select" [(ngModel)]="direccionEditando.id_pais" name="id_pais">
+                  <option *ngFor="let obj of listPaises" [value]="obj.id_pais">{{obj.pais}}</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="editarCiudad">Ciudad</label>
+                <select id="editarCiudad" class="form-control custom-select" [(ngModel)]="direccionEditando.id_ciudad" name="id_ciudad">
+                  <option *ngFor="let obj of listCiudadesActivas" [value]="obj.id_ciudad">{{obj.ciudad}}</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="editarTipoDireccion">Tipo de dirección</label>
+                <select id="editarTipoDireccion" class="form-control custom-select" [(ngModel)]="direccionEditando.id_tipo_direccion" name="id_tipo_direccion">
+                  <option *ngFor="let obj of listTipoDireccionesActivas" [value]="obj.id_tipo_direccion">{{obj.tipo_direccion}}</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="editarDireccion">Dirección</label>
+                <input type="text" class="form-control" id="editarDireccion" [(ngModel)]="direccionEditando.direccion" name="direccion">
+              </div>
+              <div class="form-group">
+                <label for="editarDescripcion">Descripción</label>
+                <textarea rows="4" class="form-control" id="editarDescripcion" [(ngModel)]="direccionEditando.descripcion" name="descripcion"></textarea>
+              </div>
+              <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                <button type="button" (click)="editarDireccion()" class="btn btn-success" data-dismiss="modal">Guardar</button>
+            </div>
+            </form>
           </div>
 
       </div>

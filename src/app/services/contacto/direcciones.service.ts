@@ -19,10 +19,10 @@ export class DireccionesService {
 
    }
 
-   addDireccion(direccion: ContactoDirecciones): Observable<any> {
+   postDireccion(direccion: ContactoDirecciones): Observable<any> {
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.post<ContactoDirecciones>(`${this.myAppUrl}${this.myApiUrl}/postDirecContactos`, direccion,{ headers: headers })
+    return this.http.post<ContactoDirecciones>(`${this.myAppUrl}${this.myApiUrl}/postDireccion`, direccion,{ headers: headers })
   }
 
    getDireccion(id_contacto: any): Observable<ContactoDirecciones[]> {
@@ -43,10 +43,11 @@ export class DireccionesService {
     return this.http.post<any>(`${this.myAppUrl}${this.myApiUrl}/activateDireccion`, direccion, { headers: headers })
    }
 
-   editarDireccion(direccion: ContactoDirecciones): Observable<any> {
-    const token = localStorage.getItem('token')
-    const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.post<ContactoDirecciones>(`${this.myAppUrl}${this.myApiUrl}/updateDirecContactos`, direccion, { headers: headers })
+  putDireccion(direccion: ContactoDirecciones): Observable<any> {
+    console.log(direccion)
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.put<ContactoDirecciones>(`${this.myAppUrl}${this.myApiUrl}/updateDireccion/${direccion.id_direccion}`, direccion, { headers: headers });
   }
 
   getAllDireccionByContacto(id_contacto: ContactoDirecciones): Observable<any> {

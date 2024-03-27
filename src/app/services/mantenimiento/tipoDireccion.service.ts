@@ -64,6 +64,12 @@ export class TipoDireccionService {
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
     return this.http.post<TipoDireccion>(`${this.myAppUrl}${this.myApiUrl}/updateTipoDireccion`, tipoDireccion, { headers: headers })
   }
+    //Obtiene todas las ciudades activas
+    getTipoDirecciones(): Observable<any[]> {
+      const token = localStorage.getItem('token')
+      const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
+      return this.http.get<any[]>(`${this.myAppUrl}${this.myApiUrl}/getTipoDirecciones`, { headers: headers })
+     }
 }
 
 
