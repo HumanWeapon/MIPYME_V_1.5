@@ -18,6 +18,9 @@ import { es } from 'date-fns/locale'; // Importa el idioma español
 })
 export class BitacoraComponent implements OnInit{
 
+  fechaDesde: string = '';
+  fechaHasta: string = '';
+
   getDate(): string {
     // Obtener la fecha actual
     const currentDate = new Date();
@@ -76,12 +79,28 @@ export class BitacoraComponent implements OnInit{
   );
 }
 
+filtrarRegistros() {
+  if (this.fechaDesde && this.fechaHasta) {
+    this._bitacoraService.getBitacoraByDateRange(this.fechaDesde, this.fechaHasta)
+      .subscribe((res: any) => {
+        this.bitacora = res;
+        this.dtTrigger.next(0);
+      }, (error) => {
+        this._toastr.error('Error al obtener registros filtrados');
+        console.error(error);
+      });
+  } else {
+    this._toastr.warning('Por favor seleccione un rango de fechas válido');
+  }
+}
+
+
 
 
 
 generateExcel() {
   // Definir los encabezados de las columnas
-  const headers = ['Fecha', 'Usuario', 'Nombre', 'Objeto', 'Acción', 'Descripción'];
+  const headers = ['ID','Fecha', 'Usuario', 'Tabla', 'Campo Original', 'Nuevo Campo', 'Operación'];
 
   // Crear matriz para almacenar los datos
   const data: any[][] = [];
@@ -89,12 +108,14 @@ generateExcel() {
   // Recorrer los registros de la bitácora y agregarlos a la matriz 'data'
   this.bitacora.forEach((registro) => {
     const row = [
+      registro.Id_bitacora,
       registro.fecha,
       registro.usuario,
-      registro.nombre,
       registro.objeto,
+      registro.campo_original,
+      registro.nuevo_campo,
       registro.accion,
-      registro.descripcion,
+      
     ];
     data.push(row);
   });
@@ -132,7 +153,7 @@ generatePDF() {
   const { jsPDF } = require("jspdf");
   const doc = new jsPDF();
   const data: any[][] = [];
-  const headers = ['Fecha', 'Usuario', 'Nombre', 'Objeto', 'Acción', 'Descripción'];
+  const headers = ['ID','Fecha', 'Usuario', 'Tabla', 'Campo Original', 'Nuevo Campo', 'Operación'];
 
   // Agregar el logo al PDF
   const logoImg = new Image();
@@ -151,6 +172,8 @@ generatePDF() {
       "Utilidad Mi Pyme",
       "Reporte de Bitácora",
       "Fecha: " + this.getCurrentDate()
+      
+      
     ];
 
     // Agregar los comentarios al PDF centrados horizontalmente
@@ -165,12 +188,13 @@ generatePDF() {
     // Recorrer los registros y agregarlos a la tabla de datos
     this.bitacora.forEach((bitacora, index) => {
       const row = [
+        bitacora.Id_bitacora,
         bitacora.fecha,
         bitacora.usuario,
-        bitacora.nombre_usuario,
         bitacora.objeto,
+        bitacora.campo_original,
+        bitacora.nuevo_campo,
         bitacora.accion,
-        bitacora.descripcion,
       ];
       data.push(row);
     });

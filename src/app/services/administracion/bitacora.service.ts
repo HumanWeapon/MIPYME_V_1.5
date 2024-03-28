@@ -8,6 +8,7 @@ import { Bitacora } from 'src/app/interfaces/administracion/bitacora';
   providedIn: 'root'
 })
 export class BitacoraService {
+  errorService: any;
   private myAppUrl: string;
   private myApiUrl: string;
 
@@ -45,4 +46,17 @@ export class BitacoraService {
         })
       );
   }
+
+  getBitacoraByDateRange(fechaDesde: string, fechaHasta: string): Observable<any> {
+    // Realiza la lógica para obtener los registros en el rango de fechas
+    // Asegúrate de devolver un observable que contenga los datos
+    return this.http.get<any>(`URL_DEL_ENDPOINT`, { params: { fechaDesde, fechaHasta } })
+      .pipe(
+        catchError(error => {
+          this.errorService.handleError(error);
+          throw error;
+        })
+      );
+  }
+
 }

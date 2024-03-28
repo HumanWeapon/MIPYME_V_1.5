@@ -1,60 +1,65 @@
-    <!-- Main content -->
-    <section class="content">
-        <div class="container-fluid">
-          <div class="row">
-            <div class="col-12">
+<!-- Main content -->
+<section class="content">
+  <div class="container-fluid">
+      <div class="row">
+          <div class="col-12">
               <div class="card">
-                <div class="card-header">
-                    <button type="button" class="btn btn-danger" data-toggle="modal" (click)="deleteBitacora()">
-                        <i class="fas fa-solid fa-trash mr-2"></i>Limpiar todos los registros</button>
-                        
-                        <button type="button" class="btn btn-primary custom-print-button btn-danger" title="Generar el Reporte" data-toggle="modal" data-target="#PDFBitacora">
-                          <i class="fas fa-file-pdf mr-2"></i>PDF</button>
-
-                          <button type="button" class="btn btn-primary custom-print-button btn-success" title="Generar el Reporte en Excel" data-toggle="modal" data-target="#ExcelBitacora">
-                            <i class="fas fa-file-excel mr-2"></i>Excel
-                        </button>
-                    </div>
-                  
-                </div>
-                <!-- /.card-header -->
-                <div class="card-body">
-                    <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover">
-                        <thead>
-                          <tr>
-                            <th>ID</th>
-                            <th>FECHA</th>
-                            <th>USUARIO</th>
-                            <th>NOMBRE</th>
-                            <th>OBJETO</th>
-                            <th>ACCIÓN</th>
-                            <th>DESCRIPCIÓN</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr *ngFor="let item of bitacora; let i = index">
-                            <td>{{ item.id_bitacora }}</td>
-                            <td>{{ item.fecha }}</td>
-                            <td>{{ item.usuario.usuario }}</td>
-                            <td>{{ item.usuario.nombre_usuario}}</td>
-                            <td>{{ item.objeto.objeto}}</td>
-                            <td>{{ item.accion }}</td>
-                            <td>{{ item.descripcion}}</td>
-                          </tr>
-                        </tbody>
-                    </table>
-
-                </div>
-                <!-- /.card-body -->
-            </div>
-            <!-- /.card -->
-        </div>
-        <!-- /.col -->
-        </div>
-        <!-- /.row -->
-    <!-- /.container-fluid -->
+                  <div class="card-header d-flex justify-content-between align-items-center">
+                      <!-- Campos de fecha desde-hasta -->
+                      <div class="form-group d-flex">
+                          <label class="mr-2">Desde:</label>
+                          <input type="date" class="form-control mr-2" [(ngModel)]="fechaDesde" placeholder="Desde">
+                          <label class="mr-2">Hasta:</label>
+                          <input type="date" class="form-control mr-2" [(ngModel)]="fechaHasta" placeholder="Hasta">
+                          <button type="button" class="btn btn-primary" (click)="filtrarRegistros()">Filtrar</button>
+                      </div>
+                      <!-- Botones de borrar registro y generar reporte -->
+                      <div class="ml-auto">
+                          <button type="button" class="btn btn-danger mr-2" data-toggle="modal" (click)="deleteBitacora()">
+                              <i class="fas fa-solid fa-trash mr-2"></i>Limpiar todos los registros
+                          </button>
+                          <button type="button" class="btn btn-primary custom-print-button btn-primary" title="Generar el Reporte" data-toggle="modal" data-target="#PDFBitacora">
+                              <i class="fas fa-print"></i> Generar Reporte
+                          </button>
+                      </div>
+                  </div>
+                  <!-- /.card-header -->
+                  <div class="card-body">
+                      <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover">
+                          <thead>
+                              <tr>
+                                  <th>FECHA</th>
+                                  <th>USUARIO</th>
+                                  <th>TABLA</th>
+                                  <th>CAMPO ORIGINAL</th>
+                                  <th>NUEVO CAMPO</th>
+                                  <th>OPERACIÓN</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              <tr *ngFor="let item of bitacora; let i = index">
+                                  <td>{{ item.fecha }}</td>
+                                  <td>{{ item.usuario.usuario }}</td>
+                                  <td>{{ item.objeto.objeto}}</td>
+                                  <td>{{ item.campo_original }}</td>
+                                  <td>{{ item.nuevo_campo }}</td>
+                                  <td>{{ item.accion }}</td>
+                              </tr>
+                          </tbody>
+                      </table>
+                  </div>
+                  <!-- /.card-body -->
+              </div>
+              <!-- /.card -->
+          </div>
+          <!-- /.col -->
+      </div>
+      <!-- /.row -->
+  </div>
+  <!-- /.container-fluid -->
 </section>
-    <!-- /.content -->
+<!-- /.content -->
+
 
 
     <!-- Form Ver PDF-->
@@ -69,6 +74,7 @@
             <h4>Reporte de Bítacora</h4> 
             <!-- Puedes agregar más detalles del reporte aquí si es necesario -->
             <p>Fecha: {{ getDate() }}</p>
+            
         </div>
         <div style="flex: 0;">
             <img src="\assets\dist\img\pym.png" alt="Logo de Mi Pyme" style="width: 200px; height: auto;">
@@ -78,6 +84,8 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary customn-print-button btn-danger" (click)="generatePDF()">
           <i class="fas fa-file-pdf"></i>  Generar PDF</button>
+          <button type="button" class="btn btn-secondary customn-print-button btn-success" (click)="generateExcel()">
+            <i class="fas fa-file-excel"></i>  Generar Excel</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
       </div>
 
@@ -87,24 +95,25 @@
         <table class="table table-striped">
           <thead class="thead-dark">
             <tr>
+             
               <th>FECHA</th>
               <th>USUARIO</th>
-              <th>NOMBRE</th>
-              <th>OBJETO</th>
-              <th>ACCIÓN</th>
-              <th>DESCRIPCIÓN</th>
+              <th>TABLA</th>
+              <th>CAMPO ORIGINAL</th>
+              <th>NUEVO CAMPO</th>
+              <th>OPERACIÓN</th>
              
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let iten of bitacora; let i = index">
-              <td>{{ iten.fecha }}</td>
-              <td>{{ iten.usuario.usuario }}</td>
-              <td>{{ iten.usuario.nombre_usuario }}</td>
-              <td>{{ iten.objeto.objeto}}</td>
-              <td>{{ iten.accion }}</td>
-              <td>{{ iten.descripcion}}</td>
-           
+            <tr *ngFor="let item of bitacora; let i = index">
+              
+              <td>{{ item.fecha }}</td>
+              <td>{{ item.usuario.usuario }}</td>
+              <td>{{ item.objeto.objeto}}</td>
+              <td>{{ item.campo_original }}</td>
+              <td>{{ item.nuevo_campo }}</td>
+              <td>{{ item.accion }}</td>
             </tr>
           </tbody>
         </table>
@@ -148,34 +157,39 @@
       <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
     </div>
 
-       <!-- Contenido del modal -->
-       <div class="modal-body">
-        <!-- Aquí puedes colocar tu DataTable o cualquier otro contenido que desees mostrar -->
-        <table class="table table-striped">
-          <thead class="thead-dark">
-            <tr>
-              <th>FECHA</th>
-              <th>USUARIO</th>
-              <th>NOMBRE</th>
-              <th>OBJETO</th>
-              <th>ACCIÓN</th>
-              <th>DESCRIPCIÓN</th>
-             
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let iten of bitacora; let i = index">
-              <td>{{ iten.fecha }}</td>
-              <td>{{ iten.usuario.usuario }}</td>
-              <td>{{ iten.usuario.nombre_usuario }}</td>
-              <td>{{ iten.objeto.objeto}}</td>
-              <td>{{ iten.accion }}</td>
-              <td>{{ iten.descripcion}}</td>
+        <!-- Contenido del modal -->
+        <div class="modal-body">
+          <!-- Aquí puedes colocar tu DataTable o cualquier otro contenido que desees mostrar -->
+          <table class="table table-striped">
+            <thead class="thead-dark">
+              <tr>
+               
+                <th>FECHA</th>
+                <th>USUARIO</th>
+                <th>TABLA</th>
+                <th>CAMPO ORIGINAL</th>
+                <th>NUEVO CAMPO</th>
+                <th>OPERACIÓN</th>
+               
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of bitacora; let i = index">
               
-          </tbody>
-        </table>
-
-      <!-- Pie del modal -->
+                <td>{{ item.fecha }}</td>
+                <td>{{ item.usuario.usuario }}</td>
+                <td>{{ item.objeto.objeto}}</td>
+                <td>{{ item.campo_original }}</td>
+                <td>{{ item.nuevo_campo }}</td>
+                <td>{{ item.accion }}</td>
+              </tr>
+            </tbody>
+          </table>
+  
+        <!-- Pie del modal -->
+      
+      </div>
     </div>
   </div>
-</div>
+  </div>
+  

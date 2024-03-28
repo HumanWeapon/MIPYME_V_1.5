@@ -119,21 +119,21 @@ export class UsuariosComponent {
   }
 
   eliminarCaracteresEspeciales(event: any, field: string) {
-  setTimeout(() => {
-    let inputValue = event.target.value;
-
-    // Elimina caracteres especiales dependiendo del campo
-    if (field === 'usuario') {
-      inputValue = inputValue.replace(/[^a-zA-ZñÑ0-9\s]/g, '');  // Solo permite letras y números
-    } else if (field === 'correo') {
-      inputValue = inputValue.replace(/[^a-zA-ZñÑ0-9\s]/g, ''); // Solo permite letras, números, @ y .
-    }else if (field === 'nombre_usuario') {
-      inputValue = inputValue.replace(/[^a-zA-ZñÑ0-9\s]/g, '');// Solo permite letras, números, @ y .
-    }
-    event.target.value = inputValue;
-  });
-}
-
+    setTimeout(() => {
+      let inputValue = event.target.value;
+  
+      // Elimina caracteres especiales dependiendo del campo
+      if (field === 'usuario') {
+        inputValue = inputValue.replace(/[^a-zA-ZñÑ0-9\s]/g, '');  // Solo permite letras y números
+      } else if (field === 'correo') {
+        inputValue = inputValue.replace(/[^a-zA-ZñÑ0-9@.\s]/g, ''); // Permite letras, números, @ y .
+      } else if (field === 'nombre_usuario') {
+        inputValue = inputValue.replace(/[^a-zA-ZñÑ0-9@.\s]/g, ''); // Permite letras, números, @ y .
+      }
+      event.target.value = inputValue;
+    });
+  }
+  
   eliminarEspaciosBlanco(event: any, field: string) {
 
     setTimeout(() => {
@@ -482,8 +482,9 @@ obtenerUsuario(usuario: Usuario, i: any) {
   
   
   
-
+  /******************************************************************************************************************************************/
   /*************************************************************** Métodos de Bitácora ***************************************************************************/
+  /******************************************************************************************************************************************/
 
   getUser: Usuario = {
     id_usuario: 0,
@@ -538,20 +539,21 @@ obtenerUsuario(usuario: Usuario, i: any) {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 1,
-    accion: 'INSERTAR',
-    descripcion: `SE AGREGÓ UN NUEVO USUARIO:
+    campo_original: 'Sin Registro',
+    nuevo_campo: `SE AGREGÓ UN NUEVO USUARIO:
                   Usuario: ${dataUser.usuario},
                   Nombre de usuario: ${dataUser.nombre_usuario},
                   Correo electrónico: ${dataUser.correo_electronico},
-                  Rol: ${dataUser.id_rol},
-                  Fecha de vencimiento: ${dataUser.fecha_vencimiento}`
+                  Rol: ${dataUser.id_rol}`,
+    accion: 'INSERTAR'
   };
 
   this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
     // Manejar la respuesta si es necesario
   });
+  
 }
-
+ 
 
 
 updateBitacora(dataUser: Usuario) {
@@ -603,7 +605,7 @@ updateBitacora(dataUser: Usuario) {
 
   activarBitacora(dataUser: Usuario){
     const bitacora = {
-      fecha: new Date(),
+      fecha: new Date() ,
       id_usuario: this.getUser.id_usuario,
       id_objeto: 1,
       accion: 'ACTIVAR',
