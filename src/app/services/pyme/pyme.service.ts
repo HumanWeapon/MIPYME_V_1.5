@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -48,6 +48,11 @@ export class PymeService {
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
     return this.http.get<any>(`${this.myAppUrl}${this.myApiUrl}/getRolPyme`,{ headers: headers })
+  }
+  getOnePyme(nombre_pyme: any): Observable<any> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<any>(`${this.myAppUrl}${this.myApiUrl}/getOnePyme/${nombre_pyme}`, { headers: headers });
   }
 
   getAllPymes(): Observable<Pyme[]> {

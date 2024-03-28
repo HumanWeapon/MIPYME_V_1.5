@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Objetos } from 'src/app/interfaces/seguridad/objetos';
 import { Usuario } from 'src/app/interfaces/seguridad/usuario';
 import { ErrorService } from 'src/app/services/error.service';
+import { PymeService } from 'src/app/services/pyme/pyme.service';
 import { ObjetosService } from 'src/app/services/seguridad/objetos.service';
 import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 import { SidebarService } from 'src/app/services/sidebar.service';
@@ -39,7 +40,9 @@ export class SidebarComponent implements OnInit{
   constructor(private _sideBarService: SidebarService, 
     private router:Router,
     private _errorService: ErrorService,
-    private _usuarioService: UsuariosService){
+    private _usuarioService: UsuariosService,
+    private _pymeService: PymeService
+    ){
 
   }
 
@@ -59,8 +62,20 @@ export class SidebarComponent implements OnInit{
 
   getUsuario(){
     const usuarioStore = localStorage.getItem('usuario');
+    const pymeStore = localStorage.getItem('nombre_pyme');
     if(usuarioStore){
       this._usuarioService.getOneUsuario(usuarioStore).subscribe({
+        next: (data: any) => {
+          this.user = data;
+          this.getPermisosRolesObjetos();
+        },
+        error: (e: HttpErrorResponse) => {
+          this._errorService.msjError(e);
+        }
+      });
+    }
+    if(pymeStore){
+      this._pymeService.getOnePyme(pymeStore).subscribe({
         next: (data: any) => {
           this.user = data;
           this.getPermisosRolesObjetos();

@@ -387,7 +387,8 @@ cancelarInput(){
         fecha_modificacion: new Date(),
         estado_permiso: 1,
       };
-      if (!this.nuevoPermiso.id_rol || !this.nuevoPermiso.id_objeto) {
+      console.log(permisoEnviado);
+      if (!this.id_rol || !this.id_objeto) {
         this.toastr.warning('Debes completar los campos vacíos');
       }else{
       this._permService.addPermiso(permisoEnviado).subscribe({
