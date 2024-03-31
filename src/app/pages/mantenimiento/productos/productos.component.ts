@@ -30,17 +30,7 @@ import { DatePipe } from '@angular/common';
 export class ProductosComponent implements OnInit{
   
   getProducto: any;
-
-
-
-  getDate(): string {
-    // Obtener la fecha actual
-    const currentDate = new Date();
-    // Formatear la fecha en el formato deseado
-    return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
-}
-
-
+  productoAnterior: any;
   productos: any[] = [];
 
 
@@ -149,6 +139,13 @@ export class ProductosComponent implements OnInit{
     });
   }
 
+  getDate(): string {
+    // Obtener la fecha actual
+    const currentDate = new Date();
+    // Formatear la fecha en el formato deseado
+    return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
+}
+
   agregarNuevoProducto() {
     const usuarioLocal = localStorage.getItem('usuario')
     if(usuarioLocal){
@@ -204,6 +201,7 @@ export class ProductosComponent implements OnInit{
 
     };
     this.indice = i;
+    this.productoAnterior = productos;
   
   }
 
@@ -453,10 +451,11 @@ insertBitacora(dataProductos: Productos) {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 16,
-    accion: 'INSERTAR',
-    descripcion: `SE AGREGÓ UN NUEVO PRODUCTO:
+    campo_original: 'NO EXISTE REGISTRO ANTERIOR',
+    nuevo_campo: `SE AGREGÓ UN NUEVO PRODUCTO:
                   Nombre del Producto: ${dataProductos.producto},
-                  Descripción: ${dataProductos.descripcion}`
+                  Descripción: ${dataProductos.descripcion}`,
+    accion: 'INSERTAR'
   };
 
   this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
@@ -467,35 +466,27 @@ insertBitacora(dataProductos: Productos) {
 
 
 
-updateBitacora(dataProductos: Productos) {
-  // Guardar el producto actual antes de actualizarlo
-  const productoAnterior = { ...this.getProducto };
-
-  // Actualizar el producto
-  this.getProducto = dataProductos;
-
-  // Comparar los datos anteriores con los nuevos datos
+updateBitacora(dataProducto: Productos) {
   const cambios = [];
-  if (productoAnterior.producto !== dataProductos.producto) {
-    cambios.push(`Producto anterior: ${productoAnterior.producto} -> Nuevo producto: ${dataProductos.producto}`);
+  if (this.productoAnterior.producto !== dataProducto.producto) {
+    cambios.push(`Nombre del Producto: ${dataProducto.producto}`);
   }
-  if (productoAnterior.descripcion !== dataProductos.descripcion) {
-    cambios.push(`Descripción anterior: ${productoAnterior.descripcion} -> Nueva descripción: ${dataProductos.descripcion}`);
+  if (this.productoAnterior.descripcion !== dataProducto.descripcion) {
+    cambios.push(`Descripción: ${dataProducto.descripcion}`);
   }
+  // Añadir más condiciones de actualización si es necesario
 
   // Si se realizaron cambios, registrar en la bitácora
   if (cambios.length > 0) {
-    // Crear la descripción para la bitácora
-    const descripcion = `Se actualizaron los siguientes campos:\n${cambios.join('\n')}`;
-
     // Crear el objeto bitácora
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
-      id_objeto: 16,
-      accion: 'ACTUALIZAR',
-      descripcion: descripcion
-    };
+      id_objeto: 16, // ID del objeto correspondiente a los productos
+      campo_original: `Nombre del Producto: ${this.productoAnterior.producto}, Descripción: ${this.productoAnterior.descripcion}`, 
+      nuevo_campo: cambios.join(', '),
+      accion: 'ACTUALIZAR'
+    }
 
     // Insertar la bitácora
     this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
@@ -505,39 +496,49 @@ updateBitacora(dataProductos: Productos) {
 }
 
 
-activarBitacora(dataProductos: Productos){
+activarBitacora(dataProducto: Productos){ 
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
-    id_objeto: 16,
+    id_objeto: 16, // ID del objeto correspondiente a los productos
+    campo_original: `PRODUCTO: ${dataProducto.producto}`,
+    nuevo_campo: 'CAMBIO DE ESTADO',
     accion: 'ACTIVAR',
-    descripcion: 'SE ACTIVA EL PRODUCTO CON EL ID: '+ dataProductos.producto
   }
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+    // Manejar la respuesta si es necesario
   })
 }
-inactivarBitacora(dataProductos: Productos){
+
+inactivarBitacora(dataProducto: Productos){
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
-    id_objeto: 16,
-    accion: 'INACTIVAR',
-    descripcion: 'SE INACTIVA EL PRODUCTO: '+ dataProductos.producto
-  }
+    id_objeto: 16, // ID del objeto correspondiente a los productos
+    campo_original: `PRODUCTO: ${dataProducto.producto}`,
+    nuevo_campo: 'CAMBIO DE ESTADO',
+    accion: 'INACTIVAR'
+  };
+
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-  })
+    // Manejar la respuesta si es necesario
+  });
 }
-deleteBitacora(dataProductos: Productos){
+
+deleteBitacora(dataProducto: Productos){
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
-    id_objeto: 16,
+    id_objeto: 16, // ID del objeto correspondiente a los productos
+    campo_original: `PRODUCTO: ${dataProducto.producto}`,
+    nuevo_campo: 'SE ELIMINA EL PRODUCTO: '+ dataProducto.producto,
     accion: 'ELIMINAR',
-    descripcion: 'SE ELIMINA EL PRODUCTO CON EL ID: '+ dataProductos.producto
   }
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+    // Manejar la respuesta si es necesario
   })
 }
+
   /*************************************************************** Fin Métodos de Bitácora ***************************************************************************/
 
 }

@@ -21,12 +21,7 @@ import { DatePipe } from '@angular/common';
 })
 export class TipoDireccionComponent {
 
-  getDate(): string {
-    // Obtener la fecha actual
-    const currentDate = new Date();
-    // Formatear la fecha en el formato deseado
-    return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
-}
+    tdAnterior: any;
 
     tipoDireccionEditando: TipoDireccion = {
       id_tipo_direccion: 0,
@@ -128,6 +123,13 @@ export class TipoDireccionComponent {
         this.listTipoDireccion[i].estado = 1;
         
       }
+
+      getDate(): string {
+        // Obtener la fecha actual
+        const currentDate = new Date();
+        // Formatear la fecha en el formato deseado
+        return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
+    }
     
 /*****************************************************************************************************/
 convertirAMayusculas(event: any, field: string) {
@@ -336,6 +338,7 @@ agregarNuevoTipoRequisito() {
     
         };
         this.indice = i;
+        this.tdAnterior = tipoD;
       }
     
       editarTipoDireccion(){
@@ -418,6 +421,7 @@ agregarNuevoTipoRequisito() {
    });
  }
 
+
  insertBitacora(dataDireccion: TipoDireccion) {
   const bitacora = {
     fecha: new Date(),
@@ -425,8 +429,8 @@ agregarNuevoTipoRequisito() {
     id_objeto: 3,
     accion: 'INSERTAR',
     descripcion: `SE AGREGÓ UNA NUEVA DIRECCION:
-                  Direccion: ${dataDireccion.tipo_direccion},
-                  Descripcion: ${dataDireccion.descripcion}`
+                  Dirección: ${dataDireccion.tipo_direccion},
+                  Descripción: ${dataDireccion.descripcion}`
   };
 
   this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
@@ -437,35 +441,25 @@ agregarNuevoTipoRequisito() {
 
 
 updateBitacora(dataDireccion: TipoDireccion) {
-  // Guardar el usuario actual antes de actualizarlo
-  const DireccionAnterior = { ...this.getDireccion };
-
-  // Actualizar el usuario
-  this.getDireccion = dataDireccion;
-
-  // Comparar los datos anteriores con los nuevos datos
   const cambios = [];
-  if (DireccionAnterior.tipo_direccion !== dataDireccion.tipo_direccion) {
-    cambios.push(`Direccion anterior: ${DireccionAnterior.tipo_direccion} -> Nueva Direccion: ${dataDireccion.tipo_direccion}`);
+  if (this.tdAnterior.tipo_direccion !== dataDireccion.tipo_direccion) {
+    cambios.push(`Tipo de dirección: ${dataDireccion.tipo_direccion}`);
   }
-  if (DireccionAnterior.descripcion !== dataDireccion.descripcion) {
-    cambios.push(`Descripcion Anterior: ${DireccionAnterior.descripcion} -> Nueva Descripcion: ${dataDireccion.descripcion}`);
+  if (this.tdAnterior.descripcion !== dataDireccion.descripcion) {
+    cambios.push(`Descripción: ${dataDireccion.descripcion}`);
   }
-  // Puedes agregar más comparaciones para otros campos según tus necesidades
-
+ 
   // Si se realizaron cambios, registrar en la bitácora
   if (cambios.length > 0) {
-    // Crear la descripción para la bitácora
-    const descripcion = `Se actualizaron los siguientes campos:\n${cambios.join('\n')}`;
-
     // Crear el objeto bitácora
     const bitacora = {
       fecha: new Date(),
-      id_usuario: this.getUser.id_usuario,
-      id_objeto: 3,
-      accion: 'ACTUALIZAR',
-      descripcion: descripcion
-    };
+      id_usuario: this.getUser.id_usuario, // Usar el ID del usuario anterior para registrar el cambio
+      id_objeto: 3, // ID del objeto correspondiente a las direcciones
+      campo_original: `Tipo de dirección: ${this.tdAnterior.tipo_direccion}, Descripción: ${this.tdAnterior.descripcion}`, 
+      nuevo_campo: cambios.join(', '),
+      accion: 'ACTUALIZAR'
+    }
 
     // Insertar la bitácora
     this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
@@ -474,39 +468,51 @@ updateBitacora(dataDireccion: TipoDireccion) {
   }
 }
 
-  activarBitacora(dataDireccion: TipoDireccion){
-    const bitacora = {
-      fecha: new Date(),
-      id_usuario: this.getUser.id_usuario,
-      id_objeto: 3,
-      accion: 'ACTIVAR',
-      descripcion: 'ACTIVA LA DIRECCION: '+ dataDireccion.id_tipo_direccion
-    }
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
+activarBitacora(dataDireccion: TipoDireccion){ 
+  const bitacora = {
+    fecha: new Date() ,
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 3, // ID del objeto correspondiente a las direcciones
+    campo_original: 'LA DIRECCIÓN: '+ dataDireccion.tipo_direccion,
+    nuevo_campo: 'CAMBIO DE ESTADO',
+    accion: 'ACTIVAR',
   }
-  inactivarBitacora(dataDireccion: TipoDireccion){
-    const bitacora = {
-      fecha: new Date(),
-      id_usuario: this.getUser.id_usuario,
-      id_objeto: 3,
-      accion: 'INACTIVAR',
-      descripcion: 'INACTIVA LA DIRECCION: '+ dataDireccion.id_tipo_direccion
-    }
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+  })
+}
+
+
+inactivarBitacora(dataDireccion: TipoDireccion){
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 3, // ID del objeto correspondiente a las direcciones
+    campo_original: 'LA DIRECCIÓN: '+ dataDireccion.tipo_direccion,
+    nuevo_campo: 'CAMBIO DE ESTADO',
+    accion: 'INACTIVAR'
+  };
+
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+    // Manejar la respuesta si es necesario
+  });
+  
+}
+
+
+
+deleteBitacora(dataDireccion: TipoDireccion){
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 3, // ID del objeto correspondiente a las direcciones
+    campo_original: dataDireccion.tipo_direccion,
+    nuevo_campo: 'SE ELIMINA LA DIRECCIÓN: '+ dataDireccion.tipo_direccion,
+    accion: 'ELIMINAR',
   }
-  deleteBitacora(dataDireccion: TipoDireccion){
-    const bitacora = {
-      fecha: new Date(),
-      id_usuario: this.getUser.id_usuario,
-      id_objeto: 3,
-      accion: 'ELIMINAR',
-      descripcion: 'SE ELIMINA LA DIRECCION CON EL ID: '+ dataDireccion.id_tipo_direccion
-    }
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
-  }
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+  })
+}
+
     /*************************************************************** Fin Métodos de Bitácora ***************************************************************************/
     
 }

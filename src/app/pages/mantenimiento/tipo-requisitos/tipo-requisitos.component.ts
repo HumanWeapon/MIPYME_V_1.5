@@ -22,12 +22,7 @@ import { DatePipe } from '@angular/common';
 })
 export class TipoRequisitosComponent implements OnInit {
 
-  getDate(): string {
-    // Obtener la fecha actual
-    const currentDate = new Date();
-    // Formatear la fecha en el formato deseado
-    return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
-}
+    trAnterior: any;
 
     tipoRequisitoEditando: TipoRequisito = {
       id_tipo_requisito: 0, 
@@ -102,6 +97,14 @@ export class TipoRequisitosComponent implements OnInit {
     this.activarTipoRequi(TRequi, i); // Ejecuta la segunda función
   }
  }
+
+ getDate(): string {
+  // Obtener la fecha actual
+  const currentDate = new Date();
+  // Formatear la fecha en el formato deseado
+  return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
+}
+
 
       inactivarTipoRequi(tipoRequisito: TipoRequisito, i: any){
         this._tipoRequisitoService.inactivarTipoRequisito(tipoRequisito).subscribe({
@@ -343,6 +346,7 @@ getEstadoText(estado: number): string {
     
         };
         this.indice = i;
+        this.trAnterior = tipoR;
       }
     
       editarTipoRequisito(){
@@ -425,15 +429,16 @@ getEstadoText(estado: number): string {
    });
  }
 
+
  insertBitacora(dataRequisito: TipoRequisito) {
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
-    id_objeto: 3,
+    id_objeto: 3, // El ID del objeto para tipos de requisito
     accion: 'INSERTAR',
     descripcion: `SE AGREGÓ UN NUEVO REQUISITO:
-                  Requisitto: ${dataRequisito.tipo_requisito},
-                  Descripcion: ${dataRequisito.descripcion}`
+                  Requisito: ${dataRequisito.tipo_requisito},
+                  Descripción: ${dataRequisito.descripcion}`
   };
 
   this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
@@ -444,35 +449,26 @@ getEstadoText(estado: number): string {
 
 
 updateBitacora(dataRequisito: TipoRequisito) {
-  // Guardar el usuario actual antes de actualizarlo
-  const RequisitoAnterior = { ...this.getRequisito };
-
-  // Actualizar el usuario
-  this.getRequisito = dataRequisito;
-
-  // Comparar los datos anteriores con los nuevos datos
   const cambios = [];
-  if (RequisitoAnterior.tipo_requisito !== dataRequisito.tipo_requisito) {
-    cambios.push(`Requisito anterior: ${RequisitoAnterior.tipo_requisito} -> Nuevo Requisito: ${dataRequisito.tipo_requisito}`);
+  // Aquí compararías los cambios en los campos del tipo de requisito en lugar de los campos del usuario
+  if (this.trAnterior.tipo_requisito !== dataRequisito.tipo_requisito) {
+    cambios.push(`Tipo de requisito: ${dataRequisito.tipo_requisito}`);
   }
-  if (RequisitoAnterior.descripcion !== dataRequisito.descripcion) {
-    cambios.push(`Descripcion Anterior: ${RequisitoAnterior.descripcion} -> Nueva Descripcion: ${dataRequisito.descripcion}`);
+  if (this.trAnterior.descripcion !== dataRequisito.descripcion) {
+    cambios.push(`Descripción: ${dataRequisito.descripcion}`);
   }
-  // Puedes agregar más comparaciones para otros campos según tus necesidades
-
+  
   // Si se realizaron cambios, registrar en la bitácora
   if (cambios.length > 0) {
-    // Crear la descripción para la bitácora
-    const descripcion = `Se actualizaron los siguientes campos:\n${cambios.join('\n')}`;
-
     // Crear el objeto bitácora
     const bitacora = {
       fecha: new Date(),
-      id_usuario: this.getUser.id_usuario,
-      id_objeto: 3,
-      accion: 'ACTUALIZAR',
-      descripcion: descripcion
-    };
+      id_usuario: this.getUser.id_usuario, // Usar el ID del usuario actual para registrar el cambio
+      id_objeto: 3, // ID del objeto correspondiente a los tipos de requisito
+      campo_original: `Tipo de requisito: ${this.trAnterior.tipo_requisito}, Descripción: ${this.trAnterior.descripcion}`, 
+      nuevo_campo: cambios.join(', '),
+      accion: 'ACTUALIZAR'
+    }
 
     // Insertar la bitácora
     this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
@@ -481,42 +477,53 @@ updateBitacora(dataRequisito: TipoRequisito) {
   }
 }
 
+activarBitacora(dataRequisito: TipoRequisito){ 
+  const bitacora = {
+    fecha: new Date() ,
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 3, // ID del objeto correspondiente a los tipos de requisito
+    campo_original: `TIPO DE REQUISITO: ${dataRequisito.tipo_requisito}`,
+    nuevo_campo: 'CAMBIO DE ESTADO',
+    accion: 'ACTIVAR',
+  }
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+    // Manejar la respuesta si es necesario
+  });
+}
+
+inactivarBitacora(dataRequisito: TipoRequisito){
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 3, // ID del objeto correspondiente a los tipos de requisito
+    campo_original: `TIPO DE REQUISITO: ${dataRequisito.tipo_requisito}`,
+    nuevo_campo: 'CAMBIO DE ESTADO',
+    accion: 'INACTIVAR'
+  };
+
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+    // Manejar la respuesta si es necesario
+  });
+}
+
+deleteBitacora(dataRequisito: TipoRequisito){
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 3, // ID del objeto correspondiente a los tipos de requisito
+    campo_original: `TIPO DE REQUISITO: ${dataRequisito.tipo_requisito}`,
+    nuevo_campo: 'SE ELIMINA EL TIPO DE REQUISITO: '+ dataRequisito.tipo_requisito,
+    accion: 'ELIMINAR',
+  }
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+    // Manejar la respuesta si es necesario
+  });
+}
+
   
   
 
-  activarBitacora(dataRequisito: TipoRequisito){
-    const bitacora = {
-      fecha: new Date(),
-      id_usuario: this.getUser.id_usuario,
-      id_objeto: 3,
-      accion: 'ACTIVAR',
-      descripcion: 'ACTIVA EL USUARIO: '+ dataRequisito.id_tipo_requisito
-    }
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
-  }
-  inactivarBitacora(dataRequisito: TipoRequisito){
-    const bitacora = {
-      fecha: new Date(),
-      id_usuario: this.getUser.id_usuario,
-      id_objeto: 3,
-      accion: 'INACTIVAR',
-      descripcion: 'INACTIVA EL REQUISITO: '+ dataRequisito.id_tipo_requisito
-    }
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
-  }
-  deleteBitacora(dataRequisito: TipoRequisito){
-    const bitacora = {
-      fecha: new Date(),
-      id_usuario: this.getUser.id_usuario,
-      id_objeto: 3,
-      accion: 'ELIMINAR',
-      descripcion: 'SE ELIMINA EL REQUISITO CON EL ID: '+ dataRequisito.id_tipo_requisito
-    }
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
-  }
+  
     /*************************************************************** Fin Métodos de Bitácora ***************************************************************************/
     
 }

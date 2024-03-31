@@ -23,6 +23,8 @@ import { DatePipe } from '@angular/common';
 })
 export class TipoEmpresaComponent implements OnInit{
 
+    teAnterior:any;
+
     tipoEmpresaEditando: TipoEmpresa = {
       id_tipo_empresa: 0, 
       tipo_empresa: '', 
@@ -312,6 +314,7 @@ getEstadoText(estado: number): string {
     
         };
         this.indice = i;
+        this.teAnterior = tipoE;
       }
     
     
@@ -393,92 +396,94 @@ getEstadoText(estado: number): string {
 
  insertBitacora(dataTipEmpresa: TipoEmpresa) {
   const bitacora = {
-      fecha: new Date(),
-      id_usuario: this.getUser.id_usuario,
-      id_objeto: 13,
-      accion: 'INSERTAR',
-      descripcion: `SE INSERTA EL TIPO DE EMPRESA:
-                    Tipo de Empresa: ${dataTipEmpresa.tipo_empresa},
-                    Descripción: ${dataTipEmpresa.descripcion}`
+    fecha: new Date(),
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 13, // ID del objeto correspondiente a los tipos de empresa
+    campo_original: 'NO EXISTE REGISTRO ANTERIOR',
+    nuevo_campo: `SE AGREGÓ UN NUEVO TIPO DE EMPRESA:
+                  Tipo de Empresa: ${dataTipEmpresa.tipo_empresa},
+                  Descripción: ${dataTipEmpresa.descripcion}`,
+    accion: 'INSERTAR'
   };
+
   this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
-      // Manejar la respuesta si es necesario
+    // Manejar la respuesta si es necesario
   });
 }
 
 
-updateBitacora(dataTipEmpresa: TipoEmpresa) {
-  // Guardar el tipo de empresa actual antes de actualizarlo
-  const tipoEmpresaAnterior = { ...this.getTipoEmpresa };
-
-  this.getTipoEmpresa = dataTipEmpresa;
-
-  // Comparar los datos anteriores con los nuevos datos
+updateBitacora(dataTipoEmpresa: TipoEmpresa) {
   const cambios = [];
-  if (tipoEmpresaAnterior.tipo_empresa !== dataTipEmpresa.tipo_empresa) {
-      cambios.push(`Tipo de empresa anterior: ${tipoEmpresaAnterior.tipo_empresa} -> Nuevo tipo de empresa: ${dataTipEmpresa.tipo_empresa}`);
+  if (this.teAnterior.tipo_empresa !== dataTipoEmpresa.tipo_empresa) {
+    cambios.push(`Tipo de Empresa: ${dataTipoEmpresa.tipo_empresa}`);
   }
-  if (tipoEmpresaAnterior.descripcion !== dataTipEmpresa.descripcion) {
-      cambios.push(`Descripción anterior: ${tipoEmpresaAnterior.descripcion} -> Nueva descripción: ${dataTipEmpresa.descripcion}`);
+  if (this.teAnterior.descripcion !== dataTipoEmpresa.descripcion) {
+    cambios.push(`Descripción: ${dataTipoEmpresa.descripcion}`);
   }
-  // Puedes agregar más comparaciones para otros campos según tus necesidades
-
+ 
   // Si se realizaron cambios, registrar en la bitácora
   if (cambios.length > 0) {
-      // Crear la descripción para la bitácora
-      const descripcion = `Se actualizaron los siguientes campos:\n${cambios.join('\n')}`;
+    // Crear el objeto bitácora
+    const bitacora = {
+      fecha: new Date(),
+      id_usuario: this.getUser.id_usuario, // Usar el ID del usuario anterior para registrar el cambio
+      id_objeto: 13, // ID del objeto correspondiente a los tipos de empresa
+      campo_original: `Tipo de Empresa: ${this.teAnterior.tipo_empresa}, Descripción: ${this.teAnterior.descripcion}`, 
+      nuevo_campo: cambios.join(', '),
+      accion: 'ACTUALIZAR'
+    }
 
-      // Crear el objeto bitácora
-      const bitacora = {
-          fecha: new Date(),
-          id_usuario: this.getUser.id_usuario,
-          id_objeto: 13,
-          accion: 'ACTUALIZAR',
-          descripcion: descripcion
-      };
-
-      // Insertar la bitácora
-      this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
-          // Manejar la respuesta si es necesario
-      });
+    // Insertar la bitácora
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+      // Manejar la respuesta si es necesario
+    });
   }
 }
 
 
-  activarBitacora(dataTipEmpresa: TipoEmpresa){
-    const bitacora = {
-      fecha: new Date(),
-      id_usuario: this.getUser.id_usuario,
-      id_objeto: 13,
-      accion: 'ACTIVAR',
-      descripcion: 'SE ACTIVA EL TIPO DE EMPRESA: '+ dataTipEmpresa.tipo_empresa
-    }
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
+activarBitacora(dataTipoEmpresa: TipoEmpresa){ 
+  const bitacora = {
+    fecha: new Date() ,
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 13, // El ID del objeto para tipos de empresa
+    campo_original: 'TIPO DE EMPRESA: '+ dataTipoEmpresa.tipo_empresa,
+    nuevo_campo: 'CAMBIO DE ESTADO',
+    accion: 'ACTIVAR',
   }
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+    // Manejar la respuesta si es necesario
+  })
+}
 
-  inactivarBitacora(dataTipEmpresa: TipoEmpresa){
-    const bitacora = {
-      fecha: new Date(),
-      id_usuario: this.getUser.id_usuario,
-      id_objeto: 13,
-      accion: 'INACTIVAR',
-      descripcion: 'SE INACTIVA EL TIPO DE EMPRESA: '+ dataTipEmpresa.tipo_empresa
-    }
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
+inactivarBitacora(dataTipoEmpresa: TipoEmpresa){
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 13, // El ID del objeto para tipos de empresa
+    campo_original: 'TIPO DE EMPRESA: '+ dataTipoEmpresa.tipo_empresa,
+    nuevo_campo: 'CAMBIO DE ESTADO',
+    accion: 'INACTIVAR'
+  };
+
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+    // Manejar la respuesta si es necesario
+  });
+}
+
+deleteBitacora(dataTipoEmpresa: TipoEmpresa){
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 13, // El ID del objeto para tipos de empresa
+    campo_original: dataTipoEmpresa.tipo_empresa,
+    nuevo_campo: 'SE ELIMINA EL TIPO DE EMPRESA: '+ dataTipoEmpresa.tipo_empresa,
+    accion: 'ELIMINAR',
   }
-  deleteBitacora(dataTipEmpresa: TipoEmpresa){
-    const bitacora = {
-      fecha: new Date(),
-      id_usuario: this.getUser.id_usuario,
-      id_objeto: 13,
-      accion: 'ELIMINAR',
-      descripcion: 'SE ELIMINA EL TIPO DE EMPRESA: '+ dataTipEmpresa.tipo_empresa
-    }
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
-  }
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+    // Manejar la respuesta si es necesario
+  })
+}
+
     /*************************************************************** Fin Métodos de Bitácora ***************************************************************************/
 
     }

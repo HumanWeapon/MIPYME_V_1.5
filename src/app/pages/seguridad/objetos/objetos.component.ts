@@ -23,12 +23,7 @@ import { SubmenuData } from 'src/app/interfaces/subMenuData/subMenuData';
 })
 export class ObjetosComponent implements OnInit{
 
-  getDate(): string {
-    // Obtener la fecha actual
-    const currentDate = new Date();
-    // Formatear la fecha en el formato deseado
-    return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
-}
+objetoAnterior: any;
 
   objetoEditando: Objetos = {
     id_objeto: 0, 
@@ -146,6 +141,15 @@ eliminarCaracteresEspeciales(event: any, field: string) {
     event.target.value = inputValue;
   });
 }
+
+
+getDate(): string {
+  // Obtener la fecha actual
+  const currentDate = new Date();
+  // Formatear la fecha en el formato deseado
+  return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
+}
+
 
 
 inactivarObjeto(obj: any, i: number){
@@ -341,6 +345,7 @@ agregarNuevoObjeto() {
       fecha_modificacion: objetos.fecha_modificacion
     };
     this.indice = i;
+    this.objetoAnterior = objetos;
   }
 
   editarObjeto(){
@@ -422,13 +427,19 @@ agregarNuevoObjeto() {
  }
 
 
- insertBitacora(dataObjeto: Objetos) {
+
+
+insertBitacora(dataObjeto: Objetos) {
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 4,
-    accion: 'INSERTAR',
-    descripcion: `SE INSERTA EL OBJETO: ${dataObjeto.objeto}. Descripción: ${dataObjeto.descripcion}. Tipo de objeto: ${dataObjeto.tipo_objeto}`
+    campo_original: 'NO EXISTE REGISTRO ANTERIOR',
+    nuevo_campo: `SE AGREGÓ UN NUEVO OBJETO:
+                  Nombre del objeto: ${dataObjeto.objeto},
+                  Descripción: ${dataObjeto.descripcion},
+                  Tipo de objeto: ${dataObjeto.tipo_objeto}`,
+    accion: 'INSERTAR'
   };
 
   this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
@@ -437,71 +448,84 @@ agregarNuevoObjeto() {
 }
 
 
-  updateBitacora(dataObjeto: {
-    nombreAnterior: string; nombre: string, descripcion: string, objeto: string, descripcionAnterior: string, descripcionNueva: string 
-}) {
-    let descripcionCambios = '';
-
-    if (dataObjeto.nombre !== dataObjeto.nombreAnterior) {
-        descripcionCambios += `Nombre modificado: ${dataObjeto.nombreAnterior} -> ${dataObjeto.nombre}. `;
+updateBitacora(dataObjeto: Objetos) {
+  const cambios = [];
+  if (this.objetoAnterior.objeto !== dataObjeto.objeto) {
+    cambios.push(`Nombre del objeto: ${dataObjeto.objeto}`);
+  }
+  if (this.objetoAnterior.descripcion !== dataObjeto.descripcion) {
+    cambios.push(`Descripción: ${dataObjeto.descripcion}`);
+  }
+  if (this.objetoAnterior.tipo_objeto !== dataObjeto.tipo_objeto) {
+    cambios.push(`Tipo de objeto: ${dataObjeto.tipo_objeto}`);
+  }
+ 
+  // Si se realizaron cambios, registrar en la bitácora
+  if (cambios.length > 0) {
+    // Crear el objeto bitácora
+    const bitacora = {
+      fecha: new Date(),
+      id_usuario: this.getUser.id_usuario, // Usar el ID del usuario anterior para registrar el cambio
+      id_objeto: 4, // ID del objeto correspondiente a los objetos
+      campo_original: `Nombre del objeto: ${this.objetoAnterior.objeto}, Descripción: ${this.objetoAnterior.descripcion}, Tipo de objeto: ${this.objetoAnterior.tipo_objeto}`, 
+      nuevo_campo: cambios.join(', '),
+      accion: 'ACTUALIZAR'
     }
 
-    if (dataObjeto.descripcion !== dataObjeto.descripcionAnterior) {
-        descripcionCambios += `Descripción modificada: ${dataObjeto.descripcionAnterior} -> ${dataObjeto.descripcion}. `;
-    }
-
-    if (descripcionCambios !== '') {
-        const bitacora = {
-            fecha: new Date(),
-            id_usuario: this.getUser.id_usuario,
-            id_objeto: 4,
-            accion: 'ACTUALIZAR',
-            descripcion: `SE ACTUALIZA EL OBJETO: ${dataObjeto.objeto}. ${descripcionCambios}`
-        };
-
-        this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
-            // Aquí puedes agregar cualquier lógica adicional después de insertar la bitácora
-        });
-    }
+    // Insertar la bitácora
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+      // Manejar la respuesta si es necesario
+    });
+  }
 }
 
 
   
+activarBitacora(dataObjeto: Objetos) {
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 4,
+    campo_original: `EL OBJETO: ${dataObjeto.objeto}`,
+    nuevo_campo: 'CAMBIO DE ESTADO',
+    accion: 'ACTIVAR'
+  };
 
-  activarBitacora(dataObjeto: Objetos){
-    const bitacora = {
-      fecha: new Date(),
-      id_usuario: this.getUser.id_usuario,
-      id_objeto: 4,
-      accion: 'ACTIVAR',
-      descripcion: 'SE ACTIVA EL OBJETO: '+ dataObjeto.objeto
-    }
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
-  }
-  inactivarBitacora(dataObjeto: Objetos){
-    console.log(dataObjeto)
-    const bitacora = {
-      fecha: new Date(),
-      id_usuario: this.getUser.id_usuario,
-      id_objeto: 4,
-      accion: 'INACTIVAR',
-      descripcion: 'SE INACTIVA EL OBJETO: '+ dataObjeto.objeto
-    }
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
-  }
-  deleteBitacora(dataObjeto: Objetos){
-    const bitacora = {
-      fecha: new Date(),
-      id_usuario: this.getUser.id_usuario,
-      id_objeto: 4,
-      accion: 'ELIMINAR',
-      descripcion: 'SE ELIMINA EL OBJETO: '+ dataObjeto.objeto
-    }
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
-  }
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+    // Manejar la respuesta si es necesario
+  });
+}
+
+inactivarBitacora(dataObjeto: Objetos) {
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 4,
+    campo_original: `EL OBJETO: ${dataObjeto.objeto}`,
+    nuevo_campo: 'CAMBIO DE ESTADO',
+    accion: 'INACTIVAR'
+  };
+
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+    // Manejar la respuesta si es necesario
+  });
+}
+
+deleteBitacora(dataObjeto: Objetos) {
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 4,
+    campo_original: dataObjeto.objeto,
+    nuevo_campo: `SE ELIMINA EL OBJETO: ${dataObjeto.objeto}`,
+    accion: 'ELIMINAR'
+  };
+
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+    // Manejar la respuesta si es necesario
+  });
+}
+
     /*************************************************************** Fin Métodos de Bitácora ***************************************************************************/
 
 }

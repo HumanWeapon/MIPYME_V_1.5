@@ -24,12 +24,7 @@ import { es } from 'date-fns/locale';
 })
 export class RolesComponent implements OnInit{
 
-  getDate(): string {
-    // Obtener la fecha actual
-    const currentDate = new Date();
-    // Formatear la fecha en el formato deseado
-    return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
-}
+  rolAnterior: any;
 
   rolEditando: Roles = {
     id_rol: 0, 
@@ -126,6 +121,13 @@ convertirAMayusculas(event: any, field: string) {
     const inputValue = event.target.value;
     event.target.value = inputValue.toUpperCase();
   });
+}
+
+getDate(): string {
+  // Obtener la fecha actual
+  const currentDate = new Date();
+  // Formatear la fecha en el formato deseado
+  return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
 }
   
 inactivarRol(rol: any, i: number){
@@ -314,6 +316,7 @@ agregarNuevoRol() {
       fecha_modificacion: roles.fecha_modificacion,
     };
     this.indice = i;
+    this.rolAnterior = roles;
   }
 
 
@@ -399,13 +402,17 @@ getUsuario(){
  });
 }
 
+
 insertBitacora(dataRoles: Roles) {
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 3,
-    accion: 'INSERTAR',
-    descripcion: `SE INSERTA EL ROL: ${dataRoles.rol}. Descripción: ${dataRoles.descripcion}`
+    campo_original: 'NO EXISTE REGISTRO ANTERIOR',
+    nuevo_campo: `SE AGREGÓ UN NUEVO ROL:
+                  Rol: ${dataRoles.rol},
+                  Descripción: ${dataRoles.descripcion}`,
+    accion: 'INSERTAR'
   };
 
   this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
@@ -415,36 +422,27 @@ insertBitacora(dataRoles: Roles) {
 
 
 
+
 updateBitacora(dataRoles: Roles) {
-  // Guardar el rol actual antes de actualizarlo
-  const rolAnterior = { ...this.getRol };
-
-  // Actualizar el rol
-  this.getRol = dataRoles;
-
   // Comparar los datos anteriores con los nuevos datos
   const cambios = [];
-  if (rolAnterior.rol !== dataRoles.rol) {
-    cambios.push(`Rol anterior: ${rolAnterior.rol} -> por nuevo rol:  ${dataRoles.rol}`);
+  if (this.rolAnterior.rol !== dataRoles.rol) {
+    cambios.push(`Rol: ${dataRoles.rol}`);
   }
-  if (rolAnterior.descripcion !== dataRoles.descripcion) {
-    cambios.push(`Descripción anterior: ${rolAnterior.descripcion} -> por nueva descripción:  ${dataRoles.descripcion}`);
+  if (this.rolAnterior.descripcion !== dataRoles.descripcion) {
+    cambios.push(`Descripción: ${dataRoles.descripcion}`);
   }
-  // Puedes agregar más comparaciones para otros campos según tus necesidades
-
+  
   // Si se realizaron cambios, registrar en la bitácora
   if (cambios.length > 0) {
-    // Crear la descripción para la bitácora
-    const descripcion = `Se actualizaron los siguientes campos:\n${cambios.join('\n')}`;
-
     // Crear el objeto bitácora
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
-      id_objeto: 3, // ID del objeto correspondiente a los roles
-      accion: 'ACTUALIZAR',
-      campo_original: rolAnterior,
-      nuevo_cambio: descripcion
+      id_objeto: 3, // Suponiendo que el ID del objeto de roles es 3
+      campo_original: `Rol: ${this.rolAnterior.rol}, Descripción: ${this.rolAnterior.descripcion}`,
+      nuevo_campo: cambios.join(', '),
+      accion: 'ACTUALIZAR'
     };
 
     // Insertar la bitácora
@@ -456,30 +454,34 @@ updateBitacora(dataRoles: Roles) {
 
 
 
-activarBitacora(dataRoles: Roles){
-  console.log(dataRoles);
+activarBitacora(dataRoles: Roles) { 
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
-    id_objeto: 3,
-    accion: 'ACTIVAR',
-    descripcion: 'SE ACTIVA EL ROL: '+ dataRoles.rol
-  }
-  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-  })
+    id_objeto: 3, // Suponiendo que el ID del objeto de roles es 3
+    campo_original: 'EL ROL: ' + dataRoles.rol,
+    nuevo_campo: 'CAMBIO DE ESTADO',
+    accion: 'ACTIVAR'
+  };
+
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+    // Manejar la respuesta si es necesario
+  });
 }
 
-
-inactivarBitacora(dataRoles: Roles){
+inactivarBitacora(dataRoles: Roles) {
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
-    id_objeto: 3,
-    accion: 'INACTIVAR',
-    descripcion: 'SE INACTIVA EL ROL: '+ dataRoles.rol
-  }
-  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-  })
+    id_objeto: 3, // Suponiendo que el ID del objeto de roles es 3
+    campo_original: 'EL ROL: ' + dataRoles.rol,
+    nuevo_campo: 'CAMBIO DE ESTADO',
+    accion: 'INACTIVAR'
+  };
+
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+    // Manejar la respuesta si es necesario
+  });
 }
 
 
@@ -487,13 +489,17 @@ deleteBitacora(dataRoles: Roles){
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
-    id_objeto: 3,
-    accion: 'ELIMINAR',
-    descripcion: 'SE ELIMINA EL ROL: '+ dataRoles.rol
-  }
-  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-  })
+    id_objeto: 3, // Suponiendo que el ID del objeto de roles es 3
+    campo_original: dataRoles.rol,
+    nuevo_campo: 'SE ELIMINA EL ROL: ' + dataRoles.rol,
+    accion: 'ELIMINAR'
+  };
+
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+    // Manejar la respuesta si es necesario
+  });
 }
+
   /*************************************************************** Fin Métodos de Bitácora ***************************************************************************/
  
 }

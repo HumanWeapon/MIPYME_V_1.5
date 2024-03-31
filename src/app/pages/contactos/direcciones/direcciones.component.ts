@@ -28,6 +28,7 @@ import { TipoContactoService } from 'src/app/services/mantenimiento/tipoContacto
 export class DireccionesComponent {
   
   getDireccion: any;
+  direccionAnterior: any;
 
   direccionEditando: ContactoDirecciones = {
     id_direccion: 0, 
@@ -219,6 +220,7 @@ export class DireccionesComponent {
 
     };
     this.indice = i;
+    this.direccionAnterior = direccion;
   
   }
 
@@ -444,81 +446,91 @@ generatePDF() {
       id_objeto: 6,
       accion: 'INSERTAR',
       descripcion: `SE AGREGÓ UNA NUEVA DIRECCIÓN:
-                    Direccion: ${dataDireccion.direccion},
+                    Dirección: ${dataDireccion.direccion},
                     Descripción: ${dataDireccion.descripcion}`
     };
-
+  
     this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
       // Manejar la respuesta si es necesario
     });
   }
+
+  
   updateBitacora(dataDireccion: ContactoDirecciones) {
-    // Guardar la dirección actual antes de actualizarla
-    const direccionAnterior = { ...this.getDireccion };
-
-    // Actualizar la dirección
-    this.getDireccion = dataDireccion;
-
-    // Comparar los datos anteriores con los nuevos datos
     const cambios = [];
-    if (direccionAnterior.direccion !== dataDireccion.direccion) {
-      cambios.push(`Dirección anterior: ${direccionAnterior.direccion} -> Nueva dirección: ${dataDireccion.direccion}`);
+    if (this.direccionAnterior.direccion !== dataDireccion.direccion) {
+      cambios.push(`Dirección: ${dataDireccion.direccion}`);
     }
-    if (direccionAnterior.descripcion !== dataDireccion.descripcion) {
-      cambios.push(`Descripción anterior: ${direccionAnterior.descripcion} -> Nueva descripción: ${dataDireccion.descripcion}`);
+    if (this.direccionAnterior.descripcion !== dataDireccion.descripcion) {
+      cambios.push(`Descripción: ${dataDireccion.descripcion}`);
     }
-
+  
     // Si se realizaron cambios, registrar en la bitácora
     if (cambios.length > 0) {
-      // Crear la descripción para la bitácora
-      const descripcion = `Se actualizaron los siguientes campos:\n${cambios.join('\n')}`;
-
       // Crear el objeto bitácora
       const bitacora = {
         fecha: new Date(),
-        id_usuario: this.getUser.usuario,
-        id_objeto: 6,
-        accion: 'ACTUALIZAR',
-        descripcion: descripcion
-      };
-
+        id_usuario: this.getUser.id_usuario,
+        id_objeto: 6, // ID del objeto correspondiente a las direcciones de contacto
+        campo_original: `Dirección: ${this.direccionAnterior.direccion}, Descripción: ${this.direccionAnterior.descripcion}`,
+        nuevo_campo: cambios.join(', '),
+        accion: 'ACTUALIZAR'
+      }
+  
       // Insertar la bitácora
       this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
         // Manejar la respuesta si es necesario
       });
     }
   }
-  activarBitacora(dataDireccion: ContactoDirecciones){
+
+  
+
+  activarBitacora(dataDireccion: ContactoDirecciones){ 
     const bitacora = {
-      fecha: new Date(),
+      fecha: new Date() ,
       id_usuario: this.getUser.id_usuario,
-      id_objeto: 6,
+      id_objeto: 6, // ID del objeto correspondiente a las direcciones de contacto
+      campo_original: 'LA DIRECCIÓN: '+ dataDireccion.direccion,
+      nuevo_campo: 'CAMBIO DE ESTADO',
       accion: 'ACTIVAR',
-      descripcion: 'SE ACTIVA LA DIRECCION: '+ dataDireccion.direccion
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+      // Manejar la respuesta si es necesario
     })
   }
+
+
   inactivarBitacora(dataDireccion: ContactoDirecciones){
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
-      id_objeto: 6,
-      accion: 'INACTIVAR',
-      descripcion: 'SE INACTIVA LA DIRECCION: '+ dataDireccion.direccion
-    }
+      id_objeto: 6, // ID del objeto correspondiente a las direcciones de contacto
+      campo_original: 'LA DIRECCIÓN: '+ dataDireccion.direccion,
+      nuevo_campo: 'CAMBIO DE ESTADO',
+      accion: 'INACTIVAR'
+    };
+  
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
+      // Manejar la respuesta si es necesario
+    });
+    
   }
+
+
+  
   deleteBitacora(dataDireccion: ContactoDirecciones){
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
-      id_objeto: 6,
+      id_objeto: 6, // ID del objeto correspondiente a las direcciones de contacto
+      campo_original: dataDireccion.direccion,
+      nuevo_campo: 'SE ELIMINA LA DIRECCIÓN: '+ dataDireccion.direccion,
       accion: 'ELIMINAR',
-      descripcion: 'SE ELIMINA LA DIRECCION CON EL ID: '+ dataDireccion.direccion
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+      // Manejar la respuesta si es necesario
     })
   }
+
 }

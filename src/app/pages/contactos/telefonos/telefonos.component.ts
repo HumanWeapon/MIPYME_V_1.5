@@ -29,14 +29,7 @@ export class TelefonosComponent implements OnInit{
   telefonosAllContactos: any[] = [];
   localUser: string = '';
   list_contactos: any[] = [];
-
-
-  getDate(): string {
-    // Obtener la fecha actual
-    const currentDate = new Date();
-    // Formatear la fecha en el formato deseado
-    return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
-}
+  telefonoAnterior: any;
 
 
   contactoTEditando: ContactoTelefono = {
@@ -145,6 +138,13 @@ export class TelefonosComponent implements OnInit{
       this.activarContactoTelefono(conT, i); // Ejecuta la segunda función
     }
   }
+
+  getDate(): string {
+    // Obtener la fecha actual
+    const currentDate = new Date();
+    // Formatear la fecha en el formato deseado
+    return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
+}
 
   inactivarContactoTelefono(contactoTelefono: ContactoTelefono, i: any){
     this._contactoTService.inactivarContactoTelefono(contactoTelefono).subscribe({
@@ -391,6 +391,7 @@ export class TelefonosComponent implements OnInit{
 
     };
     this.indice = i;
+    this.telefonoAnterior = contactoT;
   }
 
 
@@ -474,52 +475,43 @@ insertBitacora(dataTelefonos: ContactoTelefono){
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
-    id_objeto: 7,
+    id_objeto: 7, // ID del objeto correspondiente a los teléfonos de contacto
     accion: 'INSERTAR',
-    descripcion: `SE INSERTA EL TELEFONO:
+    descripcion: `SE INSERTA EL TELÉFONO:
                   Teléfono: ${dataTelefonos.telefono},
                   Extensión: ${dataTelefonos.cod_area},
                   Descripción: ${dataTelefonos.descripcion}`
-  }
-  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+  };
+
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
     // Manejar la respuesta si es necesario
   });
 }
 
 
-updateBitacora(dataTelefono: ContactoTelefono) {
-  // Guardar el teléfono actual antes de actualizarlo
-  const telefonoAnterior = { ...this.getTelefono };
-
-  // Actualizar el teléfono
-  this.getTelefono = dataTelefono;
-
-  // Comparar los datos anteriores con los nuevos datos
+updateBitacora(dataTelefonos: ContactoTelefono) {
   const cambios = [];
-  if (telefonoAnterior.telefono !== dataTelefono.telefono) {
-    cambios.push(`Teléfono anterior: ${telefonoAnterior.telefono} -> Nuevo Teléfono: ${dataTelefono.telefono}`);
+  if (this.telefonoAnterior.telefono !== dataTelefonos.telefono) {
+    cambios.push(`Teléfono: ${dataTelefonos.telefono}`);
   }
-  if (telefonoAnterior.cod_area !== dataTelefono.cod_area) {
-    cambios.push(`Extensión anterior: ${telefonoAnterior.cod_area} -> Nueva extensión: ${dataTelefono.cod_area}`);
+  if (this.telefonoAnterior.cod_area !== dataTelefonos.cod_area) {
+    cambios.push(`Extensión: ${dataTelefonos.cod_area}`);
   }
-  if (telefonoAnterior.descripcion !== dataTelefono.descripcion) {
-    cambios.push(`Descripción anterior: ${telefonoAnterior.descripcion} -> Nueva descripción: ${dataTelefono.descripcion}`);
+  if (this.telefonoAnterior.descripcion !== dataTelefonos.descripcion) {
+    cambios.push(`Descripción: ${dataTelefonos.descripcion}`);
   }
-  // Puedes agregar más comparaciones para otros campos según tus necesidades
-
+ 
   // Si se realizaron cambios, registrar en la bitácora
   if (cambios.length > 0) {
-    // Crear la descripción para la bitácora
-    const descripcion = `Se actualizaron los siguientes campos:\n${cambios.join('\n')}`;
-
     // Crear el objeto bitácora
     const bitacora = {
       fecha: new Date(),
-      id_usuario: this.getTelefono.id_usuario,
-      id_objeto: 7,
-      accion: 'ACTUALIZAR',
-      descripcion: descripcion
-    };
+      id_usuario: this.getUser.id_usuario, // Usar el ID del usuario anterior para registrar el cambio
+      id_objeto: 7, // ID del objeto correspondiente a los teléfonos de contacto
+      campo_original: `Teléfono: ${this.telefonoAnterior.telefono}, Extensión: ${this.telefonoAnterior.cod_area}, Descripción: ${this.telefonoAnterior.descripcion}`, 
+      nuevo_campo: cambios.join(', '),
+      accion: 'ACTUALIZAR'
+    }
 
     // Insertar la bitácora
     this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
@@ -529,41 +521,48 @@ updateBitacora(dataTelefono: ContactoTelefono) {
 }
 
 
-activarBitacora(dataTelefonos: ContactoTelefono){
+activarBitacora(dataTelefono: ContactoTelefono) { 
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
-    id_objeto: 7,
+    id_objeto: 7, // ID del objeto correspondiente a los teléfonos de contacto
+    campo_original: 'EL TELÉFONO' + dataTelefono.telefono,
+    nuevo_campo: 'CAMBIO DE ESTADO',
     accion: 'ACTIVAR',
-    descripcion: 'SE ACTIVA EL NUMERO DE TELEFONO: '+ dataTelefonos.telefono
-  }
-  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-  })
+  };
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+    // Manejar la respuesta si es necesario
+  });
 }
 
-inactivarBitacora(dataTelefonos: ContactoTelefono){
+inactivarBitacora(dataTelefono: ContactoTelefono) {
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
-    id_objeto: 7,
-    accion: 'INACTIVAR',
-    descripcion: 'SE INACTIVA EL NUMERO DE TELEFONO: '+ dataTelefonos.telefono
-  }
-  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-  })
+    id_objeto: 7, // ID del objeto correspondiente a los teléfonos de contacto
+    campo_original: 'EL TELÉFONO' + dataTelefono.telefono,
+    nuevo_campo: 'CAMBIO DE ESTADO',
+    accion: 'INACTIVAR'
+  };
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+    // Manejar la respuesta si es necesario
+  });
 }
 
-deleteBitacora(dataTelefonos: ContactoTelefono){
+deleteBitacora(dataTelefono: ContactoTelefono) {
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
-    id_objeto: 7,
+    id_objeto: 7, // ID del objeto correspondiente a los teléfonos de contacto
+    campo_original: 'EL TELÉFONO'+ dataTelefono.telefono,
+    nuevo_campo: 'SE HA ELIMINADO TELÉFONO',
     accion: 'ELIMINAR',
-    descripcion: 'SE ELIMINA EL NUMERO DE TELEFONO: '+ dataTelefonos.telefono
-  }
-  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-  })
+  };
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+    // Manejar la respuesta si es necesario
+  });
 }
+
   /*************************************************************** Fin Métodos de Bitácora ***************************************************************************/
 
 }

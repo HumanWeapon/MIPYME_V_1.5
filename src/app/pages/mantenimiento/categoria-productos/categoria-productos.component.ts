@@ -28,6 +28,8 @@ export class CategoriaProductosComponent implements OnInit{
  
   subscription: Subscription | undefined; 
 
+  categoriaAnterior: any;
+
   CategoriaEditando: Categoria = {
     id_categoria: 0,
     categoria: "",
@@ -325,6 +327,7 @@ getDate(): string {
 
     };
     this.indice = i;
+    this.categoriaAnterior = Cate;
   }
 
 
@@ -413,100 +416,101 @@ getDate(): string {
    });
  }
 
-  insertBitacora(dataCatProd: Categoria) {
+ insertBitacora(dataCatProd: Categoria) {
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 20,
+    campo_original: 'NO EXISTE REGISTRO ANTERIOR',
+    nuevo_campo: `SE AGREGÓ UNA NUEVA CATEGORÍA:
+                  Categoría: ${dataCatProd.categoria},
+                  Descripción: ${dataCatProd.descripcion}`,
+    accion: 'INSERTAR'
+  };
+
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+    // Manejar la respuesta si es necesario
+  });
+}
+
+
+
+
+updateBitacora(dataCatProd: Categoria) {
+  const cambios = [];
+  if (this.categoriaAnterior.categoria !== dataCatProd.categoria) {
+    cambios.push(`Categoría: ${dataCatProd.categoria}`);
+  }
+  if (this.categoriaAnterior.descripcion !== dataCatProd.descripcion) {
+    cambios.push(`Descripción: ${dataCatProd.descripcion}`);
+  }
+ 
+  // Si se realizaron cambios, registrar en la bitácora
+  if (cambios.length > 0) {
+    // Crear el objeto bitácora
     const bitacora = {
-      fecha: new Date().toISOString().split('T')[0],
+      fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
-      id_objeto: 20,
-      accion: 'INSERTAR',
-      descripcion: `SE AGREGÓ UNA NUEVA CATEGORÍA:
-                    Categoría: ${dataCatProd.categoria},
-                    Descripción: ${dataCatProd.descripcion}`
-    };
-  
+      id_objeto: 20, // ID del objeto correspondiente a las categorías
+      campo_original: `Categoría: ${this.categoriaAnterior.categoria}, Descripción: ${this.categoriaAnterior.descripcion}`, 
+      nuevo_campo: cambios.join(', '),
+      accion: 'ACTUALIZAR'
+    }
+
+    // Insertar la bitácora
     this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
       // Manejar la respuesta si es necesario
     });
   }
+}
+
   
 
+activarBitacora(dataCatProd: Categoria) {
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 20,
+    campo_original: `CATEGORÍA: ${dataCatProd.categoria}`,
+    nuevo_campo: 'CAMBIO DE ESTADO',
+    accion: 'ACTIVAR'
+  };
 
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+    // Manejar la respuesta si es necesario
+  });
+}
 
-  updateBitacora(dataCatProd: Categoria) {
-    // Guardar la categoría actual antes de actualizarla
-    const categoriaAnterior = { ...this.getCate };
-  
-    // Actualizar la categoría
-    this.getCate = dataCatProd;
-  
-    // Comparar los datos anteriores con los nuevos datos
-    const cambios = [];
-    if (categoriaAnterior.categoria !== dataCatProd.categoria) {
-      cambios.push(`Categoría anterior: ${categoriaAnterior.categoria} -> Nueva Categoría: ${dataCatProd.categoria}`);
-    }
-    if (categoriaAnterior.descripcion !== dataCatProd.descripcion) {
-      cambios.push(`Descripción anterior: ${categoriaAnterior.descripcion} -> Nueva Descripción: ${dataCatProd.descripcion}`);
-    }
-    // Puedes agregar más comparaciones para otros campos según tus necesidades
-  
-    // Si se realizaron cambios, registrar en la bitácora
-    if (cambios.length > 0) {
-      // Crear la descripción para la bitácora
-      const descripcion = `Se actualizaron los siguientes campos:\n${cambios.join('\n')}`;
-  
-      // Crear el objeto bitácora
-      const bitacora = {
-        fecha: new Date(),
-        id_usuario: this.getUser.id_usuario,
-        id_objeto: 20, // Ajusta el ID del objeto según corresponda en tu sistema
-        accion: 'ACTUALIZAR',
-        descripcion: descripcion
-      };
-  
-      // Insertar la bitácora
-      this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
-        // Manejar la respuesta si es necesario
-      });
-    }
-  }
-  
-  
+inactivarBitacora(dataCatProd: Categoria) {
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 20,
+    campo_original: `CATEGORÍA: ${dataCatProd.categoria}`,
+    nuevo_campo: 'CAMBIO DE ESTADO',
+    accion: 'INACTIVAR'
+  };
 
-  activarBitacora(dataCatProd: Categoria){
-    const bitacora = {
-      fecha: new Date().toISOString().split('T')[0],
-      id_usuario: this.getUser.id_usuario,
-      id_objeto: 20,
-      accion: 'ACTIVAR',
-      descripcion: 'SE ACTIVA EL CONTACTO CON EL ID: '+ dataCatProd.categoria
-    }
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
-  }
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+    // Manejar la respuesta si es necesario
+  });
+}
 
-  inactivarBitacora(dataCatProd: Categoria){
-    const bitacora = {
-      fecha: new Date().toISOString().split('T')[0],
-      id_usuario: this.getUser.id_usuario,
-      id_objeto: 20,
-      accion: 'INACTIVAR',
-      descripcion: 'SE INACTIVA LA CATEGORÍA CON EL ID: '+ dataCatProd.categoria
-    }
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
-  }
+deleteBitacora(dataCatProd: Categoria) {
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 20,
+    campo_original: dataCatProd.categoria,
+    nuevo_campo: `SE ELIMINA LA CATEGORÍA: ${dataCatProd.categoria}`,
+    accion: 'ELIMINAR'
+  };
 
-  deleteBitacora(dataCatProd: Categoria){
-    const bitacora = {
-      fecha: new Date().toISOString().split('T')[0],
-      id_usuario: this.getUser.id_usuario,
-      id_objeto: 20,
-      accion: 'ELIMINAR',
-      descripcion: 'SE ELIMINA EL CONTACTO CON EL ID: '+ dataCatProd.categoria
-    }
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
-  }
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+    // Manejar la respuesta si es necesario
+  });
+}
+
     /*************************************************************** Fin Métodos de Bitácora ***************************************************************************/
 
 }

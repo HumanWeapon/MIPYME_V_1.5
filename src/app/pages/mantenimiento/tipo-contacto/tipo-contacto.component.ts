@@ -23,6 +23,8 @@ import { DatePipe } from '@angular/common';
 })
 export class TipoContactoComponent implements OnInit{
 
+  tcAnterior: any;
+
   tipoContactoEditando: TipoContacto = {
     id_tipo_contacto: 0, 
     tipo_contacto: '', 
@@ -315,6 +317,7 @@ getEstadoText(estado: number): string {
 
     };
     this.indice = i;
+    this.tcAnterior = tipoC;
   }
 
   cancelarInput(){
@@ -401,92 +404,95 @@ getUsuario(){
 
 insertBitacora(dataTipContacto: TipoContacto) {
   const bitacora = {
-      fecha: new Date(),
-      id_usuario: this.getUser.id_usuario,
-      id_objeto: 12,
-      accion: 'INSERTAR',
-      descripcion: `SE INSERTA EL TIPO DE CONTACTO:
-                    Tipo de Contacto: ${dataTipContacto.tipo_contacto},
-                    Descripción: ${dataTipContacto.descripcion}`
+    fecha: new Date(),
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 12, // ID del objeto correspondiente a los tipos de contacto
+    campo_original: 'NO EXISTE REGISTRO ANTERIOR',
+    nuevo_campo: `SE AGREGÓ UN NUEVO TIPO DE CONTACTO:
+                  Tipo de Contacto: ${dataTipContacto.tipo_contacto},
+                  Descripción: ${dataTipContacto.descripcion}`,
+    accion: 'INSERTAR'
   };
+
   this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
-      // Manejar la respuesta del servicio aquí si es necesario
+    // Manejar la respuesta si es necesario
   });
 }
 
 
+
 updateBitacora(dataTipContacto: TipoContacto) {
-  // Guardar el tipo de contacto actual antes de actualizarlo
-  const tipoContactoAnterior = { ...this.getTipoContacto };
-
-  // Actualizar el tipo de contacto
-  this.getTipoContacto = dataTipContacto;
-
-  // Comparar los datos anteriores con los nuevos datos
   const cambios = [];
-  if (tipoContactoAnterior.tipo_contacto !== dataTipContacto.tipo_contacto) {
-      cambios.push(`Tipo de contacto anterior: ${tipoContactoAnterior.tipo_contacto} -> Nuevo tipo de contacto: ${dataTipContacto.tipo_contacto}`);
+  if (this.tcAnterior.tipo_contacto !== dataTipContacto.tipo_contacto) {
+    cambios.push(`Tipo de Contacto: ${dataTipContacto.tipo_contacto}`);
   }
-  if (tipoContactoAnterior.descripcion !== dataTipContacto.descripcion) {
-      cambios.push(`Descripción anterior: ${tipoContactoAnterior.descripcion} -> Nueva descripción: ${dataTipContacto.descripcion}`);
+  if (this.tcAnterior.descripcion !== dataTipContacto.descripcion) {
+    cambios.push(`Descripción: ${dataTipContacto.descripcion}`);
   }
-  // Puedes agregar más comparaciones para otros campos según tus necesidades
 
   // Si se realizaron cambios, registrar en la bitácora
   if (cambios.length > 0) {
-      // Crear la descripción para la bitácora
-      const descripcion = `Se actualizaron los siguientes campos:\n${cambios.join('\n')}`;
+    // Crear el objeto bitácora
+    const bitacora = {
+      fecha: new Date(),
+      id_usuario: this.getUser.id_usuario, // Usar el ID del usuario anterior para registrar el cambio
+      id_objeto: 12, // ID del objeto correspondiente a los tipos de contacto
+      campo_original: `Tipo de Contacto: ${this.tcAnterior.tipo_contacto}, Descripción: ${this.tcAnterior.descripcion}`, 
+      nuevo_campo: cambios.join(', '),
+      accion: 'ACTUALIZAR'
+    }
 
-      // Crear el objeto bitácora
-      const bitacora = {
-          fecha: new Date(),
-          id_usuario: this.getUser.id_usuario,
-          id_objeto: 12,
-          accion: 'ACTUALIZAR',
-          descripcion: descripcion
-      };
-
-      // Insertar la bitácora
-      this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
-          // Manejar la respuesta si es necesario
-      });
+    // Insertar la bitácora
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+      // Manejar la respuesta si es necesario
+    });
   }
 }
 
 
-activarBitacora(dataTipContacto: TipoContacto){
+
+activarBitacora(dataTipContacto: TipoContacto){ 
   const bitacora = {
-    fecha: new Date(),
+    fecha: new Date() ,
     id_usuario: this.getUser.id_usuario,
     id_objeto: 12,
+    campo_original: `EL TIPO DE CONTACTO: ${dataTipContacto.tipo_contacto}`,
+    nuevo_campo: 'CAMBIO DE ESTADO',
     accion: 'ACTIVAR',
-    descripcion: 'SE ACTIVA EL TIPO DE CONTACTO: '+ dataTipContacto.tipo_contacto
   }
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
   })
 }
+
 inactivarBitacora(dataTipContacto: TipoContacto){
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 12,
-    accion: 'INACTIVAR',
-    descripcion: 'SE INACTIVA EL TIPO DE CONTACTO: '+ dataTipContacto.tipo_contacto
-  }
+    campo_original: `EL TIPO DE CONTACTO: ${dataTipContacto.tipo_contacto}`,
+    nuevo_campo: 'CAMBIO DE ESTADO',
+    accion: 'INACTIVAR'
+  };
+
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-  })
+    // Manejar la respuesta si es necesario
+  });
+  
 }
+
 deleteBitacora(dataTipContacto: TipoContacto){
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 12,
+    campo_original: `EL TIPO DE CONTACTO: ${dataTipContacto.tipo_contacto}`,
+    nuevo_campo: `SE ELIMINA EL TIPO DE CONTACTO: ${dataTipContacto.tipo_contacto}`,
     accion: 'ELIMINAR',
-    descripcion: 'SE ELIMINA EL TIPO DE CONTACTO: '+ dataTipContacto.tipo_contacto
   }
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
   })
 }
+
   /*************************************************************** Fin Métodos de Bitácora ***************************************************************************/
 
 

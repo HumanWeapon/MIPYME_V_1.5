@@ -25,15 +25,10 @@ import { DatePipe } from '@angular/common';
 })
 export class ParametrosComponent implements OnInit{
   getUserId: any;
-  getParametro: any;
+ getParametro: any;
+ parametrosAnterior: any;
 
-  getDate(): string {
-    // Obtener la fecha actual
-    const currentDate = new Date();
-    // Formatear la fecha en el formato deseado
-    return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
-}
-
+ 
   parametroEditando: Parametros = {
     id_parametro: 0,
     parametro: '',
@@ -141,6 +136,14 @@ toggleFunction(parametros: any, i: number) {
     this.activateParametro(parametros, i); // Ejecuta la segunda función
   }
 }
+
+getDate(): string {
+  // Obtener la fecha actual
+  const currentDate = new Date();
+  // Formatear la fecha en el formato deseado
+  return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
+}
+
 
 inactivateParametro(parametro: any, i: number){
   this._parametroService.inactivateParametro(parametro).subscribe(data => {
@@ -330,6 +333,7 @@ generateExcel() {
       alerta_busqueda: parametro.alerta_busqueda, 
     };
     this.indice = i;
+    this.parametrosAnterior = parametro;
   }
 
 
@@ -421,10 +425,11 @@ generateExcel() {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 2,
-    accion: 'INSERTAR',
-    descripcion: `SE INSERTA EL PARÁMETRO:
+    campo_original: 'NO EXISTE REGISTRO ANTERIOR',
+    nuevo_campo: `SE AGREGÓ UN NUEVO PARÁMETRO:
                   Parámetro: ${dataParametro.parametro},
-                  Valor: ${dataParametro.valor}`
+                  Valor: ${dataParametro.valor}`,
+    accion: 'INSERTAR'
   };
 
   this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
@@ -434,81 +439,82 @@ generateExcel() {
 
 
   
-  updateBitacora(dataParametro: Parametros) {
-    // Guardar el parámetro actual antes de actualizarlo
-    const parametroAnterior = { ...this.getParametro };
-  
-    // Actualizar el parámetro
-    this.getParametro = dataParametro;
-  
-    // Comparar los datos anteriores con los nuevos datos
-    const cambios = [];
-    if (parametroAnterior.parametro !== dataParametro.parametro) {
-      cambios.push(`Nombre de parámetro anterior: ${parametroAnterior.parametro} -> por nuevo nombre: ${dataParametro.parametro}`);
-    }
-    if (parametroAnterior.valor !== dataParametro.valor) {
-      cambios.push(`Valor anterior: ${parametroAnterior.valor} -> por nuevo valor: ${dataParametro.valor}`);
-    }
-    // Puedes agregar más comparaciones para otros campos según tus necesidades
-  
-    // Si se realizaron cambios, registrar en la bitácora
-    if (cambios.length > 0) {
-      // Crear la descripción para la bitácora
-      const descripcion = `Se actualizaron los siguientes campos:\n${cambios.join('\n')}`;
-  
-      // Crear el objeto bitácora
-      const bitacora = {
-        fecha: new Date(),
-        id_usuario: this.getUserId(), // Suponiendo que tengas un método para obtener el ID del usuario actual
-        id_objeto: 2, // Suponiendo que el ID del objeto de parámetros es 2
-        accion: 'ACTUALIZAR',
-        descripcion: descripcion
-      };
-  
-      // Insertar la bitácora
-      this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
-        // Manejar la respuesta si es necesario
-      });
-    }
+updateBitacora(dataParametro: Parametros) {
+
+  const cambios = [];
+
+  if (this.parametrosAnterior.parametro !== dataParametro.parametro) {
+    cambios.push(`Parámetro: ${dataParametro.parametro}`);
   }
-  
-  activarBitacora(dataParametro: Parametros){
-    console.log(dataParametro);
+  if (this.parametrosAnterior.valor !== dataParametro.valor) {
+    cambios.push(`Valor: ${dataParametro.valor}`);
+  }
+ 
+  // Si se realizaron cambios, registrar en la bitácora
+  if (cambios.length > 0) {
+    // Crear el objeto bitácora
     const bitacora = {
       fecha: new Date(),
-      id_usuario: this.getUser.id_usuario,
-      id_objeto: 2,
-      accion: 'ACTIVAR',
-      descripcion: 'SE ACTIVA EL PARAMETRO: '+ dataParametro.parametro
-    }
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-      
-    })
+      id_usuario: this.getUser.id_usuario, // Usar el ID del usuario anterior para registrar el cambio
+      id_objeto: 2, // ID del objeto correspondiente a los parámetros
+      campo_original: `Parámetro: ${this.parametrosAnterior.parametro}, Valor: ${this.parametrosAnterior.valor}`, 
+      nuevo_campo: cambios.join(', '),
+      accion: 'ACTUALIZAR'
+    };
+
+    // Insertar la bitácora
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+      // Manejar la respuesta si es necesario
+    });
   }
-  inactivarBitacora(dataParametro: Parametros){
-    console.log(dataParametro);
-    const bitacora = {
-      fecha: new Date(),
-      id_usuario: this.getUser.id_usuario,
-      id_objeto: 2,
-      accion: 'INACTIVAR',
-      descripcion: 'SE INACTIVA EL PARAMETRO: '+ dataParametro.parametro
-    }
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-      
-    })
-  }
-  deleteBitacora(dataParametro: Parametros){
-    const bitacora = {
-      fecha: new Date(),
-      id_usuario: this.getUser.id_usuario,
-      id_objeto: 2,
-      accion: 'ELIMINAR',
-      descripcion: 'SE ELIMINA EL PARAMETRO: '+ dataParametro.parametro
-    }
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
-  }
+}
+
+  
+activarBitacora(dataParametro: Parametros) { 
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 2, // Suponiendo que el ID del objeto de parámetros es 2
+    campo_original: 'EL PARÁMETRO: ' + dataParametro.parametro,
+    nuevo_campo: 'CAMBIO DE ESTADO',
+    accion: 'ACTIVAR'
+  };
+
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+    // Manejar la respuesta si es necesario
+  });
+}
+
+inactivarBitacora(dataParametro: Parametros) {
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 2, // Suponiendo que el ID del objeto de parámetros es 2
+    campo_original: 'EL PARÁMETRO: ' + dataParametro.parametro,
+    nuevo_campo: 'CAMBIO DE ESTADO',
+    accion: 'INACTIVAR'
+  };
+
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+    // Manejar la respuesta si es necesario
+  });
+}
+
+deleteBitacora(dataParametro: Parametros) {
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 2, // Suponiendo que el ID del objeto de parámetros es 2
+    campo_original: `Parámetro: ${dataParametro.parametro}`,
+    nuevo_campo: `SE ELIMINA EL PARÁMETRO: ${dataParametro.parametro}`,
+    accion: 'ELIMINAR'
+  };
+
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+    // Manejar la respuesta si es necesario
+  });
+}
+
     /*************************************************************** Fin Métodos de Bitácora ***************************************************************************/
 
 }

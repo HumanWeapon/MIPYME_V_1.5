@@ -26,6 +26,8 @@ import { es } from 'date-fns/locale'; // Importa el idioma español
 })
 export class EmpresasComponent {
 
+  empresaAnterior: any;
+
   /*******Empresas************/
   empresaEditando: Empresa = {
     id_empresa: 0,
@@ -372,6 +374,7 @@ getEstadoText(estado: number): string {
       estado: empresa.estado,
     };
     this.indice = i;
+    this.empresaAnterior = empresa;
   }
 
 
@@ -459,59 +462,55 @@ getEstadoText(estado: number): string {
      }
    });
  }
+
  insertBitacora(dataEmpresa: Empresa) {
   const bitacora = {
-      fecha: new Date(),
-      id_usuario: this.getUser.id_usuario,
-      id_objeto: 9,
-      accion: 'INSERTAR',
-      descripcion: `SE INSERTA LA EMPRESA:
-                    ID Empresa: ${dataEmpresa.id_empresa},
-                    Nombre Empresa: ${dataEmpresa.nombre_empresa},
-                    Descripción: ${dataEmpresa.descripcion},
-                    Creado por: ${dataEmpresa.creado_por},`
+    fecha: new Date(),
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 9, // ID del objeto correspondiente a las empresas
+    accion: 'INSERTAR',
+    descripcion: `SE INSERTA LA EMPRESA:
+                  ID Empresa: ${dataEmpresa.id_empresa},
+                  Nombre Empresa: ${dataEmpresa.nombre_empresa},
+                  Descripción: ${dataEmpresa.descripcion},
+                  `
   };
 
   this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
-      // Manejar la respuesta si es necesario
+    // Manejar la respuesta si es necesario
   });
 }
 
+
 updateBitacora(dataEmpresa: Empresa) {
-  // Guardar la empresa actual antes de actualizarla
-  const empresaAnterior = { ...this.getEmpresa };
- 
-  // Actualizar la empresa
-  this.getEmpresa = dataEmpresa;
- 
-  // Comparar los datos anteriores con los nuevos datos
   const cambios = [];
-  if (empresaAnterior.nombre_empresa !== dataEmpresa.nombre_empresa) {
-      cambios.push(`Nombre de empresa anterior: ${empresaAnterior.nombre_empresa} -> Nuevo nombre de empresa: ${dataEmpresa.nombre_empresa}`);
+  if (this.empresaAnterior.id_empresa !== dataEmpresa.id_empresa) {
+    cambios.push(`ID Empresa: ${dataEmpresa.id_empresa}`);
   }
-  if (empresaAnterior.descripcion !== dataEmpresa.descripcion) {
-      cambios.push(`Descripción anterior: ${empresaAnterior.descripcion} -> Nueva descripción: ${dataEmpresa.descripcion}`);
+  if (this.empresaAnterior.nombre_empresa !== dataEmpresa.nombre_empresa) {
+    cambios.push(`Nombre Empresa: ${dataEmpresa.nombre_empresa}`);
   }
-  // Puedes agregar más comparaciones para otros campos según tus necesidades
+  if (this.empresaAnterior.descripcion !== dataEmpresa.descripcion) {
+    cambios.push(`Descripción: ${dataEmpresa.descripcion}`);
+  }
+ 
  
   // Si se realizaron cambios, registrar en la bitácora
   if (cambios.length > 0) {
-      // Crear la descripción para la bitácora
-      const descripcion = `Se actualizaron los siguientes campos:\n${cambios.join('\n')}`;
- 
-      // Crear el objeto bitácora
-      const bitacora = {
-          fecha: new Date(),
-          id_usuario: this.getUser.usuario,
-          id_objeto: 9,
-          accion: 'ACTUALIZAR',
-          descripcion: descripcion
-      };
- 
-      // Insertar la bitácora
-      this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
-          // Manejar la respuesta si es necesario
-      });
+    // Crear el objeto bitácora
+    const bitacora = {
+      fecha: new Date(),
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 9, // ID del objeto correspondiente a las empresas
+      campo_original: `ID Empresa: ${this.empresaAnterior.id_empresa}, Nombre Empresa: ${this.empresaAnterior.nombre_empresa}, Descripción: ${this.empresaAnterior.descripcion}, `,
+      nuevo_campo: cambios.join(', '),
+      accion: 'ACTUALIZAR'
+    };
+
+    // Insertar la bitácora
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+      // Manejar la respuesta si es necesario
+    });
   }
 }
 
@@ -522,8 +521,9 @@ updateBitacora(dataEmpresa: Empresa) {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
       id_objeto: 9,
+      campo_anterior: dataEmpresa.empresa,
+      nuevo_campo: 'CAMBIO DE ESTADO: ',
       accion: 'ACTIVAR',
-      descripcion: 'SE ACTIVA LA EMPRESA: '+ dataEmpresa.empresa
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
@@ -534,8 +534,9 @@ updateBitacora(dataEmpresa: Empresa) {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
       id_objeto: 9,
+      campo_anterior: dataEmpresa.empresa,
+      nuevo_campo: 'CAMBIO DE ESTADO: ',
       accion: 'INACTIVAR',
-      descripcion: 'SE INACTIVA LA EMPRESA: '+ dataEmpresa.empresa
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
@@ -545,8 +546,9 @@ updateBitacora(dataEmpresa: Empresa) {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
       id_objeto: 9,
+      campo_anterior: dataEmpresa.empresa,
+      nuevo_campo: 'SE ELIMINA LA EMPRESA ',
       accion: 'ELIMINAR',
-      descripcion: 'SE ELIMINA LA EMPRESA: '+ dataEmpresa.id_empresa
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })

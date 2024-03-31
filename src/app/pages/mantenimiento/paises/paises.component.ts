@@ -20,14 +20,8 @@ import { es } from 'date-fns/locale'; // Importa el idioma español
 
 export class PaisesComponent implements OnInit{
   getPais: any;
+  paisAnterior: any;
 
-
-  getDate(): string {
-    // Obtener la fecha actual
-    const currentDate = new Date();
-    // Formatear la fecha en el formato deseado
-    return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
-}
 
 
   paisEditando: Paises = {
@@ -141,6 +135,14 @@ toggleFunction(paises: any, i: number) {
     this.activarPais(paises, i); // Ejecuta la segunda función
   }
 }
+
+getDate(): string {
+  // Obtener la fecha actual
+  const currentDate = new Date();
+  // Formatear la fecha en el formato deseado
+  return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
+}
+
  
   inactivarPais(paises: Paises, i: any){
     this._paisService.inactivarPais(paises).subscribe(data => {
@@ -332,6 +334,7 @@ agregarNuevoPais() {
     cod_pais: ''
     };
     this.indice = i;
+    this.paisAnterior = paises;
   
   }
 
@@ -424,91 +427,98 @@ getUsuario(){
  });
 }
 
-insertBitacora(dataPais: Paises){
+insertBitacora(dataPais: Paises) {
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 19,
-    accion: 'INSERTAR',
-    descripcion: `SE INSERTA EL PAÍS: ${dataPais.pais}, Descripción: ${dataPais.descripcion}`
+    campo_original: 'NO EXISTE REGISTRO ANTERIOR',
+    nuevo_campo: `SE AGREGÓ UN NUEVO PAÍS:
+                  País: ${dataPais.pais},
+                  Descripción: ${dataPais.descripcion}`,
+    accion: 'INSERTAR'
   };
+
   this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
-    // Puedes manejar la respuesta si es necesario
+    // Manejar la respuesta si es necesario
   });
 }
 
 updateBitacora(dataPais: Paises) {
-  // Guardar los datos del país actual antes de actualizarlos
-  const paisAnterior = { ...this.getPais };
-
-  // Actualizar los datos del país
-  this.getPais = dataPais;
-
-  // Comparar los datos anteriores con los nuevos datos
   const cambios = [];
-  if (paisAnterior.pais !== dataPais.pais) {
-    cambios.push(`País anterior: ${paisAnterior.pais} -> Nuevo País: ${dataPais.pais}`);
+  if (this.paisAnterior.pais !== dataPais.pais) {
+    cambios.push(`País: ${dataPais.pais}`);
   }
-  if (paisAnterior.descripcion !== dataPais.descripcion) {
-    cambios.push(`Descripción anterior: ${paisAnterior.descripcion} -> Nueva Descripción: ${dataPais.descripcion}`);
+  if (this.paisAnterior.descripcion !== dataPais.descripcion) {
+    cambios.push(`Descripción: ${dataPais.descripcion}`);
   }
-  // Puedes agregar más comparaciones para otros campos según tus necesidades
-
+ 
   // Si se realizaron cambios, registrar en la bitácora
   if (cambios.length > 0) {
-    // Crear la descripción para la bitácora
-    const descripcion = `Se actualizaron los siguientes campos:\n${cambios.join('\n')}`;
-
     // Crear el objeto bitácora
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
-      id_objeto: 19,
-      accion: 'ACTUALIZAR',
-      descripcion: descripcion
-    };
+      id_objeto: 19, // ID del objeto correspondiente a los países
+      campo_original: `País: ${this.paisAnterior.pais}, Descripción: ${this.paisAnterior.descripcion}`, 
+      nuevo_campo: cambios.join(', '),
+      accion: 'ACTUALIZAR'
+    }
 
     // Insertar la bitácora
     this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
-      // Puedes manejar la respuesta si es necesario
+      // Manejar la respuesta si es necesario
     });
   }
 }
 
 
-activarBitacora(dataPais: Paises){
+
+activarBitacora(dataPais: Paises){ 
   const bitacora = {
-    fecha: new Date(),
+    fecha: new Date() ,
     id_usuario: this.getUser.id_usuario,
     id_objeto: 19,
+    campo_original: 'EL PAÍS: '+ dataPais.pais,
+    nuevo_campo: 'CAMBIO DE ESTADO',
     accion: 'ACTIVAR',
-    descripcion: 'SE ACTIVA EL PAIS: '+ dataPais.pais
   }
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
   })
 }
+
+
 inactivarBitacora(dataPais: Paises){
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 19,
-    accion: 'INACTIVAR',
-    descripcion: 'SE INACTIVA EL PAIS: '+ dataPais.pais
-  }
+    campo_original: 'EL PAÍS: '+ dataPais.pais,
+    nuevo_campo: 'CAMBIO DE ESTADO',
+    accion: 'INACTIVAR'
+  };
+
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-  })
+    // Manejar la respuesta si es necesario
+  });
+  
 }
+
+
+
 deleteBitacora(dataPais: Paises){
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 19,
+    campo_original: dataPais.pais,
+    nuevo_campo: 'SE ELIMINA EL PAÍS: '+ dataPais.pais,
     accion: 'ELIMINAR',
-    descripcion: 'SE ELIMINA EL PAIS: '+ dataPais.pais
   }
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
   })
 }
+
   /*************************************************************** Fin Métodos de Bitácora ***************************************************************************/
 
 

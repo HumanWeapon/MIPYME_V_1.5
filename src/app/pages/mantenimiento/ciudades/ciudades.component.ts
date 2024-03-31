@@ -28,13 +28,9 @@ import { DatePipe } from '@angular/common';
 export class CiudadesComponent implements OnInit{
 
   getCity: any;
+  cuidadAnterior: any;
 
-  getDate(): string {
-    // Obtener la fecha actual
-    const currentDate = new Date();
-    // Formatear la fecha en el formato deseado
-    return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
-}
+
  
   ciudadEditando: Ciudades = {
     id_ciudad: 0, 
@@ -156,6 +152,15 @@ toggleFunction(ciu: any, i: number) {
     this.activarCiudad(ciu, i); // Ejecuta la segunda función
   }
 }
+
+
+getDate(): string {
+  // Obtener la fecha actual
+  const currentDate = new Date();
+  // Formatear la fecha en el formato deseado
+  return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
+}
+
 
   inactivarCiudad(ciudades: any, i: any){
     const inactivarCiudad : Ciudades = {
@@ -363,6 +368,7 @@ toggleFunction(ciu: any, i: number) {
       id_pais: ciudades.id_pais
     };
     this.indice = i;
+    this.cuidadAnterior = ciudades;
   }
 
 
@@ -446,99 +452,92 @@ insertBitacora(dataCiudad: Ciudades) {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 18,
-    accion: 'INSERTAR',
-    descripcion: `SE AGREGÓ UNA NUEVA CIUDAD:
+    campo_original: 'NO EXISTE REGISTRO ANTERIOR',
+    nuevo_campo: `SE AGREGÓ UNA NUEVA CIUDAD:
                   Ciudad: ${dataCiudad.ciudad},
-                  Descripción: ${dataCiudad.descripcion}`
+                  Descripción: ${dataCiudad.descripcion}`,
+    accion: 'INSERTAR'
   };
 
   this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
-    // Puedes manejar la respuesta si es necesario
+    // Manejar la respuesta si es necesario
   });
 }
 
 
-// Actualizar la bitácora para una ciudad
 updateBitacora(dataCiudad: Ciudades) {
-  // Guardar los datos de la ciudad actual antes de actualizarlos
-  const ciudadAnterior = { ...this.getCity };
-
-  // Actualizar los datos de la ciudad
-  this.getCity = dataCiudad;
-
-  // Comparar los datos anteriores con los nuevos datos
   const cambios = [];
-  if (ciudadAnterior.ciudad !== dataCiudad.ciudad) {
-    cambios.push(`Ciudad anterior: ${ciudadAnterior.ciudad} -> Nueva Ciudad: ${dataCiudad.ciudad}`);
+  if (this.cuidadAnterior.ciudad !== dataCiudad.ciudad) {
+    cambios.push(`Ciudad: ${dataCiudad.ciudad}`);
   }
-  if (ciudadAnterior.descripcion !== dataCiudad.descripcion) {
-    cambios.push(`Descripción anterior: ${ciudadAnterior.descripcion} -> Nueva Descripción: ${dataCiudad.descripcion}`);
+  if (this.cuidadAnterior.descripcion !== dataCiudad.descripcion) {
+    cambios.push(`Descripción: ${dataCiudad.descripcion}`);
   }
-  // Puedes agregar más comparaciones para otros campos según tus necesidades
-
+ 
   // Si se realizaron cambios, registrar en la bitácora
   if (cambios.length > 0) {
-    // Crear la descripción para la bitácora
-    const descripcion = `Se actualizaron los siguientes campos:\n${cambios.join('\n')}`;
-
     // Crear el objeto bitácora
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
-      id_objeto: 18,
-      accion: 'ACTUALIZAR',
-      descripcion: descripcion
-    };
+      id_objeto: 18, // ID del objeto correspondiente a las ciudades
+      campo_original: `Ciudad: ${this.cuidadAnterior.ciudad}, Descripción: ${this.cuidadAnterior.descripcion}`, 
+      nuevo_campo: cambios.join(', '),
+      accion: 'ACTUALIZAR'
+    }
 
     // Insertar la bitácora
     this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
-      // Puedes manejar la respuesta si es necesario
+      // Manejar la respuesta si es necesario
     });
   }
 }
 
-
-// Activar la bitácora para una ciudad
 activarBitacora(dataCiudad: Ciudades) {
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 18,
-    accion: 'ACTIVAR',
-    descripcion: 'SE ACTIVA LA CIUDAD: ' + dataCiudad.ciudad
+    campo_original: `CIUDAD: ${dataCiudad.ciudad}`,
+    nuevo_campo: 'CAMBIO DE ESTADO',
+    accion: 'ACTIVAR'
   };
+
   this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
-    // Puedes manejar el éxito aquí si es necesario
+    // Manejar la respuesta si es necesario
   });
 }
 
-// Inactivar la bitácora para una ciudad
 inactivarBitacora(dataCiudad: Ciudades) {
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 18,
-    accion: 'INACTIVAR',
-    descripcion: 'SE INACTIVA LA CIUDAD: ' + dataCiudad.ciudad
+    campo_original: `CIUDAD: ${dataCiudad.ciudad}`,
+    nuevo_campo: 'CAMBIO DE ESTADO',
+    accion: 'INACTIVAR'
   };
+
   this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
-    // Puedes manejar el éxito aquí si es necesario
+    // Manejar la respuesta si es necesario
   });
 }
 
-// Eliminar la bitácora para una ciudad
 deleteBitacora(dataCiudad: Ciudades) {
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 18,
-    accion: 'ELIMINAR',
-    descripcion: 'SE ELIMINA LA CIUDAD: ' + dataCiudad.ciudad
+    campo_original: dataCiudad.ciudad,
+    nuevo_campo: `SE ELIMINA LA CIUDAD: ${dataCiudad.ciudad}`,
+    accion: 'ELIMINAR'
   };
+
   this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
-    // Puedes manejar el éxito aquí si es necesario
+    // Manejar la respuesta si es necesario
   });
 }
+
 
     /*************************************************************** Fin Métodos de Bitácora ***************************************************************************/
 

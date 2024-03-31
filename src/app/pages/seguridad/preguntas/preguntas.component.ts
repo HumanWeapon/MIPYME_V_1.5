@@ -28,12 +28,7 @@ export class PreguntasComponent implements OnInit{
 
   
 
-  getDate(): string {
-    // Obtener la fecha actual
-    const currentDate = new Date();
-    // Formatear la fecha en el formato deseado
-    return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
-}
+  preguntaAnterior: any;
 
 editQuestion: Preguntas = {
     id_pregunta: 0,
@@ -118,6 +113,12 @@ toggleFunction(pregunta: any, i: number) {
   }
 }
 
+getDate(): string {
+  // Obtener la fecha actual
+  const currentDate = new Date();
+  // Formatear la fecha en el formato deseado
+  return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
+}
 
 inactivarPregunta(pregunta: any, i: number){
     this._questionService.inactivarPregunta(pregunta).subscribe(data => {
@@ -297,6 +298,8 @@ obtenerIdPregunta(pregunta: Preguntas, i: any) {
     };
   }
   this.indice = i;
+  this.preguntaAnterior = pregunta;
+ 
 }
 
   editarPregunta(){
@@ -325,6 +328,8 @@ obtenerIdPregunta(pregunta: Preguntas, i: any) {
     });
     
   }
+
+
 
 
    /*************************************************************** Métodos de Bitácora ***************************************************************************/
@@ -377,92 +382,98 @@ obtenerIdPregunta(pregunta: Preguntas, i: any) {
    });
  }
 
-  insertBitacora(dataPregunta: Preguntas){
-    const bitacora = {
-      fecha: new Date(),
-      id_usuario: this.getUser.id_usuario,
-      id_objeto: 27,
-      accion: 'INSERTAR',
-      descripcion: 'SE INSERTA LA PREGUNTA: '+ dataPregunta.pregunta
-    }
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
-  }
+ insertBitacora(dataPregunta: Preguntas) {
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 27,
+    campo_original: 'NO EXISTE REGISTRO ANTERIOR',
+    nuevo_campo: `SE AGREGÓ UNA NUEVA PREGUNTA:
+                  Pregunta: ${dataPregunta.pregunta}`,
+    accion: 'INSERTAR'
+  };
 
-
-  updateBitacora(dataPregunta: Preguntas) {
-    // Guardar la pregunta actual antes de actualizarla
-    const preguntaAnterior = { ...this.getPregunta };
-  
-    // Actualizar la pregunta
-    this.getPregunta = dataPregunta;
-  
-    // Comparar los datos anteriores con los nuevos datos
-    const cambios = [];
-    if (preguntaAnterior.pregunta !== dataPregunta.pregunta) {
-      cambios.push(`Pregunta anterior: ${preguntaAnterior.pregunta} -> Nueva pregunta: ${dataPregunta.pregunta}`);
-    }
-    // Puedes agregar más comparaciones para otros campos según tus necesidades
-  
-    // Si se realizaron cambios, registrar en la bitácora
-    if (cambios.length > 0) {
-      // Crear el objeto bitácora
-      const bitacora = {
-        fecha: new Date(),
-        id_usuario: this.getUser.id_usuario,
-        id_objeto: 27, // ID del objeto correspondiente a las preguntas
-        accion: 'ACTUALIZAR',
-        descripcion: `Se actualizaron los siguientes campos:\n${cambios.join('\n')}`
-      };
-  
-      // Insertar la bitácora
-      this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
-        // Manejar la respuesta si es necesario
-      });
-    }
-  }
-  
-  
-
-
-  activarBitacora(dataPregunta: Preguntas){
-    const bitacora = {
-      fecha: new Date(),
-      id_usuario: this.getUser.id_usuario,
-      id_objeto: 27,
-      accion: 'ACTIVAR',
-      descripcion: 'SE ACTIVA LA PREGUNTA: '+ dataPregunta.pregunta
-    }
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
-  
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+    // Manejar la respuesta si es necesario
+  });
 }
 
 
-  inactivarBitacora(dataPregunta: Preguntas){
+
+updateBitacora(dataPregunta: Preguntas) {
+  // Suponiendo que tengas un método getPregunta para obtener la pregunta anterior
+  const cambios = [];
+  if (this.preguntaAnterior.pregunta !== dataPregunta.pregunta) {
+    cambios.push(`Pregunta: ${dataPregunta.pregunta}`);
+  }
+  // Puedes agregar más comparaciones para otros campos según tus necesidades
+
+  // Si se realizaron cambios, registrar en la bitácora
+  if (cambios.length > 0) {
+    // Crear el objeto bitácora
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
-      id_objeto: 27,
-      accion: 'INACTIVAR',
-      descripcion: 'SE INACTIVA LA PREGUNTA: '+ dataPregunta.pregunta
-    }
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
-  }
+      id_objeto: 27, // ID del objeto correspondiente a las preguntas
+      campo_original: `Pregunta: ${this.preguntaAnterior.pregunta}`,
+      nuevo_campo: cambios.join(', '),
+      accion: 'ACTUALIZAR'
+    };
 
-
-  deleteBitacora(dataPregunta: Preguntas){
-    const bitacora = {
-      fecha: new Date(),
-      id_usuario: this.getUser.id_usuario,
-      id_objeto: 27,
-      accion: 'ELIMINAR',
-      descripcion: 'SE ELIMINA LA PREGUNTA: '+ dataPregunta.pregunta
-    }
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
+    // Insertar la bitácora
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+      // Manejar la respuesta si es necesario
+    });
   }
+}
+
+  
+
+activarBitacora(dataPregunta: Preguntas) { 
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 27, // ID del objeto correspondiente a las preguntas
+    campo_original: 'LA PREGUNTA: ' + dataPregunta.pregunta,
+    nuevo_campo: 'CAMBIO DE ESTADO',
+    accion: 'ACTIVAR'
+  };
+
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+    // Manejar la respuesta si es necesario
+  });
+}
+
+inactivarBitacora(dataPregunta: Preguntas) {
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 27, // ID del objeto correspondiente a las preguntas
+    campo_original: 'LA PREGUNTA: ' + dataPregunta.pregunta,
+    nuevo_campo: 'CAMBIO DE ESTADO',
+    accion: 'INACTIVAR'
+  };
+
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+    // Manejar la respuesta si es necesario
+  });
+}
+
+deleteBitacora(dataPregunta: Preguntas) {
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 27, // ID del objeto correspondiente a las preguntas
+    campo_original: dataPregunta.pregunta,
+    nuevo_campo: 'SE ELIMINA LA PREGUNTA: ' + dataPregunta.pregunta,
+    accion: 'ELIMINAR'
+  };
+
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+    // Manejar la respuesta si es necesario
+  });
+}
+
     /*************************************************************** Fin Métodos de Bitácora ***************************************************************************/
 
 }

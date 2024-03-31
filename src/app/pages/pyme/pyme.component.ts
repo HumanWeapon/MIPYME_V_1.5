@@ -25,16 +25,7 @@ import { es } from 'date-fns/locale'; // Importa el idioma español
 export class PymeComponent {
 
   getPyme: any;
-
-
-  getDate(): string {
-    // Obtener la fecha actual
-    const currentDate = new Date();
-    // Formatear la fecha en el formato deseado
-    return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
-}
-
-
+  pymeAnterior: any;
 
   editPyme: Pyme = {
     id_pyme: 0,
@@ -124,6 +115,15 @@ toggleFunction(pyme: any, i: number) {
     this.activarPyme(pyme, i); // Ejecuta la segunda función
   }
 }
+
+
+getDate(): string {
+  // Obtener la fecha actual
+  const currentDate = new Date();
+  // Formatear la fecha en el formato deseado
+  return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
+}
+
   
   activarPyme(nombre_pyme: any, i: number) {
     this._pymesService.activarPyme(nombre_pyme).subscribe(data => {
@@ -342,6 +342,7 @@ agregarNuevaPyme() {
       id_rol: pyme.id_rol
     };
     this.indice = i;
+    this.pymeAnterior = pyme;
   }
 
 
@@ -483,57 +484,47 @@ agregarNuevaPyme() {
    });
  }
 
- insertBitacora(dataPyme: Pyme){
+
+insertBitacora(dataPyme: Pyme) {
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 22,
-    accion: 'INSERTAR',
-    descripcion: `SE INSERTA LA PYME:
+    campo_original: 'NO EXISTE REGISTRO ANTERIOR',
+    nuevo_campo: `SE AGREGÓ UNA NUEVA PYME:
                   Nombre Pyme: ${dataPyme.nombre_pyme},
-                  RTN: ${dataPyme.rtn},
-                  Estado: ${this.getEstadoText(dataPyme.estado)}`
+                  RTN: ${dataPyme.rtn},`,
+    accion: 'INSERTAR'
   };
 
-  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
     // Manejar la respuesta si es necesario
   });
 }
 
 
+
 updateBitacora(dataPyme: Pyme) {
-  // Guardar la pyme actual antes de actualizarla
-  const pymeAnterior = { ...this.getPyme };
-
-  // Actualizar la pyme
-  this.getPyme = dataPyme;
-
-  // Comparar los datos anteriores con los nuevos datos
   const cambios = [];
-  if (pymeAnterior.nombre_pyme !== dataPyme.nombre_pyme) {
-    cambios.push(`Nombre de Pyme anterior: ${pymeAnterior.nombre_pyme} -> Nuevo Nombre de Pyme: ${dataPyme.nombre_pyme}`);
+  if (this.pymeAnterior.nombre_pyme !== dataPyme.nombre_pyme) {
+    cambios.push(`Nombre Pyme: ${dataPyme.nombre_pyme}`);
   }
-  if (pymeAnterior.rtn !== dataPyme.rtn) {
-    cambios.push(`RTN anterior: ${pymeAnterior.rtn} -> Nuevo RTN: ${dataPyme.rtn}`);
+  if (this.pymeAnterior.rtn !== dataPyme.rtn) {
+    cambios.push(`RTN: ${dataPyme.rtn}`);
   }
-  if (pymeAnterior.estado !== dataPyme.estado) {
-    cambios.push(`Estado anterior: ${this.getEstadoText(pymeAnterior.estado)} -> Nuevo Estado: ${this.getEstadoText(dataPyme.estado)}`);
-  }
-  // Puedes agregar más comparaciones para otros campos según tus necesidades
-
+ 
+ 
   // Si se realizaron cambios, registrar en la bitácora
   if (cambios.length > 0) {
-    // Crear la descripción para la bitácora
-    const descripcion = `Se actualizaron los siguientes campos:\n${cambios.join('\n')}`;
-
     // Crear el objeto bitácora
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
-      id_objeto: 22,
-      accion: 'ACTUALIZAR',
-      descripcion: descripcion
-    };
+      id_objeto: 22, // ID del objeto correspondiente a las PyMes
+      campo_original: `Nombre Pyme: ${this.pymeAnterior.nombre_pyme}, RTN: ${this.pymeAnterior.rtn}`, 
+      nuevo_campo: cambios.join(', '),
+      accion: 'ACTUALIZAR'
+    }
 
     // Insertar la bitácora
     this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
@@ -543,39 +534,52 @@ updateBitacora(dataPyme: Pyme) {
 }
 
 
-  activarBitacora(dataPyme: Pyme){
-    const bitacora = {
-      fecha: new Date(),
-      id_usuario: this.getUser.id_usuario,
-      id_objeto: 22,
-      accion: 'ACTIVAR',
-      descripcion: 'SE ACTIVA LA PYME: '+ dataPyme.nombre_pyme
-    }
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
-  }
-  inactivarBitacora(dataPyme: Pyme){
-    const bitacora = {
-      fecha: new Date(),
-      id_usuario: this.getUser.id_usuario,
-      id_objeto: 22,
-      accion: 'INACTIVAR',
-      descripcion: 'SE INACTIVA LA PYME: '+ dataPyme.nombre_pyme
-    }
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
-  }
-  deleteBitacora(dataPyme: Pyme){
-    const bitacora = {
-      fecha: Date(),
-      id_usuario: this.getUser.id_usuario,
-      id_objeto: 22,
-      accion: 'ELIMINAR',
-      descripcion: 'SE ELIMINA LA PYME: '+ dataPyme.nombre_pyme
-    }
-    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-    })
-  }
+
+activarBitacora(dataPyme: Pyme) {
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 22,
+    campo_original: `LA PYME: ${dataPyme.nombre_pyme}`,
+    nuevo_campo: 'CAMBIO DE ESTADO',
+    accion: 'ACTIVAR'
+  };
+
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+    // Manejar la respuesta si es necesario
+  });
+}
+
+inactivarBitacora(dataPyme: Pyme) {
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 22,
+    campo_original: `LA PYME: ${dataPyme.nombre_pyme}`,
+    nuevo_campo: 'CAMBIO DE ESTADO',
+    accion: 'INACTIVAR'
+  };
+
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+    // Manejar la respuesta si es necesario
+  });
+}
+
+deleteBitacora(dataPyme: Pyme) {
+  const bitacora = {
+    fecha: new Date(),
+    id_usuario: this.getUser.id_usuario,
+    id_objeto: 22,
+    campo_original: dataPyme.nombre_pyme,
+    nuevo_campo: `SE ELIMINA LA PYME: ${dataPyme.nombre_pyme}`,
+    accion: 'ELIMINAR'
+  };
+
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+    // Manejar la respuesta si es necesario
+  });
+}
+
     /*************************************************************** Fin Métodos de Bitácora ***************************************************************************/
 
 

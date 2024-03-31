@@ -26,15 +26,7 @@ import { EmpresasContactosService } from 'src/app/services/operaciones/empresas-
 })
 export class ContactoComponent implements OnInit{
   getContacto: any;
-
-
-  getDate(): string {
-    // Obtener la fecha actual
-    const currentDate = new Date();
-    // Formatear la fecha en el formato deseado
-    return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
-}
-
+  contactoAnterior: any;
 
   usuario: string = '';
   listContactosActivos: any[]=[];
@@ -150,6 +142,13 @@ export class ContactoComponent implements OnInit{
       event.target.value = inputValue;
     });
 }
+getDate(): string {
+  // Obtener la fecha actual
+  const currentDate = new Date();
+  // Formatear la fecha en el formato deseado
+  return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
+}
+
 
   
   cancelarInput(){
@@ -359,6 +358,7 @@ agregarNuevoContacto() {
 
     };
     this.indice = i;
+    this.contactoAnterior = contac;
   }
   tipoContactoSeleccionado(event: Event): void {
     const idTipoEmpresa = (event.target as HTMLSelectElement).value;
@@ -441,12 +441,12 @@ agregarNuevoContacto() {
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
-      id_objeto: 17,
-      accion: 'INSERTAR',
-      descripcion: `SE AGREGÓ UN NUEVO CONTACTO:
+      id_objeto: 17, // ID del objeto correspondiente a los contactos
+      campo_original: 'NO EXISTE REGISTRO ANTERIOR',
+      nuevo_campo: `SE AGREGÓ UN NUEVO CONTACTO:
                     Nombre completo: ${dataContacto.nombre_completo},
-                    Descripción: ${dataContacto.descripcion},
-                    }`
+                    Descripción: ${dataContacto.descripcion}`,
+      accion: 'INSERTAR'
     };
   
     this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
@@ -455,36 +455,26 @@ agregarNuevoContacto() {
   }
   
   updateBitacora(dataContacto: Contacto) {
-    // Guardar el contacto actual antes de actualizarlo
-    const contactoAnterior = { ...this.getContacto };
-  
-    // Actualizar el contacto
-    this.getContacto = dataContacto;
-  
-    // Comparar los datos anteriores con los nuevos datos
     const cambios = [];
-    if (contactoAnterior.nombre_completo !== dataContacto.nombre_completo) {
-      cambios.push(`Primer nombre anterior: ${contactoAnterior.primer_nombre} -> Nuevo primer nombre: ${dataContacto.nombre_completo}`);
+    if (this.contactoAnterior.nombre_completo !== dataContacto.nombre_completo) {
+      cambios.push(`Nombre completo: ${dataContacto.nombre_completo}`);
     }
-    if (contactoAnterior.descripcion !== dataContacto.descripcion) {
-      cambios.push(`Descripción anterior: ${contactoAnterior.descripcion} -> Nueva descripción: ${dataContacto.descripcion}`);
+    if (this.contactoAnterior.descripcion !== dataContacto.descripcion) {
+      cambios.push(`Descripción: ${dataContacto.descripcion}`);
     }
-   
-    // Puedes agregar más comparaciones para otros campos según tus necesidades
-  
+    // Agregar más condiciones para otros campos si es necesario
+    
     // Si se realizaron cambios, registrar en la bitácora
     if (cambios.length > 0) {
-      // Crear la descripción para la bitácora
-      const descripcion = `Se actualizaron los siguientes campos:\n${cambios.join('\n')}`;
-  
       // Crear el objeto bitácora
       const bitacora = {
         fecha: new Date(),
-        id_usuario: this.getUser.id_usuario,
-        id_objeto: 17,
-        accion: 'ACTUALIZAR',
-        descripcion: descripcion
-      };
+        id_usuario: this.getUser.id_usuario, // O utilizar el ID de sesión si corresponde
+        id_objeto: 17, // ID del objeto correspondiente a los contactos
+        campo_original: `Nombre completo: ${this.contactoAnterior.nombre_completo}, Descripción: ${this.contactoAnterior.descripcion}`, 
+        nuevo_campo: cambios.join(', '),
+        accion: 'ACTUALIZAR'
+      }
   
       // Insertar la bitácora
       this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
@@ -493,40 +483,52 @@ agregarNuevoContacto() {
     }
   }
   
-    activarBitacora(dataContacto: Contacto){
-      const bitacora = {
-        fecha: new Date(),
-        id_usuario: this.getUser.id_usuario,
-        id_objeto: 17,
-        accion: 'ACTIVAR',
-        descripcion: 'SE ACTIVA EL CONTACTO DE: '+ dataContacto.nombre_completo
-      }
-      this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-      })
+  
+  activarBitacora(dataContacto: Contacto){ 
+    const bitacora = {
+      fecha: new Date() ,
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 17, // ID del objeto correspondiente a los contactos
+      campo_original: 'EL CONTACTO: '+ dataContacto.nombre_completo,
+      nuevo_campo: 'CAMBIO DE ESTADO',
+      accion: 'ACTIVAR',
     }
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+    })
+  }
 
-    inactivarBitacora(dataContacto: Contacto){
-      const bitacora = {
-        fecha: new Date(),
-        id_usuario: this.getUser.id_usuario,
-        id_objeto: 17,
-        accion: 'INACTIVAR',
-        descripcion: 'SE INACTIVA EL CONTACTO DE: '+ dataContacto.nombre_completo
-      }
-      this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-      })
+
+  inactivarBitacora(dataContacto: Contacto){
+    const bitacora = {
+      fecha: new Date(),
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 17, // ID del objeto correspondiente a los contactos
+      campo_original: 'EL CONTACTO: '+ dataContacto.nombre_completo,
+      nuevo_campo: 'CAMBIO DE ESTADO',
+      accion: 'INACTIVAR'
+    };
+  
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+      // Manejar la respuesta si es necesario
+    });
+    
+  }
+
+
+  
+  deleteBitacora(dataContacto: Contacto){
+    const bitacora = {
+      fecha: new Date(),
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 17, // ID del objeto correspondiente a los contactos
+      campo_original: dataContacto.nombre_completo,
+      nuevo_campo: 'SE ELIMINA EL CONTACTO: '+ dataContacto.nombre_completo,
+      accion: 'ELIMINAR',
     }
-    deleteBitacora(dataContacto: Contacto){
-      const bitacora = {
-        fecha: new Date(),
-        id_usuario: this.getUser.id_usuario,
-        id_objeto: 17,
-        accion: 'ELIMINAR',
-        descripcion: 'SE ELIMINA EL CONTACTO DE: '+ dataContacto.nombre_completo
-      }
-      this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-      })
-    }
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
+    })
+  }
+
       /*************************************************************** Fin Métodos de Bitácora ***************************************************************************/
 
 

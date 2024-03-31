@@ -34,6 +34,7 @@ export class PermisosComponent implements OnInit, OnDestroy {
   roles: Roles[] = [];
   objetos: Objetos[] = [];
   permisoSeleccionado: any;
+  permisoAnterior: any;
 
   id_rol: number = 0;
   id_objeto: number = 0;
@@ -463,6 +464,7 @@ cancelarInput(){
       fecha_modificacion: permisos.fecha_modificacion,
     };
     this.indice = i;
+    this.permisoAnterior = permisos;
   }
 
 
@@ -541,17 +543,18 @@ getUsuario(){
 }
 
 
+
 insertBitacora(dataPermisos: Permisos) {
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 28,
-    accion: 'INSERTAR',
-    descripcion: `SE INSERTA EL PERMISO:
+    campo_original: 'NO EXISTE REGISTRO ANTERIOR',
+    nuevo_campo: `SE AGREGÓ UN NUEVO PERMISO:
                   ID: ${dataPermisos.id_permisos},
                   Rol: ${dataPermisos.id_rol},
-                  Objeto: ${dataPermisos.id_objeto},
-                  }`
+                  Objeto: ${dataPermisos.id_objeto}`,
+    accion: 'INSERTAR'
   };
 
   this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
@@ -560,36 +563,29 @@ insertBitacora(dataPermisos: Permisos) {
 }
 
 
-updateBitacora(dataPermisos: Permisos) {
-  // Guardar una copia de los permisos antes de actualizarlos
-  const permisosAnteriores = { ...this.permisos };
-
-  // Actualizar los permisos
-  this.permisos = dataPermisos;
-
-  // Comparar los datos anteriores con los nuevos datos
+updateBitacora(dataPermiso: Permisos) {
   const cambios = [];
-
-  if (permisosAnteriores.id_rol !== dataPermisos.id_rol) {
-    cambios.push(`Rol anterior: ${permisosAnteriores.id_rol} -> Nuevo rol: ${dataPermisos.id_rol}`);
+  if (this.permisoAnterior.id_permiso !== dataPermiso.id_permisos) {
+    cambios.push(`ID de permiso: ${dataPermiso.id_permisos}`);
   }
-
-  if (permisosAnteriores.id_objeto !== dataPermisos.id_objeto) {
-    cambios.push(`Objeto anterior: ${permisosAnteriores.id_objeto} -> Nuevo objeto: ${dataPermisos.id_objeto}`);
+  if (this.permisoAnterior.id_rol !== dataPermiso.id_rol) {
+    cambios.push(`Rol: ${dataPermiso.id_rol}`);
   }
+  if (this.permisoAnterior.id_objeto !== dataPermiso.id_objeto) {
+    cambios.push(`Objeto: ${dataPermiso.id_objeto}`);
+  }
+  // Puedes agregar más comparaciones para otros campos según tus necesidades
 
   // Si se realizaron cambios, registrar en la bitácora
   if (cambios.length > 0) {
-    // Crear la descripción para la bitácora
-    const descripcion = `Se actualizaron los siguientes campos:\n${cambios.join('\n')}`;
-
     // Crear el objeto bitácora
     const bitacora = {
       fecha: new Date(),
-      id_usuario: this.getUser.usuario,
-      id_objeto: 28,
-      accion: 'ACTUALIZAR',
-      descripcion: descripcion
+      id_usuario: this.getUser.id_usuario, // Usar el ID del usuario anterior para registrar el cambio
+      id_objeto: 28, // Suponiendo que el ID del objeto de permisos es 28
+      campo_original: `ID de permiso: ${this.permisoAnterior.id_permiso}, Rol: ${this.permisoAnterior.id_rol}, Objeto: ${this.permisoAnterior.id_objeto}`, 
+      nuevo_campo: cambios.join(', '),
+      accion: 'ACTUALIZAR'
     };
 
     // Insertar la bitácora
@@ -600,43 +596,52 @@ updateBitacora(dataPermisos: Permisos) {
 }
 
 
-activarBitacora(dataPermisos: Permisos){
+
+activarBitacora(dataPermiso: Permisos) { 
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
-    id_objeto: 28,
-    accion: 'ACTIVAR',
-    descripcion: 'SE ACTIVA EL PERMISO CON EL ID: '+ dataPermisos.id_permisos
-  }
-  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-  })
+    id_objeto: 28, // Suponiendo que el ID del objeto de permisos es 28
+    campo_original: 'EL PERMISO: ' + dataPermiso.id_permisos,
+    nuevo_campo: 'CAMBIO DE ESTADO',
+    accion: 'ACTIVAR'
+  };
+
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+    // Manejar la respuesta si es necesario
+  });
 }
 
-
-inactivarBitacora(dataPermisos: Permisos){
+inactivarBitacora(dataPermiso: Permisos) {
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
-    id_objeto: 28,
-    accion: 'INACTIVAR',
-    descripcion: 'SE INACTIVA EL PERMISO CON EL ID: '+ dataPermisos.id_permisos
-  }
-  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-  })
+    id_objeto: 28, // Suponiendo que el ID del objeto de permisos es 28
+    campo_original: 'EL PERMISO: ' + dataPermiso.id_permisos,
+    nuevo_campo: 'CAMBIO DE ESTADO',
+    accion: 'INACTIVAR'
+  };
+
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+    // Manejar la respuesta si es necesario
+  });
 }
 
-
-deleteBitacora(dataPermisos: Permisos){
+deleteBitacora(dataPermiso: Permisos) {
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
-    id_objeto: 28,
-    accion: 'ELIMINAR',
-    descripcion: 'SE ELIMINA EL PERMISO CON EL ID: '+ dataPermisos.id_permisos
-  }
-  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-  })
+    id_objeto: 28, // Suponiendo que el ID del objeto de permisos es 28
+    campo_original: `ID de permiso: ${dataPermiso.id_permisos}`,
+    nuevo_campo: `SE ELIMINA EL PERMISO: ${dataPermiso.id_permisos}`,
+    accion: 'ELIMINAR'
+  };
+
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+    // Manejar la respuesta si es necesario
+  });
 }
+
 
 
   /*************************************************************** Fin Métodos de Bitácora ***************************************************************************/

@@ -24,6 +24,8 @@ import { DatePipe } from '@angular/common';
 })
 export class RequisitosExportacionComponent implements OnInit{
 
+  requisitoAnterior: any;
+
   RequisitoEditando: Requisito = {
     id_tipo_requisito: 0, 
     tipo_requisito: '', 
@@ -291,6 +293,7 @@ agregarRequisito() {
 
     };
     this.indice = i;
+    this.requisitoAnterior = tipoR;
   }
 
 
@@ -381,35 +384,62 @@ getUsuario(){
  });
 }
 
-insertBitacora(dataRExportacion: Requisito){
+insertBitacora(dataRExportacion: Requisito) {
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
-    id_objeto: 15,
-    accion: 'INSERTAR',
-    descripcion: 'SE INSERTA EL REQUISITO CON EL ID: '+ dataRExportacion.id_tipo_requisito
-  }
-  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-  })
-}
-updateBitacora(dataRExportacion: Requisito){
-  const bitacora = {
-    fecha: new Date(),
-    id_usuario: this.getUser.id_usuario,
-    id_objeto: 15,
-    accion: 'ACTUALIZAR',
-    descripcion: 'SE ACTUALIZA EL REQUISITO CON EL ID: '+ dataRExportacion.id_tipo_requisito
+    id_objeto: 15, // ID del objeto correspondiente a los requisitos
+    campo_original: 'NO EXISTE REGISTRO ANTERIOR',
+    nuevo_campo: `SE AGREGÓ UN NUEVO REQUISITO:
+                  ID Requisito: ${dataRExportacion.id_tipo_requisito},
+                 `, // Añadir otras propiedades si es necesario
+    accion: 'INSERTAR'
   };
-  this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
-  })
+
+  this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+    // Manejar la respuesta si es necesario
+  });
 }
+
+updateBitacora(dataRequisito: Requisito) {
+  const cambios = [];
+  // Comparar los cambios en las propiedades del requisito
+  if (this.requisitoAnterior.propiedad1 !== dataRequisito.tipo_requisito) {
+    cambios.push(`Propiedad 1: ${dataRequisito.tipo_requisito}`);
+  }
+ 
+  // Añadir más comparaciones si es necesario para otras propiedades
+
+  // Si se realizaron cambios, registrar en la bitácora
+  if (cambios.length > 0) {
+    // Crear el objeto bitácora
+    const bitacora = {
+      fecha: new Date(),
+      id_usuario: this.getUser.id_usuario,
+      id_objeto: 15, // ID del objeto correspondiente a los requisitos
+      campo_original: `Propiedad 1: ${this.requisitoAnterior.tipo_requisito},`, // Agregar todas las propiedades relevantes
+      nuevo_campo: cambios.join(', '),
+      accion: 'ACTUALIZAR'
+    }
+
+    // Insertar la bitácora
+    this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
+      // Manejar la respuesta si es necesario
+    });
+  }
+}
+
+
+
 activarBitacora(dataRExportacion: Requisito){
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 15,
+    campo_original: 'EL REQUISITO: '+ dataRExportacion.tipo_requisito,
+    nuevo_campo: 'CAMBIO DE ESTADO',
     accion: 'ACTIVAR',
-    descripcion: 'SE ACTIVA EL REQUISITO CON EL ID: '+ dataRExportacion.id_tipo_requisito
+    
   }
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
   })
@@ -419,8 +449,9 @@ inactivarBitacora(dataRExportacion: Requisito){
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 15,
+    campo_original: 'EL REQUISITO: '+ dataRExportacion.tipo_requisito,
+    nuevo_campo: 'CAMBIO DE ESTADO',
     accion: 'INACTIVAR',
-    descripcion: 'SE INACTIVA EL REQUISITO CON EL ID: '+ dataRExportacion.id_tipo_requisito
   }
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
   })
@@ -430,8 +461,9 @@ deleteBitacora(dataRExportacion: Requisito){
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 15,
+    campo_original: 'EL REQUISITO: '+ dataRExportacion.tipo_requisito,
+    nuevo_campo: 'SE ELIMINA EL TIPO DE REQUISITO',
     accion: 'ELIMINAR',
-    descripcion: 'SE ELIMINA EL REQUISITO CON EL ID: '+ dataRExportacion.id_tipo_requisito
   }
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
   })
