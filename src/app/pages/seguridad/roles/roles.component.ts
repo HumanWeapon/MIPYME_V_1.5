@@ -443,7 +443,8 @@ updateBitacora(dataRoles: Roles) {
       id_usuario: this.getUser.id_usuario,
       id_objeto: 3, // ID del objeto correspondiente a los roles
       accion: 'ACTUALIZAR',
-      descripcion: descripcion
+      campo_original: rolAnterior,
+      nuevo_cambio: descripcion
     };
 
     // Insertar la bitácora

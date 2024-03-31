@@ -20,13 +20,8 @@ export class BitacoraComponent implements OnInit{
 
   fechaDesde: string = '';
   fechaHasta: string = '';
+  bitacoraFilter: any[] = [];
 
-  getDate(): string {
-    // Obtener la fecha actual
-    const currentDate = new Date();
-    // Formatear la fecha en el formato deseado
-    return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
-}
 
   bitacora: any[] = [];
   dtOptions: DataTables.Settings = {};
@@ -53,6 +48,7 @@ export class BitacoraComponent implements OnInit{
     this._bitacoraService.getBitacora().subscribe((res: any) =>{
       this.bitacora = res;
       this.dtTrigger.next(0);
+      this.filtrarRegistros();
     })
   }
   getUsuario(){
@@ -79,19 +75,33 @@ export class BitacoraComponent implements OnInit{
   );
 }
 
+getDate(): string {
+  // Obtener la fecha actual
+  const currentDate = new Date();
+  // Formatear la fecha en el formato deseado
+  return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
+}
+
 filtrarRegistros() {
-  if (this.fechaDesde && this.fechaHasta) {
-    this._bitacoraService.getBitacoraByDateRange(this.fechaDesde, this.fechaHasta)
-      .subscribe((res: any) => {
-        this.bitacora = res;
-        this.dtTrigger.next(0);
-      }, (error) => {
-        this._toastr.error('Error al obtener registros filtrados');
-        console.error(error);
-      });
-  } else {
-    this._toastr.warning('Por favor seleccione un rango de fechas válido');
+   // Verificar que se hayan seleccionado ambas fechas
+   if (!this.fechaDesde || !this.fechaHasta) {
+    this.bitacoraFilter = this.bitacora
+    console.log("Debe seleccionar ambas fechas.");
+    return;
   }
+
+  // Filtrar los registros según las fechas seleccionadas
+  this.bitacoraFilter = this.bitacora.filter(registro => {
+    // Suponiendo que la fecha de cada registro está en un campo llamado 'fecha'
+    const fechaRegistro = new Date(registro.fecha);
+    const fechaInicio = new Date(this.fechaDesde);
+    const fechaFin = new Date(this.fechaHasta);
+    this.bitacora = this.bitacoraFilter;
+    return fechaRegistro >= fechaInicio && fechaRegistro <= fechaFin;
+  });
+
+  console.log("Registros filtrados:", this.bitacoraFilter);
+ 
 }
 
 

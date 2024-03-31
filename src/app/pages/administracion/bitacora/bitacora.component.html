@@ -13,6 +13,7 @@
                           <input type="date" class="form-control mr-2" [(ngModel)]="fechaHasta" placeholder="Hasta">
                           <button type="button" class="btn btn-primary" (click)="filtrarRegistros()">Filtrar</button>
                       </div>
+                      
                       <!-- Botones de borrar registro y generar reporte -->
                       <div class="ml-auto">
                           <button type="button" class="btn btn-danger mr-2" data-toggle="modal" (click)="deleteBitacora()">
@@ -37,7 +38,7 @@
                               </tr>
                           </thead>
                           <tbody>
-                              <tr *ngFor="let item of bitacora; let i = index">
+                              <tr *ngFor="let item of bitacoraFilter; let i = index">
                                   <td>{{ item.fecha }}</td>
                                   <td>{{ item.usuario.usuario }}</td>
                                   <td>{{ item.objeto.objeto}}</td>

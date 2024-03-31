@@ -23,13 +23,6 @@ export class UsuariosComponent {
 
   usuarioSeleccionado: any;
 
-  getDate(): string {
-    // Obtener la fecha actual
-    const currentDate = new Date();
-    // Formatear la fecha en el formato deseado
-    return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
-}
-  
 
   listUsuarios: Usuario[] = [];
   listRol: Roles[] = [];
@@ -167,7 +160,6 @@ toggleFunction(user: any, i: number) {
   }
 }
 
-
   inactivarUsuario(usuario: any, i: any) {
     this._userService.inactivarUsuario(usuario).subscribe({
       next: (data) => {
@@ -193,6 +185,13 @@ toggleFunction(user: any, i: number) {
     });
     this.usuariosAllRoles[i].estado_usuario = 1;
   }
+
+  getDate(): string {
+    // Obtener la fecha actual
+    const currentDate = new Date();
+    // Formatear la fecha en el formato deseado
+    return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
+}
  
   /*****************************************************************************************************/
 
@@ -534,12 +533,15 @@ obtenerUsuario(usuario: Usuario, i: any) {
    });
  }
 
+
+ 
+
  insertBitacora(dataUser: Usuario) {
   const bitacora = {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 1,
-    campo_original: 'Sin Registro',
+    campo_original: 'NO EXISTE REGISTRO ANTERIOR',
     nuevo_campo: `SE AGREGÓ UN NUEVO USUARIO:
                   Usuario: ${dataUser.usuario},
                   Nombre de usuario: ${dataUser.nombre_usuario},
@@ -553,44 +555,39 @@ obtenerUsuario(usuario: Usuario, i: any) {
   });
   
 }
+
  
 
-
 updateBitacora(dataUser: Usuario) {
-  // Guardar el usuario actual antes de actualizarlo
-  const usuarioAnterior = { ...this.getUser };
-
-  // Actualizar el usuario
-  this.getUser = dataUser;
-
+  // Obtener los datos del usuario antes de actualizarlos
+  const usuarioAnterior =  { ...this.getUser };// Copia de los datos del usuario antes de la actualización
+ 
   // Comparar los datos anteriores con los nuevos datos
   const cambios = [];
   if (usuarioAnterior.usuario !== dataUser.usuario) {
-    cambios.push(`Usuario anterior: ${usuarioAnterior.usuario} -> Nuevo Usuario: ${dataUser.usuario}`);
+    cambios.push(`Usuario: ${usuarioAnterior.usuario}`);
   }
-  if (usuarioAnterior.nombre_usuario !== dataUser.nombre_usuario) {
-    cambios.push(`Nombre de usuario anterior: ${usuarioAnterior.nombre_usuario} -> Nuevo nombre de usuario: ${dataUser.nombre_usuario}`);
+  else if (usuarioAnterior.nombre_usuario !== dataUser.nombre_usuario) {
+    cambios.push(`Nombre de usuario: ${usuarioAnterior.nombre_usuario}`);
   }
-  if (usuarioAnterior.correo_electronico !== dataUser.correo_electronico) {
-    cambios.push(`Correo electrónico anterior: ${usuarioAnterior.correo_electronico} -> Nuevo correo electrónico: ${dataUser.correo_electronico}`);
+  else if (usuarioAnterior.correo_electronico !== dataUser.correo_electronico) {
+    cambios.push(`Correo electrónico: ${usuarioAnterior.correo_electronico}`);
   }
-  if (usuarioAnterior.fecha_vencimiento !== dataUser.fecha_vencimiento) {
-    cambios.push(`Fecha de vencimiento anterior: ${usuarioAnterior.fecha_vencimiento} -> Nueva fecha de vencimiento: ${dataUser.fecha_vencimiento}`);
+  else if (usuarioAnterior.id_rol !== dataUser.id_rol) {
+    cambios.push(`Rol: ${usuarioAnterior.id_rol}`);
   }
   // Puedes agregar más comparaciones para otros campos según tus necesidades
 
   // Si se realizaron cambios, registrar en la bitácora
   if (cambios.length > 0) {
-    // Crear la descripción para la bitácora
-    const descripcion = `Se actualizaron los siguientes campos:\n${cambios.join('\n')}`;
-
     // Crear el objeto bitácora
     const bitacora = {
       fecha: new Date(),
-      id_usuario: this.getUser.id_usuario,
-      id_objeto: 1,
+      id_usuario: this.getUser.id_usuario, // Usar el ID del usuario anterior para registrar el cambio
+      id_objeto: 1, // ID del objeto correspondiente a los usuarios
       accion: 'ACTUALIZAR',
-      descripcion: descripcion
+      campo_original: `Usuario: ${usuarioAnterior.usuario}, Nombre de usuario: ${usuarioAnterior.nombre_usuario}, Correo electrónico: ${usuarioAnterior.correo_electronico}, Rol: ${usuarioAnterior.id_rol}`, // Mostrar los datos del usuario antes de la actualización
+      nuevo_campo: `Usuario: ${dataUser.usuario}, Nombre de usuario: ${dataUser.nombre_usuario}, Correo electrónico: ${dataUser.correo_electronico}, Rol: ${dataUser.id_rol}` // Mostrar los datos del usuario después de la actualización
     };
 
     // Insertar la bitácora
@@ -600,31 +597,40 @@ updateBitacora(dataUser: Usuario) {
   }
 }
 
-  
+
+
   
 
-  activarBitacora(dataUser: Usuario){
+  activarBitacora(dataUser: Usuario){ 
     const bitacora = {
       fecha: new Date() ,
       id_usuario: this.getUser.id_usuario,
       id_objeto: 1,
       accion: 'ACTIVAR',
-      descripcion: 'ACTIVA EL USUARIO: '+ dataUser.usuario
+      campo_original:  dataUser.usuario,
+      nuevo_campo:  dataUser.usuario
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
   }
+
+
   inactivarBitacora(dataUser: Usuario){
     const bitacora = {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
       id_objeto: 1,
       accion: 'INACTIVAR',
-      descripcion: 'INACTIVA EL USUARIO: '+ dataUser.usuario
+      campo_origial:  dataUser.usuario,
+      nuevo_campo: dataUser.usuario 
+    
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
     })
   }
+
+
+  
   deleteBitacora(dataUser: Usuario){
     const bitacora = {
       fecha: new Date(),
