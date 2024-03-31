@@ -37,6 +37,7 @@ import { AdministracionComponent } from './administracion/administracion.compone
 import { MantenimientoComponent } from './mantenimiento/mantenimiento.component';
 import { OperacionesEmpresasComponent } from './empresas/operaciones-empresas/operaciones-empresas.component';
 import { TipoDireccionComponent } from './mantenimiento/tipo-direccion/tipo-direccion.component';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 
 
@@ -83,7 +84,8 @@ import { TipoDireccionComponent } from './mantenimiento/tipo-direccion/tipo-dire
     DataTablesModule,
     RouterModule,
     SharedModule,
-    FormsModule
+    FormsModule,
+    NgxPaginationModule,
   ],
   exports:[
     PagesComponent

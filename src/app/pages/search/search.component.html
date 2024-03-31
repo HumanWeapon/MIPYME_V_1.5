@@ -24,15 +24,6 @@
                   <option>Date3</option>
                 </select>
               </div>
-              <div class="form-group">
-                <label>Ciudad:</label>
-                <select class="form-select" style="width: 100%;" aria-hidden="true">
-                  <option selected="">Todo</option>
-                  <option>Date</option>
-                  <option>Date2</option>
-                  <option>Date3</option>
-                </select>
-              </div>
             </div>
           </form>
         </div>
@@ -47,9 +38,9 @@
             <div class="row">
               <div class="form-group">
                 <div class="input-group input-group-lg">
-                  <input type="search" class="form-control form-control-lg" placeholder="Type your keywords here" value="Buscar productos"  style="background-color: rgba(238, 238, 238, 0.342);">
+                  <input type="search" class="form-control form-control-lg" placeholder="Escribe el producto que deseas buscar" [(ngModel)]="searchTerm" (input)="filterProductos()" style="background-color: rgba(238, 238, 238, 0.342);" name="table_search">
                   <div class="input-group-append">
-                    <button type="submit" class="btn btn-lg btn-default">
+                    <button type="submit" class="btn btn-lg btn-default" (click)="filterProductos()">
                       <i class="fa fa-search"></i>
                     </button>
                   </div>
@@ -61,8 +52,7 @@
       </section>
       <section>
         <div>
-          
-          <table class="table table-striped">
+          <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-head-fixed text-nowrap">
             <thead>
               <tr>
                 <th>Producto</th>
@@ -72,11 +62,11 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Like a butterfly</td>
-                <td>Boxing</td>
-                <td>9:00 AM - 11:00 AM</td>
-                <td>Aaron Chapman</td>
+              <tr *ngFor="let obj of list_productosFilter let i = index">
+                <td>{{ obj.producto }}</td>
+                <td>{{ obj.categoria }}</td>
+                <td>{{ obj.descripcion }}</td>
+                <td><button type="button" class="btn btna">Siguiente...</button></td>
               </tr>
             </tbody>
           </table>

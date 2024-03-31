@@ -95,7 +95,6 @@ export class ProductosComponent implements OnInit{
     private _bitacoraService: BitacoraService,
     private _errorService: ErrorService,
     private _userService: UsuariosService,
-    private _ngZone: NgZone,
     private _categoriaProductos: CategoriaService,
     private _datePipe: DatePipe
     ) {}
