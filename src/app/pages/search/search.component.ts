@@ -52,8 +52,7 @@ export class SearchComponent implements OnInit {
   }
 
   getOpProductos(){
-    console.log(this.categoria);
-    console.log(this.pais);
+
     this._opEmpresasProductos.getProductosSearch(this.categoria, this.pais).subscribe({
       next: (data) => {
         this.list_productos = data;
