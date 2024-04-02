@@ -29,6 +29,7 @@ export class PasswordEmailComponent implements OnInit {
   };
 
   correoElectronico: string = '';
+  mostrarModalCorreoEnviado: boolean = false;
 
   constructor(private router: Router, private usuarioService: UsuariosService,
     private toastr: ToastrService) { }
@@ -50,6 +51,7 @@ export class PasswordEmailComponent implements OnInit {
     });
   }
 
+
   onEnviarCorreo() {
     if (!this.validarCorreoElectronico(this.correoElectronico)) {
       this.toastr.warning('Por favor, ingresa un correo electrónico válido.');
@@ -63,7 +65,7 @@ export class PasswordEmailComponent implements OnInit {
     // Llamar al servicio para enviar el correo electrónico
     this.usuarioService.forgotPassword(this.correoElectronico).subscribe(
       response => {
-        this.correoEnviadoModal.nativeElement.style.display = 'block';
+        this.mostrarModalCorreoEnviado = true; // Establecer mostrarModalCorreoEnviado en true
         // Aquí puedes navegar a la siguiente página o mostrar otro mensaje según la respuesta del servicio
       },
       error => {
