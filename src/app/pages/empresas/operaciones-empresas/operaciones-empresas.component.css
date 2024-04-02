@@ -23,6 +23,6 @@ h4 {
 
 /* Personaliza el cuerpo del modal */
 .custom-modal-body {
-  max-height: 300px; /* Establece la altura máxima del cuerpo del modal */
+  max-height: 380px; /* Establece la altura máxima del cuerpo del modal */
   overflow-y: auto; /* Agrega scroll vertical si el contenido excede la altura máxima */
 }

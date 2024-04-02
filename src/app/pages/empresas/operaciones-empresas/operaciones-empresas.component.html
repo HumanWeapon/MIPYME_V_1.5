@@ -457,66 +457,83 @@
     </div>
     <!-- /Actualizar contacto Form -->
 
-   <!-- Ver Teléfonos de contactos -->
-   <div class="modal fade" id="ver_telefonos">
-    <div class="modal-dialog modal-lg"> 
-      <div class="modal-content">
-          <div class="modal-header" style="background-color: #1254a1; color: white;">
-              <h4 class="modal-title">Lista de telefonos asignados</h4>
-
-              <button type="button" class="close" data-dismiss="modal" style="background-color: #1254a1; color: white;" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-              </button>
-          </div>
-          <div class="modal-body custom-modal-body">
-            <div class="container mt-0 pt-0 bt-0">
-              <div class="row">
-                <div class="col-12">
-                  <div class="card-body table-responsive" style="height: 300px;">
-                    <table class="table table-head-fixed text-nowrap">
-                      <thead>
-                          <tr>
-                              <th scope="col">Cod_Pais</th>
-                              <th scope="col">Pais</th>
-                              <th scope="col">Cod_area</th>
-                              <th scope="col">Teléfono</th>
-                              <th scope="col">Estado</th>
-                              <th scope="col">Acciones</th>
-                          </tr>
-                      </thead>
-                      <tbody>
-                          <tr *ngFor="let producto of telefonosContactos let i= index">
-                              <td>{{producto.paises.cod_pais }}</td>
-                              <td>{{producto.paises.pais | uppercase }}</td>
-                              <td>{{producto.cod_area }}</td>
-                              <td>{{ formatPhoneNumber(producto.telefono) }}</td> <!-- Llamar a la función formatPhoneNumber -->
-                              <td>
-                                <ng-container *ngIf="producto.estado == 1">ACTIVO</ng-container>
-                                <ng-container *ngIf="producto.estado == 2">INACTIVO</ng-container>
-                              </td>
-                              <td class="text-center">
-                                <div class="btn-group">
-                                  <button type="button" (click)="obtenerIdContactoT(producto, i)" title="Editar Telefono" data-toggle="modal" data-target="#abrirModalEditarContactoT"data-toggle="modal" data-target="#abrirModalEditarContactoT" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
-                                    <div class="form-check form-switch ml-4">
-                                      <input class="form-check-input" (click)="toggleFunctionT(producto, i)" [title]="producto.estado == 1 ? 'Desactivar' : 'Activar'" type="checkbox" 
-                                        role="switch" id="flexSwitchCheckChecked" [checked]="producto.estado == 1">
-                                    </div>
-                                  </div>
-                              </td>
-                          </tr>
-                      </tbody>
-                    </table>
-                  
-                  </div>
+<!-- Ver Teléfonos de contactos -->
+<div class="modal fade" id="ver_telefonos">
+  <div class="modal-dialog modal-lg"> 
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #1254a1; color: white;">
+        <h4 class="modal-title">Lista de teléfonos asignados</h4>
+        <button type="button" class="close" data-dismiss="modal" style="background-color: #1254a1; color: white;" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body custom-modal-body">
+        <div class="container mt-0 pt-0 bt-0">
+          <div class="row">
+            <div class="col-12">
+              <!-- Botón Nuevo -->
+              <div class="card-header d-flex justify-content-end">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarContactoT">
+                  <i class="fas fa-plus"></i> Nuevo
+                </button>
+              </div>
+              <!-- Verifica si hay teléfonos registrados -->
+              <div *ngIf="telefonosContactos && telefonosContactos.length > 0; else noTelefonos">
+                <!-- Aquí va tu tabla actual -->
+                <div class="card-body table-responsive" style="height: 300px;">
+                  <table class="table table-head-fixed text-nowrap">
+                    <thead>
+                      <tr>
+                        <th scope="col">Cod_Pais</th>
+                        <th scope="col">Pais</th>
+                        <th scope="col">Cod_area</th>
+                        <th scope="col">Teléfono</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let producto of telefonosContactos let i= index">
+                        <td>{{producto.paises.cod_pais }}</td>
+                        <td>{{producto.paises.pais | uppercase }}</td>
+                        <td>{{producto.cod_area }}</td>
+                        <td>{{ formatPhoneNumber(producto.telefono) }}</td> <!-- Llamar a la función formatPhoneNumber -->
+                        <td>
+                          <ng-container *ngIf="producto.estado == 1">ACTIVO</ng-container>
+                          <ng-container *ngIf="producto.estado == 2">INACTIVO</ng-container>
+                        </td>
+                        <td class="text-center">
+                          <div class="btn-group">
+                            <button type="button" (click)="obtenerIdContactoT(producto, i)" title="Editar Teléfono" data-toggle="modal" data-target="#abrirModalEditarContactoT" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
+                            <div class="form-check form-switch ml-4">
+                              <input class="form-check-input" (click)="toggleFunctionT(producto, i)" [title]="producto.estado == 1 ? 'Desactivar' : 'Activar'" type="checkbox" role="switch" id="flexSwitchCheckChecked" [checked]="producto.estado == 1">
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
+              <!-- Si no hay teléfonos, muestra el mensaje -->
+              <ng-template #noTelefonos>
+                <div class="alert alert-warning" role="alert">
+                  No hay teléfonos registrados para este contacto.
+                </div>
+                <!-- Enlace para agregar nuevo teléfono -->
+                <div class="text-center mt-3">
+                  <a href="agregarContactoT" class="text-primary">Agregar nuevo teléfono</a>
+                </div>
+              </ng-template>
             </div>
-
           </div>
+        </div>
       </div>
     </div>
   </div>
-  <!-- /Ver Teléfonos de contactos -->
+</div>
+<!-- /Ver Teléfonos de contactos -->
+
 
   <!-- Actualizar Telefono Form -->
 <div class="modal fade" id="abrirModalEditarContactoT">
@@ -532,7 +549,7 @@
               <form>
                 <div class="form-group">
                     <label for="contactoTEditando">Teléfono</label>
-                    <input type="text" [(ngModel)]="contactoTEditando.telefono" name="contactoTEditando.telefono" class="form-control" id="editarTelefono" placeholder="Teléfono" (input)="eliminarCaracteresEspeciales($event, 'telefono')">
+                    <input type="text" [(ngModel)]="contactoTEditando.telefono" name="contactoTEditando.telefono" class="form-control" id="editarTelefono" placeholder="Telefono sin Guiones" (input)="eliminarCaracteresEspeciales($event, 'telefono')">
                 </div>
                 <div class="form-group">
                     <label for="contactoTEditando">Cod_area</label>
@@ -548,6 +565,47 @@
   </div>
   </div>
   <!-- /Actualizar contacto Form -->
+
+  <!-- Agregar Telefono Form -->
+<div class="modal fade" id="agregarContactoT">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header" style="background-color: #1254a1; color: white;">
+              <h4 class="modal-title">Agregar Contacto Telefono</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <form (submit)="agregarNuevoContactoT()">
+                <div class="form-group">
+                  <label for="editarRol">Pais:</label>
+                  <select class="form-control" id="agregarPais" [(ngModel)]="nuevoContactoT.id_pais" name="nuevoContactoT.id_pais" class="form-control" >
+                    <option *ngFor="let item of listPaises; let value = index" [value]="item.id_pais">{{ item.pais }}</option>
+                  </select>
+                </div>
+                  <div class="form-group">
+                      <label for="nuevoContactoT">Teléfono:</label>
+                      <input type="text" [(ngModel)]="nuevoContactoT.telefono" name="nuevoContactoT.telefono" class="form-control" id="nuevoContactoT" placeholder="Teléfono" (input)="convertirAMayusculas($event, 'telefono')" (input)="eliminarCaracteresEspeciales($event, 'telefono')">
+                  </div>
+                  <div class="form-group">
+                    <label for="nuevoContactoT">Cod_area</label>
+                    <input type="text" [(ngModel)]="nuevoContactoT.cod_area" name="nuevoContactoT.cod_area"  class="form-control" id="nuevoContactoT" placeholder="Cod_area" (input)="convertirAMayusculas($event, 'cod_area')" (input)="eliminarCaracteresEspeciales($event, 'cod_area')">
+                </div>  
+                <div class="form-group">
+                  <label for="nuevoContactoT">Descripción</label>
+                  <textarea rows="4" type="text" [(ngModel)]="nuevoContactoT.descripcion" name="nuevoContactoT.descripcion" class="form-control" id="nuevoContactoT" placeholder="Descripción" (input)="convertirAMayusculas($event, 'descripcion')" (input)="eliminarCaracteresEspeciales($event, 'descripcion')"></textarea>
+              </div>
+              </form>
+          </div>
+          <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="cancelarInput()">Cancelar</button>
+              <button type="button" (click)="agregarNuevoContactoT()" class="btn btn-success" data-dismiss="modal">Guardar</button>
+          </div>
+      </div>
+  </div>
+  </div>
+  <!-- /Agregar Telefono Form -->
 
 
   <!-- Agregar dirección Form -->

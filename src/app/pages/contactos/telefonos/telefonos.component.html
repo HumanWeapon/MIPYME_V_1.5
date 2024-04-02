@@ -132,12 +132,6 @@
         <div class="modal-body">
             <form>
               <div class="form-group">
-                <label for="editarRol">Contacto:</label>
-                <select class="form-control" id="editarTelefono" disabled="true" [(ngModel)]="contactoTEditando.id_contacto" name="contactoTEditando.id_contacto" class="form-control" >
-                  <option *ngFor="let item of list_contactos; let value = index" [value]="item.id_contacto">{{ item.contacto }}</option>
-                </select>
-              </div>
-              <div class="form-group">
                   <label for="contactoTEditando">Teléfono</label>
                   <input type="text" [(ngModel)]="contactoTEditando.telefono" name="contactoTEditando.telefono" class="form-control" id="editarTelefono" placeholder="Teléfono" (input)="eliminarCaracteresEspeciales($event, 'telefono')">
               </div>

@@ -28,6 +28,7 @@ import { EmpresasContactosService } from 'src/app/services/operaciones/empresas-
 import { EmpresasDireccionesService } from 'src/app/services/operaciones/empresas-direcciones.service';
 import { EmpresasProdcutosService } from 'src/app/services/operaciones/empresas-prodcutos.service';
 import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-operaciones-empresas',
@@ -38,6 +39,7 @@ export class OperacionesEmpresasComponent {
   @ViewChild('miFormulario') miFormulario!: NgForm;
   // Variables obtenidas del Local Store, Información de la Empresa.
   idEmpresa: any;
+  idContacto: any;
   nombreEmpresa: string = '';
   descripcionEmpresa: string = '';
   usuario: string = '';
@@ -47,6 +49,7 @@ export class OperacionesEmpresasComponent {
   listContactosActivos: any[]=[];
   listCiudadesActivas: any[]=[];
   listTipoDireccionesActivas: any[]=[];
+  listContactos: Contacto [] = [];
   indice: any;//indice de contactos
 
   //Variablñes utilizadas para enviar una dirección nueva a la DBA
@@ -208,6 +211,7 @@ export class OperacionesEmpresasComponent {
     this.getAllCategorias();
     this.getTipoContactoActivos();
     this.getAllPaises();
+    this.getAllContactos();
     //this.getEmpresasProductos();
     const EmpresaId = localStorage.getItem('idEmpresa');
     const EmpresaNombre = localStorage.getItem('nombreEmpresa');
@@ -247,13 +251,24 @@ export class OperacionesEmpresasComponent {
     private _tipoContacto: TipoContactoService,
     private _direccionesService: DireccionesService,
     private _contactoTService: ContactoTService,
-    private _tipoDireccionService: TipoDireccionService
+    private _tipoDireccionService: TipoDireccionService,
+    private _operacionesContactos: EmpresasContactosService
   ) {}
 
   getAllPaises(){
     this._paisService.getAllPaises().subscribe({
       next: (data) =>{
         this.listPaises = data.filter(paises => paises.estado == 1);
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
+  }
+  getAllContactos(){
+    this._operacionesContactos.ReporteContactos().subscribe({
+      next: (data) =>{
+        this.listContactos = data;
       },
       error: (e: HttpErrorResponse) => {
         this._errorService.msjError(e);
@@ -383,6 +398,50 @@ export class OperacionesEmpresasComponent {
       });
     }
   };
+
+  agregarNuevoContactoT() {
+    const userLocal = localStorage.getItem('usuario');
+    if (userLocal){
+      const fechaActual = new Date();
+      const fechaFormateada = this._datePipe.transform(fechaActual, 'yyyy-MM-dd');
+
+    this.nuevoContactoT = {
+      id_telefono: 0, 
+      id_contacto: this.idContacto,
+      id_pais: this.nuevoContactoT.id_pais,
+      telefono: this.nuevoContactoT.telefono, 
+      cod_area: this.nuevoContactoT.cod_area,
+      descripcion:this.nuevoContactoT.descripcion,
+      creado_por: userLocal,
+      fecha_creacion: fechaFormateada as unknown as Date, 
+      modificado_por: userLocal,
+      fecha_modificacion: fechaFormateada as unknown as Date, 
+      estado: 1,
+    };
+    if (!this.nuevoContactoT.telefono || !this.nuevoContactoT.descripcion || !this.nuevoContactoT.cod_area) {
+      this._toastr.warning('Debes completar los campos vacíos');
+      this.nuevoContactoT.telefono = '';
+      this.nuevoContactoT.descripcion = '';
+      this.nuevoContactoT.cod_area = '';
+      this.nuevoContactoT.id_pais = 0;
+    }else{
+      this._contactoTService.addContactoT(this.nuevoContactoT).subscribe({
+          next: (data) => {
+              this.insertBitacora(data);
+              this._toastr.success('Contacto agregado con éxito');
+              this.telefonosContactos.push(data);
+          },
+          error: (e: HttpErrorResponse) => {
+              this._errorService.msjError(e);
+          }
+        });
+      }
+      }
+    }
+  insertBitacora(data: any) {
+    throw new Error('Method not implemented.');
+  }
+
 
   agregarNuevoProducto() {
     const usuarioLocal = localStorage.getItem('usuario')
