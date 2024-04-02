@@ -1,0 +1,9 @@
+.btna{
+    margin: 0px;
+    border: none;
+    background-color: rgba(255, 0, 0, 0);
+    color: #1254a1;
+}
+.btna:hover{
+    color: rgb(255, 174, 0)
+}

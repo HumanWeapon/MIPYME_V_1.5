@@ -25,6 +25,7 @@ export class SearchComponent implements OnInit {
 
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
+  p: number = 1;
   
   constructor(
     private _toastr: ToastrService,
