@@ -49,8 +49,14 @@ export class EmpresasProdcutosService {
     return this.http.delete(`${this.apiUrl}/eliminarOperacionEmpresaProducto/${id}`, { headers });
   }
   
-  getProductosSearch(): Observable<any[]>{
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${this.token}`);
-    return this.http.get<any[]>(`${this.apiUrl}/getProductosSearch`, { headers });
-  }
+// Método para obtener productos filtrados por categoría y país
+getProductosSearch(categoria: string, pais: string): Observable<any[]> {
+  // Establecer las cabeceras con el token de autorización
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${this.token}`);
+  // Usar el operador '&' para concatenar los parámetros como consulta en la URL
+  return this.http.get<any[]>(`${this.apiUrl}/getProductosSearch?categoria=${categoria}&pais=${pais}`, { headers });
+}
+
+
+  
 }

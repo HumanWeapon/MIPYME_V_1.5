@@ -8,22 +8,22 @@
             <div class="col">
               <div class="form-group">
                 <label>Categoria:</label>
-                <select class="form-select" style="width: 100%;" aria-hidden="true">
+                <select class="form-select" style="width: 100%;" aria-hidden="true" (change)="onCategoriaChange($event)">
                   <option selected="">Todo</option>
-                  <option>Date</option>
-                  <option>Date2</option>
-                  <option>Date3</option>
+                  <option>ROPA</option>
+                  <option>CALZADO</option>
+                  <option>PANADERIA</option>
                 </select>
               </div>
               <div class="form-group">
                 <label>Pais:</label>
-                <select class="form-select" style="width: 100%;" aria-hidden="true">
+                <select class="form-select" style="width: 100%;" aria-hidden="true" (change)="onPaisChange($event)">
                   <option selected="">Todo</option>
-                  <option>Date</option>
-                  <option>Date2</option>
-                  <option>Date3</option>
+                  <option>GAMBIA</option>
+                  <option>ALAND ISLANDS</option>
                 </select>
               </div>
+              
             </div>
           </form>
         </div>

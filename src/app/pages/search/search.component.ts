@@ -13,9 +13,9 @@ import { EmpresasProdcutosService } from 'src/app/services/operaciones/empresas-
 export class SearchComponent implements OnInit {
   
   searchTerm: string = '';
-  categoria: string = ''
-  ciudad: string = ''
-  pais: string = ''
+  categoria: string = '';
+  pais: string = '';
+  ciudad: string = '';
 
   list_productos: any[]=[];
   list_productosFilter: any[]=[];
@@ -23,10 +23,8 @@ export class SearchComponent implements OnInit {
   list_paises: any[]=[];
   list_ciudades: any[]=[];
 
-  dtOptions: DataTables.Settings = {};
-  dtTrigger: Subject<any> = new Subject<any>();
   p: number = 1;
-  
+
   constructor(
     private _toastr: ToastrService,
     private _errorService: ErrorService,
@@ -34,23 +32,32 @@ export class SearchComponent implements OnInit {
   ){}
 
   ngOnInit(): void {
-    this.dtOptions = {
-      pagingType: 'full_numbers',
-      pageLength: 10,
-      language: { url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json' },
-      responsive: true,
-      searching: false
-    };
     this.getOpProductos();
   };
+
+  onCategoriaChange(event: any) {
+    this.categoria = event.target.value;
+    if(this.categoria == 'Todo'){
+      this.categoria = ''
+    }
+    this.getOpProductos();
+  }
   
+  onPaisChange(event: any) {
+    this.pais = event.target.value;
+    if(this.pais == 'Todo'){
+      this.pais = ''
+    }
+    this.getOpProductos();
+  }
 
   getOpProductos(){
-    this._opEmpresasProductos.getProductosSearch().subscribe({
+    console.log(this.categoria);
+    console.log(this.pais);
+    this._opEmpresasProductos.getProductosSearch(this.categoria, this.pais).subscribe({
       next: (data) => {
         this.list_productos = data;
         this.list_productosFilter = data;
-        this.dtTrigger.next(null);
         this.filterProductos(); // Aplicar filtro inicialmente
       },
       error: (e: HttpErrorResponse) => {
