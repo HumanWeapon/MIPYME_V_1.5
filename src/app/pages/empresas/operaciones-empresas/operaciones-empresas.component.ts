@@ -252,7 +252,8 @@ export class OperacionesEmpresasComponent {
     private _direccionesService: DireccionesService,
     private _contactoTService: ContactoTService,
     private _tipoDireccionService: TipoDireccionService,
-    private _operacionesContactos: EmpresasContactosService
+    private _operacionesContactos: EmpresasContactosService,
+    private route: ActivatedRoute
   ) {}
 
   getAllPaises(){
@@ -364,6 +365,8 @@ export class OperacionesEmpresasComponent {
   }
 
   buscarTelefonos(id_contacto: any){
+      // Asignar el id_contacto a la variable de clase
+  this.idContacto = id_contacto;
     this._telefonosService.telefonosdeContactosPorId(id_contacto).subscribe({
       next: (data) =>{
         this.telefonosContactos = data;
@@ -401,47 +404,53 @@ export class OperacionesEmpresasComponent {
 
   agregarNuevoContactoT() {
     const userLocal = localStorage.getItem('usuario');
-    if (userLocal){
+      if (userLocal) {
       const fechaActual = new Date();
       const fechaFormateada = this._datePipe.transform(fechaActual, 'yyyy-MM-dd');
-
-    this.nuevoContactoT = {
-      id_telefono: 0, 
-      id_contacto: this.idContacto,
-      id_pais: this.nuevoContactoT.id_pais,
-      telefono: this.nuevoContactoT.telefono, 
-      cod_area: this.nuevoContactoT.cod_area,
-      descripcion:this.nuevoContactoT.descripcion,
-      creado_por: userLocal,
-      fecha_creacion: fechaFormateada as unknown as Date, 
-      modificado_por: userLocal,
-      fecha_modificacion: fechaFormateada as unknown as Date, 
-      estado: 1,
-    };
-    if (!this.nuevoContactoT.telefono || !this.nuevoContactoT.descripcion || !this.nuevoContactoT.cod_area) {
-      this._toastr.warning('Debes completar los campos vacíos');
-      this.nuevoContactoT.telefono = '';
-      this.nuevoContactoT.descripcion = '';
-      this.nuevoContactoT.cod_area = '';
-      this.nuevoContactoT.id_pais = 0;
-    }else{
-      this._contactoTService.addContactoT(this.nuevoContactoT).subscribe({
+  
+      this.nuevoContactoT = {
+        id_telefono: 0, 
+        id_contacto: this.idContacto,
+        id_pais: this.nuevoContactoT.id_pais,
+        telefono: this.nuevoContactoT.telefono, 
+        cod_area: this.nuevoContactoT.cod_area,
+        descripcion:this.nuevoContactoT.descripcion,
+        creado_por: userLocal,
+        fecha_creacion: fechaFormateada as unknown as Date, 
+        modificado_por: userLocal,
+        fecha_modificacion: fechaFormateada as unknown as Date, 
+        estado: 1,
+      };
+  
+      // Imprimir los datos antes de enviar la solicitud
+      console.log('Datos a enviar:', this.nuevoContactoT);
+  
+      if (!this.nuevoContactoT.telefono || !this.nuevoContactoT.descripcion || !this.nuevoContactoT.cod_area) {
+        this._toastr.warning('Debes completar los campos vacíos');
+        this.nuevoContactoT.telefono = '';
+        this.nuevoContactoT.descripcion = '';
+        this.nuevoContactoT.cod_area = '';
+        this.nuevoContactoT.id_pais = 0;
+      } else {
+        this._contactoTService.addContactoT(this.nuevoContactoT).subscribe({
           next: (data) => {
-              this.insertBitacora(data);
-              this._toastr.success('Contacto agregado con éxito');
-              this.telefonosContactos.push(data);
+            this.insertBitacora(data);
+            this._toastr.success('Contacto agregado con éxito');
+            this.telefonosContactos.push(data);
           },
           error: (e: HttpErrorResponse) => {
-              this._errorService.msjError(e);
+            this._errorService.msjError(e);
           }
         });
       }
-      }
     }
+  }
+  
+
+
   insertBitacora(data: any) {
     throw new Error('Method not implemented.');
   }
-
 
   agregarNuevoProducto() {
     const usuarioLocal = localStorage.getItem('usuario')

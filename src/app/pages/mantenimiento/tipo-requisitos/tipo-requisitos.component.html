@@ -16,7 +16,7 @@
                     <thead>
                         <tr>
                           <th>Id</th>
-                          <th>Tipo Requisito</th>
+                          <th>Requisito</th>
                           <th>Descripción</th>
                           <th>Creado</th>
                           <th>Fecha Creación</th>
@@ -76,7 +76,7 @@
 <div class="modal-dialog">
     <div class="modal-content">
         <div class="modal-header">
-            <h4 class="modal-title">Agregar Tipo Requisito</h4>
+            <h4 class="modal-title">Agregar Requisito</h4>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -84,7 +84,7 @@
         <div class="modal-body">
             <form (submit)="agregarNuevoTipoRequisito()">
                 <div class="form-group">
-                    <label for="nuevoTipoRequisito">Tipo Requisito:</label>
+                    <label for="nuevoTipoRequisito">Requisito:</label>
                     <input type="text" [(ngModel)]="nuevoTipoRequisito.tipo_requisito" name="nuevoTipoRequisito.tipo_requisito" class="form-control" id="nuevoTipoRequisito" placeholder="Tipo Requisito" (input)="convertirAMayusculas($event, 'tipo_requisito')" (input)="eliminarCaracteresEspeciales($event, 'tipo_requisito')">
                 </div>
                 <div class="form-group">
@@ -109,7 +109,7 @@
 <div class="modal-dialog">
     <div class="modal-content">
         <div class="modal-header">
-            <h4 class="modal-title">Editar Tipo Requisito</h4>
+            <h4 class="modal-title">Editar Requisito</h4>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
@@ -117,7 +117,7 @@
         <div class="modal-body">
             <form>
               <div class="form-group">
-                  <label for="tipoRequisitoEditando">Tipo Requisito:</label>
+                  <label for="tipoRequisitoEditando">Requisito:</label>
                   <input type="text" [(ngModel)]="tipoRequisitoEditando.tipo_requisito" name="tipoRequisitoEditando.tipo_requisito" class="form-control" id="editartipoRequisito" placeholder="Nombre de la ciudad" (input)="convertirAMayusculas($event, 'tipo_requisito')" (input)="eliminarEspaciosBlanco($event, 'tipo_requisito')" (input)="eliminarCaracteresEspeciales($event, 'tipo_requisito')" >
               </div>
               <div class="form-group">
@@ -172,7 +172,7 @@
       <thead class="thead-dark">
         <tr>
           <th>ID</th>
-          <th>Tipo Requisito</th>
+          <th>Requisito</th>
           <th>Descripcion</th>
           <th>Creador</th>
           <th>Fecha Creación</th>
@@ -223,7 +223,7 @@
       <thead class="thead-dark">
         <tr>
           <th>ID</th>
-          <th>Tipo Requisito</th>
+          <th>Requisito</th>
           <th>Descripcion</th>
           <th>Creador</th>
           <th>Fecha Creación</th>

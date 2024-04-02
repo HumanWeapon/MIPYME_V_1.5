@@ -65,7 +65,7 @@ const routes: Routes = [
     { path: 'tipo_contacto', component:TipoContactoComponent, data:{titulo: 'Tipos de Contacto'}},
     { path: 'tipo_empresa', component:TipoEmpresaComponent, data:{titulo: 'Tipos de Empresa'}},
     { path: 'tipo_direccion', component:TipoDireccionComponent, data:{titulo: 'Tipos de direcciones'}},
-    { path: 'tipo_requisito', component:TipoRequisitosComponent, data:{titulo: 'Tipos de requisitos'}},
+    { path: 'tipo_requisito', component:TipoRequisitosComponent, data:{titulo: 'Requisitos de Exportacion'}},
     
     { path: 'dashboard', component: DashboardComponent, data:{titulo: 'Dashboard'}},
     { path: 'perfil', component: PerfilComponent, data:{titulo: 'Mi Perfil'}},
