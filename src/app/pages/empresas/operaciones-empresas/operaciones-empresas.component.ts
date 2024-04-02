@@ -214,6 +214,7 @@ export class OperacionesEmpresasComponent {
     this.getAllContactos();
     //this.getEmpresasProductos();
     const EmpresaId = localStorage.getItem('idEmpresa');
+    const ContactoId = localStorage.getItem('idContacto');
     const EmpresaNombre = localStorage.getItem('nombreEmpresa');
     const EmpresaDescripcion = localStorage.getItem('nombreEmpresa');
     const userLocal = localStorage.getItem('usuario');
@@ -222,6 +223,7 @@ export class OperacionesEmpresasComponent {
       this.nombreEmpresa = EmpresaNombre;
       this.descripcionEmpresa = EmpresaDescripcion;
       this.usuario = userLocal;
+      this.idContacto = ContactoId;
     }
     this.getEmpresasProductosPorId();
     this.getProductosNoRegistradosPorId();

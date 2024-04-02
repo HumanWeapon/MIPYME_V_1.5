@@ -488,6 +488,7 @@
                         <th scope="col">Pais</th>
                         <th scope="col">Cod_area</th>
                         <th scope="col">Teléfono</th>
+                        <th scope="col">Descripcion</th>
                         <th scope="col">Estado</th>
                         <th scope="col">Acciones</th>
                       </tr>
@@ -498,6 +499,7 @@
                         <td>{{producto.paises.pais | uppercase }}</td>
                         <td>{{producto.cod_area }}</td>
                         <td>{{ formatPhoneNumber(producto.telefono) }}</td> <!-- Llamar a la función formatPhoneNumber -->
+                        <td>{{producto.descripcion }}</td>
                         <td>
                           <ng-container *ngIf="producto.estado == 1">ACTIVO</ng-container>
                           <ng-container *ngIf="producto.estado == 2">INACTIVO</ng-container>
@@ -522,7 +524,7 @@
                 </div>
                 <!-- Enlace para agregar nuevo teléfono -->
                 <div class="text-center mt-3">
-                  <a href="agregarContactoT" class="text-primary">Agregar nuevo teléfono</a>
+                  <a href="#" class="text-primary">Agregar nuevo teléfono</a>
                 </div>
               </ng-template>
             </div>

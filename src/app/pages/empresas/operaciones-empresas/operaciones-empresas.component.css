@@ -18,11 +18,11 @@ h4 {
 
 /* Modifica el ancho del modal */
 .modal-dialog {
-  max-width: 45%; /* Establece el ancho máximo del modal */
+  max-width: 55%; /* Establece el ancho máximo del modal */
 }
 
 /* Personaliza el cuerpo del modal */
 .custom-modal-body {
-  max-height: 380px; /* Establece la altura máxima del cuerpo del modal */
+  max-height: 400px; /* Establece la altura máxima del cuerpo del modal */
   overflow-y: auto; /* Agrega scroll vertical si el contenido excede la altura máxima */
 }
