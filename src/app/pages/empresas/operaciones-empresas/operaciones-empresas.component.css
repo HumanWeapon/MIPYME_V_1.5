@@ -21,6 +21,12 @@ h4 {
   max-width: 55%; /* Establece el ancho máximo del modal */
 }
 
+/* Modifica el ancho del modal de Nuevo telefono*/
+.modalnuevo {
+  max-width: 40%; /* Establece el ancho máximo del modal */
+}
+
+
 /* Personaliza el cuerpo del modal */
 .custom-modal-body {
   max-height: 400px; /* Establece la altura máxima del cuerpo del modal */

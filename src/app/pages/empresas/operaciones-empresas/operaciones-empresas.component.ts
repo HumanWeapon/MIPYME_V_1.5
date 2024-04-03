@@ -78,9 +78,11 @@ export class OperacionesEmpresasComponent {
   //Obtiene la información del buscador de mi tabla productos
   filtro_prod: string = '';
   filtro_contact: string = '';
+  filtro_telefono: string = '';
   filtro_direc: string = '';
   todosLosProductos: any[] = [];
   todosLosContactos: any[] = [];
+  todosLosTelefonos: any[] = [];
   todasLasDirecciones: any[] = [];
   filtroModalProd: string = '';
   filtroModalCont: string = '';
@@ -331,6 +333,17 @@ export class OperacionesEmpresasComponent {
       });
     }
   }
+    //busca los Telefonos de la tabla principal de los telefonos Asignados
+    buscarTelefonosAsignados() {
+      if (this.filtro_telefono.trim() === '') {
+        this.telefonosContactos = this.todosLosTelefonos; // Si el filtro está vacío, muestra todos los productos
+      } else {
+        this.telefonosContactos = this.todosLosTelefonos.filter(paises => {
+          // Filtrar por el pais del producto
+          return paises.pais.toLowerCase().includes(this.filtro_telefono.trim().toLowerCase());
+        });
+      }
+    }
   //busca los productos de la tabla de contactos en el modal
   buscarContactosModal() {
     if (this.filtroModalCont.trim() === '') {

@@ -473,10 +473,30 @@
             <div class="col-12">
               <!-- Botón Nuevo -->
               <div class="card-header d-flex justify-content-end">
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarContactoT">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#agregarContactoT">
                   <i class="fas fa-plus"></i> Nuevo
                 </button>
               </div>
+              <!--Prueba de Buscador -->
+              <!--<div class="card-header">
+                <h3 class="card-title">Lista de Telefonos</h3>
+                <div class="card-tools">
+                  <div class="row">
+                    <div class="input-group input-group-sm" style="width: 200px;">
+                    
+                      <input type="text" name="table_search" class="form-control float-right" placeholder="Buscar" [(ngModel)]="filtro_telefono" (input)="buscarTelefonosAsignados()">
+
+                      <div class="input-group-append">
+                        <button type="button" class="btn btn-default" (click)="buscarTelefonosAsignados()">
+                          <i class="fas fa-search"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>-->
+              <!-- Fin Prueba Buscador-->
               <!-- Verifica si hay teléfonos registrados -->
               <div *ngIf="telefonosContactos && telefonosContactos.length > 0; else noTelefonos">
                 <!-- Aquí va tu tabla actual -->
@@ -524,8 +544,8 @@
                 </div>
                 <!-- Enlace para agregar nuevo teléfono -->
                 <div class="text-center mt-3">
-                  <a href="#" class="text-primary">Agregar nuevo teléfono</a>
-                </div>
+                  <a href="#" class="text-primary" data-dismiss="modal" data-toggle="modal" data-target="#agregarContactoT">Agregar nuevo teléfono</a>
+              </div>
               </ng-template>
             </div>
           </div>
@@ -570,8 +590,8 @@
 
   <!-- Agregar Telefono Form -->
 <div class="modal fade" id="agregarContactoT">
-  <div class="modal-dialog">
-      <div class="modal-content">
+  <div class="modal-dialog modalnuevo" id="modalnuevo">
+    <div class="modal-content">
           <div class="modal-header" style="background-color: #1254a1; color: white;">
               <h4 class="modal-title">Agregar Contacto Telefono</h4>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
