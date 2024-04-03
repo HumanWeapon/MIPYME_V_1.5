@@ -26,6 +26,7 @@ export class PymeComponent {
 
   getPyme: any;
   pymeAnterior: any;
+  pymeSeleccionado: any;
 
   editPyme: Pyme = {
     id_pyme: 0,
@@ -37,7 +38,10 @@ export class PymeComponent {
     fecha_modificacion: new Date(),
     fecha_ultima_conexion: new Date(),
     estado: 0,
-    id_rol: 0
+    id_rol: 0,
+    nombre_contacto: '',
+    correo_contacto: '',
+    telefono_contacto: '',
   };
 
   newPyme: Pyme = {
@@ -50,7 +54,10 @@ export class PymeComponent {
     fecha_modificacion: new Date(),
     fecha_ultima_conexion: new Date(),
     estado: 0,
-    id_rol: 0
+    id_rol: 0,
+    nombre_contacto: '',
+    correo_contacto: '',
+    telefono_contacto: '',
   };
   indice: any;
 
@@ -145,12 +152,11 @@ getDate(): string {
   eliminarCaracteresEspeciales(event: any, field: string) {
     setTimeout(() => {
       let inputValue = event.target.value;
-  
       // Elimina caracteres especiales dependiendo del campo
-      if (field === 'nombre_pyme') {
+      if (field === 'nombre_pyme' || field === 'rtn' || field === 'nombre_contacto' || field === 'correo_contacto') {
         inputValue = inputValue.replace(/[^a-zA-ZñÑ0-9\s]/g, ''); // Solo permite letras y números
-      } else if (field === 'rtn') {
-        inputValue = inputValue.replace(/[^a-zA-ZñÑ0-9\s]/g, '');  // Solo permite letras, números, @ y .
+      } else if (field === 'telefono_contacto') {
+        inputValue = inputValue.replace(/[^\d]/g, ''); // Solo permite números
       }
       event.target.value = inputValue;
     });
@@ -160,7 +166,7 @@ getDate(): string {
 /*****************************************************************************************************/
 
 generateExcel() {
-  const headers = ['ID', 'Nombre Pyme', 'RTN', 'Creador', 'Fecha Creación', 'Ultima Conexión', 'Estado'];
+  const headers = ['ID', 'Nombre Pyme', 'RTN', 'Creador', 'Fecha Creación', 'Ultima Conexión', 'Contacto', 'Correo', 'Teléfono', 'Estado'];
   const data: any[][] = [];
 
   // Recorre los datos de tu lista de Pymes y agrégalos a la matriz 'data'
@@ -172,6 +178,9 @@ generateExcel() {
       pyme.creado_por,
       pyme.fecha_creacion,
       pyme.fecha_ultima_conexion,
+      pyme.nombre_contacto,
+      pyme.correo_contacto,
+      pyme.telefono_contacto,
       this.getEstadoText(pyme.estado) // Función para obtener el texto del estado
     ];
     data.push(row);
@@ -213,7 +222,7 @@ generatePDF() {
   const { jsPDF } = require("jspdf");
   const doc = new jsPDF();
   const data: any[][] = [];
-  const headers = ['ID Pyme', 'Nombre Pyme', 'RTN', 'Creador', 'Fecha Creación', 'Ultima Conexión', 'Estado'];
+  const headers = ['ID Pyme', 'Nombre Pyme', 'RTN', 'Creador', 'Fecha Creación', 'Ultima Conexión', 'Contacto', 'Correo', 'Teléfono', 'Estado'];
 
   // Agregar el logo al PDF
   const logoImg = new Image();
@@ -238,6 +247,9 @@ generatePDF() {
         pyme.creado_por,
         pyme.fecha_creacion,
         pyme.fecha_ultima_conexion,
+        pyme.nombre_contacto,
+        pyme.correo_contacto,
+        pyme.telefono_contacto,
         this.getEstadoText(pyme.estado) // Función para obtener el texto del estado
       ];
       data.push(row);
@@ -295,7 +307,10 @@ agregarNuevaPyme() {
       fecha_modificacion: new Date(),
       fecha_ultima_conexion: new Date(),
       estado: 1,
-      id_rol: this.newPyme.id_rol
+      id_rol: this.newPyme.id_rol,
+      nombre_contacto: this.newPyme.nombre_contacto.toUpperCase(),
+      correo_contacto: this.newPyme.correo_contacto.toUpperCase(),
+      telefono_contacto: this.newPyme.telefono_contacto
     };
     if (!this.newPyme.nombre_pyme || !this.newPyme.rtn ) {
       this.toastr.warning('Campos vacíos');
@@ -328,6 +343,25 @@ agregarNuevaPyme() {
 
   /************************************************************************************/
 
+  obtenerPyme(pyme: Pyme, i: any) {
+    this.pymeSeleccionado = {
+      id_pyme: pyme.id_pyme,
+      nombre_pyme: pyme.nombre_pyme,
+      rtn:pyme.rtn,
+      creado_por: pyme.creado_por,
+      fecha_creacion: pyme.fecha_creacion,
+      modificado_por: pyme.modificado_por,
+      fecha_modificacion: pyme.fecha_modificacion,
+      fecha_ultima_conexion: pyme.fecha_ultima_conexion,
+      estado: pyme.estado,
+      id_rol: pyme.id_rol,
+      nombre_contacto: pyme.nombre_contacto,
+      correo_contacto: pyme.correo_contacto,
+      telefono_contacto: pyme.telefono_contacto
+    };
+    this.indice = i;
+  }
+
   obtenerIdPyme(pyme: Pyme, i: any) {
     this.editPyme = {
       id_pyme: pyme.id_pyme,
@@ -339,7 +373,10 @@ agregarNuevaPyme() {
       fecha_modificacion: pyme.fecha_modificacion,
       fecha_ultima_conexion: pyme.fecha_ultima_conexion,
       estado: pyme.estado,
-      id_rol: pyme.id_rol
+      id_rol: pyme.id_rol,
+      nombre_contacto: pyme.nombre_contacto,
+      correo_contacto: pyme.correo_contacto,
+      telefono_contacto: pyme.telefono_contacto
     };
     this.indice = i;
     this.pymeAnterior = pyme;
@@ -493,7 +530,10 @@ insertBitacora(dataPyme: Pyme) {
     campo_original: 'NO EXISTE REGISTRO ANTERIOR',
     nuevo_campo: `SE AGREGÓ UNA NUEVA PYME:
                   Nombre Pyme: ${dataPyme.nombre_pyme},
-                  RTN: ${dataPyme.rtn},`,
+                  RTN: ${dataPyme.rtn},
+                  CONTACTO: ${dataPyme.nombre_contacto}
+                  CORRERO: ${dataPyme.correo_contacto}
+                  TELEFONO: ${dataPyme.telefono_contacto},`,
     accion: 'INSERTAR'
   };
 
@@ -512,6 +552,15 @@ updateBitacora(dataPyme: Pyme) {
   if (this.pymeAnterior.rtn !== dataPyme.rtn) {
     cambios.push(`RTN: ${dataPyme.rtn}`);
   }
+  if (this.pymeAnterior.nombre_contacto !== dataPyme.nombre_contacto) {
+    cambios.push(`Nombre Contacto: ${dataPyme.nombre_contacto}`);
+  }
+  if (this.pymeAnterior.correo_contacto !== dataPyme.correo_contacto) {
+    cambios.push(`Correo: ${dataPyme.correo_contacto}`);
+  }  
+  if (this.pymeAnterior.telefono_contacto !== dataPyme.telefono_contacto) {
+    cambios.push(`Teléfono: ${dataPyme.telefono_contacto}`);
+  }
  
  
   // Si se realizaron cambios, registrar en la bitácora
@@ -521,7 +570,7 @@ updateBitacora(dataPyme: Pyme) {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
       id_objeto: 22, // ID del objeto correspondiente a las PyMes
-      campo_original: `Nombre Pyme: ${this.pymeAnterior.nombre_pyme}, RTN: ${this.pymeAnterior.rtn}`, 
+      campo_original: `Nombre Pyme: ${this.pymeAnterior.nombre_pyme}, RTN: ${this.pymeAnterior.rtn}, Contacto: ${this.pymeAnterior.nombre_contacto}, Correo: ${this.pymeAnterior.correo_contacto}, Teléfono: ${this.pymeAnterior.telefono_contacto}`, 
       nuevo_campo: cambios.join(', '),
       accion: 'ACTUALIZAR'
     }

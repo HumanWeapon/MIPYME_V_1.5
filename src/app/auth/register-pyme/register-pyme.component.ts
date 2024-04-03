@@ -20,6 +20,7 @@ export class RegisterPymeComponent implements OnInit{
 
   id_rolPyme: number = 0;
 
+ 
 
   newPyme: Pyme = {
     id_pyme: 0,
@@ -31,7 +32,10 @@ export class RegisterPymeComponent implements OnInit{
     fecha_modificacion: new Date(),
     fecha_ultima_conexion: new Date(),
     estado: 0,
-    id_rol: 0
+    id_rol: 0,
+    nombre_contacto: '',
+    correo_contacto: '',
+    telefono_contacto: '',
   };
 
   constructor(
@@ -58,27 +62,34 @@ export class RegisterPymeComponent implements OnInit{
   }
 
   eliminarEspaciosBlanco() {
-    //this.newPyme.nombre_pyme = this.newPyme.nombre_pyme.replace(/\s/g, ''); // Elimina espacios en blanco para el cambo pyme
-    this.newPyme.nombre_pyme = this.newPyme.nombre_pyme.toUpperCase(); // Convierte el texto a mayúsculas
-    this.newPyme.rtn = this.rtn.replace(/\s/g, ''); // Elimina espacios en blanco para el cambo contraseña
+    this.newPyme.nombre_pyme = this.newPyme.nombre_pyme.toUpperCase();
+    this.newPyme.nombre_contacto = this.newPyme.nombre_contacto.toUpperCase();
+    this.newPyme.correo_contacto = this.newPyme.correo_contacto.toUpperCase();
+    this.rtn = this.rtn.replace(/\s/g, ''); // Elimina espacios en blanco del RTN
   }
-
+  
+  
   eliminarCaracteresEspeciales(event: any, field: string) {
     setTimeout(() => {
       let inputValue = event.target.value;
   
       // Elimina caracteres especiales dependiendo del campo
       if (field === 'nombre_pyme') {
-        inputValue = inputValue.replace(/[^a-zA-Z0-9ñÑ]/g, ''); // Permite letras, números y ñ/Ñ
-      } else if (field === 'rtn' || field === 'confirmar_rtn') {
-        inputValue = inputValue.replace(/[^\d]/g, ''); // Solo permite números
+        inputValue = inputValue.replace(/\s/g, ''); // Elimina espacios en blanco
+      } else if (field === 'nombre_contacto') {
+        // Limita el campo a 3 espacios como máximo
+        inputValue = inputValue.replace(/\s{4,}/g, '   ');
+      } else if (field === 'correo_contacto') {
+        // Elimina espacios en blanco
+        inputValue = inputValue.replace(/\s/g, '');
+      } else if (field === 'telefono_contacto' || field === 'rtn' || field === 'confirmar_rtn') {
+        // Elimina espacios en blanco y otros caracteres no deseados (como letras)
+        inputValue = inputValue.replace(/\s/g, '').replace(/[^\d]/g, '');
       }
       event.target.value = inputValue;
     });
-}
-
+  }
   
-
 
   getRolPyme(){
     this._pymesService.getRolPyme().subscribe({
@@ -94,7 +105,7 @@ export class RegisterPymeComponent implements OnInit{
 
   registrar(): void {
     // Verifica si alguno de los campos está vacío
-    if (!this.newPyme.nombre_pyme || !this.newPyme.rtn || !this.confirmar_rtn) {
+    if (!this.newPyme.nombre_pyme || !this.newPyme.rtn || !this.confirmar_rtn || !this.newPyme.nombre_contacto || !this.newPyme.correo_contacto || !this.newPyme.telefono_contacto ){
       this._toastr.error('Por favor, complete todos los campos');
       return; 
     }
@@ -111,7 +122,19 @@ export class RegisterPymeComponent implements OnInit{
       return; 
     }
   
-    // Si todos los campos están llenos, la longitud del RTN es válida y los RTN coinciden, procede con el registro
+    // Verifica si el formato del correo electrónico es válido
+    if (!this.validarCorreoElectronico(this.newPyme.correo_contacto)) {
+      this._toastr.error('El formato del correo electrónico no es válido');
+      return;
+    }
+  
+    // Verifica si el formato del número de teléfono es válido
+    if (!this.validarTelefono(this.newPyme.telefono_contacto)) {
+      this._toastr.error('El formato del número de teléfono no es válido');
+      return;
+    }
+  
+    // Si todos los campos están llenos y válidos, procede con el registro
     this.newPyme = {
       id_pyme: 0,
       nombre_pyme: this.newPyme.nombre_pyme.toUpperCase(),
@@ -122,8 +145,12 @@ export class RegisterPymeComponent implements OnInit{
       fecha_modificacion: new Date(),
       fecha_ultima_conexion: new Date(),
       estado: 1,
-      id_rol: this.id_rolPyme
+      id_rol: this.id_rolPyme,
+      nombre_contacto: this.newPyme.nombre_contacto,
+      correo_contacto: this.newPyme.correo_contacto, // Convertimos el correo a mayúsculas según tu lógica
+      telefono_contacto: this.newPyme.telefono_contacto,
     };
+    
     console.log(this.newPyme);
     this._pymesService.PostPyme(this.newPyme).subscribe({
       next: (data) => {
@@ -136,4 +163,17 @@ export class RegisterPymeComponent implements OnInit{
       }
     });
   }
+  
+  validarTelefono(telefono: string): boolean {
+    const expresionRegularTelefono = /^[0-9]+$/;
+    return expresionRegularTelefono.test(telefono);
+  }
+
+  validarCorreoElectronico(correo: string): boolean {
+    // Expresión regular para validar el formato del correo electrónico
+    const expresionRegularCorreo = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    // Se verifica si el correo electrónico coincide con la expresión regular
+    return expresionRegularCorreo.test(correo);
+  }
+  
 }  

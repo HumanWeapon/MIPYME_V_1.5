@@ -6,5 +6,11 @@ import { Component } from '@angular/core';
   styleUrls: ['./restore.component.css']
 })
 export class RestoreComponent {
+  
+restore() {
+throw new Error('Method not implemented.');
+}
+
+  
 
 }

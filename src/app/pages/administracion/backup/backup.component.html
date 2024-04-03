@@ -1,1 +1,54 @@
-<p>backup works!</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Backup Database</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-m6QK0G+xfC3p1+11t2ybiOOe5nqXPCyAeZdYhND3ajRQdAZMTsJ1sNu7d2qQeJwDvFbBwe1jQrUCOMQ2HXcHhA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      text-align: center;
+    }
+
+    .blue-button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .blue-button:hover {
+      background-color: #0056b3;
+    }
+
+    .button-icon {
+      margin-right: 5px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>REALIZAR COPIA DE SEGURIDAD</h1>
+    <img src="assets/dist/img/backup.png" alt="Backup Database Image" width="200">
+    <button class="blue-button" (click)="backup()">
+      <i class="fas fa-database button-icon"></i>COPIA DE SEGURIDAD 
+    </button>
+    <div id="statusMessage"></div>
+  </div>
+</body>
+</html>

@@ -6,5 +6,9 @@ import { Component } from '@angular/core';
   styleUrls: ['./backup.component.css']
 })
 export class BackupComponent {
+backup() {
+throw new Error('Method not implemented.');
+}
 
 }
+

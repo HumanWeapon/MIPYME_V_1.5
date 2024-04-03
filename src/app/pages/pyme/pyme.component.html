@@ -13,16 +13,14 @@
               <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped">
                   <thead>
                     <tr>
-                      <th>Id</th>
-                      <th>Nombre Pyme</th>
+                      <th>ID</th>
+                      <th>NOMBRE</th>
                       <th>RTN</th>
-                      <th>Creado</th>
-                      <th>Fecha Creación</th>
-                      <th>Modificador</th>
-                      <th>Fecha Modificación</th>
-                      <th>Ultima Conexión</th>
-                      <th>Estado</th>
-                      <th>Acciones</th>
+                      <th>CONTACTO</th>
+                      <th>CORREO</th>
+                      <th>TELEFONO</th>
+                      <th>ESTADO</th>
+                      <th>ACCIONES</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -30,24 +28,30 @@
                       <td>{{ pyme.id_pyme }}</td>
                       <td>{{ pyme.nombre_pyme }}</td>
                       <td>{{ pyme.rtn }}</td>
-                      <td>{{ pyme.creado_por}}</td>
-                      <td>{{ pyme.fecha_creacion}}</td>
-                      <td>{{ pyme.modificado_por}}</td>
-                      <td>{{ pyme.fecha_modificacion}}</td>
-                      <td>{{ pyme.fecha_ultima_conexion}}</td>
+                      <td>{{ pyme.nombre_contacto }}</td>
+                      <td>{{ pyme.correo_contacto }}</td>
+                      <td>{{ pyme.telefono_contacto }}</td>
+                      
                       <td>
                         <ng-container *ngIf="pyme.estado === 1">ACTIVO</ng-container>
                         <ng-container *ngIf="pyme.estado === 2">INACTIVO</ng-container>
                       </td>
                       <td class="text-center">
                         <div class="btn-group">
+                          <!-- Colocar el botón del ojo antes del switch -->
+                          <button type="button" (click)="obtenerPyme(pyme, i)" title="Ver Usuario" class="btna" data-toggle="modal" data-target="#VistaPyme">
+                            <i class="far fa-eye"></i> <!-- Cambiar el icono a un ojo -->
+                          </button>
+                      
                           <div class="form-check form-switch ml-4">
                             <input class="form-check-input" (click)="toggleFunction(pyme, i)" [title]="pyme.estado == 1 ? 'Desactivar' : 'Activar'" type="checkbox" 
                               role="switch" id="flexSwitchCheckChecked" [checked]="pyme.estado == 1">
                           </div>
-                            <button type="button" (click)="obtenerIdPyme(pyme, i)" data-toggle="modal" title='Editar Pyme' data-target="#abrirModalEditarPyme"data-toggle="modal" data-target="#abrirModalEditarPyme" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
-                            <button type="button" (click)="deletePyme(pyme.id_pyme)" class="btna"  style="color: #E74C3C;" title="Eliminar Pyme"><i class=" fas fa-solid fa-trash"></i></button>
-                          </div>
+                      
+                          <!-- Los demás botones -->
+                          <button type="button" (click)="obtenerIdPyme(pyme, i)" data-toggle="modal" title='Editar Pyme' data-target="#abrirModalEditarPyme"data-toggle="modal" data-target="#abrirModalEditarPyme" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
+                          <button type="button" (click)="deletePyme(pyme.id_pyme)" class="btna"  style="color: #E74C3C;" title="Eliminar Pyme"><i class=" fas fa-solid fa-trash"></i></button>
+                        </div>
                       </td>
                     </tr>
                   </tbody>
@@ -65,6 +69,56 @@
   <!-- /.container-fluid -->
 </section>
 <!-- /.content -->
+
+
+
+
+
+<div class="modal fade" id="VistaPyme">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header bg-primary">
+        <h4 class="modal-title text-white">Datos Adicionales de las PYMES</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="pymeSeleccionado">
+          <table class="table table-bordered table-striped" style="width: 100%;">
+            <thead class="bg-primary text-white"> <!-- Cambiar el color de fondo del encabezado de la tabla a azul -->
+              <tr>
+                <th>ID</th>
+                <th>PYME</th>
+                <th>CREADOR</th>
+                <th>FECHA CREACIÓN</th>
+                <th>MODIFICADOR</th>
+                <th>FECHA MODIFICACIÓN</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{{ pymeSeleccionado.id_pyme }}</td>
+                <td>{{ pymeSeleccionado.nombre_pyme }}</td>
+                <td>{{ pymeSeleccionado.creado_por | uppercase }}</td>
+                <td>{{ pymeSeleccionado.fecha_creacion | date: 'yyyy-MM-dd' }}</td>
+                <td>{{ pymeSeleccionado.modificado_por | uppercase }}</td>
+                <td>{{ pymeSeleccionado.fecha_modificacion | date: 'yyyy-MM-dd' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
 
 <!-- Agregar Empresa Form-->
 <div class="modal fade" id="agregarPyme">
@@ -115,33 +169,45 @@
 <!-- Actualizar Empresa Form -->
 <div class="modal fade" id="abrirModalEditarPyme">
   <div class="modal-dialog">
-      <div class="modal-content">
-          <div class="modal-header">
-              <h4 class="modal-title">Editar Pyme</h4>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-              </button>
-          </div>
-          <div class="modal-body">
-              <form>
-                <div class="form-group">
-                    <label for="pymeEditando">Nombre de Pyme</label>
-                    <input type="text" [(ngModel)]="editPyme.nombre_pyme" name="editPyme.nombre_pyme" (input)="onInputChange($event, 'nombre_pyme')" (input)="eliminarCaracteresEspeciales($event, 'nombre_pyme')"class="form-control" id="editarNombre" placeholder="Nombre de la Pyme"[ngModelOptions]="{standalone: true}" (ngModelChange)="editPyme.nombre_pyme=$event.toUpperCase()">
-                </div>   
-              <div class="form-group">
-                  <label for="PymeEditando">RTN</label>
-                  <input type="text" [(ngModel)]="editPyme.rtn" name="editPyme.rtn" (input)="onInputChange($event, 'rtn')" (input)="eliminarCaracteresEspeciales($event, 'rtn')" class="form-control" id="editarRTN" placeholder="RTN">
-              </div>    
-            </form>
-          </div>
-          <div class="modal-footer justify-content-between">
-              <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-              <button type="button" (click)=" editarPyme()" class="btn btn-success" data-dismiss="modal">Guardar</button>
-          </div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Editar Pyme</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="editarNombre">NOMBRE PYME</label>
+            <input type="text" [(ngModel)]="editPyme.nombre_pyme" name="editPyme.nombre_pyme" (input)="onInputChange($event, 'nombre_pyme'); eliminarCaracteresEspeciales($event, 'nombre_pyme')" class="form-control" id="editarNombre" placeholder="Nombre de la Pyme" [ngModelOptions]="{standalone: true}" (ngModelChange)="editPyme.nombre_pyme=$event.toUpperCase()">
+          </div>
+          <div class="form-group">
+            <label for="editarRTN">RTN</label>
+            <input type="text" [(ngModel)]="editPyme.rtn" name="editPyme.rtn" (input)="onInputChange($event, 'rtn'); eliminarCaracteresEspeciales($event, 'rtn')" class="form-control" id="editarRTN" placeholder="RTN">
+          </div>
+          <div class="form-group">
+            <label for="editarContacto">CONTACTO</label>
+            <input type="text" [(ngModel)]="editPyme.nombre_contacto" name="editPyme.nombre_contacto" (input)="onInputChange($event, 'nombre_contacto'); eliminarCaracteresEspeciales($event, 'nombre_contacto')" class="form-control" id="editarContacto" placeholder="Contacto">
+          </div>
+          <div class="form-group">
+            <label for="editarCorreo">CORREO</label>
+            <input type="text" [(ngModel)]="editPyme.correo_contacto" name="editPyme.correo_contacto" (input)="onInputChange($event, 'correo_contacto'); eliminarCaracteresEspeciales($event, 'correo_contacto')" class="form-control" id="editarCorreo" placeholder="Correo Electrónico">
+          </div>
+          <div class="form-group">
+            <label for="editarTELEFONO">TELÉFONO</label>
+            <input type="text" [(ngModel)]="editPyme.telefono_contacto" name="editPyme.telefono_contacto" (input)="onInputChange($event, 'telefono_contacto'); eliminarCaracteresEspeciales($event, 'telefono_contacto')" class="form-control" id="editarTELEFONO" placeholder="Teléfono">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+        <button type="button" (click)="editarPyme()" class="btn btn-success" data-dismiss="modal">Guardar</button>
+      </div>
+    </div>
   </div>
-  </div>
-  <!-- /Actualizar Empresa Form -->
+</div>
+<!-- /Actualizar Empresa Form -->
 
 
 

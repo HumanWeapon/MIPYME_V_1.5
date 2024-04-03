@@ -8,5 +8,8 @@ export interface Pyme {
     fecha_modificacion: Date,
     fecha_ultima_conexion: Date,
     estado: number,
-    id_rol: number
+    id_rol: number,
+    nombre_contacto: string,
+    correo_contacto: string,
+    telefono_contacto: string,
 }

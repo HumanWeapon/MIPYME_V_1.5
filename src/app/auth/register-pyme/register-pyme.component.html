@@ -6,53 +6,97 @@
         <a class="h1"></a>
       </div>
       <div class="card-body">
-        <p class="login-box-msg" style="color: #3370e2; font-size: medium;">Registrate y se parte de nosotros</p>
+        <p class="login-box-msg" style="color: #3370e2; font-size: medium;">Registrate</p>
 
- <form method="post">
-  <div class="form-group">
-    <label for="nombre_pyme" style="color: #3370e2; font-size: smaller;">Nombre de la Pyme:</label>
-    <div class="input-group">
-      <input type="text" class="form-control" [(ngModel)]="newPyme.nombre_pyme" name="nombre_pyme" (input)="eliminarEspaciosBlanco()" (input)="eliminarCaracteresEspeciales($event, 'nombre_pyme')" placeholder="Nombre de la Pyme" maxlength="50" autocomplete="off">
-      <div class="input-group-append">
-        <div class="input-group-text">
-          <span class="fas fa-user"></span>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-          <div class="form-group">
-            <label for="rtn" style="color: #3370e2; font-size: smaller;">RTN:</label>
-            <div class="input-group">
-              <input type="text" [(ngModel)]="rtn" name="rtn" (input)="eliminarEspaciosBlanco()" (input)="eliminarCaracteresEspeciales($event, 'rtn')" autocomplete="off" class="form-control" id="contraseña" placeholder="RTN sin Guiones">
-              <div class="input-group-append">
-                <div class="input-group-text">
-                  <span class="fas fa-lock"></span>
+        <form method="post">
+   
+              <div class="form-group">
+                <label for="nombre_pyme" style="color: #3370e2; font-size: smaller;">Nombre de la Pyme:</label>
+                <div class="input-group">
+                  <input type="text" class="form-control" [(ngModel)]="newPyme.nombre_pyme" name="nombre_pyme" (input)="eliminarEspaciosBlanco()" (input)="eliminarCaracteresEspeciales($event, 'nombre_pyme')" placeholder="Nombre de la Pyme" maxlength="50" autocomplete="off">
+                  <div class="input-group-append">
+                    <div class="input-group-text">
+                      <span class="fas fa-user"></span>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-          
-          <div class="form-group">
-            <label for="confirmar_rtn" style="color: #3370e2;; font-size: smaller;">Confirmar RTN:</label>
-            <div class="input-group">
-              <input type="text" [(ngModel)]="confirmar_rtn" name="confirmar_rtn" (input)="eliminarEspaciosBlanco()" (input)="eliminarCaracteresEspeciales($event, 'confirmar_rtn')" autocomplete="off" class="form-control" id="confirmar_rtn" placeholder="Confirmar RTN">
-              <div class="input-group-append">
-                <div class="input-group-text">
-                  <span class="fas fa-lock"></span>
+              
+              <!-- RTN -->
+              <div class="form-group">
+                <label for="rtn" style="color: #3370e2; font-size: smaller;">RTN:</label>
+                <div class="input-group">
+                  <input type="text" [(ngModel)]="rtn" name="rtn" (input)="eliminarEspaciosBlanco()" (input)="eliminarCaracteresEspeciales($event, 'rtn')" autocomplete="off" class="form-control" id="contraseña" placeholder="RTN sin Guiones">
+                  <div class="input-group-append">
+                    <div class="input-group-text">
+                      <span class="fas fa-lock"></span>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-12 mt-3">
-              <button type="submit" (click)="registrar()" class="btn btn-primary btn-block">Registrate</button>
-              <div style="text-align: center;">
-                ¿Ya tienes una cuenta? <a href="#" (click)="goToLonginPyme($event)" class="btn btn-link">Iniciar sesión</a>
+              
+              <!-- Confirmar RTN -->
+              <div class="form-group">
+                <label for="confirmar_rtn" style="color: #3370e2;; font-size: smaller;">Confirmar RTN:</label>
+                <div class="input-group">
+                  <input type="text" [(ngModel)]="confirmar_rtn" name="confirmar_rtn" (input)="eliminarEspaciosBlanco()" (input)="eliminarCaracteresEspeciales($event, 'confirmar_rtn')" autocomplete="off" class="form-control" id="confirmar_rtn" placeholder="Confirmar RTN">
+                  <div class="input-group-append">
+                    <div class="input-group-text">
+                      <span class="fas fa-lock"></span>
+                    </div>
+                  </div>
+                </div>
               </div>
-          </div>
+              
+              <div class="form-group">
+                <label for="nombre_contacto" style="color: #3370e2; font-size: smaller;">Nombre de Contacto:</label>
+                <div class="input-group">
+                  <input type="text" class="form-control" [(ngModel)]="newPyme.nombre_contacto" name="nombre_contacto" (input)="eliminarEspaciosBlanco()" (input)="eliminarCaracteresEspeciales($event, 'nombre_contacto')" placeholder="Nombre de Contacto" maxlength="50" autocomplete="off">
+                  <div class="input-group-append">
+                    <div class="input-group-text">
+                      <span class="fas fa-user"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Correo electrónico -->
+              <div class="form-group">
+                <label for="correo_contacto" style="color: #3370e2; font-size: smaller;">Correo electrónico de Contacto:</label>
+                <div class="input-group">
+                  <input type="text" class="form-control" [(ngModel)]="newPyme.correo_contacto" name="correo_contacto" (input)="eliminarEspaciosBlanco()" (input)="eliminarCaracteresEspeciales($event, 'correo_contacto')" placeholder="Correo electrónico de Contacto" maxlength="50" autocomplete="off">
+                  <div class="input-group-append">
+                    <div class="input-group-text">
+                      <span class="fas fa-user"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Teléfono -->
+              <div class="form-group">
+                <label for="telefono_contacto" style="color: #3370e2; font-size: smaller;">Teléfono de Contacto:</label>
+                <div class="input-group">
+                  <input type="text" class="form-control" [(ngModel)]="newPyme.telefono_contacto" name="telefono_contacto" (input)="eliminarEspaciosBlanco()" (input)="eliminarCaracteresEspeciales($event, 'telefono_contacto')" placeholder="Teléfono de Contacto sin Guiones" maxlength="50" autocomplete="off">
+                  <div class="input-group-append">
+                    <div class="input-group-text">
+                      <span class="fas fa-user"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+      
+        
     
-      </div>
+        <div class="row">
+          <div class="col-12 mt-3">
+            <button type="submit" (click)="registrar()" class="btn btn-primary btn-block">Registrarse</button>
+            <div style="text-align: center;">
+              ¿Ya tienes una cuenta? <a href="#" (click)="goToLonginPyme($event)" class="btn btn-link">Iniciar sesión</a>
+            </div>
+          </div>
+        </div>
+
 
 
 

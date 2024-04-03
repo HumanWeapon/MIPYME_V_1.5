@@ -29,7 +29,10 @@ export class LoginPymeComponent implements OnDestroy {
     fecha_modificacion: new Date(),
     fecha_ultima_conexion: new Date(),
     estado: 0,
-    id_rol: 0
+    id_rol: 0,
+    nombre_contacto: '',
+    correo_contacto: '',
+    telefono_contacto: '',
   };
 
   private subscriptions: Subscription[] = [];
@@ -92,7 +95,10 @@ export class LoginPymeComponent implements OnDestroy {
       fecha_modificacion: new Date(),
       estado: 0,
       fecha_ultima_conexion: new Date(),
-      id_rol: 0
+      id_rol: 0,
+      nombre_contacto: '',
+      correo_contacto: '',
+      telefono_contacto: '',
     };
     
     this.loading = true;
@@ -133,7 +139,10 @@ export class LoginPymeComponent implements OnDestroy {
       estado: 0,
       rtn: '',
       fecha_ultima_conexion: new Date(),
-      id_rol: 0
+      id_rol: 0,
+      nombre_contacto: '',
+      correo_contacto: '',
+      telefono_contacto: '',
     };
 
     const getPymeSubscription = this._pymeService.getPyme(this.getPyme).subscribe({
