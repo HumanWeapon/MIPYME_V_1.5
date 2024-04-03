@@ -354,7 +354,7 @@ agregarNuevoUsuario() {
         next: (data) => {
           this.insertBitacora(data);
           this._toastr.success('Usuario agregado con éxito')
-          this.usuariosAllRoles.push(this.newUser)
+          this.usuariosAllRoles.push(data)
         },
         error: (e: HttpErrorResponse) => {
           this._errorService.msjError(e);

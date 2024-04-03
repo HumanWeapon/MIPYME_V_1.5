@@ -156,6 +156,7 @@ agregarNuevaEmpresa() {
   this._empresaService.addEmpresa(this.nuevaEmpresa).subscribe({
     next: (data) => {
       this.toastr.success('Empresa agregada con éxito');
+      console.log(data);
       this.listEmpresa.push(data);
     },
     error: (e: HttpErrorResponse) => {
