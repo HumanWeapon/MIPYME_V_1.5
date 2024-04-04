@@ -29,6 +29,7 @@ import { EmpresasDireccionesService } from 'src/app/services/operaciones/empresa
 import { EmpresasProdcutosService } from 'src/app/services/operaciones/empresas-prodcutos.service';
 import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 import { ActivatedRoute } from '@angular/router';
+import { TipoRequisitoService } from 'src/app/services/mantenimiento/tipoRequisito.service';
 
 @Component({
   selector: 'app-operaciones-empresas',
@@ -63,6 +64,8 @@ export class OperacionesEmpresasComponent {
   direccionesEmpresa: any[] = [];//Obtiene los contactos registrados de la Empresa y los muestra en la tabla.
   contactosActivos: any[] = []; //Obtiene los contactos activos de la Empresa y los muestra en la tabla.
   telefonosContactos: any[] = [];//Obtiene los telefonos registrados para cada contacto.
+  requisitosAllPaisesEmpresas: any[] = [];//Obtiene los requisitos registrados de la Empresa y los muestra en la tabla.
+
 
   //Obtiene los productos no registrados para la empresa y mostrarlos en el modal de agregar productos.
   listNuevosProductos: any[] = []; //guarda los registros de mi consulta a la api
@@ -84,6 +87,7 @@ export class OperacionesEmpresasComponent {
   todosLosContactos: any[] = [];
   todosLosTelefonos: any[] = [];
   todasLasDirecciones: any[] = [];
+  todosLosRequisitos: any[] = [];
   filtroModalProd: string = '';
   filtroModalCont: string = '';
 
@@ -228,6 +232,7 @@ export class OperacionesEmpresasComponent {
     this.getEmpresasProductosPorId();
     this.getProductosNoRegistradosPorId();
     this.getEmpresasContactosPorId();
+    this.getRequisitosEmpresaporId();
     this.getContactosNoRegistradosPorId();
     this.getDireccionesEmpresaporID();
     this.getCiudadesActivas();
@@ -255,7 +260,8 @@ export class OperacionesEmpresasComponent {
     private _contactoTService: ContactoTService,
     private _tipoDireccionService: TipoDireccionService,
     private _operacionesContactos: EmpresasContactosService,
-    private route: ActivatedRoute
+    private _tipoRequisitoService: TipoRequisitoService    
+
   ) {}
 
   getAllPaises(){
@@ -389,6 +395,19 @@ export class OperacionesEmpresasComponent {
       }
     });
   }
+      //Obtiene todos los Requisitos registrados a una empresa
+      getRequisitosEmpresaporId() {
+        this._tipoRequisitoService.requisitosdeEmpresaPorId(this.idEmpresa).subscribe({
+          next: (data: any) => {
+            this.requisitosAllPaisesEmpresas = data;
+            console.log('Datos recibidos:', data); // Agregar console.log aquí
+          },
+          error: (e: HttpErrorResponse) => {
+            this._errorService.msjError(e);
+          }
+        });
+      }
+      
 
   agregarEmpresa(){
     const userLocal = localStorage.getItem('usuario');
