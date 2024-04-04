@@ -30,6 +30,7 @@ import { EmpresasProdcutosService } from 'src/app/services/operaciones/empresas-
 import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 import { ActivatedRoute } from '@angular/router';
 import { TipoRequisitoService } from 'src/app/services/mantenimiento/tipoRequisito.service';
+import { TipoRequisito } from 'src/app/interfaces/mantenimiento/tipoRequisito.service';
 
 @Component({
   selector: 'app-operaciones-empresas',
@@ -397,7 +398,7 @@ export class OperacionesEmpresasComponent {
   }
       //Obtiene todos los Requisitos registrados a una empresa
       getRequisitosEmpresaporId() {
-        this._tipoRequisitoService.requisitosdeEmpresaPorId(this.idEmpresa).subscribe({
+        this._tipoRequisitoService.consultarRequisitosPorId(this.idEmpresa).subscribe({
           next: (data: any) => {
             this.requisitosAllPaisesEmpresas = data;
             console.log('Datos recibidos:', data); // Agregar console.log aquí

@@ -13,11 +13,12 @@ export class TipoRequisitoService {
   
   private myAppUrl: string;
   private myApiUrl: string;
+  private apiUrl: String;
 
   constructor(private http: HttpClient) {
     this.myAppUrl = environment.endpoint;
     this.myApiUrl = 'api/tipo_requisito'
-    // Asignar un valor a una clave en localStorage
+    this.apiUrl = environment.endpoint + 'api/tipo_requisito';
 
    }
 
@@ -71,12 +72,12 @@ export class TipoRequisitoService {
     return this.http.get<TipoRequisito[]>(`${this.myAppUrl}${this.myApiUrl}/requisitosAllPaisesEmpresas`, { headers: headers });
   }
 
-  requisitosdeEmpresaPorId(idEmpresa: number): Observable<any[]> {
-    const token = localStorage.getItem('token');
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    const body = { id_empresa: idEmpresa }; // Envía el id_contacto en el cuerpo de la solicitud
-    return this.http.post<any[]>(`${this.myAppUrl}${this.myApiUrl}/requisitosdeEmpresaPorId`, body, { headers: headers });
-  }
+    //consulta los contactos registrados de una empresa por el id
+    consultarRequisitosPorId(id: number): Observable<any[]> {
+      const token = localStorage.getItem('token');
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+      return this.http.get<any[]>(`${this.apiUrl}/consultarRequisitosActivosporId/${id}`, { headers });
+    }
 
 }
 
