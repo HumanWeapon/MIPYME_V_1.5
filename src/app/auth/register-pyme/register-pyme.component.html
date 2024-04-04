@@ -1,3 +1,10 @@
+<style>
+  .login-box {
+    width: 500px; /* Cambia el valor según tu preferencia */
+    margin: auto; /* Esto centrará el modal en la página */
+  }
+</style>
+
 <body class="hold-transition login-page">
   <div class="login-box">
     <!-- /.login-logo -->
@@ -26,7 +33,7 @@
               <div class="form-group">
                 <label for="rtn" style="color: #3370e2; font-size: smaller;">RTN:</label>
                 <div class="input-group">
-                  <input type="text" [(ngModel)]="rtn" name="rtn" (input)="eliminarEspaciosBlanco()" (input)="eliminarCaracteresEspeciales($event, 'rtn')" autocomplete="off" class="form-control" id="contraseña" placeholder="RTN sin Guiones">
+                  <input type="text" [(ngModel)]="newPyme.rtn" name="rtn" (input)="eliminarEspaciosBlanco()" (input)="eliminarCaracteresEspeciales($event, 'rtn')" autocomplete="off" class="form-control" id="contraseña" placeholder="RTN sin Guiones">
                   <div class="input-group-append">
                     <div class="input-group-text">
                       <span class="fas fa-lock"></span>
@@ -64,7 +71,7 @@
               <div class="form-group">
                 <label for="correo_contacto" style="color: #3370e2; font-size: smaller;">Correo electrónico de Contacto:</label>
                 <div class="input-group">
-                  <input type="text" class="form-control" [(ngModel)]="newPyme.correo_contacto" name="correo_contacto" (input)="eliminarEspaciosBlanco()" (input)="eliminarCaracteresEspeciales($event, 'correo_contacto')" placeholder="Correo electrónico de Contacto" maxlength="50" autocomplete="off">
+                  <input type="text" class="form-control" [(ngModel)]="newPyme.correo_contacto" name="correo_contacto" (input)="eliminarEspaciosBlanco()" (input)="eliminarCaracteresEspeciales($event, 'correo_contacto')" placeholder="Correo electrónico" maxlength="50" autocomplete="off">
                   <div class="input-group-append">
                     <div class="input-group-text">
                       <span class="fas fa-user"></span>
@@ -77,7 +84,7 @@
               <div class="form-group">
                 <label for="telefono_contacto" style="color: #3370e2; font-size: smaller;">Teléfono de Contacto:</label>
                 <div class="input-group">
-                  <input type="text" class="form-control" [(ngModel)]="newPyme.telefono_contacto" name="telefono_contacto" (input)="eliminarEspaciosBlanco()" (input)="eliminarCaracteresEspeciales($event, 'telefono_contacto')" placeholder="Teléfono de Contacto sin Guiones" maxlength="50" autocomplete="off">
+                  <input type="text" class="form-control" [(ngModel)]="newPyme.telefono_contacto" name="telefono_contacto" (input)="eliminarEspaciosBlanco()" (input)="eliminarCaracteresEspeciales($event, 'telefono_contacto')" placeholder="Teléfono sin Guiones" maxlength="50" autocomplete="off">
                   <div class="input-group-append">
                     <div class="input-group-text">
                       <span class="fas fa-user"></span>
