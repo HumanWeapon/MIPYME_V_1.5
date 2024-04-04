@@ -49,6 +49,7 @@ export class TipoRequisitosComponent implements OnInit {
 
   dtOptions: DataTables.Settings = {};
   listTipoR: TipoRequisito[] = [];
+  requisitosAllPaisesEmpresas: any[] = [];
   data: any;
   dtTrigger: Subject<any> = new Subject<any>();
   tipoRequisitoAll: any[] = []
@@ -73,9 +74,9 @@ export class TipoRequisitosComponent implements OnInit {
           language: {url:'//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'},
           responsive: true
         };
-        this._tipoRequisitoService.getAllTipoRequisito().subscribe({
+        this._tipoRequisitoService.requisitosAllPaisesEmpresas().subscribe({
           next: (data) =>{
-            this.listTipoR = data;
+            this.requisitosAllPaisesEmpresas = data;
             this.dtTrigger.next(0);
           }
         });

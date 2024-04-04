@@ -64,6 +64,13 @@ export class TipoRequisitoService {
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
     return this.http.post<TipoRequisito>(`${this.myAppUrl}${this.myApiUrl}/updateTipoRequisito`, tipoRequisito, { headers: headers })
   }
+
+  requisitosAllPaisesEmpresas(): Observable<TipoRequisito[]> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<TipoRequisito[]>(`${this.myAppUrl}${this.myApiUrl}/requisitosAllPaisesEmpresas`, { headers: headers });
+  }
+
 }
 
 
