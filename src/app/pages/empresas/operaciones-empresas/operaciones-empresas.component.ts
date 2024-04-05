@@ -233,7 +233,7 @@ export class OperacionesEmpresasComponent {
     this.getEmpresasProductosPorId();
     this.getProductosNoRegistradosPorId();
     this.getEmpresasContactosPorId();
-    this.getRequisitosEmpresaporId();
+    this.getRequisitosEmpresaPorId();
     this.getContactosNoRegistradosPorId();
     this.getDireccionesEmpresaporID();
     this.getCiudadesActivas();
@@ -397,7 +397,7 @@ export class OperacionesEmpresasComponent {
     });
   }
       //Obtiene todos los Requisitos registrados a una empresa
-      getRequisitosEmpresaporId() {
+      getRequisitosEmpresaPorId() {
         this._tipoRequisitoService.consultarRequisitosPorId(this.idEmpresa).subscribe({
           next: (data: any) => {
             this.requisitosAllPaisesEmpresas = data;
@@ -408,7 +408,6 @@ export class OperacionesEmpresasComponent {
           }
         });
       }
-      
 
   agregarEmpresa(){
     const userLocal = localStorage.getItem('usuario');
