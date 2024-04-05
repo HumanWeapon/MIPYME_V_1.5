@@ -456,8 +456,8 @@ activarBitacora(dataTipContacto: TipoContacto){
     fecha: new Date() ,
     id_usuario: this.getUser.id_usuario,
     id_objeto: 12,
-    campo_original: `EL TIPO DE CONTACTO: ${dataTipContacto.tipo_contacto}`,
-    nuevo_campo: 'CAMBIO DE ESTADO',
+    campo_original: 'EL TIPO CONTACTO: '+ dataTipContacto.tipo_contacto + ' SE ENCUENTRA "INACTIVO" ', 
+    nuevo_campo: 'EL TIPO CONTACTO: '+ dataTipContacto.tipo_contacto + ' CAMBIO A "ACTIVO" ', 
     accion: 'ACTIVAR',
   }
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
@@ -469,8 +469,8 @@ inactivarBitacora(dataTipContacto: TipoContacto){
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 12,
-    campo_original: `EL TIPO DE CONTACTO: ${dataTipContacto.tipo_contacto}`,
-    nuevo_campo: 'CAMBIO DE ESTADO',
+    campo_original: 'EL TIPO CONTACTO: '+ dataTipContacto.tipo_contacto + ' SE ENCUENTRA "ACTIVO" ', 
+    nuevo_campo: 'EL TIPO CONTACTO: '+ dataTipContacto.tipo_contacto + ' CAMBIO A "INACTIVO" ', 
     accion: 'INACTIVAR'
   };
 

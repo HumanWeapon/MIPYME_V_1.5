@@ -473,8 +473,8 @@ activarBitacora(dataDireccion: TipoDireccion){
     fecha: new Date() ,
     id_usuario: this.getUser.id_usuario,
     id_objeto: 3, // ID del objeto correspondiente a las direcciones
-    campo_original: 'LA DIRECCIÓN: '+ dataDireccion.tipo_direccion,
-    nuevo_campo: 'CAMBIO DE ESTADO',
+    campo_original: 'EL TIPO DIRECCIÓN: '+ dataDireccion.tipo_direccion + ' SE ENCUENTRA "INACTIVO" ', 
+    nuevo_campo: 'EL TIPO DIRECCIÓN: '+ dataDireccion.tipo_direccion + ' CAMBIO A "ACTIVO" ', 
     accion: 'ACTIVAR',
   }
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
@@ -487,8 +487,8 @@ inactivarBitacora(dataDireccion: TipoDireccion){
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 3, // ID del objeto correspondiente a las direcciones
-    campo_original: 'LA DIRECCIÓN: '+ dataDireccion.tipo_direccion,
-    nuevo_campo: 'CAMBIO DE ESTADO',
+    campo_original: 'EL TIPO DIRECCIÓN: '+ dataDireccion.tipo_direccion + ' SE ENCUENTRA "ACTIVO" ', 
+    nuevo_campo: 'EL TIPO DIRECCIÓN: '+ dataDireccion.tipo_direccion + ' CAMBIO A "INACTIVO" ', 
     accion: 'INACTIVAR'
   };
 

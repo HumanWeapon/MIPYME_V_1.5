@@ -602,8 +602,8 @@ activarBitacora(dataPermiso: Permisos) {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 28, // Suponiendo que el ID del objeto de permisos es 28
-    campo_original: 'EL PERMISO: ' + dataPermiso.id_permisos,
-    nuevo_campo: 'CAMBIO DE ESTADO',
+    campo_original: 'EL PERMISO: '+ dataPermiso.id_permisos + ' SE ENCUENTRA "INACTIVO" ', 
+    nuevo_campo: 'EL PERMISO: '+ dataPermiso.id_permisos + ' CAMBIO A "ACTIVO" ', 
     accion: 'ACTIVAR'
   };
 
@@ -617,8 +617,8 @@ inactivarBitacora(dataPermiso: Permisos) {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 28, // Suponiendo que el ID del objeto de permisos es 28
-    campo_original: 'EL PERMISO: ' + dataPermiso.id_permisos,
-    nuevo_campo: 'CAMBIO DE ESTADO',
+    campo_original: 'EL PERMISO: '+ dataPermiso.id_permisos + ' SE ENCUENTRA "ACTIVO" ', 
+    nuevo_campo: 'EL PERMISO: '+ dataPermiso.id_permisos + ' CAMBIO A "INACTIVO" ', 
     accion: 'INACTIVAR'
   };
 

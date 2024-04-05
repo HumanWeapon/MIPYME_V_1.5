@@ -489,8 +489,8 @@ agregarNuevoContacto() {
       fecha: new Date() ,
       id_usuario: this.getUser.id_usuario,
       id_objeto: 17, // ID del objeto correspondiente a los contactos
-      campo_original: 'EL CONTACTO: '+ dataContacto.nombre_completo,
-      nuevo_campo: 'CAMBIO DE ESTADO',
+      campo_original: 'EL CONTACTO: '+ dataContacto.nombre_completo + ' SE ENCUENTRA "INACTIVO" ', 
+      nuevo_campo: 'EL CONTACTO: '+ dataContacto.nombre_completo + ' CAMBIO A "ACTIVO" ', 
       accion: 'ACTIVAR',
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
@@ -503,8 +503,8 @@ agregarNuevoContacto() {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
       id_objeto: 17, // ID del objeto correspondiente a los contactos
-      campo_original: 'EL CONTACTO: '+ dataContacto.nombre_completo,
-      nuevo_campo: 'CAMBIO DE ESTADO',
+      campo_original: 'EL CONTACTO: '+ dataContacto.nombre_completo + ' SE ENCUENTRA "ACTIVO" ', 
+      nuevo_campo: 'EL CONTACTO: '+ dataContacto.nombre_completo + ' CAMBIO A "INACTIVO" ', 
       accion: 'INACTIVAR'
     };
   

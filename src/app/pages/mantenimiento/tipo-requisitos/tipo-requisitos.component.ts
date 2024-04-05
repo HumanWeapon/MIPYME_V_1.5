@@ -483,8 +483,8 @@ activarBitacora(dataRequisito: TipoRequisito){
     fecha: new Date() ,
     id_usuario: this.getUser.id_usuario,
     id_objeto: 3, // ID del objeto correspondiente a los tipos de requisito
-    campo_original: `TIPO DE REQUISITO: ${dataRequisito.tipo_requisito}`,
-    nuevo_campo: 'CAMBIO DE ESTADO',
+    campo_original: 'EL TIPO REQUISITO: '+ dataRequisito.tipo_requisito + ' SE ENCUENTRA "INACTIVO" ', 
+    nuevo_campo: 'EL TIPO REQUISITO: '+ dataRequisito.tipo_requisito + ' CAMBIO A "ACTIVO" ', 
     accion: 'ACTIVAR',
   }
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
@@ -497,8 +497,8 @@ inactivarBitacora(dataRequisito: TipoRequisito){
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 3, // ID del objeto correspondiente a los tipos de requisito
-    campo_original: `TIPO DE REQUISITO: ${dataRequisito.tipo_requisito}`,
-    nuevo_campo: 'CAMBIO DE ESTADO',
+    campo_original: 'EL TIPO REQUISITO: '+ dataRequisito.tipo_requisito + ' SE ENCUENTRA "ACTIVO" ', 
+    nuevo_campo: 'EL TIPO REQUISITO: '+ dataRequisito.tipo_requisito + ' CAMBIO A "INACTIVO" ', 
     accion: 'INACTIVAR'
   };
 

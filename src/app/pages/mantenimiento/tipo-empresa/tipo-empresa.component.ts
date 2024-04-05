@@ -446,8 +446,8 @@ activarBitacora(dataTipoEmpresa: TipoEmpresa){
     fecha: new Date() ,
     id_usuario: this.getUser.id_usuario,
     id_objeto: 13, // El ID del objeto para tipos de empresa
-    campo_original: 'TIPO DE EMPRESA: '+ dataTipoEmpresa.tipo_empresa,
-    nuevo_campo: 'CAMBIO DE ESTADO',
+    campo_original: 'EL TIPO EMPRESA: '+ dataTipoEmpresa.tipo_empresa + ' SE ENCUENTRA "INACTIVO" ', 
+    nuevo_campo: 'EL TIPO EMPRESA: '+ dataTipoEmpresa.tipo_empresa + ' CAMBIO A "ACTIVO" ', 
     accion: 'ACTIVAR',
   }
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
@@ -460,8 +460,8 @@ inactivarBitacora(dataTipoEmpresa: TipoEmpresa){
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 13, // El ID del objeto para tipos de empresa
-    campo_original: 'TIPO DE EMPRESA: '+ dataTipoEmpresa.tipo_empresa,
-    nuevo_campo: 'CAMBIO DE ESTADO',
+    campo_original: 'EL TIPO EMPRESA: '+ dataTipoEmpresa.tipo_empresa + ' SE ENCUENTRA "ACTIVO" ', 
+    nuevo_campo: 'EL TIPO EMPRESA: '+ dataTipoEmpresa.tipo_empresa + ' CAMBIO A "INACTIVO" ', 
     accion: 'INACTIVAR'
   };
 

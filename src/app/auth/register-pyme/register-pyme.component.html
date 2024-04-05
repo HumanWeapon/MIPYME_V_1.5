@@ -61,7 +61,8 @@
                   <input type="text" class="form-control" [(ngModel)]="newPyme.nombre_contacto" name="nombre_contacto" (input)="eliminarEspaciosBlanco()" (input)="eliminarCaracteresEspeciales($event, 'nombre_contacto')" placeholder="Nombre de Contacto" maxlength="50" autocomplete="off">
                   <div class="input-group-append">
                     <div class="input-group-text">
-                      <span class="fas fa-user"></span>
+                      <span class="fas fa-user-circle"></span>
+
                     </div>
                   </div>
                 </div>
@@ -74,7 +75,8 @@
                   <input type="text" class="form-control" [(ngModel)]="newPyme.correo_contacto" name="correo_contacto" (input)="eliminarEspaciosBlanco()" (input)="eliminarCaracteresEspeciales($event, 'correo_contacto')" placeholder="Correo electrónico" maxlength="50" autocomplete="off">
                   <div class="input-group-append">
                     <div class="input-group-text">
-                      <span class="fas fa-user"></span>
+                      <span class="fas fa-envelope"></span>
+
                     </div>
                   </div>
                 </div>
@@ -87,7 +89,8 @@
                   <input type="text" class="form-control" [(ngModel)]="newPyme.telefono_contacto" name="telefono_contacto" (input)="eliminarEspaciosBlanco()" (input)="eliminarCaracteresEspeciales($event, 'telefono_contacto')" placeholder="Teléfono sin Guiones" maxlength="50" autocomplete="off">
                   <div class="input-group-append">
                     <div class="input-group-text">
-                      <span class="fas fa-user"></span>
+                      <span class="fas fa-phone"></span>
+
                     </div>
                   </div>
                 </div>

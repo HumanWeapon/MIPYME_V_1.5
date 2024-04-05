@@ -434,8 +434,8 @@ activarBitacora(dataPregunta: Preguntas) {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 27, // ID del objeto correspondiente a las preguntas
-    campo_original: 'LA PREGUNTA: ' + dataPregunta.pregunta,
-    nuevo_campo: 'CAMBIO DE ESTADO',
+    campo_original: 'LA PREGUNTA: '+ dataPregunta.pregunta + ' SE ENCUENTRA "INACTIVO" ', 
+      nuevo_campo: 'LA PREGUNTA: '+ dataPregunta.pregunta + ' CAMBIO A "ACTIVO" ', 
     accion: 'ACTIVAR'
   };
 
@@ -449,8 +449,8 @@ inactivarBitacora(dataPregunta: Preguntas) {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 27, // ID del objeto correspondiente a las preguntas
-    campo_original: 'LA PREGUNTA: ' + dataPregunta.pregunta,
-    nuevo_campo: 'CAMBIO DE ESTADO',
+    campo_original: 'LA PREGUNTA: '+ dataPregunta.pregunta + ' SE ENCUENTRA "ACTIVO" ', 
+    nuevo_campo: 'LA PREGUNTA: '+ dataPregunta.pregunta + ' CAMBIO A "INACTIVO" ', 
     accion: 'INACTIVAR'
   };
 

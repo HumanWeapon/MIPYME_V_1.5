@@ -479,8 +479,8 @@ activarBitacora(dataPais: Paises){
     fecha: new Date() ,
     id_usuario: this.getUser.id_usuario,
     id_objeto: 19,
-    campo_original: 'EL PAÍS: '+ dataPais.pais,
-    nuevo_campo: 'CAMBIO DE ESTADO',
+    campo_original: 'EL PAÍS: '+ dataPais.pais + ' SE ENCUENTRA "INACTIVO" ', 
+    nuevo_campo: 'EL PAÍS: '+ dataPais.pais + ' CAMBIO A "ACTIVO" ', 
     accion: 'ACTIVAR',
   }
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
@@ -493,8 +493,8 @@ inactivarBitacora(dataPais: Paises){
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 19,
-    campo_original: 'EL PAÍS: '+ dataPais.pais,
-    nuevo_campo: 'CAMBIO DE ESTADO',
+    campo_original: 'EL PAÍS: '+ dataPais.pais + ' SE ENCUENTRA "ACTIVO" ', 
+    nuevo_campo: 'EL PAÍS: '+ dataPais.pais + ' CAMBIO A "INACTIVO" ', 
     accion: 'INACTIVAR'
   };
 

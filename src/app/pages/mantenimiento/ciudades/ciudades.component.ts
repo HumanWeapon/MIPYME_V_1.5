@@ -498,8 +498,8 @@ activarBitacora(dataCiudad: Ciudades) {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 18,
-    campo_original: `CIUDAD: ${dataCiudad.ciudad}`,
-    nuevo_campo: 'CAMBIO DE ESTADO',
+    campo_original: 'LA CIUDAD: '+ dataCiudad.ciudad + ' SE ENCUENTRA "INACTIVO" ', 
+    nuevo_campo: 'LA CIUDAD: '+ dataCiudad.ciudad + ' CAMBIO A "ACTIVO" ', 
     accion: 'ACTIVAR'
   };
 
@@ -513,8 +513,8 @@ inactivarBitacora(dataCiudad: Ciudades) {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 18,
-    campo_original: `CIUDAD: ${dataCiudad.ciudad}`,
-    nuevo_campo: 'CAMBIO DE ESTADO',
+    campo_original: 'LA CIUDAD: '+ dataCiudad.ciudad + ' SE ENCUENTRA "ACTIVO" ', 
+    nuevo_campo: 'LA CIUDAD: '+ dataCiudad.ciudad + ' CAMBIO A "INACTIVO" ', 
     accion: 'INACTIVAR'
   };
 

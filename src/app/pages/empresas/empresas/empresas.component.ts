@@ -522,8 +522,8 @@ updateBitacora(dataEmpresa: Empresa) {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
       id_objeto: 9,
-      campo_anterior: dataEmpresa.empresa,
-      nuevo_campo: 'CAMBIO DE ESTADO: ',
+      campo_original: 'LA EMPRESA: '+ dataEmpresa.nombre_empresa + ' SE ENCUENTRA "INACTIVO" ', 
+      nuevo_campo: 'LA EMPRESA: '+ dataEmpresa.nombre_empresa + ' CAMBIO A "ACTIVO" ', 
       accion: 'ACTIVAR',
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
@@ -535,8 +535,8 @@ updateBitacora(dataEmpresa: Empresa) {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
       id_objeto: 9,
-      campo_anterior: dataEmpresa.empresa,
-      nuevo_campo: 'CAMBIO DE ESTADO: ',
+      campo_original: 'LA EMPRESA: '+ dataEmpresa.nombre_empresa + ' SE ENCUENTRA "ACTIVO" ', 
+      nuevo_campo: 'LA EMPRESA: '+ dataEmpresa.nombre_empresa + ' CAMBIO A "INACTIVO" ', 
       accion: 'INACTIVAR',
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{

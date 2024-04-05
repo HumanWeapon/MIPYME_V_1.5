@@ -459,8 +459,8 @@ activarBitacora(dataRoles: Roles) {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 3, // Suponiendo que el ID del objeto de roles es 3
-    campo_original: 'EL ROL: ' + dataRoles.rol,
-    nuevo_campo: 'CAMBIO DE ESTADO',
+    campo_original: 'EL ROL: '+ dataRoles.rol + ' SE ENCUENTRA "INACTIVO" ', 
+      nuevo_campo: 'EL ROL: '+ dataRoles.rol + ' CAMBIO A "ACTIVO" ', 
     accion: 'ACTIVAR'
   };
 
@@ -474,8 +474,8 @@ inactivarBitacora(dataRoles: Roles) {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 3, // Suponiendo que el ID del objeto de roles es 3
-    campo_original: 'EL ROL: ' + dataRoles.rol,
-    nuevo_campo: 'CAMBIO DE ESTADO',
+    campo_original: 'EL ROL: '+ dataRoles.rol + ' SE ENCUENTRA "ACTIVO" ', 
+    nuevo_campo: 'EL ROL: '+ dataRoles.rol + ' CAMBIO A "INACTIVO" ', 
     accion: 'INACTIVAR'
   };
 
