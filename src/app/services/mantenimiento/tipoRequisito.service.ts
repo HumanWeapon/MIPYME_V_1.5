@@ -76,11 +76,10 @@ export class TipoRequisitoService {
     consultarRequisitosPorId(id: number): Observable<any[]> {
       const token = localStorage.getItem('token');
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-      return this.http.get<any[]>(`${this.apiUrl}/consultarRequisitosActivosporId/${id}`, { headers });
+      return this.http.get<any[]>(`${this.apiUrl}/consultarRequisitosporIdEmpresa/${id}`, { headers });
     }
 
 }
-
 
 
 

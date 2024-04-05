@@ -22,10 +22,10 @@
       </section>
       <section>
         <div class="row">
-          <div class="col-12 col-sm-4" *ngFor="let obj of list_productosFilter | paginate: { itemsPerPage: 10, currentPage: p }">
-            <div class="info-box bg-light">
-              <div class="info-box-content">
-                <span class="info-box-number text-center btn btna mb-0"><strong>{{ obj.producto }}</strong></span>
+          <div  class="col-12 col-sm-4" *ngFor="let obj of list_productosFilter | paginate: { itemsPerPage: 10, currentPage: p }">
+            <div type="button" class="info-box bg-light">
+              <div class="info-box-content" (click)="getIdProducto(obj.id_producto)" >
+                <span class="info-box-number text-center btn btna mb-0"  data-toggle="modal" data-target="#paises"><strong>{{ obj.producto }}</strong></span>
                 <p class="text-center text-muted mb-0">Categoría: {{ obj.categoria }}</p>
                 <p class="text-center text-muted mb-0">Descripción: {{ obj.descripcion }}</p>
               </div>
@@ -34,6 +34,112 @@
         </div>
         <pagination-controls (pageChange)="p = $event"  previousLabel="Anterior" nextLabel="Siguiente" style="text-align: center;"></pagination-controls>
       </section>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="paises" style="display: none;" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #1254a1; color: white;">
+        <h4 class="modal-title">Seleccionar Pais</h4>
+        <button type="button" class="close btn_color_blue" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="card">
+          <div class="card-header" style="background-color: #e9e9e9;">
+            <h3 class="card-title">Lista de paises preveedores</h3>
+            <div class="card-tools">
+              <div class="row">
+                <div class="input-group input-group-sm" style="width: 200px;">
+                
+                  <input type="text" name="table_search" class="form-control float-right" placeholder="Buscar" [(ngModel)]="filtro_pais" (input)="buscarPais()">
+
+                  <div class="input-group-append">
+                    <button type="button" class="btn btn-default" (click)="buscarPais()">
+                      <i class="fas fa-search"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        
+          <div class="card-body table-responsive p-0" style="height: 300px;">
+            <table class="table table-head-fixed text-nowrap">
+              <thead>
+                <tr>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let obj of paisesEmpresa; let i = index">
+                  <td><button (click)="getIdPais(obj.id_pais)" type="button" class="btn btn2_color_blue" (click)="getPaisesEmpresasPorPais()" data-toggle="modal" data-target="#empresas" data-dismiss="modal"><strong> {{ obj.pais }}</strong></button> </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div> 
+      </div>
+      <div class="modal-footer justify-content-between" style="background-color: #e9e9e9;">
+        <button type="button" class="btn btn_color_blue" data-dismiss="modal">Volver</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="empresas" style="display: none;" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #1254a1; color: white;">
+        <h4 class="modal-title">Seleccionar Empresa</h4>
+        <button type="button" class="close btn_color_blue" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="card">
+          <div class="card-header" style="background-color: #e9e9e9;">
+            <h3 class="card-title">Lista de empresas preveedores</h3>
+            <div class="card-tools">
+              <div class="row">
+                <div class="input-group input-group-sm" style="width: 200px;">
+                
+                  <input type="text" name="table_search" class="form-control float-right" placeholder="Buscar" [(ngModel)]="filtro_empresa" (input)="buscarEmpresa()">
+
+                  <div class="input-group-append">
+                    <button type="button" class="btn btn-default" (click)="buscarEmpresa()">
+                      <i class="fas fa-search"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        
+          <div class="card-body table-responsive p-0" style="height: 300px;">
+            <table class="table table-head-fixed text-nowrap">
+              <thead>
+                <tr>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let obj of empresasEmpresa; let i = index">
+                  <td><button type="button" class="btn btn2_color_blue" data-dismiss="modal"><strong> {{ obj.nombre_empresa }}</strong></button> </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div> 
+      </div>
+      <div class="modal-footer justify-content-between" style="background-color: #e9e9e9;">
+        <button type="button" class="btn btn_color_blue" data-dismiss="modal" data-toggle="modal" data-target="#paises">Volver</button>
+      </div>
     </div>
   </div>
 </div>

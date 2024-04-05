@@ -13,7 +13,7 @@ td, th {
     background-color: rgba(255, 0, 0, 0);
     color: #1254a1;
 }
-.btna:hover{
+.btn_color_blue:hover, .btn2_color_blue:hover, .btna:hover{
     color: rgb(255, 174, 0)
 }
 

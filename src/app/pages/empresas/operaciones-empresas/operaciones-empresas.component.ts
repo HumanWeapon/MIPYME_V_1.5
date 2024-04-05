@@ -3,7 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
-import { da } from 'date-fns/locale';
+import { da, id } from 'date-fns/locale';
 import { data, error } from 'jquery';
 import { ToastrService } from 'ngx-toastr';
 import { Contacto } from 'src/app/interfaces/contacto/contacto';
@@ -31,6 +31,7 @@ import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 import { ActivatedRoute } from '@angular/router';
 import { TipoRequisitoService } from 'src/app/services/mantenimiento/tipoRequisito.service';
 import { TipoRequisito } from 'src/app/interfaces/mantenimiento/tipoRequisito.service';
+import { identifierName } from '@angular/compiler';
 
 @Component({
   selector: 'app-operaciones-empresas',
@@ -131,7 +132,8 @@ export class OperacionesEmpresasComponent {
     modificado_por: '',
     fecha_modificacion: new Date(),
     estado: 1
-  }
+  };
+
   nuevaDireccion: ContactoDirecciones = {
     id_direccion: 0, 
     id_tipo_direccion: 0,
@@ -146,6 +148,7 @@ export class OperacionesEmpresasComponent {
     fecha_modificacion: new Date(), 
     estado: 0
   };
+
   nuevoContacto: Contacto = {
     id_contacto: 0,
     id_empresa:0,
@@ -170,6 +173,7 @@ export class OperacionesEmpresasComponent {
     fecha_modificacion:new Date(), 
     estado: 0,
   };
+  
   direccionEditando: ContactoDirecciones = {
     id_direccion: 0, 
     id_tipo_direccion: 0,
@@ -198,7 +202,6 @@ export class OperacionesEmpresasComponent {
     fecha_modificacion: new Date(),
     estado: 0,
   };
-
   nuevoContactoT: ContactoTelefono = {
     id_telefono: 0, 
     id_contacto: 0,
@@ -212,6 +215,33 @@ export class OperacionesEmpresasComponent {
     fecha_modificacion: new Date(),
     estado: 0,
   };
+
+  tipoRequisitoEditando: TipoRequisito = {
+    id_tipo_requisito: 0, 
+    id_empresa: 0,
+    id_pais: 0,
+    tipo_requisito: '', 
+    descripcion:'',
+    creado_por: '', 
+    fecha_creacion: new Date(), 
+    modificado_por: '', 
+    fecha_modificacion: new Date(),
+    estado: 0,
+  };
+  nuevoTipoRequisito: TipoRequisito = {
+      id_tipo_requisito: 0, 
+      id_empresa: 0,
+      id_pais: 0,
+      tipo_requisito: '', 
+      descripcion:'',
+      creado_por: '', 
+      fecha_creacion: new Date(), 
+      modificado_por: '', 
+      fecha_modificacion: new Date(),
+      estado: 0,
+  
+    };
+
 
   ngOnInit(){
     this.getProductos();
@@ -233,7 +263,7 @@ export class OperacionesEmpresasComponent {
     this.getEmpresasProductosPorId();
     this.getProductosNoRegistradosPorId();
     this.getEmpresasContactosPorId();
-    this.getRequisitosEmpresaporId();
+    this.getRequisitosEmpresaPorId();
     this.getContactosNoRegistradosPorId();
     this.getDireccionesEmpresaporID();
     this.getCiudadesActivas();
@@ -397,7 +427,7 @@ export class OperacionesEmpresasComponent {
     });
   }
       //Obtiene todos los Requisitos registrados a una empresa
-      getRequisitosEmpresaporId() {
+      getRequisitosEmpresaPorId() {
         this._tipoRequisitoService.consultarRequisitosPorId(this.idEmpresa).subscribe({
           next: (data: any) => {
             this.requisitosAllPaisesEmpresas = data;
@@ -408,7 +438,45 @@ export class OperacionesEmpresasComponent {
           }
         });
       }
-      
+
+  agregarNuevoTipoRequisito() {
+    const userLocal = localStorage.getItem('usuario');
+    const IdEmpresa = localStorage.getItem('idEmpresa');
+    this.idEmpresa = IdEmpresa;
+    if (userLocal){
+
+      const fechaActual = new Date();
+      const fechaFormateada = this._datePipe.transform(fechaActual, 'yyyy-MM-dd');
+        this.nuevoTipoRequisito = {
+          id_tipo_requisito: 0,
+          id_empresa: this.idEmpresa,
+          id_pais: this.nuevoTipoRequisito.id_pais, 
+          tipo_requisito: this.nuevoTipoRequisito.tipo_requisito, 
+          descripcion:this.nuevoTipoRequisito.descripcion,
+          creado_por: userLocal, 
+          fecha_creacion: fechaFormateada as unknown as Date, 
+          modificado_por: userLocal, 
+          fecha_modificacion: fechaFormateada as unknown as Date, 
+          estado: 1,
+    
+        };
+        if (!this.nuevoTipoRequisito.tipo_requisito || !this.nuevoTipoRequisito.descripcion) {
+          this._toastr.warning('Debes completar los campos vacíos');
+          this.nuevoTipoRequisito.tipo_requisito = '';
+          this.nuevoTipoRequisito.descripcion = '';
+        }else{
+        this._tipoRequisitoService.addTipoRequisito(this.nuevoTipoRequisito).subscribe({
+          next: (data) => {
+            this._toastr.success('Tipo de Requisito agregado con éxito')
+            this.requisitosAllPaisesEmpresas.push(this.nuevoTipoRequisito)
+          },
+          error: (e: HttpErrorResponse) => {
+            this._errorService.msjError(e);
+          }
+        });
+      }
+      }
+    }
 
   agregarEmpresa(){
     const userLocal = localStorage.getItem('usuario');

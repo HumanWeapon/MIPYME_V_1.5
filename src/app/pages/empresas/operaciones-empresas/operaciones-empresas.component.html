@@ -305,7 +305,6 @@
                             <th>Id</th>
                             <th>Requisito</th>
                             <th>Descripción</th>
-                            <th>Empresa</th>
                             <th>Pais</th>
                             <th>Creado</th>
                             <th>Fecha Creación</th>
@@ -320,8 +319,7 @@
                             <td>{{ TRequi.id_tipo_requisito }}</td>
                             <td>{{ TRequi.tipo_requisito | uppercase }}</td>
                             <td>{{ TRequi.descripcion | uppercase }}</td>
-                            <td>{{ TRequi.empresas.nombre_empresa | uppercase }}</td>
-                            <td>{{ TRequi.paises.pais | uppercase }}</td>
+                            <td>{{ TRequi.pais | uppercase }}</td>
                             <td>{{ TRequi.creado_por | uppercase }}</td>
                             <td>{{ TRequi.fecha_creacion | date: 'yyyy-MM-dd' }}</td>
                             <td>{{ TRequi.modificado_por | uppercase}}</td>
@@ -460,6 +458,44 @@
   </div>
   <!-- /Agregar producto Form -->
 
+  <!-- Agregar Requisito Form -->
+<div class="modal fade" id="agregarRequisito">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title">Agregar Requisito</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <form (submit)="agregarNuevoTipoRequisito()">
+                <div class="form-group">
+                  <label for="editarRol">Pais:</label>
+                  <select class="form-control" id="agregarPais" [(ngModel)]="nuevoTipoRequisito.id_pais" name="nuevoTipoRequisito.id_pais" class="form-control" >
+                    <option *ngFor="let item of listPaises; let value = index" [value]="item.id_pais">{{ item.pais }}</option>
+                  </select>
+                </div>
+                  <div class="form-group">
+                      <label for="nuevoTipoRequisito">Requisito:</label>
+                      <input type="text" [(ngModel)]="nuevoTipoRequisito.tipo_requisito" name="nuevoTipoRequisito.tipo_requisito" class="form-control" id="nuevoTipoRequisito" placeholder="Tipo Requisito" (input)="convertirAMayusculas($event, 'tipo_requisito')" (input)="eliminarCaracteresEspeciales($event, 'tipo_requisito')">
+                  </div>
+                  <div class="form-group">
+                    <label for="nuevoTipoRequisito">Descripción</label>
+                    <textarea [(ngModel)]="nuevoTipoRequisito.descripcion" rows="5" name="nuevoTipoRequisito.descripcion" class="form-control" id="nuevoTipoRequisito" placeholder="Descripción" (input)="eliminarCaracteresEspeciales($event, 'descripcion')" (input)="convertirAMayusculas($event, 'descripcion')"></textarea>
+                </div>
+                  
+              </form>
+          </div>
+          <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-danger" data-dismiss="modal" (click)="cancelarInput()">Cancelar</button>
+              <button type="button" (click)="agregarNuevoTipoRequisito()" class="btn btn-success" data-dismiss="modal">Guardar</button>
+          </div>
+      </div>
+  </div>
+  </div>
+  <!-- /Agregar Requisito Form -->
+
   <!-- Agregar Contacto Form -->
   <div class="modal fade" id="agregarContacto" style=" font-size:medium;">
     <div class="modal-dialog">
@@ -556,26 +592,6 @@
                   <i class="fas fa-plus"></i> Nuevo
                 </button>
               </div>
-              <!--Prueba de Buscador -->
-              <!--<div class="card-header">
-                <h3 class="card-title">Lista de Telefonos</h3>
-                <div class="card-tools">
-                  <div class="row">
-                    <div class="input-group input-group-sm" style="width: 200px;">
-                    
-                      <input type="text" name="table_search" class="form-control float-right" placeholder="Buscar" [(ngModel)]="filtro_telefono" (input)="buscarTelefonosAsignados()">
-
-                      <div class="input-group-append">
-                        <button type="button" class="btn btn-default" (click)="buscarTelefonosAsignados()">
-                          <i class="fas fa-search"></i>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                </div>
-              </div>-->
-              <!-- Fin Prueba Buscador-->
               <!-- Verifica si hay teléfonos registrados -->
               <div *ngIf="telefonosContactos && telefonosContactos.length > 0; else noTelefonos">
                 <!-- Aquí va tu tabla actual -->
