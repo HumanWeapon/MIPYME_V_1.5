@@ -26,6 +26,8 @@ export class TipoRequisitosComponent implements OnInit {
 
     tipoRequisitoEditando: TipoRequisito = {
       id_tipo_requisito: 0, 
+      id_empresa: 0,
+      id_pais: 0,
       tipo_requisito: '', 
       descripcion:'',
       creado_por: '', 
@@ -36,6 +38,8 @@ export class TipoRequisitosComponent implements OnInit {
     };
     nuevoTipoRequisito: TipoRequisito = {
         id_tipo_requisito: 0, 
+        id_empresa: 0,
+        id_pais: 0,
         tipo_requisito: '', 
         descripcion:'',
         creado_por: '', 
@@ -303,7 +307,9 @@ getEstadoText(estado: number): string {
       const fechaActual = new Date();
       const fechaFormateada = this._datePipe.transform(fechaActual, 'yyyy-MM-dd');
         this.nuevoTipoRequisito = {
-          id_tipo_requisito: 0, 
+          id_tipo_requisito: 0,
+          id_empresa: 0,
+          id_pais: 0, 
           tipo_requisito: this.nuevoTipoRequisito.tipo_requisito, 
           descripcion:this.nuevoTipoRequisito.descripcion,
           creado_por: userLocal, 
@@ -337,6 +343,8 @@ getEstadoText(estado: number): string {
         this.tipoRequisitoEditando = {
           
         id_tipo_requisito: tipoR.id_tipo_requisito, 
+        id_empresa: tipoR.id_empresa,
+        id_pais: tipoR.id_pais,
         tipo_requisito: tipoR.tipo_requisito, 
         descripcion: tipoR.descripcion,
         creado_por: tipoR.creado_por, 
