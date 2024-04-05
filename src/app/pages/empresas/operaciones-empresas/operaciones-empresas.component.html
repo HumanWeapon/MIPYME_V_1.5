@@ -305,7 +305,6 @@
                             <th>Id</th>
                             <th>Requisito</th>
                             <th>Descripción</th>
-                            <th>Empresa</th>
                             <th>Pais</th>
                             <th>Creado</th>
                             <th>Fecha Creación</th>
@@ -320,8 +319,7 @@
                             <td>{{ TRequi.id_tipo_requisito }}</td>
                             <td>{{ TRequi.tipo_requisito | uppercase }}</td>
                             <td>{{ TRequi.descripcion | uppercase }}</td>
-                            <td>{{ TRequi.empresas.nombre_empresa | uppercase }}</td>
-                            <td>{{ TRequi.paises.pais | uppercase }}</td>
+                            <td>{{ TRequi.pais | uppercase }}</td>
                             <td>{{ TRequi.creado_por | uppercase }}</td>
                             <td>{{ TRequi.fecha_creacion | date: 'yyyy-MM-dd' }}</td>
                             <td>{{ TRequi.modificado_por | uppercase}}</td>
