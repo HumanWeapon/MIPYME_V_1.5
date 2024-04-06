@@ -439,44 +439,48 @@ export class OperacionesEmpresasComponent {
         });
       }
 
-  agregarNuevoTipoRequisito() {
-    const userLocal = localStorage.getItem('usuario');
-    const IdEmpresa = localStorage.getItem('idEmpresa');
-    this.idEmpresa = IdEmpresa;
-    if (userLocal){
-
-      const fechaActual = new Date();
-      const fechaFormateada = this._datePipe.transform(fechaActual, 'yyyy-MM-dd');
-        this.nuevoTipoRequisito = {
-          id_tipo_requisito: 0,
-          id_empresa: this.idEmpresa,
-          id_pais: this.nuevoTipoRequisito.id_pais, 
-          tipo_requisito: this.nuevoTipoRequisito.tipo_requisito, 
-          descripcion:this.nuevoTipoRequisito.descripcion,
-          creado_por: userLocal, 
-          fecha_creacion: fechaFormateada as unknown as Date, 
-          modificado_por: userLocal, 
-          fecha_modificacion: fechaFormateada as unknown as Date, 
-          estado: 1,
-    
-        };
-        if (!this.nuevoTipoRequisito.tipo_requisito || !this.nuevoTipoRequisito.descripcion) {
-          this._toastr.warning('Debes completar los campos vacíos');
-          this.nuevoTipoRequisito.tipo_requisito = '';
-          this.nuevoTipoRequisito.descripcion = '';
-        }else{
-        this._tipoRequisitoService.addTipoRequisito(this.nuevoTipoRequisito).subscribe({
-          next: (data) => {
-            this._toastr.success('Tipo de Requisito agregado con éxito')
-            this.requisitosAllPaisesEmpresas.push(this.nuevoTipoRequisito)
-          },
-          error: (e: HttpErrorResponse) => {
-            this._errorService.msjError(e);
+      agregarNuevoTipoRequisito() {
+        const userLocal = localStorage.getItem('usuario');
+        const IdEmpresa = localStorage.getItem('idEmpresa');
+        this.idEmpresa = IdEmpresa;
+        
+        if (userLocal) {
+          const fechaActual = new Date();
+          const fechaFormateada = this._datePipe.transform(fechaActual, 'yyyy-MM-dd');
+          this.nuevoTipoRequisito = {
+            id_tipo_requisito: 0,
+            id_empresa: this.idEmpresa,
+            id_pais: this.nuevoTipoRequisito.id_pais,
+            tipo_requisito: this.nuevoTipoRequisito.tipo_requisito,
+            descripcion: this.nuevoTipoRequisito.descripcion,
+            creado_por: userLocal,
+            fecha_creacion: fechaFormateada as unknown as Date,
+            modificado_por: userLocal,
+            fecha_modificacion: fechaFormateada as unknown as Date,
+            estado: 1,
+          };
+      
+          // Imprimir en la consola lo que se está guardando
+          console.log('Nuevo Tipo de Requisito:', this.nuevoTipoRequisito);
+      
+          if (!this.nuevoTipoRequisito.tipo_requisito || !this.nuevoTipoRequisito.descripcion) {
+            this._toastr.warning('Debes completar los campos vacíos');
+            this.nuevoTipoRequisito.tipo_requisito = '';
+            this.nuevoTipoRequisito.descripcion = '';
+          } else {
+            this._tipoRequisitoService.addTipoRequisito(this.nuevoTipoRequisito).subscribe({
+              next: (data) => {
+                this._toastr.success('Tipo de Requisito agregado con éxito')
+                this.requisitosAllPaisesEmpresas.push(this.nuevoTipoRequisito)
+              },
+              error: (e: HttpErrorResponse) => {
+                this._errorService.msjError(e);
+              }
+            });
           }
-        });
+        }
       }
-      }
-    }
+      
 
   agregarEmpresa(){
     const userLocal = localStorage.getItem('usuario');
