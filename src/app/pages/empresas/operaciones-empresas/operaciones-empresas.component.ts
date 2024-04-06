@@ -439,10 +439,12 @@ export class OperacionesEmpresasComponent {
         });
       }
 
+      verValores() {
+        console.log('Valores que se enviarán:', this.nuevoTipoRequisito);
+      }
+
       agregarNuevoTipoRequisito() {
         const userLocal = localStorage.getItem('usuario');
-        const IdEmpresa = localStorage.getItem('idEmpresa');
-        this.idEmpresa = IdEmpresa;
         
         if (userLocal) {
           const fechaActual = new Date();
@@ -459,9 +461,6 @@ export class OperacionesEmpresasComponent {
             fecha_modificacion: fechaFormateada as unknown as Date,
             estado: 1,
           };
-      
-          // Imprimir en la consola lo que se está guardando
-          console.log('Nuevo Tipo de Requisito:', this.nuevoTipoRequisito);
       
           if (!this.nuevoTipoRequisito.tipo_requisito || !this.nuevoTipoRequisito.descripcion) {
             this._toastr.warning('Debes completar los campos vacíos');
