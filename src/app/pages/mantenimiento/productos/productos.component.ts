@@ -501,8 +501,8 @@ activarBitacora(dataProducto: Productos){
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 16, // ID del objeto correspondiente a los productos
-    campo_original: `PRODUCTO: ${dataProducto.producto}`,
-    nuevo_campo: 'CAMBIO DE ESTADO',
+    campo_original: 'EL PRODUCTO: '+ dataProducto.producto + ' SE ENCUENTRA "INACTIVO" ', 
+    nuevo_campo: 'EL PRODUCTO: '+ dataProducto.producto + ' CAMBIO A "ACTIVO" ', 
     accion: 'ACTIVAR',
   }
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
@@ -515,8 +515,8 @@ inactivarBitacora(dataProducto: Productos){
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 16, // ID del objeto correspondiente a los productos
-    campo_original: `PRODUCTO: ${dataProducto.producto}`,
-    nuevo_campo: 'CAMBIO DE ESTADO',
+    campo_original: 'EL PRODUCTO: '+ dataProducto.producto + ' SE ENCUENTRA "ACTIVO" ', 
+    nuevo_campo: 'EL PRODUCTO: '+ dataProducto.producto + ' CAMBIO A "INACTIVO" ', 
     accion: 'INACTIVAR'
   };
 

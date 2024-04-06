@@ -475,8 +475,8 @@ activarBitacora(dataParametro: Parametros) {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 2, // Suponiendo que el ID del objeto de parámetros es 2
-    campo_original: 'EL PARÁMETRO: ' + dataParametro.parametro,
-    nuevo_campo: 'CAMBIO DE ESTADO',
+    campo_original: 'EL PARAMETRO: '+ dataParametro.parametro + ' SE ENCUENTRA "INACTIVO" ', 
+    nuevo_campo: 'EL PARAMETRO: '+ dataParametro.parametro + ' CAMBIO A "ACTIVO" ', 
     accion: 'ACTIVAR'
   };
 
@@ -490,8 +490,8 @@ inactivarBitacora(dataParametro: Parametros) {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 2, // Suponiendo que el ID del objeto de parámetros es 2
-    campo_original: 'EL PARÁMETRO: ' + dataParametro.parametro,
-    nuevo_campo: 'CAMBIO DE ESTADO',
+    campo_original: 'EL PARÁMETRO: '+ dataParametro.parametro + ' SE ENCUENTRA "ACTIVO" ', 
+    nuevo_campo: 'EL PARÁMETRO: '+ dataParametro.parametro + ' CAMBIO A "INACTIVO" ', 
     accion: 'INACTIVAR'
   };
 

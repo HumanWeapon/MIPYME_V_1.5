@@ -491,8 +491,8 @@ generatePDF() {
       fecha: new Date() ,
       id_usuario: this.getUser.id_usuario,
       id_objeto: 6, // ID del objeto correspondiente a las direcciones de contacto
-      campo_original: 'LA DIRECCIÓN: '+ dataDireccion.direccion,
-      nuevo_campo: 'CAMBIO DE ESTADO',
+      campo_original: 'LA DIRECCIÓN: '+ dataDireccion.direccion + ' SE ENCUENTRA "INACTIVO" ', 
+      nuevo_campo: 'LA DIRECCIÓN: '+ dataDireccion.direccion + ' CAMBIO A "ACTIVO" ', 
       accion: 'ACTIVAR',
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
@@ -506,8 +506,8 @@ generatePDF() {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
       id_objeto: 6, // ID del objeto correspondiente a las direcciones de contacto
-      campo_original: 'LA DIRECCIÓN: '+ dataDireccion.direccion,
-      nuevo_campo: 'CAMBIO DE ESTADO',
+      campo_original: 'LA DIRECCIÓN: '+ dataDireccion.direccion + ' SE ENCUENTRA "ACTIVO" ', 
+      nuevo_campo: 'LA DIRECCIÓN: '+ dataDireccion.direccion + ' CAMBIO A "INACTIVO" ', 
       accion: 'INACTIVAR'
     };
   

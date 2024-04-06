@@ -65,7 +65,7 @@ export class RegisterPymeComponent implements OnInit{
     this.newPyme.nombre_pyme = this.newPyme.nombre_pyme.toUpperCase();
     this.newPyme.nombre_contacto = this.newPyme.nombre_contacto.toUpperCase();
     this.newPyme.correo_contacto = this.newPyme.correo_contacto.toUpperCase();
-    this.rtn = this.rtn.replace(/\s/g, ''); // Elimina espacios en blanco del RTN
+  
   }
   
   
@@ -102,38 +102,33 @@ export class RegisterPymeComponent implements OnInit{
       }
     });
   }
-
+  
   registrar(): void {
     // Verifica si alguno de los campos está vacío
-    if (!this.newPyme.nombre_pyme || !this.newPyme.rtn || !this.confirmar_rtn || !this.newPyme.nombre_contacto || !this.newPyme.correo_contacto || !this.newPyme.telefono_contacto ){
-      this._toastr.error('Por favor, complete todos los campos');
+    console.log(this.newPyme);
+    if (!this.newPyme.nombre_pyme || !this.newPyme.rtn || !this.confirmar_rtn || !this.newPyme.nombre_contacto || !this.newPyme.correo_contacto || !this.newPyme.telefono_contacto) {
+      this._toastr.warning('Por favor, complete todos los campos');
       return; 
     }
   
     // Verifica si los RTN exceden los 14 dígitos
     if (this.newPyme.rtn.length !== 14 || this.confirmar_rtn.length !== 14) {
-      this._toastr.error('El RTN debe tener exactamente 14 dígitos');
+      this._toastr.warning('El RTN debe tener exactamente 14 dígitos');
       return; 
     }
   
     // Verifica si los RTN coinciden
     if (this.newPyme.rtn !== this.confirmar_rtn) {
-      this._toastr.error('RTN no Coinciden');
+      this._toastr.warning('RTN no Coinciden');
       return; 
     }
   
-    // Verifica si el formato del correo electrónico es válido
+    // Verifica si el correo electrónico es válido
     if (!this.validarCorreoElectronico(this.newPyme.correo_contacto)) {
-      this._toastr.error('El formato del correo electrónico no es válido');
-      return;
+      this._toastr.warning('Por favor, introduce una dirección de correo electrónico válida.');
+      return; 
     }
-  
-    // Verifica si el formato del número de teléfono es válido
-    if (!this.validarTelefono(this.newPyme.telefono_contacto)) {
-      this._toastr.error('El formato del número de teléfono no es válido');
-      return;
-    }
-  
+      
     // Si todos los campos están llenos y válidos, procede con el registro
     this.newPyme = {
       id_pyme: 0,
@@ -151,7 +146,7 @@ export class RegisterPymeComponent implements OnInit{
       telefono_contacto: this.newPyme.telefono_contacto,
     };
     
-    console.log(this.newPyme);
+  
     this._pymesService.PostPyme(this.newPyme).subscribe({
       next: (data) => {
         this._toastr.success('Pyme Agregada Exitosamente');
@@ -163,17 +158,12 @@ export class RegisterPymeComponent implements OnInit{
       }
     });
   }
-  
-  validarTelefono(telefono: string): boolean {
-    const expresionRegularTelefono = /^[0-9]+$/;
-    return expresionRegularTelefono.test(telefono);
-  }
 
-  validarCorreoElectronico(correo: string): boolean {
-    // Expresión regular para validar el formato del correo electrónico
-    const expresionRegularCorreo = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    // Se verifica si el correo electrónico coincide con la expresión regular
-    return expresionRegularCorreo.test(correo);
+
+  validarCorreoElectronico(correo_contacto: string): boolean {
+    const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return re.test(correo_contacto);
   }
+  
   
 }  

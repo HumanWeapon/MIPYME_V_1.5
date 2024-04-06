@@ -589,8 +589,8 @@ activarBitacora(dataPyme: Pyme) {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 22,
-    campo_original: `LA PYME: ${dataPyme.nombre_pyme}`,
-    nuevo_campo: 'CAMBIO DE ESTADO',
+    campo_original: 'LA PYME: '+ dataPyme.nombre_pyme + ' SE ENCUENTRA "INACTIVO" ', 
+    nuevo_campo: 'LA PYME: '+ dataPyme.nombre_pyme + ' CAMBIO A "ACTIVO" ', 
     accion: 'ACTIVAR'
   };
 
@@ -604,8 +604,8 @@ inactivarBitacora(dataPyme: Pyme) {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 22,
-    campo_original: `LA PYME: ${dataPyme.nombre_pyme}`,
-    nuevo_campo: 'CAMBIO DE ESTADO',
+    campo_original: 'LA PYME: '+ dataPyme.nombre_pyme + ' SE ENCUENTRA "ACTIVO" ', 
+    nuevo_campo: 'LA PYME: '+ dataPyme.nombre_pyme + ' CAMBIO A "INACTIVO" ', 
     accion: 'INACTIVAR'
   };
 

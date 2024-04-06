@@ -471,8 +471,8 @@ activarBitacora(dataCatProd: Categoria) {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 20,
-    campo_original: `CATEGORÍA: ${dataCatProd.categoria}`,
-    nuevo_campo: 'CAMBIO DE ESTADO',
+    campo_original: 'LA CATEGORIA: '+ dataCatProd.categoria + ' SE ENCUENTRA "INACTIVO" ', 
+    nuevo_campo: 'LA CATEGORIA: '+ dataCatProd.categoria + ' CAMBIO A "ACTIVO" ', 
     accion: 'ACTIVAR'
   };
 
@@ -486,8 +486,8 @@ inactivarBitacora(dataCatProd: Categoria) {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 20,
-    campo_original: `CATEGORÍA: ${dataCatProd.categoria}`,
-    nuevo_campo: 'CAMBIO DE ESTADO',
+    campo_original: 'LA CATEGORIA: '+ dataCatProd.categoria + ' SE ENCUENTRA "ACTIVO" ', 
+    nuevo_campo: 'LA CATEGORIA: '+ dataCatProd.categoria + ' CAMBIO A "INACTIVO" ', 
     accion: 'INACTIVAR'
   };
 

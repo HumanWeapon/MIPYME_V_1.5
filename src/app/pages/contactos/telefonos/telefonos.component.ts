@@ -526,8 +526,8 @@ activarBitacora(dataTelefono: ContactoTelefono) {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 7, // ID del objeto correspondiente a los teléfonos de contacto
-    campo_original: 'EL TELÉFONO' + dataTelefono.telefono,
-    nuevo_campo: 'CAMBIO DE ESTADO',
+    campo_original: 'EL TELÉFONO: '+ dataTelefono.telefono + ' SE ENCUENTRA "INACTIVO" ', 
+    nuevo_campo: 'EL TELÉFONO: '+ dataTelefono.telefono + ' CAMBIO A "ACTIVO" ', 
     accion: 'ACTIVAR',
   };
   this._bitacoraService.insertBitacora(bitacora).subscribe(data => {
@@ -540,8 +540,8 @@ inactivarBitacora(dataTelefono: ContactoTelefono) {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 7, // ID del objeto correspondiente a los teléfonos de contacto
-    campo_original: 'EL TELÉFONO' + dataTelefono.telefono,
-    nuevo_campo: 'CAMBIO DE ESTADO',
+    campo_original: 'EL TELÉFONO: '+ dataTelefono.telefono + ' SE ENCUENTRA "ACTIVO" ', 
+      nuevo_campo: 'EL TELÉFONO: '+ dataTelefono.telefono + ' CAMBIO A "INACTIVO" ', 
     accion: 'INACTIVAR'
   };
   this._bitacoraService.insertBitacora(bitacora).subscribe(data => {

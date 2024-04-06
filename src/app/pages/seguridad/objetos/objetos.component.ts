@@ -486,8 +486,8 @@ activarBitacora(dataObjeto: Objetos) {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 4,
-    campo_original: `EL OBJETO: ${dataObjeto.objeto}`,
-    nuevo_campo: 'CAMBIO DE ESTADO',
+    campo_original: 'EL OBJETO: '+ dataObjeto.objeto + ' SE ENCUENTRA "INACTIVO" ', 
+    nuevo_campo: 'EL OBJETO: '+ dataObjeto.objeto + ' CAMBIO A "ACTIVO" ', 
     accion: 'ACTIVAR'
   };
 
@@ -501,8 +501,8 @@ inactivarBitacora(dataObjeto: Objetos) {
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 4,
-    campo_original: `EL OBJETO: ${dataObjeto.objeto}`,
-    nuevo_campo: 'CAMBIO DE ESTADO',
+    campo_original: 'EL OBJETO: '+ dataObjeto.objeto + ' SE ENCUENTRA "ACTIVO" ', 
+    nuevo_campo: 'EL OBJETO: '+ dataObjeto.objeto + ' CAMBIO A "INACTIVO" ', 
     accion: 'INACTIVAR'
   };
 

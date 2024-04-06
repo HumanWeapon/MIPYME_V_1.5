@@ -3,7 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
-import { da } from 'date-fns/locale';
+import { da, id } from 'date-fns/locale';
 import { data, error } from 'jquery';
 import { ToastrService } from 'ngx-toastr';
 import { Contacto } from 'src/app/interfaces/contacto/contacto';
@@ -29,6 +29,9 @@ import { EmpresasDireccionesService } from 'src/app/services/operaciones/empresa
 import { EmpresasProdcutosService } from 'src/app/services/operaciones/empresas-prodcutos.service';
 import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 import { ActivatedRoute } from '@angular/router';
+import { TipoRequisitoService } from 'src/app/services/mantenimiento/tipoRequisito.service';
+import { TipoRequisito } from 'src/app/interfaces/mantenimiento/tipoRequisito.service';
+import { identifierName } from '@angular/compiler';
 
 @Component({
   selector: 'app-operaciones-empresas',
@@ -63,6 +66,8 @@ export class OperacionesEmpresasComponent {
   direccionesEmpresa: any[] = [];//Obtiene los contactos registrados de la Empresa y los muestra en la tabla.
   contactosActivos: any[] = []; //Obtiene los contactos activos de la Empresa y los muestra en la tabla.
   telefonosContactos: any[] = [];//Obtiene los telefonos registrados para cada contacto.
+  requisitosAllPaisesEmpresas: any[] = [];//Obtiene los requisitos registrados de la Empresa y los muestra en la tabla.
+
 
   //Obtiene los productos no registrados para la empresa y mostrarlos en el modal de agregar productos.
   listNuevosProductos: any[] = []; //guarda los registros de mi consulta a la api
@@ -84,6 +89,7 @@ export class OperacionesEmpresasComponent {
   todosLosContactos: any[] = [];
   todosLosTelefonos: any[] = [];
   todasLasDirecciones: any[] = [];
+  todosLosRequisitos: any[] = [];
   filtroModalProd: string = '';
   filtroModalCont: string = '';
 
@@ -126,7 +132,8 @@ export class OperacionesEmpresasComponent {
     modificado_por: '',
     fecha_modificacion: new Date(),
     estado: 1
-  }
+  };
+
   nuevaDireccion: ContactoDirecciones = {
     id_direccion: 0, 
     id_tipo_direccion: 0,
@@ -141,6 +148,7 @@ export class OperacionesEmpresasComponent {
     fecha_modificacion: new Date(), 
     estado: 0
   };
+
   nuevoContacto: Contacto = {
     id_contacto: 0,
     id_empresa:0,
@@ -165,6 +173,7 @@ export class OperacionesEmpresasComponent {
     fecha_modificacion:new Date(), 
     estado: 0,
   };
+  
   direccionEditando: ContactoDirecciones = {
     id_direccion: 0, 
     id_tipo_direccion: 0,
@@ -193,7 +202,6 @@ export class OperacionesEmpresasComponent {
     fecha_modificacion: new Date(),
     estado: 0,
   };
-
   nuevoContactoT: ContactoTelefono = {
     id_telefono: 0, 
     id_contacto: 0,
@@ -207,6 +215,33 @@ export class OperacionesEmpresasComponent {
     fecha_modificacion: new Date(),
     estado: 0,
   };
+
+  tipoRequisitoEditando: TipoRequisito = {
+    id_tipo_requisito: 0, 
+    id_empresa: 0,
+    id_pais: 0,
+    tipo_requisito: '', 
+    descripcion:'',
+    creado_por: '', 
+    fecha_creacion: new Date(), 
+    modificado_por: '', 
+    fecha_modificacion: new Date(),
+    estado: 0,
+  };
+  nuevoTipoRequisito: TipoRequisito = {
+      id_tipo_requisito: 0, 
+      id_empresa: 0,
+      id_pais: 0,
+      tipo_requisito: '', 
+      descripcion:'',
+      creado_por: '', 
+      fecha_creacion: new Date(), 
+      modificado_por: '', 
+      fecha_modificacion: new Date(),
+      estado: 0,
+  
+    };
+
 
   ngOnInit(){
     this.getProductos();
@@ -228,6 +263,7 @@ export class OperacionesEmpresasComponent {
     this.getEmpresasProductosPorId();
     this.getProductosNoRegistradosPorId();
     this.getEmpresasContactosPorId();
+    this.getRequisitosEmpresaPorId();
     this.getContactosNoRegistradosPorId();
     this.getDireccionesEmpresaporID();
     this.getCiudadesActivas();
@@ -255,7 +291,8 @@ export class OperacionesEmpresasComponent {
     private _contactoTService: ContactoTService,
     private _tipoDireccionService: TipoDireccionService,
     private _operacionesContactos: EmpresasContactosService,
-    private route: ActivatedRoute
+    private _tipoRequisitoService: TipoRequisitoService    
+
   ) {}
 
   getAllPaises(){
@@ -389,6 +426,57 @@ export class OperacionesEmpresasComponent {
       }
     });
   }
+      //Obtiene todos los Requisitos registrados a una empresa
+      getRequisitosEmpresaPorId() {
+        this._tipoRequisitoService.consultarRequisitosPorId(this.idEmpresa).subscribe({
+          next: (data: any) => {
+            this.requisitosAllPaisesEmpresas = data;
+            console.log('Datos recibidos:', data); // Agregar console.log aquí
+          },
+          error: (e: HttpErrorResponse) => {
+            this._errorService.msjError(e);
+          }
+        });
+      }
+
+      agregarNuevoTipoRequisito() {
+        const userLocal = localStorage.getItem('usuario');
+        
+        if (userLocal) {
+          const fechaActual = new Date();
+          const fechaFormateada = this._datePipe.transform(fechaActual, 'yyyy-MM-dd');
+          this.nuevoTipoRequisito = {
+            id_tipo_requisito: 0,
+            id_empresa: this.idEmpresa,
+            id_pais: this.nuevoTipoRequisito.id_pais,
+            tipo_requisito: this.nuevoTipoRequisito.tipo_requisito,
+            descripcion: this.nuevoTipoRequisito.descripcion,
+            creado_por: userLocal,
+            fecha_creacion: fechaFormateada as unknown as Date,
+            modificado_por: userLocal,
+            fecha_modificacion: fechaFormateada as unknown as Date,
+            estado: 1,
+          };
+
+          console.log('Valores que se enviarán:', this.nuevoTipoRequisito);
+
+          if (!this.nuevoTipoRequisito.tipo_requisito || !this.nuevoTipoRequisito.descripcion) {
+            this._toastr.warning('Debes completar los campos vacíos');
+            this.nuevoTipoRequisito.tipo_requisito = '';
+            this.nuevoTipoRequisito.descripcion = '';
+          } else {
+            this._tipoRequisitoService.addTipoRequisito(this.nuevoTipoRequisito).subscribe({
+              next: (data) => {
+                this._toastr.success('Tipo de Requisito agregado con éxito')
+                this.requisitosAllPaisesEmpresas.push(this.nuevoTipoRequisito)
+              },
+              error: (e: HttpErrorResponse) => {
+                this._errorService.msjError(e);
+              }
+            });
+          }
+        }
+      }
 
   agregarEmpresa(){
     const userLocal = localStorage.getItem('usuario');
@@ -889,6 +977,47 @@ export class OperacionesEmpresasComponent {
       event.target.value = inputValue.toUpperCase();
     });
   }
+
+  // Variable de estado para alternar funciones
+ toggleFunctionRequi(TRequi: any, i: number) {
+
+  // Ejecuta una función u otra según el estado
+  if (TRequi.estado == 1 ) {
+    this.inactivarTipoRequi(TRequi, i); // Ejecuta la primera función
+  } else {
+    this.activarTipoRequi(TRequi, i); // Ejecuta la segunda función
+  }
+ }
+
+ /*********************************************************************************************/
+ inactivarTipoRequi(tipoRequisito: TipoRequisito, i: any){
+  this._tipoRequisitoService.inactivarTipoRequisito(tipoRequisito).subscribe({
+    next: (data) => {
+      this._toastr.success('Requisito: '+ tipoRequisito.tipo_requisito + ' ha sido inactivado')
+    },
+    error: (e: HttpErrorResponse) => {
+      this._errorService.msjError(e);
+    }
+  });
+  this.requisitosAllPaisesEmpresas[i].estado = 2; 
+}
+
+activarTipoRequi(tipoRequisito: TipoRequisito, i: any){
+  this._tipoRequisitoService.activarTipoRequisito(tipoRequisito).subscribe({
+    next: (data) => {
+      this._toastr.success('Requisito: '+ tipoRequisito.tipo_requisito + ' ha sido activado')
+    },
+    error: (e: HttpErrorResponse) => {
+      this._errorService.msjError(e);
+    }
+  });
+  this.requisitosAllPaisesEmpresas[i].estado = 1;
+  
+}
+
+/*****************************************************************************************************/
+
+  
   toggleFunction(contac: any, i: number) {
 
     // Ejecuta una función u otra según el estado
@@ -1117,5 +1246,53 @@ export class OperacionesEmpresasComponent {
     
     return formattedNumber;
 }
+
+obtenerIdTipoRequisito(tipoR: TipoRequisito, i: any){
+    
+  this.tipoRequisitoEditando = {
+    
+  id_tipo_requisito: tipoR.id_tipo_requisito, 
+  id_empresa: tipoR.id_empresa,
+  id_pais: tipoR.id_pais,
+  tipo_requisito: tipoR.tipo_requisito, 
+  descripcion: tipoR.descripcion,
+  creado_por: tipoR.creado_por, 
+  fecha_creacion: tipoR.fecha_creacion, 
+  modificado_por: tipoR.modificado_por, 
+  fecha_modificacion: tipoR.fecha_modificacion,
+  estado: tipoR.estado,
+
+  };
+  this.indice = i;
+}
+
+editarTipoRequisito(){
+  if (!this.tipoRequisitoEditando.tipo_requisito || !this.tipoRequisitoEditando.descripcion) {
+    this._toastr.error('No pueden quedar campos vacíos. Por favor, completa todos los campos.');
+    return;
+}
+
+this.tipoRequisitoEditando.tipo_requisito = this.tipoRequisitoEditando.tipo_requisito.toUpperCase();
+this.tipoRequisitoEditando.descripcion = this.tipoRequisitoEditando.descripcion.toUpperCase();
+
+const esMismoTipo = this.requisitosAllPaisesEmpresas[this.indice].tipo_requisito === this.tipoRequisitoEditando.tipo_requisito;
+
+  // Si el usuario no es el mismo, verifica si el nombre de usuario ya existe
+  if (!esMismoTipo) {
+    const TipoRExistente = this.requisitosAllPaisesEmpresas.some(user => user.tipo_requisito === this.tipoRequisitoEditando.tipo_requisito);
+    if (TipoRExistente) {
+      this._toastr.error('El Tipo de Requisito ya existe. Por favor, elige otro Tipo de Requisito.');
+      return;
+    }
+  }
+
+  this._tipoRequisitoService.editarTipoRequisito(this.tipoRequisitoEditando).subscribe(data => {
+    this._toastr.success('Tipo de Requisito editado con éxito');
+    this.requisitosAllPaisesEmpresas[this.indice].tipo_requisito = this.tipoRequisitoEditando.tipo_requisito;
+    this.requisitosAllPaisesEmpresas[this.indice].descripcion = this.tipoRequisitoEditando.descripcion;
+  
+  });
+}
+
 
 }

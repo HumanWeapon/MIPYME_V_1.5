@@ -85,5 +85,18 @@ export class UsuariosService {
     const body = { correo_electronico: correo_electronico }; // Construye el objeto con la propiedad correo_electronico
     return this.http.put<any>(`${this.myAppUrl}${this.myApiUrl}/forgot-password`, body, { headers: headers });
   }
+
+  resetPassword(newPassword: string, resetToken: string): Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'reset': resetToken
+    });
+
+    const body = { newPassword }; // Construye el objeto con la propiedad newPassword
+
+    return this.http.put<any>(`${this.myAppUrl}/${this.myApiUrl}/resetPassword`, body, { headers });
+  }
+
+
   
 }

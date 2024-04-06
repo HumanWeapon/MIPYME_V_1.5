@@ -600,8 +600,8 @@ updateBitacora(dataUser: Usuario) {
       fecha: new Date() ,
       id_usuario: this.getUser.id_usuario,
       id_objeto: 1,
-      campo_original: 'EL USUARIO: '+ dataUser.usuario,
-      nuevo_campo: 'CAMBIO DE ESTADO',
+      campo_original: 'EL USUARIO: '+ dataUser.usuario + ' SE ENCUENTRA "INACTIVO" ', 
+      nuevo_campo: 'EL USUARIO: '+ dataUser.usuario + ' CAMBIO A "ACTIVO" ', 
       accion: 'ACTIVAR',
     }
     this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
@@ -614,8 +614,8 @@ updateBitacora(dataUser: Usuario) {
       fecha: new Date(),
       id_usuario: this.getUser.id_usuario,
       id_objeto: 1,
-      campo_original: 'EL USUARIO: '+ dataUser.usuario,
-      nuevo_campo: 'CAMBIO DE ESTADO',
+      campo_original: 'EL USUARIO: '+ dataUser.usuario + ' SE ENCUENTRA "ACTIVO" ', 
+      nuevo_campo: 'EL USUARIO: '+ dataUser.usuario + ' CAMBIO A "INACTIVO" ', 
       accion: 'INACTIVAR'
     };
   

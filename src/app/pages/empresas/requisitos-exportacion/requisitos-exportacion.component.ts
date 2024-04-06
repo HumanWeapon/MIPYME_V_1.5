@@ -436,8 +436,8 @@ activarBitacora(dataRExportacion: Requisito){
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 15,
-    campo_original: 'EL REQUISITO: '+ dataRExportacion.tipo_requisito,
-    nuevo_campo: 'CAMBIO DE ESTADO',
+    campo_original: 'EL REQUISITO: '+ dataRExportacion.tipo_requisito + ' SE ENCUENTRA "INACTIVO" ', 
+    nuevo_campo: 'EL REQUISITO: '+ dataRExportacion.tipo_requisito + ' CAMBIO A "ACTIVO" ', 
     accion: 'ACTIVAR',
     
   }
@@ -449,8 +449,8 @@ inactivarBitacora(dataRExportacion: Requisito){
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 15,
-    campo_original: 'EL REQUISITO: '+ dataRExportacion.tipo_requisito,
-    nuevo_campo: 'CAMBIO DE ESTADO',
+    campo_original: 'EL REQUISITO: '+ dataRExportacion.tipo_requisito + ' SE ENCUENTRA "ACTIVO" ', 
+    nuevo_campo: 'EL REQUISITO: '+ dataRExportacion.tipo_requisito + ' CAMBIO A "INACTIVO" ', 
     accion: 'INACTIVAR',
   }
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{

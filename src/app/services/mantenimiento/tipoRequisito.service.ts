@@ -13,27 +13,21 @@ export class TipoRequisitoService {
   
   private myAppUrl: string;
   private myApiUrl: string;
+  private apiUrl: String;
 
   constructor(private http: HttpClient) {
     this.myAppUrl = environment.endpoint;
     this.myApiUrl = 'api/tipo_requisito'
-    // Asignar un valor a una clave en localStorage
+    this.apiUrl = environment.endpoint + 'api/tipo_requisito';
 
    }
 
 
 
    addTipoRequisito(tipoR: TipoRequisito): Observable<any> {
-    const nuevoTipoRequisito = {
-      tipo_requisito: tipoR.tipo_requisito, 
-      descripcion: tipoR.descripcion,
-      creado_por: tipoR.creado_por, 
-      fecha_creacion: tipoR.fecha_creacion, 
-      modificado_por: tipoR.modificado_por, 
-      fecha_modificacion: tipoR.fecha_modificacion,
-      estado: tipoR.estado,
-      };
-      return this.http.post<TipoRequisito>(`${this.myAppUrl}${this.myApiUrl}//postTipo_Requisito`, nuevoTipoRequisito)
+    const token = localStorage.getItem('token')
+    const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
+    return this.http.post<TipoRequisito>(`${this.myAppUrl}${this.myApiUrl}//postTipo_Requisito`, tipoR, { headers: headers })
   }
 
   
@@ -64,8 +58,21 @@ export class TipoRequisitoService {
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
     return this.http.post<TipoRequisito>(`${this.myAppUrl}${this.myApiUrl}/updateTipoRequisito`, tipoRequisito, { headers: headers })
   }
-}
 
+  requisitosAllPaisesEmpresas(): Observable<TipoRequisito[]> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<TipoRequisito[]>(`${this.myAppUrl}${this.myApiUrl}/requisitosAllPaisesEmpresas`, { headers: headers });
+  }
+
+    //consulta los contactos registrados de una empresa por el id
+    consultarRequisitosPorId(id: number): Observable<any[]> {
+      const token = localStorage.getItem('token');
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+      return this.http.get<any[]>(`${this.apiUrl}/consultarRequisitosporIdEmpresa/${id}`, { headers });
+    }
+
+}
 
 
 

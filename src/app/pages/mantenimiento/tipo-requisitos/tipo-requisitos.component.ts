@@ -26,6 +26,8 @@ export class TipoRequisitosComponent implements OnInit {
 
     tipoRequisitoEditando: TipoRequisito = {
       id_tipo_requisito: 0, 
+      id_empresa: 0,
+      id_pais: 0,
       tipo_requisito: '', 
       descripcion:'',
       creado_por: '', 
@@ -36,6 +38,8 @@ export class TipoRequisitosComponent implements OnInit {
     };
     nuevoTipoRequisito: TipoRequisito = {
         id_tipo_requisito: 0, 
+        id_empresa: 0,
+        id_pais: 0,
         tipo_requisito: '', 
         descripcion:'',
         creado_por: '', 
@@ -49,6 +53,7 @@ export class TipoRequisitosComponent implements OnInit {
 
   dtOptions: DataTables.Settings = {};
   listTipoR: TipoRequisito[] = [];
+  requisitosAllPaisesEmpresas: any[] = [];
   data: any;
   dtTrigger: Subject<any> = new Subject<any>();
   tipoRequisitoAll: any[] = []
@@ -73,9 +78,9 @@ export class TipoRequisitosComponent implements OnInit {
           language: {url:'//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'},
           responsive: true
         };
-        this._tipoRequisitoService.getAllTipoRequisito().subscribe({
+        this._tipoRequisitoService.requisitosAllPaisesEmpresas().subscribe({
           next: (data) =>{
-            this.listTipoR = data;
+            this.requisitosAllPaisesEmpresas = data;
             this.dtTrigger.next(0);
           }
         });
@@ -86,17 +91,16 @@ export class TipoRequisitosComponent implements OnInit {
         this.dtTrigger.unsubscribe();
       }
       
-      // Variable de estado para alternar funciones
+  // Variable de estado para alternar funciones
+  toggleFunctionRequi(TRequi: any, i: number) {
 
- toggleFunction(TRequi: any, i: number) {
-
-  // Ejecuta una función u otra según el estado
-  if (TRequi.estado == 1 ) {
-    this.inactivarTipoRequi(TRequi, i); // Ejecuta la primera función
-  } else {
-    this.activarTipoRequi(TRequi, i); // Ejecuta la segunda función
-  }
- }
+    // Ejecuta una función u otra según el estado
+    if (TRequi.estado == 1 ) {
+      this.inactivarTipoRequi(TRequi, i); // Ejecuta la primera función
+    } else {
+      this.activarTipoRequi(TRequi, i); // Ejecuta la segunda función
+    }
+   }
 
  getDate(): string {
   // Obtener la fecha actual
@@ -105,7 +109,7 @@ export class TipoRequisitosComponent implements OnInit {
   return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
 }
 
-
+/*********************************************************************************************/
       inactivarTipoRequi(tipoRequisito: TipoRequisito, i: any){
         this._tipoRequisitoService.inactivarTipoRequisito(tipoRequisito).subscribe({
           next: (data) => {
@@ -116,7 +120,7 @@ export class TipoRequisitosComponent implements OnInit {
             this._errorService.msjError(e);
           }
         });
-        this.listTipoR[i].estado = 2; 
+        this.requisitosAllPaisesEmpresas[i].estado = 2; 
       }
 
       activarTipoRequi(tipoRequisito: TipoRequisito, i: any){
@@ -129,7 +133,7 @@ export class TipoRequisitosComponent implements OnInit {
             this._errorService.msjError(e);
           }
         });
-        this.listTipoR[i].estado = 1;
+        this.requisitosAllPaisesEmpresas[i].estado = 1;
         
       }
     
@@ -302,7 +306,9 @@ getEstadoText(estado: number): string {
       const fechaActual = new Date();
       const fechaFormateada = this._datePipe.transform(fechaActual, 'yyyy-MM-dd');
         this.nuevoTipoRequisito = {
-          id_tipo_requisito: 0, 
+          id_tipo_requisito: 0,
+          id_empresa: 0,
+          id_pais: 0, 
           tipo_requisito: this.nuevoTipoRequisito.tipo_requisito, 
           descripcion:this.nuevoTipoRequisito.descripcion,
           creado_por: userLocal, 
@@ -336,6 +342,8 @@ getEstadoText(estado: number): string {
         this.tipoRequisitoEditando = {
           
         id_tipo_requisito: tipoR.id_tipo_requisito, 
+        id_empresa: tipoR.id_empresa,
+        id_pais: tipoR.id_pais,
         tipo_requisito: tipoR.tipo_requisito, 
         descripcion: tipoR.descripcion,
         creado_por: tipoR.creado_por, 
@@ -346,7 +354,7 @@ getEstadoText(estado: number): string {
     
         };
         this.indice = i;
-        this.trAnterior = tipoR;
+        this.trAnterior = this.requisitosAllPaisesEmpresas;
       }
     
       editarTipoRequisito(){
@@ -358,11 +366,11 @@ getEstadoText(estado: number): string {
     this.tipoRequisitoEditando.tipo_requisito = this.tipoRequisitoEditando.tipo_requisito.toUpperCase();
     this.tipoRequisitoEditando.descripcion = this.tipoRequisitoEditando.descripcion.toUpperCase();
 
-    const esMismoTipo = this.listTipoR[this.indice].tipo_requisito === this.tipoRequisitoEditando.tipo_requisito;
+    const esMismoTipo = this.requisitosAllPaisesEmpresas[this.indice].tipo_requisito === this.tipoRequisitoEditando.tipo_requisito;
 
         // Si el usuario no es el mismo, verifica si el nombre de usuario ya existe
         if (!esMismoTipo) {
-          const TipoRExistente = this.listTipoR.some(user => user.tipo_requisito === this.tipoRequisitoEditando.tipo_requisito);
+          const TipoRExistente = this.requisitosAllPaisesEmpresas.some(user => user.tipo_requisito === this.tipoRequisitoEditando.tipo_requisito);
           if (TipoRExistente) {
             this.toastr.error('El Tipo de Requisito ya existe. Por favor, elige otro Tipo de Requisito.');
             return;
@@ -372,8 +380,8 @@ getEstadoText(estado: number): string {
         this._tipoRequisitoService.editarTipoRequisito(this.tipoRequisitoEditando).subscribe(data => {
           this.updateBitacora(data);
           this.toastr.success('Tipo de Requisito editado con éxito');
-          this.listTipoR[this.indice].tipo_requisito = this.tipoRequisitoEditando.tipo_requisito;
-          this.listTipoR[this.indice].descripcion = this.tipoRequisitoEditando.descripcion;
+          this.requisitosAllPaisesEmpresas[this.indice].tipo_requisito = this.tipoRequisitoEditando.tipo_requisito;
+          this.requisitosAllPaisesEmpresas[this.indice].descripcion = this.tipoRequisitoEditando.descripcion;
         
         });
       }
@@ -482,8 +490,8 @@ activarBitacora(dataRequisito: TipoRequisito){
     fecha: new Date() ,
     id_usuario: this.getUser.id_usuario,
     id_objeto: 3, // ID del objeto correspondiente a los tipos de requisito
-    campo_original: `TIPO DE REQUISITO: ${dataRequisito.tipo_requisito}`,
-    nuevo_campo: 'CAMBIO DE ESTADO',
+    campo_original: 'EL TIPO REQUISITO: '+ dataRequisito.tipo_requisito + ' SE ENCUENTRA "INACTIVO" ', 
+    nuevo_campo: 'EL TIPO REQUISITO: '+ dataRequisito.tipo_requisito + ' CAMBIO A "ACTIVO" ', 
     accion: 'ACTIVAR',
   }
   this._bitacoraService.insertBitacora(bitacora).subscribe(data =>{
@@ -496,8 +504,8 @@ inactivarBitacora(dataRequisito: TipoRequisito){
     fecha: new Date(),
     id_usuario: this.getUser.id_usuario,
     id_objeto: 3, // ID del objeto correspondiente a los tipos de requisito
-    campo_original: `TIPO DE REQUISITO: ${dataRequisito.tipo_requisito}`,
-    nuevo_campo: 'CAMBIO DE ESTADO',
+    campo_original: 'EL TIPO REQUISITO: '+ dataRequisito.tipo_requisito + ' SE ENCUENTRA "ACTIVO" ', 
+    nuevo_campo: 'EL TIPO REQUISITO: '+ dataRequisito.tipo_requisito + ' CAMBIO A "INACTIVO" ', 
     accion: 'INACTIVAR'
   };
 

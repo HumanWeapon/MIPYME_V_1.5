@@ -11,6 +11,11 @@ import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 })
 export class ResetPasswordComponent implements OnInit {
 
+  newPassword: string = '';
+  resetToken: string = '';
+  resetSuccessful: boolean = false;
+  resetError: string = '';
+
   user: Usuario | any = {
     id_usuario: 0,
     creado_por: '',
@@ -62,19 +67,20 @@ export class ResetPasswordComponent implements OnInit {
     }
 
     // Validar aquí los criterios de seguridad de la contraseña si es necesario
+      this._userService.resetPassword(this.newPassword, this.resetToken)
+        .subscribe(
+          response => {
+            console.log('Contraseña restablecida con éxito');
+            this.resetSuccessful = true;
+          },
+          error => {
+            console.error('Error al restablecer la contraseña:', error);
+            this.resetError = 'Error al restablecer la contraseña';
+          }
+        );
+    }
 
-    this._userService.cambiarContrasena(this.user).subscribe(
-      (data) => {
-        this.toastr.success('¡Contraseña actualizada con éxito!', 'Éxito');
-        this.router.navigate(['/login']);
-      },
-      (error) => {
-        if (error.status === 400) {
-          this.toastr.error('No se pudo cambiar la contraseña. Por favor, inténtalo de nuevo más tarde.', 'Error');
-        } else {
-          this.toastr.error('Se produjo un error inesperado. Por favor, inténtalo de nuevo más tarde.', 'Error');
-        }
-      }
-    );
   }
-}
+    
+  
+
