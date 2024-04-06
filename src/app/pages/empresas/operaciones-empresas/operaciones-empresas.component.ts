@@ -439,10 +439,6 @@ export class OperacionesEmpresasComponent {
         });
       }
 
-      verValores() {
-        console.log('Valores que se enviarán:', this.nuevoTipoRequisito);
-      }
-
       agregarNuevoTipoRequisito() {
         const userLocal = localStorage.getItem('usuario');
         
@@ -461,7 +457,9 @@ export class OperacionesEmpresasComponent {
             fecha_modificacion: fechaFormateada as unknown as Date,
             estado: 1,
           };
-      
+
+          console.log('Valores que se enviarán:', this.nuevoTipoRequisito);
+
           if (!this.nuevoTipoRequisito.tipo_requisito || !this.nuevoTipoRequisito.descripcion) {
             this._toastr.warning('Debes completar los campos vacíos');
             this.nuevoTipoRequisito.tipo_requisito = '';
@@ -479,7 +477,6 @@ export class OperacionesEmpresasComponent {
           }
         }
       }
-      
 
   agregarEmpresa(){
     const userLocal = localStorage.getItem('usuario');
