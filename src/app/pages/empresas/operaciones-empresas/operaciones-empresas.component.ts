@@ -977,6 +977,47 @@ export class OperacionesEmpresasComponent {
       event.target.value = inputValue.toUpperCase();
     });
   }
+
+  // Variable de estado para alternar funciones
+ toggleFunctionRequi(TRequi: any, i: number) {
+
+  // Ejecuta una función u otra según el estado
+  if (TRequi.estado == 1 ) {
+    this.inactivarTipoRequi(TRequi, i); // Ejecuta la primera función
+  } else {
+    this.activarTipoRequi(TRequi, i); // Ejecuta la segunda función
+  }
+ }
+
+ /*********************************************************************************************/
+ inactivarTipoRequi(tipoRequisito: TipoRequisito, i: any){
+  this._tipoRequisitoService.inactivarTipoRequisito(tipoRequisito).subscribe({
+    next: (data) => {
+      this._toastr.success('Requisito: '+ tipoRequisito.tipo_requisito + ' ha sido inactivado')
+    },
+    error: (e: HttpErrorResponse) => {
+      this._errorService.msjError(e);
+    }
+  });
+  this.requisitosAllPaisesEmpresas[i].estado = 2; 
+}
+
+activarTipoRequi(tipoRequisito: TipoRequisito, i: any){
+  this._tipoRequisitoService.activarTipoRequisito(tipoRequisito).subscribe({
+    next: (data) => {
+      this._toastr.success('Requisito: '+ tipoRequisito.tipo_requisito + ' ha sido activado')
+    },
+    error: (e: HttpErrorResponse) => {
+      this._errorService.msjError(e);
+    }
+  });
+  this.requisitosAllPaisesEmpresas[i].estado = 1;
+  
+}
+
+/*****************************************************************************************************/
+
+  
   toggleFunction(contac: any, i: number) {
 
     // Ejecuta una función u otra según el estado
@@ -1205,5 +1246,53 @@ export class OperacionesEmpresasComponent {
     
     return formattedNumber;
 }
+
+obtenerIdTipoRequisito(tipoR: TipoRequisito, i: any){
+    
+  this.tipoRequisitoEditando = {
+    
+  id_tipo_requisito: tipoR.id_tipo_requisito, 
+  id_empresa: tipoR.id_empresa,
+  id_pais: tipoR.id_pais,
+  tipo_requisito: tipoR.tipo_requisito, 
+  descripcion: tipoR.descripcion,
+  creado_por: tipoR.creado_por, 
+  fecha_creacion: tipoR.fecha_creacion, 
+  modificado_por: tipoR.modificado_por, 
+  fecha_modificacion: tipoR.fecha_modificacion,
+  estado: tipoR.estado,
+
+  };
+  this.indice = i;
+}
+
+editarTipoRequisito(){
+  if (!this.tipoRequisitoEditando.tipo_requisito || !this.tipoRequisitoEditando.descripcion) {
+    this._toastr.error('No pueden quedar campos vacíos. Por favor, completa todos los campos.');
+    return;
+}
+
+this.tipoRequisitoEditando.tipo_requisito = this.tipoRequisitoEditando.tipo_requisito.toUpperCase();
+this.tipoRequisitoEditando.descripcion = this.tipoRequisitoEditando.descripcion.toUpperCase();
+
+const esMismoTipo = this.requisitosAllPaisesEmpresas[this.indice].tipo_requisito === this.tipoRequisitoEditando.tipo_requisito;
+
+  // Si el usuario no es el mismo, verifica si el nombre de usuario ya existe
+  if (!esMismoTipo) {
+    const TipoRExistente = this.requisitosAllPaisesEmpresas.some(user => user.tipo_requisito === this.tipoRequisitoEditando.tipo_requisito);
+    if (TipoRExistente) {
+      this._toastr.error('El Tipo de Requisito ya existe. Por favor, elige otro Tipo de Requisito.');
+      return;
+    }
+  }
+
+  this._tipoRequisitoService.editarTipoRequisito(this.tipoRequisitoEditando).subscribe(data => {
+    this._toastr.success('Tipo de Requisito editado con éxito');
+    this.requisitosAllPaisesEmpresas[this.indice].tipo_requisito = this.tipoRequisitoEditando.tipo_requisito;
+    this.requisitosAllPaisesEmpresas[this.indice].descripcion = this.tipoRequisitoEditando.descripcion;
+  
+  });
+}
+
 
 }

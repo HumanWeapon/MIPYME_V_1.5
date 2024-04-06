@@ -25,16 +25,9 @@ export class TipoRequisitoService {
 
 
    addTipoRequisito(tipoR: TipoRequisito): Observable<any> {
-    const nuevoTipoRequisito = {
-      tipo_requisito: tipoR.tipo_requisito, 
-      descripcion: tipoR.descripcion,
-      creado_por: tipoR.creado_por, 
-      fecha_creacion: tipoR.fecha_creacion, 
-      modificado_por: tipoR.modificado_por, 
-      fecha_modificacion: tipoR.fecha_modificacion,
-      estado: tipoR.estado,
-      };
-      return this.http.post<TipoRequisito>(`${this.myAppUrl}${this.myApiUrl}//postTipo_Requisito`, nuevoTipoRequisito)
+    const token = localStorage.getItem('token')
+    const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
+    return this.http.post<TipoRequisito>(`${this.myAppUrl}${this.myApiUrl}//postTipo_Requisito`, tipoR, { headers: headers })
   }
 
   

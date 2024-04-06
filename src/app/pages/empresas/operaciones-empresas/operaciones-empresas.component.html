@@ -332,10 +332,10 @@
                             <td class="text-center">
                               <div class="btn-group">
                                 <div class="form-check form-switch ml-4">
-                                  <input class="form-check-input" (click)="toggleFunctionDirerccion(TRequi, i)" [title]="TRequi.estado == 1 ? 'Desactivar' : 'Activar'" type="checkbox" 
+                                  <input class="form-check-input" (click)="toggleFunctionRequi(TRequi, i)" [title]="TRequi.estado == 1 ? 'Desactivar' : 'Activar'" type="checkbox" 
                                     role="switch" id="flexSwitchCheckChecked" [checked]="TRequi.estado == 1">
                                   </div>
-                                  <button type="button" (click)="obtenerIdDireccion(TRequi, i)" data-toggle="modal" title="Editar Contacto" data-target="#abrirModalEditarDireccion"data-toggle="modal" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
+                                  <button type="button" (click)="obtenerIdTipoRequisito(TRequi, i)" title="Editar Tipo de Requisito" data-toggle="modal" data-target="#abrirModalEditarTipoRequisito"data-toggle="modal" data-target="#abrirModalEditarTipoRequisito" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
                                 </div>
                             </td>
                           </tr>
@@ -571,6 +571,38 @@
     </div>
     </div>
     <!-- /Actualizar contacto Form -->
+
+    <!-- Actualizar Usuario Form -->
+<div class="modal fade" id="abrirModalEditarTipoRequisito">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title">Editar Requisito</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <form>
+                <div class="form-group">
+                    <label for="tipoRequisitoEditando">Requisito:</label>
+                    <input type="text" [(ngModel)]="tipoRequisitoEditando.tipo_requisito" name="tipoRequisitoEditando.tipo_requisito" class="form-control" id="editartipoRequisito" placeholder="Nombre de la ciudad" (input)="convertirAMayusculas($event, 'tipo_requisito')" (input)="eliminarCaracteresEspeciales($event, 'tipo_requisito')" >
+                </div>
+                <div class="form-group">
+                  <label for="tipoRequisitoEditando">Descripción:</label>
+                  <textarea [(ngModel)]="tipoRequisitoEditando.descripcion" name="tipoRequisitoEditando.descripcion" class="form-control" id="editartipoRequisito" placeholder="Descripción" rows="3" (input)="convertirAMayusculas($event, 'descripcion')" (input)="eliminarCaracteresEspeciales($event, 'descripcion')"></textarea>
+              </div>
+          
+               
+              </form>
+          </div>
+          <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+              <button type="button" (click)="editarTipoRequisito()" class="btn btn-success" data-dismiss="modal">Guardar</button>
+          </div>
+      </div>
+  </div>
+  </div>
 
 <!-- Ver Teléfonos de contactos -->
 <div class="modal fade" id="ver_telefonos" style=" font-size:medium;">
