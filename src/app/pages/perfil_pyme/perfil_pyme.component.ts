@@ -83,7 +83,7 @@ constructor(
   }
 
   getPymes(){
-    const pymeLocal = localStorage.getItem('pyme');
+    const pymeLocal = localStorage.getItem('nombre_pyme');
     if(pymeLocal == null){
 
     }else{
