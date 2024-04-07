@@ -24,7 +24,7 @@ const routes: Routes =[
   {path: 'firstlogin', component: FirstLoginComponent},
   {path: 'login-pyme', component: LoginPymeComponent},
   {path: 'password-email', component: PasswordEmailComponent},
-  {path: 'resetPassword/:token', component: ResetPasswordComponent },
+  {path: 'reset-password/:token', component: ResetPasswordComponent },
   {path: 'search', component: SearchComponent },
   {path: 'dashboard', component: DashboardComponent },
   {path: 'pymes', component: PymeComponent }

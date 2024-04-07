@@ -5,8 +5,6 @@
             <div class="col-12">
               <div class="card">
                 <div class="card-header">
-                  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarRequisito">
-                    <i class="fas fa-plus"></i> Nuevo</button>
                     <button type="button" class="btn btn-primary custom-print-button btn-primary" title="Generar el Reporte" data-toggle="modal" data-target="#PDFReQ">
                       <i class="fas fa-print"></i> Generar Reporte</button>
                 </div>
@@ -47,7 +45,7 @@
                           <td class="text-center">
                             <div class="btn-group">
                               <div class="form-check form-switch ml-4">
-                                <input class="form-check-input" (click)="toggleFunction(TRequi, i)" [title]="TRequi.estado == 1 ? 'Desactivar' : 'Activar'" type="checkbox" 
+                                <input class="form-check-input" (click)="toggleFunctionRequi(TRequi, i)" [title]="TRequi.estado == 1 ? 'Desactivar' : 'Activar'" type="checkbox" 
                                   role="switch" id="flexSwitchCheckChecked" [checked]="TRequi.estado == 1">
                               </div>
                                 <button type="button" (click)="obtenerIdTipoRequisito(TRequi, i)" title="Editar Tipo de Requisito" data-toggle="modal" data-target="#abrirModalEditarTipoRequisito"data-toggle="modal" data-target="#abrirModalEditarTipoRequisito" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
