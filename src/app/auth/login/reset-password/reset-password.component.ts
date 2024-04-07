@@ -52,27 +52,21 @@ export class ResetPasswordComponent implements OnInit {
       this.toastr.warning('Por favor completa todos los campos.');
       return;
     }
-
+  
     if (this.confirPassword !== this.user.contrasena) {
       this.toastr.warning('Las contraseñas no coinciden.');
       return;
     }
   
-    // Realizar cualquier validación adicional de la contraseña aquí, si es necesario
-  
-    // Llamar al servicio para restablecer la contraseña
     this._userService.resetPassword(this.newPassword, this.resetToken)
       .subscribe(
-        () => {
-          // Restablecimiento de contraseña exitoso
-          this.toastr.success('Contraseña restablecida con éxito');
-          // Redirigir al usuario a la página de inicio de sesión
-          this.router.navigate(['/login']);
+        response => {
+          console.log('Contraseña restablecida con éxito');
+          this.resetSuccessful = true;
         },
         error => {
-          // Error al restablecer la contraseña
           console.error('Error al restablecer la contraseña:', error);
-          this.toastr.error('Error al restablecer la contraseña. Por favor, inténtalo de nuevo más tarde.');
+          this.resetError = 'Error al restablecer la contraseña';
         }
       );
   }
