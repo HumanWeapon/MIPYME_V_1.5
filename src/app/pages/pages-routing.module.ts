@@ -34,6 +34,7 @@ import { AdministracionComponent } from './administracion/administracion.compone
 import { MantenimientoComponent } from './mantenimiento/mantenimiento.component';
 import { OperacionesEmpresasComponent } from './empresas/operaciones-empresas/operaciones-empresas.component';
 import { TipoDireccionComponent } from './mantenimiento/tipo-direccion/tipo-direccion.component';
+import { HistorialBusquedaComponent } from './historial-busqueda/historial-busqueda.component';
 
 
 const routes: Routes = [
@@ -70,6 +71,7 @@ const routes: Routes = [
     { path: 'dashboard', component: DashboardComponent, data:{titulo: 'Dashboard'}},
     { path: 'perfil', component: PerfilComponent, data:{titulo: 'Mi Perfil'}},
     { path: 'search', component: SearchComponent},
+    { path: 'historial_busqueda', component: HistorialBusquedaComponent},
 
     
     //ABC grado B.

@@ -1,0 +1,40 @@
+<section class="content">
+  <div class="container-fluid">
+      <div class="row">
+          <div class="col-12">
+              <div class="card">
+                  <div class="card-header">
+                      <h1>Historial de Búsqueda</h1>
+                  </div>
+                  <!-- /.card-header -->
+                  <div class="card-body">
+                      <div class="card-body table-responsive p-0" style="font-size: medium;">
+                          <table class="table table-bordered table-striped row-border hover">
+                              <thead>
+                                  <tr>
+                                      <th>ID</th>
+                                      <th>PYME</th>
+                                      <th>PRODUCTO</th>
+                                      <th>PAIS</th>
+                                      <th>EMPRESA</th>
+                                      <th>DESCRIPCION</th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                  <tr *ngFor="let historial of listHistB; let i = index">
+                                      <td>{{ historial.id_historial }}</td>
+                                      <td>{{ historial.id_pyme }}</td>
+                                      <td>{{ historial.id_producto }}</td>
+                                      <td>{{ historial.id_pais }}</td>
+                                      <td>{{ historial.id_empresa }}</td>
+                                      <td>{{ historial.descripcion }}</td>
+                                  </tr>
+                              </tbody>
+                          </table>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</section>
