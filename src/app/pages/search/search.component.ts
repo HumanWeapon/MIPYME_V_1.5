@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { da } from 'date-fns/locale';
 import { ToastrService } from 'ngx-toastr';
 import { Subject } from 'rxjs';
+import { ContactoTelefono } from 'src/app/interfaces/contacto/contactoTelefono';
 import { BitacoraService } from 'src/app/services/administracion/bitacora.service';
 import { ContactoService } from 'src/app/services/contacto/contacto.service';
 import { ContactoTService } from 'src/app/services/contacto/contactoTelefono.service';
@@ -71,8 +72,6 @@ export class SearchComponent implements OnInit {
   todosLosRequisitos: any[] = [];
   filtroModalProd: string = '';
   filtroModalCont: string = '';
-
-
 
   list_productosFilter: any[]=[]; //lista de productos
   //paginación
@@ -280,4 +279,24 @@ export class SearchComponent implements OnInit {
         });
       }
     }
+
+    formatPhoneNumber(phoneNumber: string | null): string {
+      if (phoneNumber === null || phoneNumber === undefined) {
+          return ''; // Retorna una cadena vacía si phoneNumber es null o undefined
+      }
+  
+      // Eliminar caracteres que no sean números
+      const cleanedNumber = phoneNumber.replace(/\D/g, '');
+      
+      // Separar el número cada cuatro dígitos con el signo "-"
+      const formattedNumber = cleanedNumber.match(/.{1,4}/g)?.join('-') || ''; // Usa el operador de opción segura (?.) y el operador de fusión nula (||)
+      
+      return formattedNumber;
+  }
+
+
+
+
+
+
 }

@@ -953,8 +953,6 @@ export class OperacionesEmpresasComponent {
       modificado_por: contactoT.modificado_por, 
       fecha_modificacion: contactoT.fecha_modificacion, 
       estado: contactoT.estado,
-    
-
     };
     this.indice = i;
   }
