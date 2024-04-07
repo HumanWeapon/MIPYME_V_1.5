@@ -17,7 +17,7 @@ import { HistorialBusquedaComponent } from './pages/historial-busqueda/historial
 @NgModule({
   declarations: [
     AppComponent,
-    HistorialBusquedaComponent
+  
   ],
   imports: [
     BrowserModule,

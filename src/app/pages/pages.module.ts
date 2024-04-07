@@ -38,6 +38,7 @@ import { MantenimientoComponent } from './mantenimiento/mantenimiento.component'
 import { OperacionesEmpresasComponent } from './empresas/operaciones-empresas/operaciones-empresas.component';
 import { TipoDireccionComponent } from './mantenimiento/tipo-direccion/tipo-direccion.component';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { HistorialBusquedaComponent } from './historial-busqueda/historial-busqueda.component';
 
 
 
@@ -76,6 +77,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
     MantenimientoComponent,
     OperacionesEmpresasComponent,
     TipoDireccionComponent,
+    HistorialBusquedaComponent,
 
     
   ],
