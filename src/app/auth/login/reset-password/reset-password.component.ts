@@ -45,45 +45,55 @@ export class ResetPasswordComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const usuario: Usuario = history.state.usuario;
-    if (usuario) {
-    this.token = this.route.snapshot.params['token'];
-    console.log('Usuario:', usuario);
-    console.log('Correo electrónico:', this.correoElectronico);
-    this.getUsuario(usuario);
+    this.resetToken = this.route.snapshot.params['token'];
+    this.getUserByResetToken();
   }
-}
 
-  getUsuario(usuario: Usuario) {
-    this._userService.getUsuario(usuario).subscribe(data => {
-      this.user = data;
-    });
+  getUserByResetToken() {
+    this._userService.getUserByResetToken(this.resetToken).subscribe(
+      (data: Usuario) => {
+        this.user = data;
+        console.log('Usuario' + this.user)
+      },
+      error => {
+        console.error('Error al obtener usuario por token de restablecimiento:', error);
+        this.resetError = 'Error al obtener usuario por token de restablecimiento';
+      }
+    );
   }
 
   validarPassword() {
-    if (this.confirPassword === '' || this.user.contrasena === '') {
+    // Verificar que se hayan completado todos los campos
+    if (this.newPassword === '' || this.confirPassword === '') {
       this.toastr.warning('Por favor completa todos los campos.');
       return;
     }
-
-    if (this.confirPassword !== this.user.contrasena) {
+  
+    // Verificar si las contraseñas coinciden
+    if (this.newPassword !== this.confirPassword) {
       this.toastr.warning('Las contraseñas no coinciden.');
       return;
     }
-
-    // Validar aquí los criterios de seguridad de la contraseña si es necesario
-      this._userService.resetPassword(this.newPassword, this.resetToken)
-        .subscribe(
-          response => {
-            console.log('Contraseña restablecida con éxito');
-            this.resetSuccessful = true;
-          },
-          error => {
-            console.error('Error al restablecer la contraseña:', error);
-            this.resetError = 'Error al restablecer la contraseña';
-          }
-        );
-    }
+  
+    // Realizar cualquier validación adicional de la contraseña aquí, si es necesario
+  
+    // Llamar al servicio para restablecer la contraseña
+    this._userService.resetPassword(this.newPassword, this.resetToken)
+      .subscribe(
+        () => {
+          // Restablecimiento de contraseña exitoso
+          this.toastr.success('Contraseña restablecida con éxito');
+          // Redirigir al usuario a la página de inicio de sesión
+          this.router.navigate(['/login']);
+        },
+        error => {
+          // Error al restablecer la contraseña
+          console.error('Error al restablecer la contraseña:', error);
+          this.toastr.error('Error al restablecer la contraseña. Por favor, inténtalo de nuevo más tarde.');
+        }
+      );
+  }
+  
 
   }
     
