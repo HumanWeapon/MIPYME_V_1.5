@@ -40,6 +40,7 @@ import { TipoDireccionComponent } from './mantenimiento/tipo-direccion/tipo-dire
 import { NgxPaginationModule } from 'ngx-pagination';
 import { HistorialBusquedaComponent } from './historial-busqueda/historial-busqueda.component';
 import { PerfilPymeComponent } from './perfil_pyme/perfil_pyme.component';
+import { HistorialPymeComponent } from './historial-pyme/historial-pyme.component';
 
 
 @NgModule({
@@ -79,6 +80,7 @@ import { PerfilPymeComponent } from './perfil_pyme/perfil_pyme.component';
     TipoDireccionComponent,
     HistorialBusquedaComponent,
     PerfilPymeComponent,
+    HistorialPymeComponent,
     
   ],
   imports: [

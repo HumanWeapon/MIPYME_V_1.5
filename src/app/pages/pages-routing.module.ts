@@ -36,6 +36,7 @@ import { OperacionesEmpresasComponent } from './empresas/operaciones-empresas/op
 import { TipoDireccionComponent } from './mantenimiento/tipo-direccion/tipo-direccion.component';
 import { HistorialBusquedaComponent } from './historial-busqueda/historial-busqueda.component';
 import { PerfilPymeComponent } from './perfil_pyme/perfil_pyme.component';
+import { HistorialPymeComponent } from './historial-pyme/historial-pyme.component';
 
 
 const routes: Routes = [
@@ -73,7 +74,8 @@ const routes: Routes = [
     { path: 'perfil', component: PerfilComponent, data:{titulo: 'Mi Perfil'}},
     { path: 'perfil_pyme', component: PerfilPymeComponent, data:{titulo: 'Mi Perfil Pyme'}},
     { path: 'search', component: SearchComponent},
-    { path: 'historial_busqueda', component: HistorialBusquedaComponent},
+    { path: 'historial_busqueda', component: HistorialBusquedaComponent, data:{titulo: 'Búsquedas PYME'}},
+    { path: 'historial_busqueda_pyme', component: HistorialPymeComponent, data:{titulo: 'Mis Búsquedas'}},
 
     
     //ABC grado B.

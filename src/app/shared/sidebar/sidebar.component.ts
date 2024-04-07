@@ -73,8 +73,17 @@ export class SidebarComponent implements OnInit{
   }
 
   logout(){
-    this.router.navigateByUrl('/login');
-    localStorage.clear();
+    if(this.getPyme.id_rol){
+      this.router.navigateByUrl('/login-pyme');
+      localStorage.clear();
+    }
+    if(this.user.id_rol){
+      this.router.navigateByUrl('/login');
+      localStorage.clear();
+    }
+  }
+  consolidadloguin(parametro: any){
+
   }
 
   getUsuario(){
@@ -105,7 +114,14 @@ export class SidebarComponent implements OnInit{
   }
   
   getPermisosRolesObjetos() {
-    this._sideBarService.getPermisosRolesObjetos(this.user.id_rol).subscribe({
+    let getlogin: number = 0;
+    if(this.user.id_rol){
+      getlogin = this.user.id_rol;
+    }
+    else {
+      getlogin = this.getPyme.id_rol;
+    }
+    this._sideBarService.getPermisosRolesObjetos(getlogin).subscribe({
       next: (data: any) => {
         if (data) {
           // Asigna la lista ordenada a this.listMenu
