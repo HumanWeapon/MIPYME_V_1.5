@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Pyme } from 'src/app/interfaces/pyme/pyme';
 import { Objetos } from 'src/app/interfaces/seguridad/objetos';
 import { Usuario } from 'src/app/interfaces/seguridad/usuario';
 import { ErrorService } from 'src/app/services/error.service';
@@ -35,6 +36,22 @@ export class SidebarComponent implements OnInit{
     fecha_ultima_conexion: new Date(),
     fecha_vencimiento: new Date(),
     intentos_fallidos: 0
+  };
+
+  getPyme: Pyme = {
+    id_pyme: 0,
+    nombre_pyme: '',
+    rtn:'',
+    creado_por: '',
+    fecha_creacion: new Date(),
+    modificado_por: '',
+    fecha_modificacion: new Date(),
+    fecha_ultima_conexion: new Date(),
+    estado: 0,
+    id_rol: 0,
+    nombre_contacto: '',
+    correo_contacto: '',
+    telefono_contacto: '',
   };
 
   constructor(private _sideBarService: SidebarService, 
@@ -77,7 +94,7 @@ export class SidebarComponent implements OnInit{
     if(pymeStore){
       this._pymeService.getOnePyme(pymeStore).subscribe({
         next: (data: any) => {
-          this.user = data;
+          this.getPyme = data; // Asignar datos de la Pyme
           this.getPermisosRolesObjetos();
         },
         error: (e: HttpErrorResponse) => {
@@ -86,6 +103,7 @@ export class SidebarComponent implements OnInit{
       });
     }
   }
+  
   getPermisosRolesObjetos() {
     this._sideBarService.getPermisosRolesObjetos(this.user.id_rol).subscribe({
       next: (data: any) => {

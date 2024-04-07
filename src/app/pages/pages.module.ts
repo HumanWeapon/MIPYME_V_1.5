@@ -39,7 +39,7 @@ import { OperacionesEmpresasComponent } from './empresas/operaciones-empresas/op
 import { TipoDireccionComponent } from './mantenimiento/tipo-direccion/tipo-direccion.component';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { HistorialBusquedaComponent } from './historial-busqueda/historial-busqueda.component';
-
+import { PerfilPymeComponent } from './perfil_pyme/perfil_pyme.component';
 
 
 @NgModule({
@@ -78,7 +78,7 @@ import { HistorialBusquedaComponent } from './historial-busqueda/historial-busqu
     OperacionesEmpresasComponent,
     TipoDireccionComponent,
     HistorialBusquedaComponent,
-
+    PerfilPymeComponent,
     
   ],
   imports: [

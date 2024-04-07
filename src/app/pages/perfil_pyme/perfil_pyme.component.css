@@ -1,0 +1,27 @@
+.float-right {
+    float: right;
+    /* Otros estilos que desees agregar */
+    margin-left: 10px; /* Ejemplo: Agrega un margen a la izquierda para separarlo de otros elementos */
+    color: #717377; /* Ejemplo: Cambia el color del texto a azul */
+    text-decoration: none; /* Ejemplo: Elimina el subrayado del texto si es un enlace */
+  }
+
+  .config {
+    /* Estilos específicos para el h4 dentro de .card-header y p-2 */
+    color: #007bff; /* Cambia el color del texto a azul */
+    font-weight: bold; /* Hace que el texto sea negrita */
+    border-bottom: 2px solid #007bff; /* Agrega una línea azul en la parte inferior */
+  }
+
+
+  .config h4 {
+    /* Estilos específicos para el h4 dentro de .config */
+    text-align: center; /* Centra el texto */
+    color: #007bff; /* Cambia el color del texto a azul */
+    font-weight: bold; /* Hace que el texto sea negrita */
+    margin-bottom: 10px;
+    margin-top: 10px; /* Ajusta la separación entre el texto y el elemento superior */
+    margin-right: 30px; /* Agrega un margen derecho de 10 píxeles */
+  }
+
+  
