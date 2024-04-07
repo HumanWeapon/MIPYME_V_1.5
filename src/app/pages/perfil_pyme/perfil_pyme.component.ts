@@ -95,6 +95,20 @@ constructor(
     }
   }
 
+  
+// Esta función formatea el número de teléfono
+formatPhoneNumber(event: any) {
+  let phoneNumber = event.target.value.replace(/\D/g, ''); // Elimina todos los caracteres que no son dígitos
+  if (phoneNumber.length > 3) {
+    phoneNumber = phoneNumber.replace(/(\d{3})(\d)/, '($1) $2'); // Formatea el código de área
+  }
+  if (phoneNumber.length > 8) {
+    phoneNumber = phoneNumber.replace(/(\d{4})(\d)/, '$1-$2'); // Formatea el resto del número
+  }
+  this.getPyme.telefono_contacto = phoneNumber; // Actualiza el valor del teléfono en el modelo
+}
+
+
   getRoles() {
     this._rolService.getAllRoles().subscribe((res: any) => {
       console.log(res);
