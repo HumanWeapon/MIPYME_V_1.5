@@ -254,6 +254,7 @@ export class OperacionesEmpresasComponent {
     const EmpresaNombre = localStorage.getItem('nombreEmpresa');
     const EmpresaDescripcion = localStorage.getItem('nombreEmpresa');
     const userLocal = localStorage.getItem('usuario');
+
     if(EmpresaNombre && EmpresaDescripcion && EmpresaId && userLocal){
       this.idEmpresa = EmpresaId;
       this.nombreEmpresa = EmpresaNombre;
@@ -426,18 +427,18 @@ export class OperacionesEmpresasComponent {
       }
     });
   }
-      //Obtiene todos los Requisitos registrados a una empresa
-      getRequisitosEmpresaPorId() {
-        this._tipoRequisitoService.consultarRequisitosPorId(this.idEmpresa).subscribe({
-          next: (data: any) => {
-            this.requisitosAllPaisesEmpresas = data;
-            console.log('Datos recibidos:', data); // Agregar console.log aquí
-          },
-          error: (e: HttpErrorResponse) => {
-            this._errorService.msjError(e);
-          }
-        });
+  //Obtiene todos los Requisitos registrados a una empresa
+  getRequisitosEmpresaPorId() {
+    this._tipoRequisitoService.consultarRequisitosPorId(this.idEmpresa).subscribe({
+      next: (data: any) => {
+        this.requisitosAllPaisesEmpresas = data;
+        console.log('Datos recibidos:', data); // Agregar console.log aquí
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
       }
+    });
+  }
 
   agregarNuevoTipoRequisito() {
     const userLocal = localStorage.getItem('usuario');

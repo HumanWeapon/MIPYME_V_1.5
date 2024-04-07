@@ -129,7 +129,7 @@
               </thead>
               <tbody>
                 <tr *ngFor="let obj of empresasEmpresa; let i = index">
-                  <td><button type="button" class="btn btn2_color_blue" data-dismiss="modal"><strong> {{ obj.nombre_empresa }}</strong></button> </td>
+                  <td><button type="button" class="btn btn2_color_blue" (click)="getEmpresa(obj)" data-toggle="modal" data-target="#infoEmpresas" data-dismiss="modal" ><strong> {{ obj.nombre_empresa }}</strong></button> </td>
                 </tr>
               </tbody>
             </table>
@@ -139,6 +139,178 @@
       </div>
       <div class="modal-footer justify-content-between" style="background-color: #e9e9e9;">
         <button type="button" class="btn btn_color_blue" data-dismiss="modal" data-toggle="modal" data-target="#paises">Volver</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="infoEmpresas" style="display: none;" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #1254a1; color: white;">
+        <h4 class="modal-title">Información de la empresa {{ nombreEmpresa }}</h4>
+        <button type="button" class="close btn_color_blue" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="card">
+          <div class="card-header" style="background-color: #e9e9e9;">
+            <h3 class="card-title">Información </h3>
+          </div>
+          <div class="card-tools">
+            <!-- /.Encabezado -->
+            <div class="card-header p-2">
+              <ul class="nav nav-pills">
+                <!--<li class="nav-item"><a class="nav-link custom-color active" href="#PRODUCTOS" data-toggle="tab">productos</a></li>-->
+                <li class="nav-item"><a class="nav-link custom-color active" href="#CONTACTOS" data-toggle="tab">Contactos</a></li>
+                <li class="nav-item"><a class="nav-link custom-color" href="#DIRECCIÓN" data-toggle="tab">Direcciones</a></li>
+                <li class="nav-item"><a class="nav-link custom-color" href="#REQUISITOS" data-toggle="tab">Requisitos de Exportación</a></li>
+              </ul>
+            </div>
+          </div>
+          <!-- /.Cuerpo -->
+          <div class="card-body">
+            <!-- /.Contenido -->
+            <div class="tab-content">
+            <!-- Contactos de la empresa -->
+            <div class="tab-pane active" id="CONTACTOS">
+              <div class="tab-pane active" id="CONTACTOS">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="mb-2 mt-0">
+                      <div class="input-group input-group-sm" >
+                        <div class="ml-auto"> <!-- Agrega la clase ml-auto aquí -->
+                        </div>
+                      </div>
+                    </div>
+    
+                    <div class="card">
+                      <div class="card-header">
+                        <h3 class="card-title">Lista de contactos</h3>
+                      </div>
+                    
+                      <div class="card-body table-responsive p-0" style="height: 300px;">
+                        <table class="table table-head-fixed text-nowrap">
+                          <thead>
+                            <tr>
+                              <th>Nombre</th>
+                              <th>Tipo persona</th>
+                              <th class="text-center">Ver Teléfonos</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let obj of productosContactos; let i = index">
+                              <td>{{ obj.nombre_completo }}</td>
+                              <td>{{ obj.tipo_contacto }}</td>
+                              <td class="text-center">
+                                <button type="button" (click)="buscarTelefonos(obj.id_contacto)" class="btna"data-toggle="modal" data-target="#ver_telefonos"><i class="fas fa-solid fa-phone"></i></button>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+    
+                    </div> 
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- /Contactos de la empresa -->
+
+            <!-- Direcciones  de la empresa-->
+            <div class="tab-pane" id="DIRECCIÓN">
+              <div class="tab-pane active" id="DIRECCIÓN">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="mb-2 mt-0">
+                      <div class="input-group input-group-sm" >
+                        <div class="ml-auto"> <!-- Agrega la clase ml-auto aquí -->
+
+                        </div>
+                      </div>
+                    </div>
+    
+                    <div class="card">
+                      <div class="card-header">
+                        <h3 class="card-title">Lista de direcciones</h3>
+                      </div>
+                    
+                      <div class="card-body table-responsive p-0" style="height: 300px;">
+                        <table class="table table-head-fixed text-nowrap">
+                          <thead>
+                            <tr>
+                              <th>País</th>
+                              <th>Ciudad</th>
+                              <th>Dirección</th>
+                              <th>Tipo de dirección</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let obj of direccionesEmpresa; let i = index">
+                              <td>{{ obj.pais }}</td>
+                              <td>{{ obj.ciudad }}</td>
+                              <td>{{ obj.direccion }}</td>
+                              <td>{{ obj.tipo_direccion }}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+    
+                    </div> 
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- /Direcciones  de la empresa-->
+
+            <!-- Requisitos de Exportación-->
+            <div class="tab-pane" id="REQUISITOS">
+              <div class="tab-pane active" id="REQUISITOS">
+                <div class="row">
+                  <div class="col-12">
+                    <div class="mb-2 mt-0">
+                      <div class="input-group input-group-sm" >
+                        <div class="ml-auto"> <!-- Agrega la clase ml-auto aquí -->
+                      </div>
+                      </div>
+                    </div>
+    
+                    <div class="card">
+                      <div class="card-header">
+                        <h3 class="card-title">Lista de Requisitos</h3>
+                      </div>
+                    
+                      <div class="card-body table-responsive p-0" style="height: 300px;">
+                        <table class="table table-head-fixed text-nowrap">
+                          <thead>
+                            <tr>
+                              <th>Requisito</th>
+                              <th>Descripción</th>
+                              <th>Pais</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let TRequi of requisitosAllPaisesEmpresas; let i = index">
+                              <td>{{ TRequi.tipo_requisito | uppercase }}</td>
+                              <td>{{ TRequi.descripcion | uppercase }}</td>
+                              <td>{{ TRequi.pais | uppercase }}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+    
+                    </div> 
+                  </div>
+                </div>
+              </div>
+            </div>
+            </div>
+          </div>
+        </div> 
+      </div>
+      <div class="modal-footer justify-content-between" style="background-color: #e9e9e9;">
+        <button type="button" class="btn btn_color_blue" data-dismiss="modal" data-toggle="modal" data-target="#empresas">Volver</button>
       </div>
     </div>
   </div>

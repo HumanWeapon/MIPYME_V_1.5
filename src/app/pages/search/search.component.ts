@@ -1,10 +1,26 @@
+import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { da } from 'date-fns/locale';
 import { ToastrService } from 'ngx-toastr';
 import { Subject } from 'rxjs';
+import { BitacoraService } from 'src/app/services/administracion/bitacora.service';
+import { ContactoService } from 'src/app/services/contacto/contacto.service';
+import { ContactoTService } from 'src/app/services/contacto/contactoTelefono.service';
+import { DireccionesService } from 'src/app/services/contacto/direcciones.service';
+import { EmpresaService } from 'src/app/services/empresa/empresa.service';
+import { PaisesService } from 'src/app/services/empresa/paises.service';
 import { ErrorService } from 'src/app/services/error.service';
+import { CategoriaService } from 'src/app/services/mantenimiento/categoria.service';
+import { ProductosService } from 'src/app/services/mantenimiento/producto.service';
+import { TipoContactoService } from 'src/app/services/mantenimiento/tipoContacto.service';
+import { TipoDireccionService } from 'src/app/services/mantenimiento/tipoDireccion.service';
+import { TipoRequisitoService } from 'src/app/services/mantenimiento/tipoRequisito.service';
+import { EmpresasContactosService } from 'src/app/services/operaciones/empresas-contactos.service';
+import { EmpresasDireccionesService } from 'src/app/services/operaciones/empresas-direcciones.service';
 import { EmpresasProdcutosService } from 'src/app/services/operaciones/empresas-prodcutos.service';
+import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 
 @Component({
   selector: 'app-search',
@@ -13,6 +29,11 @@ import { EmpresasProdcutosService } from 'src/app/services/operaciones/empresas-
 })
 export class SearchComponent implements OnInit {
   
+  // Variables obtenidas del Local Store, Información de la Empresa.
+  idEmpresa: any;
+  idContacto: any;
+  nombreEmpresa: string = '';
+  descripcionEmpresa: string = '';
   searchTerm: string = '';
   categoria: string = '';
   pais: string = '';
@@ -25,6 +46,12 @@ export class SearchComponent implements OnInit {
   list_categorias: any[]=[];
   list_paises: any[]=[]; //modal paises
   list_empresas: any[]=[]; //modal empresas
+  productosEmpresa: any[] = [];//Obtiene los productos registrados de la Empresa y los muestra en la tabla.
+  productosContactos: any[] = [];//Obtiene los contactos registrados de la Empresa y los muestra en la tabla.
+  direccionesEmpresa: any[] = [];//Obtiene los contactos registrados de la Empresa y los muestra en la tabla.
+  contactosActivos: any[] = []; //Obtiene los contactos activos de la Empresa y los muestra en la tabla.
+  telefonosContactos: any[] = [];//Obtiene los telefonos registrados para cada contacto.
+  requisitosAllPaisesEmpresas: any[] = [];//Obtiene los requisitos registrados de la Empresa y los muestra en la tabla.
   //filtros
   filtro_pais: string = '';//modal paises
   filtro_empresa: string = '';//modal empresas
@@ -32,6 +59,20 @@ export class SearchComponent implements OnInit {
   empresasEmpresa: any[] = [];//modal empresas
   todosLosPaises: any[] = []; //modal paises
   todasLasEmpresas: any[] = []; //modal empresas
+  //filtros modales
+  filtro_prod: string = '';
+  filtro_contact: string = '';
+  filtro_telefono: string = '';
+  filtro_direc: string = '';
+  todosLosProductos: any[] = [];
+  todosLosContactos: any[] = [];
+  todosLosTelefonos: any[] = [];
+  todasLasDirecciones: any[] = [];
+  todosLosRequisitos: any[] = [];
+  filtroModalProd: string = '';
+  filtroModalCont: string = '';
+
+
 
   list_productosFilter: any[]=[]; //lista de productos
   //paginación
@@ -41,6 +82,26 @@ export class SearchComponent implements OnInit {
     private _toastr: ToastrService,
     private _errorService: ErrorService,
     private _opEmpresasProductos: EmpresasProdcutosService,
+    //
+    private _router: Router,
+    private _empresaService: EmpresaService,
+    private _paisService: PaisesService,
+    private _bitacoraService: BitacoraService,
+    private _userService: UsuariosService,
+    private _productoService: ProductosService,
+    private _empresasProductosService: EmpresasProdcutosService,
+    private _empresasContactosService: EmpresasContactosService,
+    private _empresasDireccionesService: EmpresasDireccionesService,
+    private _telefonosService: ContactoTService,
+    private _datePipe: DatePipe,
+    private _categoriaProductos: CategoriaService,
+    private _contactoService: ContactoService,
+    private _tipoContacto: TipoContactoService,
+    private _direccionesService: DireccionesService,
+    private _contactoTService: ContactoTService,
+    private _tipoDireccionService: TipoDireccionService,
+    private _operacionesContactos: EmpresasContactosService,
+    private _tipoRequisitoService: TipoRequisitoService    
   ){}
 
   ngOnInit(): void {
@@ -70,6 +131,14 @@ export class SearchComponent implements OnInit {
     this.id_pais = id_pais;
     this.getPaisesPorProducto();
   }
+  getEmpresa(empresa: any) {
+    this.idEmpresa = empresa.id_empresa;
+    this.nombreEmpresa = empresa.nombre_empresa;
+    console.log(empresa);
+    this.getEmpresasContactosPorId()
+    this.getDireccionesEmpresaporID()
+    this.getRequisitosEmpresaPorId()
+  }
 
   //obtiene los productos mostrados en la lista principal
   getOpProductos(){
@@ -97,19 +166,55 @@ export class SearchComponent implements OnInit {
       }
     });
   }
-    //obtiene las empresas por el id del pais
-    getPaisesEmpresasPorPais() {
-      this._opEmpresasProductos.getPaisesEmpresasPorPais(this.id_pais, this.id_producto).subscribe({
-        next: (data: any) => {
-          this.list_empresas = data;
-          this.todasLasEmpresas = data;
-          this.buscarEmpresa();
-        },
-        error: (e: HttpErrorResponse) => {
-          this._errorService.msjError(e);
-        }
-      });
-    }
+  //obtiene las empresas por el id del pais
+  getPaisesEmpresasPorPais() {
+    this._opEmpresasProductos.getPaisesEmpresasPorPais(this.id_pais, this.id_producto).subscribe({
+      next: (data: any) => {
+        this.list_empresas = data;
+        this.todasLasEmpresas = data;
+        this.buscarEmpresa();
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
+  }
+    //Obtiene todos los contactos registrados a una empresa
+  getEmpresasContactosPorId() {
+    this._empresasContactosService.consultarContactosPorId(this.idEmpresa).subscribe({
+      next: (data: any) => {
+        this.productosContactos = data;
+        this.todosLosContactos = data;
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
+  }
+  //Obtiene todos los contactos registrados a una empresa
+  getDireccionesEmpresaporID() {
+    this._empresasDireccionesService.consultarDireccionesPorId(this.idEmpresa).subscribe({
+      next: (data: any) => {
+        this.direccionesEmpresa = data;
+        this.todasLasDirecciones = data;
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
+  }
+  //Obtiene todos los Requisitos registrados a una empresa
+  getRequisitosEmpresaPorId() {
+    this._tipoRequisitoService.consultarRequisitosPorId(this.idEmpresa).subscribe({
+      next: (data: any) => {
+        this.requisitosAllPaisesEmpresas = data;
+        console.log('Datos recibidos:', data); // Agregar console.log aquí
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
+  }
 
   filterProductos(){
     if (this.searchTerm.trim() === '') {
@@ -141,4 +246,38 @@ export class SearchComponent implements OnInit {
       });
     }
   }
+  //busca los productos de la tabla principal de los contactos
+  buscarContactos() {
+    if (this.filtro_contact.trim() === '') {
+      this.productosContactos = this.todosLosContactos; // Si el filtro está vacío, muestra todos los productos
+    } else {
+      this.productosContactos = this.todosLosContactos.filter(contacto => {
+        // Filtrar por el nombre del producto
+        return contacto.nombre_completo.toLowerCase().includes(this.filtro_contact.trim().toLowerCase());
+      });
+    }
+  }
+  buscarTelefonos(id_contacto: any){
+    // Asignar el id_contacto a la variable de clase
+  this.idContacto = id_contacto;
+    this._telefonosService.telefonosdeContactosPorId(id_contacto).subscribe({
+      next: (data) =>{
+        this.telefonosContactos = data;
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
+  }
+    //busca las direcciones de la tabla principal de los direcciones
+    buscarDirecciones() {
+      if (this.filtro_direc.trim() === '') {
+        this.direccionesEmpresa = this.todasLasDirecciones; // Si el filtro está vacío, muestra todos los productos
+      } else {
+        this.direccionesEmpresa = this.todasLasDirecciones.filter(direccion => {
+          // Filtrar por el nombre del producto
+          return direccion.direccion.toLowerCase().includes(this.filtro_direc.trim().toLowerCase());
+        });
+      }
+    }
 }
