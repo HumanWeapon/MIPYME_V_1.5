@@ -63,6 +63,9 @@ export class ResetPasswordComponent implements OnInit {
         response => {
           console.log('Contraseña restablecida con éxito');
           this.resetSuccessful = true;
+          this.toastr.success('Contraseña Recuperada Exitosamente.');
+          this.router.navigate(['/login']);
+          
         },
         error => {
           console.error('Error al restablecer la contraseña:', error);
