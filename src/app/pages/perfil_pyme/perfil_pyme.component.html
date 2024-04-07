@@ -9,14 +9,23 @@
     <div class="text-center">
       <div style="position: relative; display: inline-block;">
         <label for="file-input" style="cursor: pointer; display: block; position: relative;" title="Cambiar Imagen">
-          <img *ngIf="!previsualizacion" 
+          <img *ngIf="!previsualizacion && !esPyme" 
                class="profile-user-img img-fluid img-circle" 
-               src="assets/dist/img/avatar5.png" 
+               src="assets/dist/img/avatar_user.png" 
                alt="User profile picture" 
                style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%;">
-          <img *ngIf="previsualizacion" 
+          <img *ngIf="previsualizacion && !esPyme" 
                [src]="previsualizacion" 
                alt="User profile picture" 
+               style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%;">
+          <img *ngIf="!previsualizacion && esPyme" 
+               class="profile-user-img img-fluid img-circle" 
+               src="https://cdn-icons-png.flaticon.com/512/746/746859.png" 
+               alt="Pyme profile picture" 
+               style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%;">
+          <img *ngIf="previsualizacion && esPyme" 
+               [src]="previsualizacion" 
+               alt="Pyme profile picture" 
                style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%;">
         </label>
         <input (change)="imagenPerfil($event)" 
@@ -24,9 +33,10 @@
                id="file-input" 
                style="display: none;" 
                accept="image/*">
-       <!-- <a *ngIf="mostrarBotonGuardar" (click)="guardarImagen()" class="btn" style="margin-top: 5px; padding: 3px; font-size: 12px;"><i class="fas fa-save"></i> Guardar</a> -->
+        <!-- <a *ngIf="mostrarBotonGuardar" (click)="guardarImagen()" class="btn" style="margin-top: 5px; padding: 3px; font-size: 12px;"><i class="fas fa-save"></i> Guardar</a> -->
       </div>
     </div>
+    
     
     <div>
       <h3 class="profile-username text-center">{{ getPyme.nombre_pyme | uppercase }}</h3>

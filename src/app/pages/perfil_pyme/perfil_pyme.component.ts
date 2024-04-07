@@ -36,6 +36,8 @@ export class PerfilPymeComponent  implements OnInit{
   public imagenes: any = [];
   public previsualizacion: string = '';
   pymeOriginal!: Pyme;
+  esPyme: boolean = false; // Inicialmente se establece en falso
+
 /********************************************************************************************** */
 
  listRoles: Roles [] = [];
