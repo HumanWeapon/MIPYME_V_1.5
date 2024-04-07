@@ -35,6 +35,7 @@ export class ResetPasswordComponent implements OnInit {
   };
   confirPassword: string = '';
   token?: string;
+  correoElectronico: string = '';
 
   constructor(
     private _userService: UsuariosService,
@@ -44,15 +45,19 @@ export class ResetPasswordComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    const usuario: Usuario = history.state.usuario;
+    if (usuario) {
     this.token = this.route.snapshot.params['token'];
-    console.log('Usuario:', this.user.usuario);
-    console.log('Correo electrónico:', this.user.correo_electronico);
-    this.getUsuario();
+    console.log('Usuario:', usuario);
+    console.log('Correo electrónico:', this.correoElectronico);
+    this.getUsuario(usuario);
   }
+}
 
-  getUsuario() {
-    this.user.usuario = localStorage.getItem("usuario");
-    console.log(this.user.usuario);
+  getUsuario(usuario: Usuario) {
+    this._userService.getUsuario(usuario).subscribe(data => {
+      this.user = data;
+    });
   }
 
   validarPassword() {
