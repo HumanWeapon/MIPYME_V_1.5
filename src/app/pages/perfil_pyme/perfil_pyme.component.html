@@ -3,7 +3,7 @@
   <div class="row">
   
  <div class="col-md-3 d-flex justify-content-end">
- <div class="card card-primary card-outline">
+ <div class="card card-primary">
   <div class="card-body box-profile">
 
     <div class="text-center">
@@ -92,7 +92,7 @@
       <div class="form-group row">
         <label for="inputName" class="col-sm-2 col-form-label">Telefono del Contacto</label>
         <div class="col-sm-10">
-          <input type="text" [disabled]="inputDeshabilitadoU" (input)="convertirAMayusculas($event, 'telefono_contacto')" (input)="formatPhoneNumber($event)" [(ngModel)]="getPyme.telefono_contacto" name="getPyme.telefono_contacto" class="form-control" id="formGroupExampleInput" placeholder="Telefono del Contacto" (input)="onInputChange($event, 'telefono_contacto')" (input)="convertirAMayusculas($event,'telefono_contacto')">
+          <input type="text" [disabled]="inputDeshabilitadoU" (input)="convertirAMayusculas($event, 'telefono_contacto')" [(ngModel)]="getPyme.telefono_contacto" name="getPyme.telefono_contacto" class="form-control" id="formGroupExampleInput" placeholder="Telefono del Contacto" (input)="onInputChange($event, 'telefono_contacto')" (input)="convertirAMayusculas($event,'telefono_contacto')">
         </div>
         </div>
             
@@ -108,10 +108,10 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
 <div class="form-group row" *ngIf="mostrarCamposContrasena">
-  <label for="inputName2" class="col-sm-2 col-form-label">Contraseña</label>
+  <label for="inputName2" class="col-sm-2 col-form-label">RTN</label>
   <div class="col-sm-10">
     <div class="input-group">
-      <input [type]="inputType" [(ngModel)]="contrasenaActual" name="contrasenaActual" [disabled]="inputDeshabilitado" class="form-control" placeholder="Contraseña actual">
+      <input [type]="inputType" [(ngModel)]="contrasenaActual" name="contrasenaActual" [disabled]="inputDeshabilitado" class="form-control" placeholder="RTN actual">
       <button class="btn btn-outline-secondary btn-icon"  type="button" (click)="toggleInputType('contrasenaActual')">
         <i class="fas" [ngClass]="inputType === 'password' ? 'fa-eye-slash' : 'fa-eye'"></i>
       </button>
@@ -120,10 +120,10 @@
 </div>
 
 <div class="form-group row" *ngIf="mostrarCamposContrasena">
-  <label for="inputName2" class="col-sm-2 col-form-label">Nueva Contraseña</label>
+  <label for="inputName2" class="col-sm-2 col-form-label">Nuevo RTN</label>
   <div class="col-sm-10">
     <div class="input-group">
-      <input [type]="inputTypeN" [(ngModel)]="nuevaContrasena" name="nuevaContrasena" [disabled]="inputDeshabilitado" class="form-control" placeholder="Contraseña nueva">
+      <input [type]="inputTypeN" [(ngModel)]="nuevaContrasena" name="nuevaContrasena" [disabled]="inputDeshabilitado" class="form-control" placeholder="RTN nuevo">
       <button class="btn btn-outline-secondary btn-icon" type="button" (click)="toggleInputTypeN('nuevaContrasena')">
         <i class="fas" [ngClass]="inputTypeN === 'password' ? 'fa-eye-slash' : 'fa-eye'"></i>
       </button>
@@ -132,10 +132,10 @@
 </div>
 
 <div class="form-group row" *ngIf="mostrarCamposContrasena">
-  <label for="inputName2" class="col-sm-2 col-form-label">Repite Contraseña</label>
+  <label for="inputName2" class="col-sm-2 col-form-label">Repite RTN</label>
   <div class="col-sm-10">
     <div class="input-group-append">
-      <input [type]="inputTypeC" [(ngModel)]="confirmarContrasena" name="confirmarContrasena" [disabled]="inputDeshabilitado" class="form-control" placeholder="Confirmar contraseña">
+      <input [type]="inputTypeC" [(ngModel)]="confirmarContrasena" name="confirmarContrasena" [disabled]="inputDeshabilitado" class="form-control" placeholder="Confirmar RTN">
       <button class="btn btn-outline-secondary btn-icon" type="button" (click)="toggleInputTypeC('confirmarContrasena')">
         <i class="fas" [ngClass]="inputTypeC === 'password' ? 'fa-eye-slash' : 'fa-eye'"></i>
       </button>

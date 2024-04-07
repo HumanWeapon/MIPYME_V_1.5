@@ -87,29 +87,27 @@ constructor(
   getPymes(){
     const pymeLocal = localStorage.getItem('nombre_pyme');
     if(pymeLocal == null){
-
-    }else{
+  
+    } else {
       this.getPyme.nombre_pyme = pymeLocal;
       this._pymeService.getPyme(this.getPyme).subscribe(data => {
         this.getPyme = data;
         this.pymeOriginal = { ...this.getPyme }; // Copia del usuario original
+        this.getPyme.telefono_contacto = this.formatPhoneNumber(this.getPyme.telefono_contacto); // Aplicar formato al número de teléfono
       });
     }
   }
 
+  formatPhoneNumber(phoneNumber: string): string {
+    // Elimina todos los caracteres que no son dígitos
+    let formattedPhoneNumber = phoneNumber.replace(/\D/g, ''); 
+    
+    // Formatea el número separando en grupos de cuatro
+    formattedPhoneNumber = formattedPhoneNumber.replace(/(\d{4})(\d{4})/, '$1-$2');
   
-// Esta función formatea el número de teléfono
-formatPhoneNumber(event: any) {
-  let phoneNumber = event.target.value.replace(/\D/g, ''); // Elimina todos los caracteres que no son dígitos
-  if (phoneNumber.length > 3) {
-    phoneNumber = phoneNumber.replace(/(\d{3})(\d)/, '($1) $2'); // Formatea el código de área
+    return formattedPhoneNumber; // Devuelve el número de teléfono formateado
   }
-  if (phoneNumber.length > 8) {
-    phoneNumber = phoneNumber.replace(/(\d{4})(\d)/, '$1-$2'); // Formatea el resto del número
-  }
-  this.getPyme.telefono_contacto = phoneNumber; // Actualiza el valor del teléfono en el modelo
-}
-
+  
 
   getRoles() {
     this._rolService.getAllRoles().subscribe((res: any) => {

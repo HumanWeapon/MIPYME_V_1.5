@@ -10,7 +10,13 @@
     /* Estilos específicos para el h4 dentro de .card-header y p-2 */
     color: #007bff; /* Cambia el color del texto a azul */
     font-weight: bold; /* Hace que el texto sea negrita */
-    border-bottom: 2px solid #007bff; /* Agrega una línea azul en la parte inferior */
+    border-bottom: 2px solid #F5BD10; /* Agrega una línea azul en la parte inferior */
+  }
+
+  .box-profile {
+    /* Estilos específicos para el h4 dentro de .card-header y p-2 */
+    border-bottom: 5px solid #F5BD10; /* Agrega una línea azul en la parte inferior */
+    border-top: 5px solid #F5BD10; /* Agrega una línea azul en la parte inferior */
   }
 
 
