@@ -34,7 +34,6 @@ export class ResetPasswordComponent implements OnInit {
     intentos_fallidos: 0
   };
   confirPassword: string = '';
-  token?: string;
   correoElectronico: string = '';
 
   constructor(
@@ -46,31 +45,15 @@ export class ResetPasswordComponent implements OnInit {
 
   ngOnInit(): void {
     this.resetToken = this.route.snapshot.params['token'];
-    this.getUserByResetToken();
-  }
-
-  getUserByResetToken() {
-    this._userService.getUserByResetToken(this.resetToken).subscribe(
-      (data: Usuario) => {
-        this.user = data;
-        console.log('Usuario' + this.user)
-      },
-      error => {
-        console.error('Error al obtener usuario por token de restablecimiento:', error);
-        this.resetError = 'Error al obtener usuario por token de restablecimiento';
-      }
-    );
   }
 
   validarPassword() {
-    // Verificar que se hayan completado todos los campos
-    if (this.newPassword === '' || this.confirPassword === '') {
+    if (this.confirPassword === '' || this.user.contrasena === '') {
       this.toastr.warning('Por favor completa todos los campos.');
       return;
     }
-  
-    // Verificar si las contraseñas coinciden
-    if (this.newPassword !== this.confirPassword) {
+
+    if (this.confirPassword !== this.user.contrasena) {
       this.toastr.warning('Las contraseñas no coinciden.');
       return;
     }

@@ -86,11 +86,6 @@ export class UsuariosService {
     return this.http.put<any>(`${this.myAppUrl}${this.myApiUrl}/forgot-password`, body, { headers: headers });
   }
 
-  getUserByResetToken(token: string): Observable<Usuario> {
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    return this.http.get<Usuario>(`${this.myAppUrl}${this.myApiUrl}/getUserByResetToken/${token}`, { headers });
-  }
-
   resetPassword(newPassword: string, resetToken: string): Observable<any> {
     const headers = new HttpHeaders().set('Content-Type', 'application/json');
     const body = { newPassword, resetToken };
