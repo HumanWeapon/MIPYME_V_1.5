@@ -10,53 +10,55 @@
           </div>
           <!-- /.card-header -->
           <div class="card-body">
+            <div class="card-body table-responsive p-0" style="font-size:medium;">
               <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped">
-                  <thead>
-                    <tr>
-                      <th>ID</th>
-                      <th>NOMBRE</th>
-                      <th>RTN</th>
-                      <th>CONTACTO</th>
-                      <th>CORREO</th>
-                      <th>TELEFONO</th>
-                      <th>ESTADO</th>
-                      <th>ACCIONES</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let pyme of listPymes; let i = index">
-                      <td>{{ pyme.id_pyme }}</td>
-                      <td>{{ pyme.nombre_pyme }}</td>
-                      <td>{{ pyme.rtn }}</td>
-                      <td>{{ pyme.nombre_contacto }}</td>
-                      <td>{{ pyme.correo_contacto }}</td>
-                      <td>{{ pyme.telefono_contacto }}</td>
-                      
-                      <td>
-                        <ng-container *ngIf="pyme.estado === 1">ACTIVO</ng-container>
-                        <ng-container *ngIf="pyme.estado === 2">INACTIVO</ng-container>
-                      </td>
-                      <td class="text-center">
-                        <div class="btn-group">
-                          <!-- Colocar el botón del ojo antes del switch -->
-                          <button type="button" (click)="obtenerPyme(pyme, i)" title="Ver Usuario" class="btna" data-toggle="modal" data-target="#VistaPyme">
-                            <i class="far fa-eye"></i> <!-- Cambiar el icono a un ojo -->
-                          </button>
-                      
-                          <div class="form-check form-switch ml-4">
-                            <input class="form-check-input" (click)="toggleFunction(pyme, i)" [title]="pyme.estado == 1 ? 'Desactivar' : 'Activar'" type="checkbox" 
-                              role="switch" id="flexSwitchCheckChecked" [checked]="pyme.estado == 1">
-                          </div>
-                      
-                          <!-- Los demás botones -->
-                          <button type="button" (click)="obtenerIdPyme(pyme, i)" data-toggle="modal" title='Editar Pyme' data-target="#abrirModalEditarPyme"data-toggle="modal" data-target="#abrirModalEditarPyme" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
-                          <button type="button" (click)="deletePyme(pyme.id_pyme)" class="btna"  style="color: #E74C3C;" title="Eliminar Pyme"><i class=" fas fa-solid fa-trash"></i></button>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>NOMBRE</th>
+                    <th>RTN</th>
+                    <th>CONTACTO</th>
+                    <th>CORREO</th>
+                    <th>TELEFONO</th>
+                    <th>ESTADO</th>
+                    <th>ACCIONES</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let pyme of listPymes; let i = index">
+                    <td>{{ pyme.id_pyme }}</td>
+                    <td>{{ pyme.nombre_pyme }}</td>
+                    <td>{{ pyme.rtn }}</td>
+                    <td>{{ pyme.nombre_contacto }}</td>
+                    <td>{{ pyme.correo_contacto }}</td>
+                    <td>{{ pyme.telefono_contacto }}</td>
+                    
+                    <td>
+                      <ng-container *ngIf="pyme.estado === 1">ACTIVO</ng-container>
+                      <ng-container *ngIf="pyme.estado === 2">INACTIVO</ng-container>
+                    </td>
+                    <td class="text-center">
+                      <div class="btn-group">
+                        <!-- Colocar el botón del ojo antes del switch -->
+                        <button type="button" (click)="obtenerPyme(pyme, i)" title="Ver Usuario" class="btna" data-toggle="modal" data-target="#VistaPyme">
+                          <i class="far fa-eye"></i> <!-- Cambiar el icono a un ojo -->
+                        </button>
+                    
+                        <div class="form-check form-switch ml-4">
+                          <input class="form-check-input" (click)="toggleFunction(pyme, i)" [title]="pyme.estado == 1 ? 'Desactivar' : 'Activar'" type="checkbox" 
+                            role="switch" id="flexSwitchCheckChecked" [checked]="pyme.estado == 1">
                         </div>
-                      </td>
-                    </tr>
-                  </tbody>
-              </table>
+                    
+                        <!-- Los demás botones -->
+                        <button type="button" (click)="obtenerIdPyme(pyme, i)" data-toggle="modal" title='Editar Pyme' data-target="#abrirModalEditarPyme"data-toggle="modal" data-target="#abrirModalEditarPyme" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
+                        <button type="button" (click)="deletePyme(pyme.id_pyme)" class="btna"  style="color: #E74C3C;" title="Eliminar Pyme"><i class=" fas fa-solid fa-trash"></i></button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+            </table>
 
+            </div>
           </div>
           <!-- /.card-body -->
         </div>
@@ -85,7 +87,7 @@
       </div>
       <div class="modal-body">
         <div *ngIf="pymeSeleccionado">
-          <table class="table table-bordered table-striped" style="width: 100%;">
+          <table class="table table-responsive p-0 table-bordered table-striped" style="width: 100%;">
             <thead class="bg-primary text-white"> <!-- Cambiar el color de fondo del encabezado de la tabla a azul -->
               <tr>
                 <th>ID</th>
