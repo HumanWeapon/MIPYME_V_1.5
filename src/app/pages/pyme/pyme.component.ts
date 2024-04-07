@@ -106,7 +106,19 @@ export class PymeComponent {
   }
 
 
+  formatPhoneNumber(phoneNumber: string | null): string {
+    if (phoneNumber === null || phoneNumber === undefined) {
+        return ''; // Retorna una cadena vacía si phoneNumber es null o undefined
+    }
 
+    // Eliminar caracteres que no sean números
+    const cleanedNumber = phoneNumber.replace(/\D/g, '');
+    
+    // Separar el número cada cuatro dígitos con el signo "-"
+    const formattedNumber = cleanedNumber.match(/.{1,4}/g)?.join('-') || ''; // Usa el operador de opción segura (?.) y el operador de fusión nula (||)
+    
+    return formattedNumber;
+}
   
 
   
@@ -418,12 +430,9 @@ agregarNuevaPyme() {
       // Actualizar la bitácora
       this.updateBitacora(data);
       this.toastr.success('Pyme editado con éxito');
-      
-      // Actualizar los datos en el arreglo listPymes
-      this.listPymes[this.indice].nombre_pyme = this.editPyme.nombre_pyme;
-      this.listPymes[this.indice].rtn = this.editPyme.rtn;
-  
-      // Asignar el nombre de usuario que modificó el registro
+      this.listPymes[this.indice].nombre_contacto = this.editPyme.nombre_contacto;
+      this.listPymes[this.indice].correo_contacto = this.editPyme.correo_contacto;
+      this.listPymes[this.indice].telefono_contacto = this.editPyme.telefono_contacto;
       this.listPymes[this.indice].modificado_por = userLocal;
     });
   }

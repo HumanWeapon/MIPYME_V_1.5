@@ -31,7 +31,7 @@
                     <td>{{ pyme.rtn }}</td>
                     <td>{{ pyme.nombre_contacto }}</td>
                     <td>{{ pyme.correo_contacto }}</td>
-                    <td>{{ pyme.telefono_contacto }}</td>
+                    <td>{{ formatPhoneNumber(pyme.telefono_contacto) }}</td> <!-- Llamar a la función formatPhoneNumber -->
                     
                     <td>
                       <ng-container *ngIf="pyme.estado === 1">ACTIVO</ng-container>
@@ -180,14 +180,6 @@
       </div>
       <div class="modal-body">
         <form>
-          <div class="form-group">
-            <label for="editarNombre">NOMBRE PYME</label>
-            <input type="text" [(ngModel)]="editPyme.nombre_pyme" name="editPyme.nombre_pyme" (input)="onInputChange($event, 'nombre_pyme'); eliminarCaracteresEspeciales($event, 'nombre_pyme')" class="form-control" id="editarNombre" placeholder="Nombre de la Pyme" [ngModelOptions]="{standalone: true}" (ngModelChange)="editPyme.nombre_pyme=$event.toUpperCase()">
-          </div>
-          <div class="form-group">
-            <label for="editarRTN">RTN</label>
-            <input type="text" [(ngModel)]="editPyme.rtn" name="editPyme.rtn" (input)="onInputChange($event, 'rtn'); eliminarCaracteresEspeciales($event, 'rtn')" class="form-control" id="editarRTN" placeholder="RTN">
-          </div>
           <div class="form-group">
             <label for="editarContacto">CONTACTO</label>
             <input type="text" [(ngModel)]="editPyme.nombre_contacto" name="editPyme.nombre_contacto" (input)="onInputChange($event, 'nombre_contacto'); eliminarCaracteresEspeciales($event, 'nombre_contacto')" class="form-control" id="editarContacto" placeholder="Contacto">
