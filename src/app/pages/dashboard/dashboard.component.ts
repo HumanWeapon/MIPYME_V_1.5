@@ -7,7 +7,6 @@ import { Productos } from 'src/app/interfaces/mantenimiento/productos';
 import { ProductosService } from 'src/app/services/mantenimiento/producto.service';
 import { PymeService } from 'src/app/services/pyme/pyme.service';
 import { Pyme } from 'src/app/interfaces/pyme/pyme';
-import { Color, ScaleType } from '@swimlane/ngx-charts';
 import { HistoriaBusquedaService } from 'src/app/services/pyme/historia-busqueda.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ErrorService } from 'src/app/services/error.service';
@@ -32,27 +31,6 @@ export class DashboardComponent implements OnInit {
   empresas: Empresa[] = [];
   
 
-  single:any = [];
-  view: [number, number] = [1500, 450];
-  // options
-  showXAxis: boolean = true;
-  showYAxis: boolean = true;
-  gradient: boolean = false;
-  showLegend: boolean = true;
-  legendLabel: string = 'Color';
-  showXAxisLabel: boolean = true;
-  yAxisLabel: string = 'Producto';
-  showYAxisLabel: boolean = true;
-  xAxisLabel: string = 'Popularidad';
-
-  colorScheme: Color = {
-    domain: ['#E74C3C', '#8E44AD', '#3498DB', '#16A085', '#2ECC71', '#F39C12', '#D35400', '#BDC3C7', '#7F8C8D', '#2C3E50'],
-    name: 'producto',
-    selectable: false,
-    group: ScaleType.Ordinal,
-  };
-  
-
   constructor(
     private empresaService: EmpresaService,
     private usuariosService: UsuariosService,
@@ -75,23 +53,12 @@ export class DashboardComponent implements OnInit {
 
 
  /***********************CONTEO EMPRESAS***************************/
- onSelect(data: any): void {
-  console.log('Item clicked', JSON.parse(JSON.stringify(data)));
-}
 
-onActivate(data: any): void {
-  console.log('Activate', JSON.parse(JSON.stringify(data)));
-}
-
-onDeactivate(data: any): void {
-  console.log('Deactivate', JSON.parse(JSON.stringify(data)));
-}
 getTop10Busquedas(){
   this._historialService.getTop10Busquedas().subscribe({
     next: (data) => {
-      this.single = data
+      
       console.log(data);
-      console.log(this.single);
     },
     error: (e: HttpErrorResponse) => {
       this._errorService.msjError(e);

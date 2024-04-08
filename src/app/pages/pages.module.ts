@@ -41,7 +41,6 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { HistorialBusquedaComponent } from './historial-busqueda/historial-busqueda.component';
 import { PerfilPymeComponent } from './perfil_pyme/perfil_pyme.component';
 import { HistorialPymeComponent } from './historial-pyme/historial-pyme.component';
-import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
@@ -91,7 +90,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     SharedModule,
     FormsModule,
     NgxPaginationModule,
-    NgxChartsModule,
     BrowserAnimationsModule
   ],
   exports:[
