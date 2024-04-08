@@ -12,6 +12,7 @@ import { HistoriaBusquedaService } from 'src/app/services/pyme/historia-busqueda
 import { HttpErrorResponse } from '@angular/common/http';
 import { ErrorService } from 'src/app/services/error.service';
 import { da } from 'date-fns/locale';
+import autoTable from 'jspdf-autotable';
 
 
 @Component({
@@ -32,7 +33,7 @@ export class DashboardComponent implements OnInit {
   
 
   single:any = [];
-  view: [number, number] = [700, 400];
+  view: [number, number] = [1500, 450];
   // options
   showXAxis: boolean = true;
   showYAxis: boolean = true;
@@ -45,7 +46,7 @@ export class DashboardComponent implements OnInit {
   xAxisLabel: string = 'Popularidad';
 
   colorScheme: Color = {
-    domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA'],
+    domain: ['#E74C3C', '#8E44AD', '#3498DB', '#16A085', '#2ECC71', '#F39C12', '#D35400', '#BDC3C7', '#7F8C8D', '#2C3E50'],
     name: 'producto',
     selectable: false,
     group: ScaleType.Ordinal,
