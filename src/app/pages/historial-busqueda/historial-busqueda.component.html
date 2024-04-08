@@ -21,6 +21,7 @@
                                       <th>PAIS</th>
                                       <th>ID EMPRESA</th>
                                       <th>EMPRESA</th>
+                                      <th>FECHA</th>
                                   </tr>
                               </thead>
                               <tbody>
@@ -34,6 +35,7 @@
                                       <td>{{ historial.pais }}</td>
                                       <td>{{ historial.id_empresa }}</td>
                                       <td>{{ historial.nombre_empresa }}</td>
+                                      <td>{{ historial.fecha_creacion | date: 'yyyy-MM-dd'  }}</td>
                                   </tr>
                               </tbody>
                           </table>

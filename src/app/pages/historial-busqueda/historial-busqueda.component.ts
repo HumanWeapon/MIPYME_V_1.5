@@ -25,7 +25,7 @@ export class HistorialBusquedaComponent {
     id_historial: 0, 
     id_pyme: 0, 
     id_producto: 0, 
-    id_pais: 0, 
+    id_pais: 0,
     id_empresa: 0, 
     descripcion:'', 
     estado: 0,
@@ -88,68 +88,8 @@ export class HistorialBusquedaComponent {
       this.dtTrigger.next(0);
     });
   }
-
-
   ngOnDestroy(): void {
     // Do not forget to unsubscribe the event
     this.dtTrigger.unsubscribe();
   }
-
- 
-
-
-/*
-  agregarNuevoHistorial() {
-    const userLocal = localStorage.getItem('usuario');
-    if (userLocal) {
-      this.nuevoHistorial = {
-        id_historial: 0, 
-        id_pyme: 0, 
-        id_producto: 0, 
-        id_pais: 0, 
-        id_empresa: 0, 
-        descripcion: this.nuevoHistorial.descripcion, 
-        estado: 1,
-        creado_por: userLocal, 
-        fecha_creacion: new Date(), 
-        modificado_por: userLocal, 
-        fecha_modificacion: new Date()
-      };
-    
-      this._historialB.addHistorialB(this.nuevoHistorial).subscribe({
-        next: (data) => {
-          this.toastr.success(data.msg, 'Historial  agregado con éxito');
-          // Puedes hacer otras acciones aquí después de agregar el objeto con éxito, como actualizar la lista de objetos
-        },
-        error: (e: HttpErrorResponse) => {
-          if (e.error && e.error.msg) {
-            this.toastr.error(e.error.msg, 'Error al agregar Historial');
-          } else {
-            this.toastr.error('Error al agregar Historial', 'Error');
-          }
-        }
-      });
-    }
-  }
-  */
-
-    obtenerIdHistorialB(historial: Historial, i: any){
-      this.HistorialEditando = {
-        id_historial: historial.id_historial, 
-        id_pyme: historial.id_pyme,
-        id_producto: historial.id_producto, 
-        id_pais: historial.id_pais, 
-        id_empresa: historial.id_empresa, 
-        descripcion: historial.descripcion, 
-        estado: historial.estado,
-        creado_por: historial.creado_por, 
-        fecha_creacion: historial.fecha_creacion, 
-        modificado_por: historial.modificado_por, 
-        fecha_modificacion: historial.fecha_modificacion
-      };
-      this.indice = i;
-      
-    }
-  
-
 }

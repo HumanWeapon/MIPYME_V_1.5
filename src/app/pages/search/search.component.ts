@@ -21,6 +21,8 @@ import { TipoRequisitoService } from 'src/app/services/mantenimiento/tipoRequisi
 import { EmpresasContactosService } from 'src/app/services/operaciones/empresas-contactos.service';
 import { EmpresasDireccionesService } from 'src/app/services/operaciones/empresas-direcciones.service';
 import { EmpresasProdcutosService } from 'src/app/services/operaciones/empresas-prodcutos.service';
+import { HistoriaBusquedaService } from 'src/app/services/pyme/historia-busqueda.service';
+import { PymeService } from 'src/app/services/pyme/pyme.service';
 import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 
 @Component({
@@ -40,6 +42,7 @@ export class SearchComponent implements OnInit {
   pais: string = '';
   id_pais: number = 0;
   id_producto: number = 0;
+  id_pyme: number = 0;
   ciudad: string = '';
 
   //arrays
@@ -81,30 +84,17 @@ export class SearchComponent implements OnInit {
     private _toastr: ToastrService,
     private _errorService: ErrorService,
     private _opEmpresasProductos: EmpresasProdcutosService,
-    //
-    private _router: Router,
-    private _empresaService: EmpresaService,
-    private _paisService: PaisesService,
-    private _bitacoraService: BitacoraService,
-    private _userService: UsuariosService,
-    private _productoService: ProductosService,
-    private _empresasProductosService: EmpresasProdcutosService,
     private _empresasContactosService: EmpresasContactosService,
     private _empresasDireccionesService: EmpresasDireccionesService,
     private _telefonosService: ContactoTService,
-    private _datePipe: DatePipe,
-    private _categoriaProductos: CategoriaService,
-    private _contactoService: ContactoService,
-    private _tipoContacto: TipoContactoService,
-    private _direccionesService: DireccionesService,
-    private _contactoTService: ContactoTService,
-    private _tipoDireccionService: TipoDireccionService,
-    private _operacionesContactos: EmpresasContactosService,
-    private _tipoRequisitoService: TipoRequisitoService    
+    private _tipoRequisitoService: TipoRequisitoService, 
+    private _historialB: HistoriaBusquedaService,
+    private _pymeService: PymeService
   ){}
 
   ngOnInit(): void {
     this.getOpProductos();
+    this.getIdPyme();
   };
 
   onCategoriaChange(event: any) {
@@ -134,11 +124,28 @@ export class SearchComponent implements OnInit {
     this.idEmpresa = empresa.id_empresa;
     this.nombreEmpresa = empresa.nombre_empresa;
     console.log(empresa);
-    this.getEmpresasContactosPorId()
-    this.getDireccionesEmpresaporID()
-    this.getRequisitosEmpresaPorId()
+    this.getEmpresasContactosPorId();
+    this.getDireccionesEmpresaporID();
+    this.getRequisitosEmpresaPorId();
+    if(this.id_pyme){
+      this.postHistorialBusqueda();
+    }
+    
   }
-
+  getIdPyme(){
+    const idPYME = localStorage.getItem('nombre_pyme');
+    if(idPYME){
+      this._pymeService.getOnePyme(idPYME).subscribe({
+        next: (data) => {
+          console.log(data);
+          this.id_pyme = data.id_pyme;
+        },
+        error: (e: HttpErrorResponse) => {
+          this._errorService.msjError(e);
+        }
+      });
+    }
+  }
   //obtiene los productos mostrados en la lista principal
   getOpProductos(){
     this._opEmpresasProductos.getProductosSearch(this.categoria, this.pais).subscribe({
@@ -293,10 +300,28 @@ export class SearchComponent implements OnInit {
       
       return formattedNumber;
   }
-
-
-
-
-
-
+  postHistorialBusqueda(){
+    const historialBusqueda = {
+      id_historial: 0,
+      id_pyme: this.id_pyme, 
+      id_producto: this.id_producto, 
+      id_pais: this.id_pais, 
+      id_empresa: this.idEmpresa, 
+      descripcion: "BUSQUEDA DE PYME", 
+      creado_por: "APLICACION", 
+      fecha_creacion: new Date().getUTCDay, 
+      modificado_por: "APLICACION", 
+      fecha_modificacion: new Date().getUTCDay, 
+      estado: 1
+    }
+    console.log(historialBusqueda);
+    this._historialB.postHistorialB(historialBusqueda).subscribe({
+      next: (data) => {
+        
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    })
+  }
 }

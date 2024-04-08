@@ -7,6 +7,12 @@ import { Productos } from 'src/app/interfaces/mantenimiento/productos';
 import { ProductosService } from 'src/app/services/mantenimiento/producto.service';
 import { PymeService } from 'src/app/services/pyme/pyme.service';
 import { Pyme } from 'src/app/interfaces/pyme/pyme';
+import { Color, ScaleType } from '@swimlane/ngx-charts';
+import { HistoriaBusquedaService } from 'src/app/services/pyme/historia-busqueda.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ErrorService } from 'src/app/services/error.service';
+import { da } from 'date-fns/locale';
+
 
 @Component({
   selector: 'app-dashboard',
@@ -23,19 +29,76 @@ export class DashboardComponent implements OnInit {
   productos: Productos[] = [];
   pymes: Pyme[] = [];
   empresas: Empresa[] = [];
+  
+
+  single:any = [];
+  view: [number, number] = [700, 400];
+  // options
+  showXAxis: boolean = true;
+  showYAxis: boolean = true;
+  gradient: boolean = false;
+  showLegend: boolean = true;
+  legendLabel: string = 'Color';
+  showXAxisLabel: boolean = true;
+  yAxisLabel: string = 'Producto';
+  showYAxisLabel: boolean = true;
+  xAxisLabel: string = 'Popularidad';
+
+  colorScheme: Color = {
+    domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA'],
+    name: 'producto',
+    selectable: false,
+    group: ScaleType.Ordinal,
+  };
+  
 
   constructor(
     private empresaService: EmpresaService,
     private usuariosService: UsuariosService,
     private productosService: ProductosService,
-    private pymesService: PymeService) {}
+    private pymesService: PymeService,
+    private _historialService: HistoriaBusquedaService,
+    private _errorService: ErrorService
+  ) {
+
+    }
 
   ngOnInit() {
     this.actualizarConteousuarios();
     this.actualizarConteoProductos();
     this.actualizarConteoEmpresas();
     this.actualizarConteoPymes();
+    this.getTop10Busquedas();
   }
+
+
+
+ /***********************CONTEO EMPRESAS***************************/
+ onSelect(data: any): void {
+  console.log('Item clicked', JSON.parse(JSON.stringify(data)));
+}
+
+onActivate(data: any): void {
+  console.log('Activate', JSON.parse(JSON.stringify(data)));
+}
+
+onDeactivate(data: any): void {
+  console.log('Deactivate', JSON.parse(JSON.stringify(data)));
+}
+getTop10Busquedas(){
+  this._historialService.getTop10Busquedas().subscribe({
+    next: (data) => {
+      this.single = data
+      console.log(data);
+      console.log(this.single);
+    },
+    error: (e: HttpErrorResponse) => {
+      this._errorService.msjError(e);
+    }
+  })
+}
+/******************************************************************/
+
 
 /***********************CONTEO EMPRESAS***************************/
   private actualizarConteoEmpresas() {

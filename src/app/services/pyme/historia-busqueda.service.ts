@@ -30,4 +30,9 @@ export class HistoriaBusquedaService {
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
     return this.http.post<any>(`${this.myAppUrl}${this.myApiUrl}/postHistorialB`, historial, { headers: headers })
   }
+  getTop10Busquedas(): Observable<any[]> {
+    const token = localStorage.getItem('token')
+    const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
+    return this.http.get<any[]>(`${this.myAppUrl}${this.myApiUrl}/getTop10Busquedas`,{ headers: headers })
+  }
 }
