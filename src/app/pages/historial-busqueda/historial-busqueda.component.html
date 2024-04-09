@@ -4,7 +4,9 @@
           <div class="col-12">
               <div class="card">
                   <div class="card-header">
-                      <h1>Historial de Búsquedas PYME</h1>
+                      <h3>Historial</h3>
+                      <button type="button" class="btn btn-primary custom-print-button btn-primary" title="Generar el Reporte" data-toggle="modal" data-target="#PDFHB">
+                        <i class="fas fa-print"></i> Generar Reporte</button>
                   </div>
                   <!-- /.card-header -->
                   <div class="card-body">
@@ -46,3 +48,70 @@
       </div>
   </div>
 </section>
+
+
+
+<!-- Form Ver PDF-->
+<div class="modal fade" id="PDFHB">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+  
+        <!-- Cabecera del modal -->
+        <div class="modal-header" style="display: flex; align-items: center;">
+          <div style="flex: 1; text-align: left; margin-right: 20px;">
+              <h1>Utilidad Mi Pyme</h1>
+              <h4>Reporte de Pymes</h4> 
+              <!-- Puedes agregar más detalles del reporte aquí si es necesario -->
+              <p>Fecha: {{ getDate() }}</p>
+              <p>Usuario {{getUser.usuario}}</p>
+          </div>
+  
+          <div style="flex: 0;">
+              <img src="\assets\dist\img\pym.png" alt="Logo de Mi Pyme" style="width: 200px; height: auto;">
+          </div>
+        </div>
+        
+        <!-- Pie del modal -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary customn-print-button btn-danger" (click)="generatePDF()">
+            <i class="fas fa-file-pdf"></i>  Generar PDF</button>
+            <button type="button" class="btn btn-secondary customn-print-button btn-success" (click)="generateExcel()">
+              <i class="fas fa-file-excel"></i>  Generar Excel</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+        </div>
+  
+      <!-- Contenido del modal -->
+      <div class="modal-body">
+        <!-- Aquí puedes colocar tu DataTable o cualquier otro contenido que desees mostrar -->
+        <table class="table table-striped ">
+          <thead class="thead-dark">
+            <tr>
+                            <th>ID</th>
+                            <th>ID PYME</th>
+                            <th>PYME</th>
+                            <th>ID PRODUCTO</th>
+                            <th>PRODUCTO</th>
+                            <th>ID PAIS</th>
+                            <th>PAIS</th>
+                            <th>ID EMPRESA</th>
+                            <th>EMPRESA</th>
+                            <th>FECHA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let historial of listHistB; let i = index">
+                            <td>{{ historial.id_historial }}</td>
+                            <td>{{ historial.id_pyme }}</td>
+                            <td>{{ historial.nombre_pyme }}</td>
+                            <td>{{ historial.id_producto }}</td>
+                            <td>{{ historial.producto }}</td>
+                            <td>{{ historial.id_pais }}</td>
+                            <td>{{ historial.pais }}</td>
+                            <td>{{ historial.id_empresa }}</td>
+                            <td>{{ historial.nombre_empresa }}</td>
+                            <td>{{ historial.fecha_creacion | date: 'yyyy-MM-dd'  }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
