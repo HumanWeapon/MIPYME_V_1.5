@@ -37,10 +37,11 @@ import { TipoDireccionComponent } from './mantenimiento/tipo-direccion/tipo-dire
 import { HistorialBusquedaComponent } from './historial-busqueda/historial-busqueda.component';
 import { PerfilPymeComponent } from './perfil_pyme/perfil_pyme.component';
 import { HistorialPymeComponent } from './historial-pyme/historial-pyme.component';
+import { AuthGuard } from '../utils/auth.guard';
 
 
 const routes: Routes = [
-  {path:'dashboard',component:PagesComponent, 
+  {path:'dashboard',component:PagesComponent, canActivate: [AuthGuard],
   children:[
     //RUTAS DEL SIDEBAR
     //ABC modulo seguridad.
@@ -70,7 +71,7 @@ const routes: Routes = [
     { path: 'tipo_direccion', component:TipoDireccionComponent, data:{titulo: 'Tipos de direcciones'}},
     { path: 'tipo_requisito', component:TipoRequisitosComponent, data:{titulo: 'Requisitos de Exportacion'}},
     
-    { path: 'dashboard', component: DashboardComponent, data:{titulo: 'Dashboard'}},
+    { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard],  data:{titulo: 'Dashboard'}},
     { path: 'perfil', component: PerfilComponent, data:{titulo: 'Mi Perfil'}},
     { path: 'perfil_pyme', component: PerfilPymeComponent, data:{titulo: 'Mi Perfil Pyme'}},
     { path: 'search', component: SearchComponent},

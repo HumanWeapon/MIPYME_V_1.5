@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { EmpresaService } from '../../services/empresa/empresa.service'
 import { Empresa } from 'src/app/interfaces/empresa/empresas';
 import { Usuario } from 'src/app/interfaces/seguridad/usuario';
@@ -10,9 +10,6 @@ import { Pyme } from 'src/app/interfaces/pyme/pyme';
 import { HistoriaBusquedaService } from 'src/app/services/pyme/historia-busqueda.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ErrorService } from 'src/app/services/error.service';
-import { da } from 'date-fns/locale';
-import autoTable from 'jspdf-autotable';
-
 
 @Component({
   selector: 'app-dashboard',
@@ -40,7 +37,7 @@ export class DashboardComponent implements OnInit {
     private _errorService: ErrorService
   ) {
 
-    }
+  }
 
   ngOnInit() {
     this.actualizarConteousuarios();
