@@ -17,7 +17,13 @@ export class EmpresasContactosService {
   consultarContactosPorId(id: number): Observable<any[]> {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.get<any[]>(`${this.apiUrl}/consultarContactosActivosporId/${id}`, { headers });
+    return this.http.get<any[]>(`${this.apiUrl}/consultarContactosporId/${id}`, { headers });
+  }
+  //consulta los contactos Activos registrados de una empresa por el id
+  consultarContactosActivosPorId(id: number): Observable<any[]> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<any[]>(`${this.apiUrl}/consultarContactosActivosPorId/${id}`, { headers });
   }
   //consulta los contactos registrados de una empresa por el id
   ReporteContactos(): Observable<any[]> {

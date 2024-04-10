@@ -17,5 +17,11 @@ export class EmpresasDireccionesService {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.get<any[]>(`${this.apiUrl}/getDireccionesEmpresaporID/${id}`, { headers });
   }
+  //consulta las direcciones activas registrados de una empresa por el id
+  getDireccionesEmpresaporActivasID(id: number): Observable<any[]> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<any[]>(`${this.apiUrl}/getDireccionesEmpresaporActivasID/${id}`, { headers });
+  }
 
 }

@@ -80,7 +80,7 @@
               <form (ngSubmit)="agregarNuevoParametro()">
                   <div class="form-group">
                       <label for="nuevoParametro">Parametro:</label>
-                      <input type="text" [(ngModel)]="nuevoParametro.parametro"name="nuevoParametro.parametro" (input)="eliminarCaracteresEspeciales($event, 'parametro')"  class="form-control" id="nuevoParametro" placeholder="Parametro" (input)="convertirAMayusculas($event, 'parametro')">
+                      <input type="text" [(ngModel)]="nuevoParametro.parametro"name="nuevoParametro.parametro" (input)="eliminarCaracteresEspeciales($event, 'parametro')" (input)="convertirAMayusculas($event, 'parametro')" class="form-control" id="nuevoParametro" placeholder="Parametro">
                   </div>
                   <div class="form-group">
                       <label for="nuevoParametro">Valor:</label>
@@ -112,11 +112,11 @@
               <form>
                 <div class="form-group">
                     <label for="parametroEditando">Parametro:</label>
-                    <input type="text" [(ngModel)]="parametroEditando.parametro" (input)="eliminarCaracteresEspeciales($event, 'parametro')" name="parametroEditando.parametro"  class="form-control" id="editarParametro" placeholder="Parametro" (input)="convertirAMayusculas($event, 'parametro')">
+                    <input type="text" [(ngModel)]="parametroEditando.parametro" (input)="eliminarCaracteresEspeciales($event, 'parametro')" (input)="convertirAMayusculas($event, 'parametro')"  name="parametroEditando.parametro"  class="form-control" id="editarParametro" placeholder="Parametro">
                 </div>
                 <div class="form-group">
                     <label for="parametroEditando">Valor:</label>
-                    <input type="text" [(ngModel)]="parametroEditando.valor" (input)="eliminarCaracteresEspeciales($event, 'valor')" name="parametroEditando.valor" class="form-control" id="editarValor" placeholder="Valor" (input)="convertirAMayusculas($event, 'valor')">
+                    <input type="text" [(ngModel)]="parametroEditando.valor" (input)="eliminarCaracteresEspeciales($event, 'valor')" name="parametroEditando.valor" class="form-control" id="editarValor" placeholder="Valor">
                 </div>
               </form>
           </div>

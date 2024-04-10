@@ -1,29 +1,14 @@
-import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { da } from 'date-fns/locale';
 import { ToastrService } from 'ngx-toastr';
-import { Subject } from 'rxjs';
-import { ContactoTelefono } from 'src/app/interfaces/contacto/contactoTelefono';
-import { BitacoraService } from 'src/app/services/administracion/bitacora.service';
-import { ContactoService } from 'src/app/services/contacto/contacto.service';
 import { ContactoTService } from 'src/app/services/contacto/contactoTelefono.service';
-import { DireccionesService } from 'src/app/services/contacto/direcciones.service';
-import { EmpresaService } from 'src/app/services/empresa/empresa.service';
-import { PaisesService } from 'src/app/services/empresa/paises.service';
 import { ErrorService } from 'src/app/services/error.service';
-import { CategoriaService } from 'src/app/services/mantenimiento/categoria.service';
-import { ProductosService } from 'src/app/services/mantenimiento/producto.service';
-import { TipoContactoService } from 'src/app/services/mantenimiento/tipoContacto.service';
-import { TipoDireccionService } from 'src/app/services/mantenimiento/tipoDireccion.service';
 import { TipoRequisitoService } from 'src/app/services/mantenimiento/tipoRequisito.service';
 import { EmpresasContactosService } from 'src/app/services/operaciones/empresas-contactos.service';
 import { EmpresasDireccionesService } from 'src/app/services/operaciones/empresas-direcciones.service';
 import { EmpresasProdcutosService } from 'src/app/services/operaciones/empresas-prodcutos.service';
 import { HistoriaBusquedaService } from 'src/app/services/pyme/historia-busqueda.service';
 import { PymeService } from 'src/app/services/pyme/pyme.service';
-import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 
 @Component({
   selector: 'app-search',
@@ -185,9 +170,9 @@ export class SearchComponent implements OnInit {
       }
     });
   }
-    //Obtiene todos los contactos registrados a una empresa
+    //Obtiene todos los contactos activos registrados a una empresa
   getEmpresasContactosPorId() {
-    this._empresasContactosService.consultarContactosPorId(this.idEmpresa).subscribe({
+    this._empresasContactosService.consultarContactosActivosPorId(this.idEmpresa).subscribe({
       next: (data: any) => {
         this.productosContactos = data;
         this.todosLosContactos = data;
@@ -197,9 +182,9 @@ export class SearchComponent implements OnInit {
       }
     });
   }
-  //Obtiene todos los contactos registrados a una empresa
+  //Obtiene todos los contactos activos registrados a una empresa
   getDireccionesEmpresaporID() {
-    this._empresasDireccionesService.consultarDireccionesPorId(this.idEmpresa).subscribe({
+    this._empresasDireccionesService.getDireccionesEmpresaporActivasID(this.idEmpresa).subscribe({
       next: (data: any) => {
         this.direccionesEmpresa = data;
         this.todasLasDirecciones = data;
@@ -266,7 +251,7 @@ export class SearchComponent implements OnInit {
   buscarTelefonos(id_contacto: any){
     // Asignar el id_contacto a la variable de clase
   this.idContacto = id_contacto;
-    this._telefonosService.telefonosdeContactosPorId(id_contacto).subscribe({
+    this._telefonosService.telefonosActivosdeContactosPorId(id_contacto).subscribe({
       next: (data) =>{
         this.telefonosContactos = data;
       },

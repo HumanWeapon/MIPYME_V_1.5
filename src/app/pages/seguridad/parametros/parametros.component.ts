@@ -107,11 +107,12 @@ export class ParametrosComponent implements OnInit{
   eliminarCaracteresEspeciales(event: any, field: string) {
     setTimeout(() => {
       let inputValue = event.target.value;
-  
-      // Elimina caracteres especiales dependiendo del campo
-      if (field === 'parametro' || field === 'valor') {
-        inputValue = inputValue.replace(/[^a-zA-ZñÑ0-9\s]/g, ''); // Solo permite letras y números
-      }
+      // Elimina espacios en blanco al inicio y al final
+      inputValue = inputValue.trim();
+   
+      // Elimina espacios en blanco al inicio y al final, permitiendo espacios entre letras
+      inputValue = inputValue.replace(/^\s+|\s+$/g, '').replace(/\s+/g, ' ');
+   
       event.target.value = inputValue;
     });
   }
@@ -289,7 +290,7 @@ generateExcel() {
     const fechaFormateada = this._datePipe.transform(fechaActual, 'yyyy-MM-dd');
     const nuevoParametro = {
       id_parametro: 0,
-      parametro: this.nuevoParametro.parametro,
+      parametro: this.nuevoParametro.parametro.trim(),
       estado_parametro: 1,
       valor: this.nuevoParametro.valor,
       id_usuario: 0,
