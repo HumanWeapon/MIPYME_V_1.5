@@ -178,7 +178,7 @@ getDate(): string {
 /*****************************************************************************************************/
 
 generateExcel() {
-  const headers = ['ID', 'Nombre Pyme', 'RTN', 'Creador', 'Fecha Creación', 'Ultima Conexión', 'Contacto', 'Correo', 'Teléfono', 'Estado'];
+  const headers = ['ID', 'Nombre Pyme', 'RTN', 'Contacto', 'Correo', 'Teléfono', 'Estado'];
   const data: any[][] = [];
 
   // Recorre los datos de tu lista de Pymes y agrégalos a la matriz 'data'
@@ -187,9 +187,6 @@ generateExcel() {
       pyme.id_pyme,
       pyme.nombre_pyme,
       pyme.rtn,
-      pyme.creado_por,
-      pyme.fecha_creacion,
-      pyme.fecha_ultima_conexion,
       pyme.nombre_contacto,
       pyme.correo_contacto,
       pyme.telefono_contacto,
@@ -234,7 +231,7 @@ generatePDF() {
   const { jsPDF } = require("jspdf");
   const doc = new jsPDF();
   const data: any[][] = [];
-  const headers = ['ID Pyme', 'Nombre Pyme', 'RTN', 'Creador', 'Fecha Creación', 'Ultima Conexión', 'Contacto', 'Correo', 'Teléfono', 'Estado'];
+  const headers = ['ID Pyme', 'Nombre Pyme', 'RTN', 'Contacto', 'Correo', 'Teléfono', 'Estado'];
 
   // Agregar el logo al PDF
   const logoImg = new Image();
@@ -256,9 +253,6 @@ generatePDF() {
         pyme.id_pyme,
         pyme.nombre_pyme,
         pyme.rtn,
-        pyme.creado_por,
-        pyme.fecha_creacion,
-        pyme.fecha_ultima_conexion,
         pyme.nombre_contacto,
         pyme.correo_contacto,
         pyme.telefono_contacto,

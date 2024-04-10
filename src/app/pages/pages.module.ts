@@ -42,7 +42,6 @@ import { HistorialBusquedaComponent } from './historial-busqueda/historial-busqu
 import { PerfilPymeComponent } from './perfil_pyme/perfil_pyme.component';
 import { HistorialPymeComponent } from './historial-pyme/historial-pyme.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgApexchartsModule } from 'ng-apexcharts';
 
 
 @NgModule({
@@ -92,7 +91,6 @@ import { NgApexchartsModule } from 'ng-apexcharts';
     FormsModule,
     NgxPaginationModule,
     BrowserAnimationsModule,
-    NgApexchartsModule
   ],
   exports:[
     PagesComponent

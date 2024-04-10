@@ -51,7 +51,7 @@ const routes: Routes = [
     { path: 'permisos', component: PermisosComponent, data:{titulo: 'Permisos'}},
     { path: 'roles', component: RolesComponent, data:{titulo: 'Roles'}},
     { path: 'preguntas_usuario', component: PreguntasComponent, data:{titulo: 'Preguntas'}},
-    { path: 'parametros', component: ParametrosComponent, data:{titulo: 'Parametros'}},
+    { path: 'parametros', component: ParametrosComponent, data:{titulo: 'Parámetros'}},
 
    //ABC modulo administracion.
     { path: 'administracion', component: AdministracionComponent, data:{titulo: 'COMPONENTES DE ADMINISTRACION'}},
@@ -62,14 +62,14 @@ const routes: Routes = [
     //ABC modulo mantenimiento.
     { path: 'mantenimiento', component: MantenimientoComponent, data:{titulo: 'COMPONENTES DE MANTENIMIENTO'}},
     { path: 'paises', component: PaisesComponent, data:{titulo: 'Países'}},
-    { path: 'ciudades', component:CiudadesComponent, data:{titulo: 'ciudades'}},
+    { path: 'ciudades', component:CiudadesComponent, data:{titulo: 'Ciudades'}},
     { path: 'Categoria_productos', component:CategoriaProductosComponent, data:{titulo: 'Categorías de productos'}},
     { path: 'productos', component:ProductosComponent, data:{titulo: 'Productos'}},
     { path: 'tipo_telefono', component:TipoTelefonoComponent, data:{titulo: 'Tipos de teléfono'}},
     { path: 'tipo_contacto', component:TipoContactoComponent, data:{titulo: 'Tipos de Contacto'}},
     { path: 'tipo_empresa', component:TipoEmpresaComponent, data:{titulo: 'Tipos de Empresa'}},
     { path: 'tipo_direccion', component:TipoDireccionComponent, data:{titulo: 'Tipos de direcciones'}},
-    { path: 'tipo_requisito', component:TipoRequisitosComponent, data:{titulo: 'Requisitos de Exportacion'}},
+    { path: 'tipo_requisito', component:TipoRequisitosComponent, data:{titulo: 'Requisitos de Exportación'}},
     
     { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard],  data:{titulo: 'Dashboard'}},
     { path: 'perfil', component: PerfilComponent, data:{titulo: 'Mi Perfil'}},
