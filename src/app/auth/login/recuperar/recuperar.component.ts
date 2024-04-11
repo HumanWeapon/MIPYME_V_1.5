@@ -57,11 +57,11 @@ export class RecuperarComponent implements OnInit{
     }
   
     // Validar aquí los criterios de seguridad de la contraseña si es necesario
-  
     this._userService.cambiarContrasena(this.user).subscribe(
       (data) => {
         this.toastr.success('¡Contraseña actualizada con éxito!', 'Éxito');
         this.router.navigate(['/login']);
+        localStorage.clear();
       },
       (error) => {
         if (error.status === 400) {

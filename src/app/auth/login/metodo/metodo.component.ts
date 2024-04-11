@@ -52,7 +52,7 @@ export class MetodoComponent {
         // Si se encontró el usuario, continuar con el proceso de recuperación de contraseña
         this.usuario = usuario;
         this._usuarioService.usuario = this.usuario;
-  
+        localStorage.setItem('usuario', usuario.usuario)
         // Aquí puedes acceder a this.selectedOption para determinar cuál opción se seleccionó
         if (this.selectedOption === 'correo') {
           this.navigateCorreo(usuario);
