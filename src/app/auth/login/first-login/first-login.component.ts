@@ -70,7 +70,7 @@ export class FirstLoginComponent {
   getParametros(){
     this._parametrosService.getParametroPreguntasdeSeguridad().subscribe({
       next: (data) => {
-        this.parametroPreguntas = data;
+        this.parametroPreguntas = data.valor;
       },
       error: (e: HttpErrorResponse) => {
         this._errorService.msjError(e);
