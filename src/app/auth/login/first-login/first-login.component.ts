@@ -1,10 +1,14 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { data } from 'jquery';
 import { ToastrService } from 'ngx-toastr';
 import { Preguntas } from 'src/app/interfaces/seguridad/preguntas';
 import { Preguntas_Usuario } from 'src/app/interfaces/seguridad/preguntasUsuario';
 import { Usuario } from 'src/app/interfaces/seguridad/usuario';
+import { ErrorService } from 'src/app/services/error.service';
+import { ParametrosService } from 'src/app/services/seguridad/parametros.service';
 import { PreguntasUsuarioService } from 'src/app/services/seguridad/preguntas-usuario.service';
 import { PreguntasService } from 'src/app/services/seguridad/preguntas.service';
 import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
@@ -15,6 +19,7 @@ import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
   styleUrls: ['./first-login.component.css']
 })
 export class FirstLoginComponent {
+  parametroPreguntas: any;
   usuario: Usuario = {
     id_usuario: 0,
     creado_por: '',
@@ -50,16 +55,29 @@ export class FirstLoginComponent {
     private _preguntasUsuario: PreguntasUsuarioService,
     private router: Router,
     private _usuarioService: UsuariosService,
-    private _preguntasService: PreguntasService
+    private _preguntasService: PreguntasService,
+    private _parametrosService: ParametrosService,
+    private _errorService: ErrorService
     ){
       
   }
 
   ngOnInit(): void {
-
+    this.getParametros();
     this.getPreguntas();
     this.getUsuario();
   }
+  getParametros(){
+    this._parametrosService.getParametroPreguntasdeSeguridad().subscribe({
+      next: (data) => {
+        this.parametroPreguntas = data.valor;
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
+  }
+
   getPreguntas(){
     this._preguntasService.getAllPreguntas().subscribe(data => {
       this.preguntas = data;

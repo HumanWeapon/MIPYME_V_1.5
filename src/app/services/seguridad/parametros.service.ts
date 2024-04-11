@@ -27,6 +27,10 @@ export class ParametrosService {
       return this.http.post<Parametros>(`${this.myAppUrl}${this.myApiUrl}/postParametro`, parametro, { headers: headers })
   }
 
+  getParametroPreguntasdeSeguridad(): Observable<Parametros> {
+    return this.http.get<Parametros>(`${this.myAppUrl}${this.myApiUrl}/getParametroPreguntasdeSeguridad`)
+  }
+
    getParametro(parametros: Parametros): Observable<Parametros> {
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
