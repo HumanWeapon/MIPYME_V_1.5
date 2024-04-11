@@ -55,7 +55,6 @@ export class FirstLoginComponent {
     modificado_por: '',
     fecha_modificacion: new Date()
   }
-  preguntas: Preguntas[] = [];
   idPregunta: number[] = [];
   respuesta: string[] = [];
 
