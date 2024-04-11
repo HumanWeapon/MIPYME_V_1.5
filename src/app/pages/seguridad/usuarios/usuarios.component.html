@@ -37,8 +37,8 @@
                     <td>
                         <ng-container *ngIf="user.estado_usuario === 1">ACTIVO</ng-container>
                         <ng-container *ngIf="user.estado_usuario === 2">INACTIVO</ng-container>
-                        <ng-container *ngIf="user.estado_usuario === 3">VENCIDO</ng-container>
                         <ng-container *ngIf="user.estado_usuario === 3">BLOQUEADO</ng-container>
+                        <ng-container *ngIf="user.estado_usuario === 4">VENCIDO</ng-container>
                     </td>
                     <td class="text-center">
                       <div class="btn-group">
@@ -239,7 +239,7 @@
 <div class="modal fade" id="VistaUser">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
-      <div class="modal-header bg-primary">
+      <div class="modal-header" style="background-color: #1254a1;">
         <h4 class="modal-title text-white">Datos Adicionales del Usuario</h4>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
@@ -247,11 +247,13 @@
       </div>
       <div class="modal-body">
         <div *ngIf="usuarioSeleccionado">
-          <table class="table table-bordered table-striped" style="width: 100%;">
-            <thead class="bg-primary text-white"> <!-- Cambiar el color de fondo del encabezado de la tabla a azul -->
+          <table class="table table-responsive p-0" style="width: 100%;">
+            <thead style="background-color: #1254a1; color: white; font-size:small;"> <!-- Cambiar el color de fondo del encabezado de la tabla a azul -->
               <tr>
                 <th>ID</th>
                 <th>USUARIO</th>
+                <th>NOMBRE</th>
+                <th>CORREO</th>
                 <th>CREADOR</th>
                 <th>FECHA CREACIÓN</th>
                 <th>MODIFICADOR</th>
@@ -264,6 +266,8 @@
               <tr>
                 <td>{{ usuarioSeleccionado.id_usuario }}</td>
                 <td>{{ usuarioSeleccionado.usuario }}</td>
+                <td>{{ usuarioSeleccionado.nombre_usuario | uppercase }}</td>
+                <td>{{ usuarioSeleccionado.correo_electronico | uppercase }}</td>
                 <td>{{ usuarioSeleccionado.creado_por | uppercase }}</td>
                 <td>{{ usuarioSeleccionado.fecha_creacion | date: 'yyyy-MM-dd' }}</td>
                 <td>{{ usuarioSeleccionado.modificado_por | uppercase }}</td>
