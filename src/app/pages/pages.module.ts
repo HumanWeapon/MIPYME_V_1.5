@@ -42,6 +42,7 @@ import { HistorialBusquedaComponent } from './historial-busqueda/historial-busqu
 import { PerfilPymeComponent } from './perfil_pyme/perfil_pyme.component';
 import { HistorialPymeComponent } from './historial-pyme/historial-pyme.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ReactiveFormsModule } from '@angular/forms'; // Asegúrate de importar ReactiveFormsModule
 
 
 @NgModule({
@@ -81,7 +82,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     TipoDireccionComponent,
     HistorialBusquedaComponent,
     PerfilPymeComponent,
-    HistorialPymeComponent
+    HistorialPymeComponent,
   ],
   imports: [
     CommonModule,
@@ -91,6 +92,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     FormsModule,
     NgxPaginationModule,
     BrowserAnimationsModule,
+    ReactiveFormsModule,
   ],
   exports:[
     PagesComponent

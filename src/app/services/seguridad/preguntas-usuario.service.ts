@@ -22,6 +22,12 @@ export class PreguntasUsuarioService {
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
     return this.http.post<Preguntas_Usuario[]>(`${this.myAppUrl}${this.myApiUrl}/getPreguntasusuario`, id_usuario, { headers: headers })
   }
+
+  getPreguntasUsuario1(): Observable<Preguntas_Usuario[]> {
+    const token = localStorage.getItem('token')
+    const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
+    return this.http.post<Preguntas_Usuario[]>(`${this.myAppUrl}${this.myApiUrl}/getPreguntasusuario`,{ headers: headers })
+  }
   validarRespuesta(respuesta: Preguntas_Usuario): Observable<Preguntas_Usuario[]>{
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)

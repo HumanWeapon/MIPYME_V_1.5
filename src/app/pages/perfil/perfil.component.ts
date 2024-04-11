@@ -10,6 +10,7 @@ import { RolesService } from 'src/app/services/seguridad/roles.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { PreguntasService } from 'src/app/services/seguridad/preguntas.service';
+import { FormGroup, Validators } from '@angular/forms';
 
 
 
@@ -20,6 +21,11 @@ import { PreguntasService } from 'src/app/services/seguridad/preguntas.service';
 })
 
 export class PerfilComponent  implements OnInit{
+
+  idPregunta: number[] = [];
+  respuesta: string[] = [];
+  preguntasForm!: FormGroup;
+  preguntasUsuario1: any[] = [];
 
   contrasenaActual: string = '';
   nuevaContrasena: string = '';
@@ -100,6 +106,7 @@ export class PerfilComponent  implements OnInit{
     modificado_por: '', 
     fecha_modificacion: new Date(),
   };
+  formBuilder: any;
 
   constructor(
     private _preguntasUsuarioService: PreguntasUsuarioService,
@@ -150,6 +157,18 @@ export class PerfilComponent  implements OnInit{
       // Almacena una copia de las preguntas originales antes de filtrarlas
       this.conbinarPreguntas();
     });
+  }
+
+  getpregunta(){
+    this._preguntasUsuarioService.getPreguntasUsuario1().subscribe(
+      (data: any) => {
+        this.preguntasUsuario = data; // Asigna las preguntas recuperadas a la propiedad preguntasUsuario
+        this.initForm();
+      },
+      (error) => {
+        console.error('Error al obtener las preguntas del usuario:', error);
+      }
+    );
   }
 
   getPreguntasUsuario() {
@@ -548,6 +567,24 @@ guardarPreguntas3() {
   }
 }
 
+initForm(): void {
+  // Inicializa el formulario reactivo con las preguntas del usuario
+  this.preguntasForm = this.formBuilder.group({
+    pregunta1: [this.preguntasUsuario1[0]?.pregunta.toUpperCase(), Validators.required],
+    pregunta2: [this.preguntasUsuario1[1]?.pregunta.toUpperCase(), Validators.required],
+    pregunta3: [this.preguntasUsuario1[2]?.pregunta.toUpperCase(), Validators.required]
+  });
+}
 
+guardarPreguntas(): void {
+  // Lógica para guardar las preguntas actualizadas
+  const preguntasActualizadas = {
+    pregunta1: this.preguntasForm.value.pregunta1,
+    pregunta2: this.preguntasForm.value.pregunta2,
+    pregunta3: this.preguntasForm.value.pregunta3
+  };
+  console.log('Preguntas actualizadas:', preguntasActualizadas);
+  // Llama al método del servicio para guardar las preguntas actualizadas
+}
 
 }
