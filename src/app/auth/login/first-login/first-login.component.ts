@@ -13,6 +13,7 @@ import { PreguntasUsuarioService } from 'src/app/services/seguridad/preguntas-us
 import { PreguntasService } from 'src/app/services/seguridad/preguntas.service';
 import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 
+
 @Component({
   selector: 'app-first-login',
   templateUrl: './first-login.component.html',
@@ -20,6 +21,14 @@ import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 })
 export class FirstLoginComponent {
   parametroPreguntas: any;
+
+  preguntaForm: FormGroup | undefined;
+  preguntas: any[] = []; // Asegúrate de inicializar preguntas como un arreglo vacío
+
+  currentIndex = 0;
+  submitted = false;
+
+  
   usuario: Usuario = {
     id_usuario: 0,
     creado_por: '',
@@ -64,6 +73,9 @@ export class FirstLoginComponent {
 
   ngOnInit(): void {
     this.getParametros();
+
+
+    this.getPreguntas();
     this.getPreguntas();
     this.getUsuario();
   }
