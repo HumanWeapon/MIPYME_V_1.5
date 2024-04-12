@@ -50,7 +50,7 @@ export class TipoRequisitoService {
    activarTipoRequisito(tipoRequisito: TipoRequisito): Observable<TipoRequisito>{
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.post<TipoRequisito>(`${this.myAppUrl}${this.myApiUrl}//activateRequisito`, tipoRequisito, { headers: headers })
+    return this.http.post<TipoRequisito>(`${this.myAppUrl}${this.myApiUrl}/activateRequisito`, tipoRequisito, { headers: headers })
    }
 
    editarTipoRequisito(tipoRequisito: TipoRequisito): Observable<any> {

@@ -16,7 +16,6 @@
                           <th>Id</th>
                           <th>Requisito</th>
                           <th>Descripción</th>
-                          <th>Empresa</th>
                           <th>Pais</th>
                           <th>Creado</th>
                           <th>Fecha Creación</th>
@@ -31,7 +30,6 @@
                           <td>{{ TRequi.id_tipo_requisito }}</td>
                           <td>{{ TRequi.tipo_requisito | uppercase }}</td>
                           <td>{{ TRequi.descripcion | uppercase }}</td>
-                          <td>{{ TRequi.empresas.nombre_empresa | uppercase }}</td>
                           <td>{{ TRequi.paises.pais | uppercase }}</td>
                           <td>{{ TRequi.creado_por | uppercase }}</td>
                           <td>{{ TRequi.fecha_creacion | date: 'yyyy-MM-dd' }}</td>
@@ -171,24 +169,34 @@
   <div class="modal-body">
     <!-- Aquí puedes colocar tu DataTable o cualquier otro contenido que desees mostrar -->
     <table class="table table-striped">
-      <thead class="thead-dark">
+      <thead>
         <tr>
-          <th>ID</th>
+          <th>Id</th>
           <th>Requisito</th>
-          <th>Descripcion</th>
-          <th>Creador</th>
+          <th>Descripción</th>
+          <th>Pais</th>
+          <th>Creado</th>
           <th>Fecha Creación</th>
+          <th>Modificado</th>
+          <th>Fecha Modificación</th>
           <th>Estado</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let TRequi of listTipoR; let i = index">
+        <tr *ngFor="let TRequi of requisitosAllPaisesEmpresas; let i = index">
           <td>{{ TRequi.id_tipo_requisito }}</td>
-          <td>{{ TRequi.tipo_requisito }}</td>
-          <td>{{ TRequi.descripcion }}</td>
-          <td>{{ TRequi.creado_por}}</td>
-          <td>{{ TRequi.fecha_creacion }}</td>
-          <td>{{ getEstadoText(TRequi.estado) }}</td>
+          <td>{{ TRequi.tipo_requisito | uppercase }}</td>
+          <td>{{ TRequi.descripcion | uppercase }}</td>
+          <td>{{ TRequi.paises.pais | uppercase }}</td>
+          <td>{{ TRequi.creado_por | uppercase }}</td>
+          <td>{{ TRequi.fecha_creacion | date: 'yyyy-MM-dd' }}</td>
+          <td>{{ TRequi.modificado_por | uppercase}}</td>
+          <td>{{ TRequi.fecha_modificacion | date: 'yyyy-MM-dd' }}</td>
+          <td>
+            <ng-container *ngIf="TRequi.estado === 1">ACTIVO</ng-container>
+            <ng-container *ngIf="TRequi.estado === 2">INACTIVO</ng-container>
+            
+          </td>
         </tr>
       </tbody>
     </table>
@@ -222,24 +230,33 @@
   <div class="modal-body">
     <!-- Aquí puedes colocar tu DataTable o cualquier otro contenido que desees mostrar -->
     <table class="table table-striped">
-      <thead class="thead-dark">
+      <thead>
         <tr>
-          <th>ID</th>
+          <th>Id</th>
           <th>Requisito</th>
-          <th>Descripcion</th>
-          <th>Creador</th>
+          <th>Descripción</th>
+          <th>Pais</th>
+          <th>Creado</th>
           <th>Fecha Creación</th>
+          <th>Modificado</th>
+          <th>Fecha Modificación</th>
           <th>Estado</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let TRequi of listTipoR; let i = index">
+        <tr *ngFor="let TRequi of requisitosAllPaisesEmpresas; let i = index">
           <td>{{ TRequi.id_tipo_requisito }}</td>
-          <td>{{ TRequi.tipo_requisito }}</td>
-          <td>{{ TRequi.descripcion }}</td>
-          <td>{{ TRequi.creado_por}}</td>
-          <td>{{ TRequi.fecha_creacion }}</td>
-          <td>{{ getEstadoText(TRequi.estado) }}</td>
+          <td>{{ TRequi.tipo_requisito | uppercase }}</td>
+          <td>{{ TRequi.descripcion | uppercase }}</td>
+          <td>{{ TRequi.paises.pais | uppercase }}</td>
+          <td>{{ TRequi.creado_por | uppercase }}</td>
+          <td>{{ TRequi.fecha_creacion | date: 'yyyy-MM-dd' }}</td>
+          <td>{{ TRequi.modificado_por | uppercase}}</td>
+          <td>{{ TRequi.fecha_modificacion | date: 'yyyy-MM-dd' }}</td>
+          <td>
+            <ng-container *ngIf="TRequi.estado === 1">ACTIVO</ng-container>
+            <ng-container *ngIf="TRequi.estado === 2">INACTIVO</ng-container>
+          </td>
         </tr>
       </tbody>
     </table>

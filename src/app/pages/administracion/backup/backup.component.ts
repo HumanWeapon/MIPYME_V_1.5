@@ -2,6 +2,9 @@
 import { Component } from '@angular/core';
 import { BackupService } from 'src/app/services/administracion/backup.service';
 import { ToastrService } from 'ngx-toastr';
+import { data } from 'jquery';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ErrorService } from 'src/app/services/error.service';
 
   @Component({
     selector: 'app-backup',
@@ -12,19 +15,18 @@ import { ToastrService } from 'ngx-toastr';
   
     constructor(private backupService: BackupService,
       private _toastr: ToastrService,
+      private _errorService: ErrorService
     ) { }
 
     realizarCopiaSeguridad() {
-      this.backupService.realizarCopiaSeguridad().subscribe(
-        () => {
+      this.backupService.realizarCopiaSeguridad().subscribe({
+        next: (data)=> {
           this._toastr.success('Copia de seguridad realizada correctamente');
-          // Manejar el éxito de la copia de seguridad
         },
-        error => {
-          this._toastr.warning('Error al realizar copia de seguridad:', error);
-          // Manejar el error de la copia de seguridad
+        error: (e: HttpErrorResponse) =>{
+          this._errorService.msjError(e);
         }
-      );
+      });
     }
   }
 

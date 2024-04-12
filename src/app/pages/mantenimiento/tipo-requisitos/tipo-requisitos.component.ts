@@ -178,17 +178,20 @@ cancelarInput(){
 
 /*****************************************************************************************************/
 generateExcel() {
-  const headers = ['Tipo de Requisito', 'Descripción', 'Creado Por', 'Fecha de Creación'];
+  const headers = ['Id', 'Requisitos', 'Descripción', 'Pais', 'Creado por', 'Fecha creación', 'Modificado', 'Fecha modificación', 'Estado'];
   const data: any[][] = [];
 
   // Recorre los datos de tipoRequisitoAll y agrégalo a la matriz 'data'
-  this.tipoRequisitoAll.forEach((TipoR, index) => {
+  this.requisitosAllPaisesEmpresas.forEach((TipoR, index) => {
     const row = [
+      TipoR.id_tipo_requisito,
       TipoR.tipo_requisito,
       TipoR.descripcion,
+      TipoR.paises.pais,
       TipoR.creado_por,
       TipoR.fecha_creacion,
-
+      TipoR.modificado_por,
+      TipoR.fecha_modificacion,
       this.getEstadoText(TipoR.estado) // Función para obtener el texto del estado
     ];
     data.push(row);
@@ -228,7 +231,7 @@ generatePDF() {
   const { jsPDF } = require("jspdf");
   const doc = new jsPDF();
   const data: any[][] = [];
-  const headers = ['Tipo Requisito', 'Descripcion', 'Creador', 'Fecha Creacion',  'Estado'];
+  const headers = ['Id', 'Requisitos', 'Descripción', 'Pais', 'Creado por', 'Fecha creación', 'Modificado', 'Fecha modificación', 'Estado'];
 
   // Agregar el logo al PDF
   const logoImg = new Image();
@@ -245,13 +248,16 @@ generatePDF() {
     doc.text("Usuario: " + this.getUser.usuario, centerX, 50, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
 
     // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
-    this.tipoRequisitoAll.forEach((TipoR, index) => {
+    this.requisitosAllPaisesEmpresas.forEach((TipoR, index) => {
       const row = [
+        TipoR.id_tipo_requisito,
         TipoR.tipo_requisito,
         TipoR.descripcion,
+        TipoR.paises.pais,
         TipoR.creado_por,
         TipoR.fecha_creacion,
-  
+        TipoR.modificado_por,
+        TipoR.fecha_modificacion,
         this.getEstadoText(TipoR.estado) // Función para obtener el texto del estado
       ];
       data.push(row);
