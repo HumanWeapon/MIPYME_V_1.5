@@ -10,7 +10,6 @@ import { RolesService } from 'src/app/services/seguridad/roles.service';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 import { PreguntasService } from 'src/app/services/seguridad/preguntas.service';
-import { FormGroup, Validators } from '@angular/forms';
 
 
 
@@ -22,11 +21,13 @@ import { FormGroup, Validators } from '@angular/forms';
 
 export class PerfilComponent  implements OnInit{
 
-  idPregunta: number[] = [];
-  respuesta: string[] = [];
-  preguntasForm!: FormGroup;
-  preguntasUsuario1: any[] = [];
-
+respuestas: string[] = [];
+nuevasRespuestas: string[] = [];
+modoEdicionPregunta: boolean = false;
+preguntasSeleccionadas: any[] = [];
+preguntasSeleccionadasOriginal: any[] = [];
+respuestasOriginal: string[] = [];
+/********************************************/
   contrasenaActual: string = '';
   nuevaContrasena: string = '';
   confirmarContrasena: string = '';
@@ -75,10 +76,11 @@ export class PerfilComponent  implements OnInit{
     intentos_fallidos: 0
   };
 
-  preguntasUsuario: Preguntas = {
+  preguntasUsuario: Preguntas_Usuario = {
      id_pregunta: 0,
-     pregunta:'',
-     estado_pregunta: 0,
+     id_preguntas_usuario: 0,
+     id_usuario: 0,
+     respuesta: '',
      creado_por: '',
      fecha_creacion: new Date(),
      fecha_modificacion: new Date(),
@@ -106,7 +108,6 @@ export class PerfilComponent  implements OnInit{
     modificado_por: '', 
     fecha_modificacion: new Date(),
   };
-  formBuilder: any;
 
   constructor(
     private _preguntasUsuarioService: PreguntasUsuarioService,
@@ -121,6 +122,7 @@ export class PerfilComponent  implements OnInit{
   ngOnInit(): void {
     this.getUsuario();
     this.getRoles();
+    this.getPreguntas();
   }
 
   getUsuario(){
@@ -138,16 +140,14 @@ export class PerfilComponent  implements OnInit{
     }
   }
 
-  conbinarPreguntas(){
-    for(const item1 of this.listPreguntas){
-      for(const item2 of this.listPreguntasUsuario){
-        if(item1.id_pregunta === item2.id_pregunta){
-          this.preguntasFiltradas.push(item1)
-        }
-      }
-    }
-    console.log('Estas son las preguntas del Usuario' + this.preguntasFiltradas);
+  conbinarPreguntas() {
+    this.preguntasFiltradas = this.listPreguntas.filter(pregunta =>
+      this.listPreguntasUsuario.some(preguntaUsuario => preguntaUsuario.id_pregunta === pregunta.id_pregunta)
+    );
+  
+    console.log('Estas son las preguntas del Usuario:', this.preguntasFiltradas);
   }
+  
 
   getPreguntas() {
     this._preguntasService.getPreguntas().subscribe(data => {
@@ -157,18 +157,6 @@ export class PerfilComponent  implements OnInit{
       // Almacena una copia de las preguntas originales antes de filtrarlas
       this.conbinarPreguntas();
     });
-  }
-
-  getpregunta(){
-    this._preguntasUsuarioService.getPreguntasUsuario1().subscribe(
-      (data: any) => {
-        this.preguntasUsuario = data; // Asigna las preguntas recuperadas a la propiedad preguntasUsuario
-        this.initForm();
-      },
-      (error) => {
-        console.error('Error al obtener las preguntas del usuario:', error);
-      }
-    );
   }
 
   getPreguntasUsuario() {
@@ -466,125 +454,24 @@ onInputChange(event: any, field: string) {
   }
 }
 /************************************************************************************/
-
-modoEdicionPregunta1: boolean = false;
-modoEdicionPregunta2: boolean = false;
-modoEdicionPregunta3: boolean = false;
-preguntaSeleccionada1: Preguntas | null = null;
-preguntaSeleccionada2: Preguntas | null = null;
-preguntaSeleccionada3: Preguntas | null = null;
-mostrarBotonCancelar1: boolean = false; //Oculta el Boton de Cancelar Pregunta 1
-mostrarBotonCancelar2: boolean = false; //Oculta el Boton de Cancelar Pregunta 2
-mostrarBotonCancelar3: boolean = false; //Oculta el Boton de Cancelar Pregunta 3
-respuestaPregunta1: string = '';
-respuestaPregunta2: string = '';
-respuestaPregunta3: string = '';
-
-/****************************************************/
-editarPregunta1() {
-  this.modoEdicionPregunta1 = true;
-  this.mostrarBotonCancelar1 = true; // Mostrar el botón de cancelar al editar la pregunta
-}
-cancelarEdicionPregunta1() {
-  this.modoEdicionPregunta1 = false;
-  this.preguntaSeleccionada1 = null;
-  this.mostrarBotonCancelar1 = false; // Ocultar el botón de cancelar al cancelar la edición
-}
-/*****************************************************/
-
-/*****************************************************/
-editarPregunta2() {
-  this.modoEdicionPregunta2 = true;
-  this.mostrarBotonCancelar2 = true; // Mostrar el botón de cancelar al editar la pregunta
-}
-cancelarEdicionPregunta2() {
-  this.modoEdicionPregunta2 = false;
-  this.preguntaSeleccionada2 = null;
-  this.mostrarBotonCancelar2 = false; // Ocultar el botón de cancelar al cancelar la edición
-}
-/*****************************************************/
-
-/*****************************************************/
-editarPregunta3() {
-  this.modoEdicionPregunta3 = true;
-  this.mostrarBotonCancelar3 = true; // Mostrar el botón de cancelar al editar la pregunta
-}
-cancelarEdicionPregunta3() {
-  this.modoEdicionPregunta3 = false;
-  this.preguntaSeleccionada3 = null;
-  this.mostrarBotonCancelar3 = false; // Ocultar el botón de cancelar al cancelar la edición
-}
-/*****************************************************/
-
-selectedPregunta(e: any){
-  this.pregunta[0] = this.pregunta[0];
-  this.pregunta[1] = this.pregunta[1];
-  this.pregunta[2] = this.pregunta[2];
-
-  this.selectedValue = e.target.value;
-  console.log(this.selectedValue)
-}
-
-guardarPreguntas1(){
-
-}
-
-guardarPreguntas2(){
-  
-}
-
-guardarPreguntas3() {
-  const userLocal = localStorage.getItem('usuario');
-  if (userLocal && this.preguntaSeleccionada3) {
-    // Extrayendo el ID de pregunta seleccionada
-    const idPreguntaSeleccionada = this.preguntaSeleccionada3.id_pregunta;
-
-    // Crear un objeto para almacenar la nueva pregunta y respuesta
-    this.NewpreguntasUsuario = {
-      id_preguntas_usuario: 0,
-      id_pregunta: idPreguntaSeleccionada,
-      id_usuario: this.usuario.id_usuario,
-      respuesta: this.respuestaPregunta3.trim(), // Trimming para eliminar espacios en blanco al inicio y al final
-      creado_por: userLocal,
-      fecha_creacion: new Date(),
-      modificado_por: userLocal,
-      fecha_modificacion: new Date()
-    };
-
-    // Llamar al método en el servicio para guardar la nueva pregunta y respuesta
-    this._preguntasUsuarioService.postPreguntasUsuario(this.NewpreguntasUsuario).subscribe({
-      next: (data) => {
-        this.toastr.success('La pregunta y respuesta se guardaron correctamente');
-      },
-      error: (error) => {
-        this.toastr.error('Error al guardar la pregunta y respuesta');
-        console.error('Error al guardar la pregunta y respuesta:', error);
-      }
-    });
-  } else {
-    // Manejar el caso en que no se ha seleccionado ninguna pregunta
-    this.toastr.error('Selecciona una pregunta antes de guardar');
-  }
-}
-
-initForm(): void {
-  // Inicializa el formulario reactivo con las preguntas del usuario
-  this.preguntasForm = this.formBuilder.group({
-    pregunta1: [this.preguntasUsuario1[0]?.pregunta.toUpperCase(), Validators.required],
-    pregunta2: [this.preguntasUsuario1[1]?.pregunta.toUpperCase(), Validators.required],
-    pregunta3: [this.preguntasUsuario1[2]?.pregunta.toUpperCase(), Validators.required]
+editarPregunta() {
+  this._preguntasService.getPreguntas().subscribe(data => {
+    this.listPreguntas = data;
+    this.modoEdicionPregunta = true;
   });
 }
 
-guardarPreguntas(): void {
-  // Lógica para guardar las preguntas actualizadas
-  const preguntasActualizadas = {
-    pregunta1: this.preguntasForm.value.pregunta1,
-    pregunta2: this.preguntasForm.value.pregunta2,
-    pregunta3: this.preguntasForm.value.pregunta3
-  };
-  console.log('Preguntas actualizadas:', preguntasActualizadas);
-  // Llama al método del servicio para guardar las preguntas actualizadas
+
+guardarPreguntasRespuestas() {
+  // Aquí puedes implementar la lógica para guardar las preguntas y respuestas modificadas en la base de datos
 }
+
+cancelarEdicionPregunta() {
+  // Restaurar los datos originales
+  this.preguntasSeleccionadas = [...this.preguntasSeleccionadasOriginal];
+  this.respuestas = [...this.respuestasOriginal];
+  this.modoEdicionPregunta = false;
+}
+
 
 }
