@@ -21,6 +21,10 @@ import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 })
 export class FirstLoginComponent {
   parametroPreguntas: any;
+  selectedOption: number = 0; // Valor predeterminado
+  showModal1: boolean = false;
+  showModal2: boolean = false;
+  showModal3: boolean = false;
 
   preguntaForm: FormGroup | undefined;
   preguntas: any[] = []; // Asegúrate de inicializar preguntas como un arreglo vacío
@@ -28,7 +32,6 @@ export class FirstLoginComponent {
   currentIndex = 0;
   submitted = false;
 
-  
   usuario: Usuario = {
     id_usuario: 0,
     creado_por: '',
@@ -65,7 +68,7 @@ export class FirstLoginComponent {
     private _usuarioService: UsuariosService,
     private _preguntasService: PreguntasService,
     private _parametrosService: ParametrosService,
-    private _errorService: ErrorService
+    private _errorService: ErrorService,
     ){
       
   }
@@ -169,4 +172,21 @@ export class FirstLoginComponent {
     this.respuesta[1] = this.respuesta[1].toUpperCase();
     this.respuesta[2] = this.respuesta[2].toUpperCase(); // Convierte el valor a mayúsculas
   }
+
+  abrirModalSegunSeleccion() {
+    if (this.selectedOption == 1) {
+      this.showModal1 = true;
+      this.showModal2 = false;
+      this.showModal3 = false;
+    } else if (this.selectedOption == 2) {
+      this.showModal1 = false;
+      this.showModal2 = true;
+      this.showModal3 = false;
+    } else if (this.selectedOption == 3) {
+      this.showModal1 = false;
+      this.showModal2 = false;
+      this.showModal3 = true;
+    }
+  }
+
 }
