@@ -13,6 +13,8 @@ import { ResetPasswordComponent } from '../auth/login/reset-password/reset-passw
 import { SearchComponent } from '../pages/search/search.component';
 import { DashboardComponent } from '../pages/dashboard/dashboard.component';
 import { PymeComponent } from '../pages/pyme/pyme.component';
+import { BackupComponent } from '../pages/administracion/backup/backup.component';
+
 
 
 const routes: Routes =[
@@ -27,7 +29,8 @@ const routes: Routes =[
   {path: 'reset-password/:token', component: ResetPasswordComponent },
   {path: 'search', component: SearchComponent },
   {path: 'dashboard', component: DashboardComponent },
-  {path: 'pymes', component: PymeComponent }
+  {path: 'pymes', component: PymeComponent },
+  { path: 'backup', component: BackupComponent },
 
 
 ];
