@@ -4,7 +4,8 @@
 
 export const environment = {
     production: true,
-    endpoint: 'https://angularnodeapi-production.up.railway.app/'
+    //endpoint: 'https://angularnodeapi-production.up.railway.app/'
+    endpoint: 'http://localhost:3001/'
   };
   
   /*
