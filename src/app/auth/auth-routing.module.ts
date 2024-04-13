@@ -14,6 +14,7 @@ import { SearchComponent } from '../pages/search/search.component';
 import { DashboardComponent } from '../pages/dashboard/dashboard.component';
 import { PymeComponent } from '../pages/pyme/pyme.component';
 import { BackupComponent } from '../pages/administracion/backup/backup.component';
+import { RestoreComponent } from '../pages/administracion/restore/restore.component';
 
 
 
@@ -31,6 +32,7 @@ const routes: Routes =[
   {path: 'dashboard', component: DashboardComponent },
   {path: 'pymes', component: PymeComponent },
   { path: 'backup', component: BackupComponent },
+  { path: 'restaurar', component: RestoreComponent },
 
 
 ];

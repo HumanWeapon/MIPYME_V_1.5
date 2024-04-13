@@ -56,7 +56,7 @@ const routes: Routes = [
    //ABC modulo administracion.
     { path: 'administracion', component: AdministracionComponent, data:{titulo: 'COMPONENTES DE ADMINISTRACION'}},
     { path: 'bitacora', component:BitacoraComponent, data:{titulo: 'Bitácora'}},
-    { path: 'backup', component:BackupComponent, data:{titulo: 'Copia de seguridad'}},
+    { path: 'backup', component:BackupComponent, data:{titulo: 'Backup & Restore'}},
     { path: 'restore', component:RestoreComponent, data:{titulo: 'Restaurar'}},
     
     //ABC modulo mantenimiento.

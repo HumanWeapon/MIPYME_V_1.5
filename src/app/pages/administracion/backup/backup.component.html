@@ -3,20 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Backup Database</title>
+  <title>Backup and Restore Database</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-m6QK0G+xfC3p1+11t2ybiOOe5nqXPCyAeZdYhND3ajRQdAZMTsJ1sNu7d2qQeJwDvFbBwe1jQrUCOMQ2HXcHhA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
-    body {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+    body, html {
+      height: 100%;
       margin: 0;
     }
 
     .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    }
+
+    .section {
       text-align: center;
+      margin: 0 20px;
     }
 
     .blue-button {
@@ -36,20 +40,39 @@
       margin-right: 5px;
     }
 
+    .status-message {
+      margin-top: 10px;
+    }
+
     h1 {
       margin-bottom: 20px;
+    }
+
+    img {
+      display: block;
+      margin: 0 auto;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>REALIZAR COPIA DE SEGURIDAD</h1>
-    <img src="assets/dist/img/backup.png" alt="Backup Database Image" width="200">
-    <button class="blue-button" (click)="realizarCopiaSeguridad()">
-      <i class="fas fa-database button-icon"></i>COPIA DE SEGURIDAD 
-    </button>
-    <div id="statusMessage"></div>
+    <div class="section">
+      <h1>COPIA DE SEGURIDAD</h1>
+      <img src="assets/dist/img/backup.png" alt="Backup Database Image" width="200">
+      <button class="blue-button" id="realizarBackupButton">
+        <i class="fas fa-database button-icon"></i>REALIZAR COPIA 
+      </button>
+      <div id="realizarBackupStatusMessage" class="status-message"></div>
+    </div>
+
+    <div class="section">
+      <h1>RESTAURAR BASE DE DATOS</h1>
+      <img src="assets/dist/img/restore.png" alt="Restore Database Image" width="200">
+      <button class="blue-button" id="restaurarBackupButton">
+        <i class="fas fa-database button-icon"></i> RESTAURAR 
+      </button>
+      <div id="restaurarBackupStatusMessage" class="status-message"></div>
+    </div>
   </div>
 </body>
 </html>
-
