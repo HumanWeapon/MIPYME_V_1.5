@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { data } from 'jquery';
 import { ToastrService } from 'ngx-toastr';
+import { Parametros } from 'src/app/interfaces/seguridad/parametros';
 import { Preguntas } from 'src/app/interfaces/seguridad/preguntas';
 import { Preguntas_Usuario } from 'src/app/interfaces/seguridad/preguntasUsuario';
 import { Usuario } from 'src/app/interfaces/seguridad/usuario';
@@ -58,6 +59,20 @@ export class FirstLoginComponent {
     modificado_por: '',
     fecha_modificacion: new Date()
   }
+
+  parametroEditando: Parametros = {
+    id_parametro: 0,
+    parametro: '',
+    valor: 0,
+    id_usuario: 0,
+    creado_por: '',
+    fecha_creacion: new Date(),
+    modificado_por: '',
+    fecha_modificacion: new Date(),
+    alerta_busqueda: 0, 
+    estado_parametro: 0,
+  };
+  
   idPregunta: number[] = [];
   respuesta: string[] = [];
 
@@ -75,21 +90,24 @@ export class FirstLoginComponent {
 
   ngOnInit(): void {
     this.getParametros();
-
-
-    this.getPreguntas();
     this.getPreguntas();
     this.getUsuario();
   }
+
   getParametros(){
     this._parametrosService.getParametroPreguntasdeSeguridad().subscribe({
       next: (data) => {
         this.parametroPreguntas = data.valor;
+        console.log('El valor del parametro es: '+ data.valor)
       },
       error: (e: HttpErrorResponse) => {
         this._errorService.msjError(e);
       }
     });
+  }
+
+  range(count: number): number[] {
+    return Array(count).fill(0).map((x, i) => i);
   }
 
   getPreguntas(){
@@ -114,58 +132,70 @@ export class FirstLoginComponent {
     })
   }
 
-  PostPreguntaUsuario(){
-    if(this.respuesta[0] == null || this.respuesta[1] == null || this.respuesta[2] == null){
-      this.toastr.warning('Responde a las preguntas seleccionadas');
-    }if(this.idPregunta[0] == null || this.idPregunta[1] == null || this.idPregunta[2] == null){
-      this.toastr.warning('Hay preguntas sin seleccionar');
+  PostPreguntaUsuario() {
+    // Verificar que todos los campos estén llenos
+    if (!this.respuesta.every(respuesta => respuesta) || !this.idPregunta.every(pregunta => pregunta)) {
+      this.toastr.warning('Responde a todas las preguntas seleccionadas');
+      return;
     }
-    if(this.idPregunta[0] == this.idPregunta[1] || this.idPregunta[0] == this.idPregunta[2]){
-      this.toastr.warning('Las preguntas no se deben repetir');
+  
+    // Verificar que no haya preguntas repetidas
+    const preguntasUnicas = new Set(this.idPregunta);
+    if (preguntasUnicas.size !== this.idPregunta.length) {
+      this.toastr.warning('Las preguntas no deben repetirse');
+      return;
     }
-    if(this.idPregunta[1] == this.idPregunta[0] || this.idPregunta[1] == this.idPregunta[2]){
-      this.toastr.warning('Las preguntas no se deben repetir');
-    }
-    if(this.idPregunta[2] == this.idPregunta[0] || this.idPregunta[2] == this.idPregunta[1]){
-      this.toastr.warning('Las preguntas no se deben repetir');
-    }
-    else{
-      for (let i = 0; i < this.idPregunta.length; i++) {
-        const preguntaUsuario = {
-          id_preguntas_usuario: this.usuario.id_usuario,
-          id_pregunta: this.idPregunta[i],
-          id_usuario: this.usuario.id_usuario,
-          respuesta: this.respuesta[i],
-          creado_por: this.usuario.usuario.toUpperCase(),
-          fecha_creacion: new Date(),
-          modificado_por: this.usuario.usuario.toUpperCase(),
-          fecha_modificacion: new Date()
-        };
-        this._preguntasUsuario.postPreguntasUsuario(preguntaUsuario).subscribe(data => {
-          this.toastr.success('Pregunta registrada exitosamente');
-          this.router.navigate(['/recuperar'])
-        });
+  
+    // Guardar cada pregunta de usuario
+    this.idPregunta.forEach((preguntaId, index) => {
+      // Verificar si el select está vacío
+      if (preguntaId === 0) {
+        this.toastr.warning('Selecciona una pregunta para cada campo');
+        return;
       }
-      
-      const updateUsuario = {
+  
+      const preguntaUsuario = {
+        id_preguntas_usuario: this.usuario.id_usuario,
+        id_pregunta: preguntaId,
         id_usuario: this.usuario.id_usuario,
-        creado_por: this.usuario.creado_por,
-        fecha_creacion: this.usuario.fecha_creacion,
-        modificado_por: this.usuario.modificado_por,
-        fecha_modificacion: this.usuario.fecha_modificacion,
-        usuario: this.usuario.usuario,
-        nombre_usuario: this.usuario.nombre_usuario,
-        correo_electronico: this.usuario.correo_electronico,
-        estado_usuario: this.usuario.estado_usuario,
-        contrasena: this.usuario.contrasena,
-        id_rol: this.usuario.id_rol,
-        fecha_ultima_conexion: new Date(),
-        fecha_vencimiento: this.usuario.fecha_vencimiento,
-        intentos_fallidos: this.usuario.intentos_fallidos
-      }
-      this.updateUltimaConexionUsuario(updateUsuario);
-    }
+        respuesta: this.respuesta[index],
+        creado_por: this.usuario.usuario.toUpperCase(),
+        fecha_creacion: new Date(),
+        modificado_por: this.usuario.usuario.toUpperCase(),
+        fecha_modificacion: new Date()
+      };
+  
+      // Llamar al servicio para guardar cada pregunta de usuario
+      this._preguntasUsuario.postPreguntasUsuario(preguntaUsuario).subscribe(data => {
+        this.toastr.success('Pregunta registrada exitosamente');
+        // Navegar a la página de recuperar después de guardar todas las preguntas
+        if (index === this.idPregunta.length - 1) {
+          this.router.navigate(['/recuperar']);
+        }
+      });
+    });
+  
+    // Actualizar la última conexión del usuario
+    const updateUsuario = {
+      id_usuario: this.usuario.id_usuario,
+      creado_por: this.usuario.creado_por,
+      fecha_creacion: this.usuario.fecha_creacion,
+      modificado_por: this.usuario.modificado_por,
+      fecha_modificacion: this.usuario.fecha_modificacion,
+      usuario: this.usuario.usuario,
+      nombre_usuario: this.usuario.nombre_usuario,
+      correo_electronico: this.usuario.correo_electronico,
+      estado_usuario: this.usuario.estado_usuario,
+      contrasena: this.usuario.contrasena,
+      id_rol: this.usuario.id_rol,
+      fecha_ultima_conexion: new Date(),
+      fecha_vencimiento: this.usuario.fecha_vencimiento,
+      intentos_fallidos: this.usuario.intentos_fallidos
+    };
+    this.updateUltimaConexionUsuario(updateUsuario);
   }
+  
+
 
   convertirAMayusculas(): void {
     this.respuesta[0] = this.respuesta[0].toUpperCase();
@@ -173,20 +203,5 @@ export class FirstLoginComponent {
     this.respuesta[2] = this.respuesta[2].toUpperCase(); // Convierte el valor a mayúsculas
   }
 
-  abrirModalSegunSeleccion() {
-    if (this.selectedOption == 1) {
-      this.showModal1 = true;
-      this.showModal2 = false;
-      this.showModal3 = false;
-    } else if (this.selectedOption == 2) {
-      this.showModal1 = false;
-      this.showModal2 = true;
-      this.showModal3 = false;
-    } else if (this.selectedOption == 3) {
-      this.showModal1 = false;
-      this.showModal2 = false;
-      this.showModal3 = true;
-    }
-  }
 
 }

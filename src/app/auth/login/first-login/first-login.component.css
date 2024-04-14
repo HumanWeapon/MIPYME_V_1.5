@@ -1,0 +1,7 @@
+.title-style {
+    font-family: 'Arial', sans-serif; /* Estilo de letra diferente */
+    font-size: 20px; /* Tamaño de la letra */
+    color: #333; /* Color del texto */
+    font-weight: bold; /* Peso de la letra */
+    text-align: center;
+  }

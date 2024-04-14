@@ -2,153 +2,33 @@
   <div class="login-box">
     <!-- /.login-logo -->
     <div class="card card-outline card-primary">
-      <div class="card-header text-center">
-        <a class="h1" style="text-decoration: none; color: black;"> Preguntas de Seguridad</a>
+      <div class="d-flex align-items-center" style="background-color: #3370e2;  height: 100px;">
+        <img src="assets/dist/img/mipyme.png" alt="Icono de seguridad" style="width: 100%; height: 100%;" />
+      </div>
+      <div class="modal-body">
+          <p class="title-style">Preguntas de Seguridad</p>
+        <div>
+          <div *ngFor="let index of range(parametroPreguntas)">
+            <div class="form-group">
+              <label style="font-size: 15px;">Pregunta #{{ index + 1 }}</label>
+              <select [(ngModel)]="idPregunta[index]" class="form-control">
+                <option value="0" disabled selected>Seleccione una pregunta</option>
+                <option *ngFor="let pregunta of preguntas" [value]="pregunta.id_pregunta"> {{pregunta.pregunta}} </option>
+              </select>
+              <input [(ngModel)]="respuesta[index]" name="respuesta[index]" class="form-control mt-1" type="text" placeholder="Ingresa tu respuesta" style="text-transform: uppercase;">
+            </div>
+          </div>
+        </div>
+        <div class="row justify-content-end">
+          <div class="col-4">
+            <button type="submit" (click)="PostPreguntaUsuario()" class="btn btn-primary btn-block">Enviar</button>
+          </div>
+        </div>
       </div>
       
-      <div class="card-body">
-        <p class="login-box-msg" style="color: #3370e2; font-size: medium;">Seleccione cuántas preguntas desea agregar:</p>
-        
-        <form method="post">
-          
-          <div class="form-group">
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="cantidadPreguntas" id="unaPregunta" value="1" [(ngModel)]="selectedOption">
-              <label class="form-check-label" for="unaPregunta">
-                Una pregunta
-              </label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="cantidadPreguntas" id="dosPreguntas" value="2" [(ngModel)]="selectedOption">
-              <label class="form-check-label" for="dosPreguntas">
-                Dos preguntas
-              </label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="cantidadPreguntas" id="tresPreguntas" value="3" [(ngModel)]="selectedOption">
-              <label class="form-check-label" for="tresPreguntas">
-                Tres preguntas
-              </label>
-            </div>
-          </div>
-          
-          <div class="row">
-            <div class="col-md-12 text-end">
-              <button type="button" class="btn btn-primary" (click)="abrirModalSegunSeleccion()">Siguiente</button>
-            </div>
-          </div>
-        </form>
-        
-      </div>
       <!-- /.card-body -->
     </div>
     <!-- /.card -->
   </div>
   <!-- /.login-box -->
-
-  <!-- Modal Pregunta 1 y Respuesta 1-->
-  <div id="modalUnaPregunta" class="modal" [style.display]="showModal1 ? 'block' : 'none'">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title text-center">Selecciona y Responde a la Pregunta de Seguridad</h4>
-        </div>
-        <div class="modal-body">
-          <div class="card-body">
-            <div class="form-group">
-                <label style="font-size: 15px;">Pregunta #1</label>
-                <select [(ngModel)]="idPregunta[0]" class="form-control">https://webhint.io/docs/user-guide/hints/hint-no-inline-styles/
-                  <option *ngFor="let pregunta of preguntas" [value]="pregunta.id_pregunta"> {{pregunta.pregunta}} </option>
-                </select>
-                <input [(ngModel)]="respuesta[0]" name="respuesta[0]" class="form-control mt-1" type="text" placeholder="Ingresa tu respuesta" >
-            </div>
-            <div class="col-4 text-end">
-              <button type="submit" (click)="PostPreguntaUsuario()" class="btn btn-primary btn-block">Enviar</button>
-            </div>
-        </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- Modal Pregunta 1 y Respuesta 1-->
-  
-  <!-- Modal Pregunta 2 y Respuesta 2-->
-  <div id="modalDosPreguntas" class="modal" [style.display]="showModal2 ? 'block' : 'none'">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title text-center">Selecciona y Responde a las Preguntas de Seguridad</h4>
-        </div>
-        <div class="modal-body">
-          <div class="card-body">
-            <div class="form-group">
-                <label style="font-size: 15px;">Pregunta #1</label>
-                <select [(ngModel)]="idPregunta[0]" class="form-control">https://webhint.io/docs/user-guide/hints/hint-no-inline-styles/
-                  <option *ngFor="let pregunta of preguntas" [value]="pregunta.id_pregunta"> {{pregunta.pregunta}} </option>
-                </select>
-                <input [(ngModel)]="respuesta[0]" name="respuesta[0]" class="form-control mt-1" type="text" placeholder="Ingresa tu respuesta" >
-            </div>
-        </div>
-        <div class="card-body">
-            <div class="form-group">
-                <label style="font-size: 15px;">Pregunta #2</label>
-                <select [(ngModel)]="idPregunta[1]" class="form-control">
-                  <option *ngFor="let pregunta of preguntas" [value]="pregunta.id_pregunta"> {{pregunta.pregunta}} </option>
-                </select>
-                <input [(ngModel)]="respuesta[1]" name="respuesta[1]" class="form-control mt-1" type="text" placeholder="Ingresa tu respuesta">
-            </div>
-            <div class="col-4 text-end">
-              <button type="submit" (click)="PostPreguntaUsuario()" class="btn btn-primary btn-block">Enviar</button>
-            </div>
-        </div>
-      </div>
-      </div>
-    </div>
-  </div>
-  <!-- Modal Pregunta 2 y Respuesta 2-->
-  
-  <div id="modalTresPreguntas" class="modal" [style.display]="showModal3 ? 'block' : 'none'">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title text-center">Selecciona y Responde a las Preguntas de Seguridad</h4>
-        </div>
-        <div class="modal-body">
-          <div class="card-body">
-            <div class="form-group">
-                <label style="font-size: 15px;">Pregunta #1</label>
-                <select [(ngModel)]="idPregunta[0]" class="form-control">https://webhint.io/docs/user-guide/hints/hint-no-inline-styles/
-                  <option *ngFor="let pregunta of preguntas" [value]="pregunta.id_pregunta"> {{pregunta.pregunta}} </option>
-                </select>
-                <input [(ngModel)]="respuesta[0]" name="respuesta[0]" class="form-control mt-1" type="text" placeholder="Ingresa tu respuesta" >
-            </div>
-        </div>
-        <div class="card-body">
-            <div class="form-group">
-                <label style="font-size: 15px;">Pregunta #2</label>
-                <select [(ngModel)]="idPregunta[1]" class="form-control">
-                  <option *ngFor="let pregunta of preguntas" [value]="pregunta.id_pregunta"> {{pregunta.pregunta}} </option>
-                </select>
-                <input [(ngModel)]="respuesta[1]" name="respuesta[1]" class="form-control mt-1" type="text" placeholder="Ingresa tu respuesta">
-            </div>
-        </div>
-        <div class="card-body">
-            <div class="form-group">
-                <label style="font-size: 15px;">Pregunta #3</label>
-                <select [(ngModel)]="idPregunta[2]" class="form-control">
-                  <option *ngFor="let pregunta of preguntas" [value]="pregunta.id_pregunta"> {{pregunta.pregunta}} </option>
-                </select>
-                <input [(ngModel)]="respuesta[2]" name="respuesta[2]" class="form-control mt-1" type="text" placeholder="Ingresa tu respuesta">
-            </div>
-        </div>
-        <div class="col-4">
-            <button type="submit" (click)="PostPreguntaUsuario()" class="btn btn-primary btn-block">Enviar</button>
-          </div>
-        </div>
-      </div>
-      </div>
-  </div>
-  <!-- Modal Pregunta 2 y Respuesta 2-->
-  
-
 </body>
