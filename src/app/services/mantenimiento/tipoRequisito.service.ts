@@ -27,14 +27,14 @@ export class TipoRequisitoService {
    addTipoRequisito(tipoR: TipoRequisito): Observable<any> {
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.post<TipoRequisito>(`${this.myAppUrl}${this.myApiUrl}//postTipo_Requisito`, tipoR, { headers: headers })
+    return this.http.post<TipoRequisito>(`${this.myAppUrl}${this.myApiUrl}/postTipo_Requisito`, tipoR, { headers: headers })
   }
 
   
    getTipoRequisito(tipoRequisito: TipoRequisito): Observable<TipoRequisito> {
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.post<TipoRequisito>(`${this.myAppUrl}${this.myApiUrl}//getTipo_Requisito`, tipoRequisito, { headers: headers })
+    return this.http.post<TipoRequisito>(`${this.myAppUrl}${this.myApiUrl}/getTipo_Requisito`, tipoRequisito, { headers: headers })
    }
 
    getAllTipoRequisito(): Observable<TipoRequisito[]> {

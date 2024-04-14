@@ -108,7 +108,6 @@ export class SearchComponent implements OnInit {
   getEmpresa(empresa: any) {
     this.idEmpresa = empresa.id_empresa;
     this.nombreEmpresa = empresa.nombre_empresa;
-    console.log(empresa);
     this.getEmpresasContactosPorId();
     this.getDireccionesEmpresaporID();
     this.getRequisitosEmpresaPorId();
@@ -122,7 +121,6 @@ export class SearchComponent implements OnInit {
     if(idPYME){
       this._pymeService.getOnePyme(idPYME).subscribe({
         next: (data) => {
-          console.log(data);
           this.id_pyme = data.id_pyme;
         },
         error: (e: HttpErrorResponse) => {
@@ -196,10 +194,9 @@ export class SearchComponent implements OnInit {
   }
   //Obtiene todos los Requisitos registrados a una empresa
   getRequisitosEmpresaPorId() {
-    this._tipoRequisitoService.consultarRequisitosPorId(this.idEmpresa).subscribe({
+    this._tipoRequisitoService.consultarRequisitosPorId(this.id_pais).subscribe({
       next: (data: any) => {
         this.requisitosAllPaisesEmpresas = data;
-        console.log('Datos recibidos:', data); // Agregar console.log aquí
       },
       error: (e: HttpErrorResponse) => {
         this._errorService.msjError(e);
@@ -299,7 +296,6 @@ export class SearchComponent implements OnInit {
       fecha_modificacion: new Date().getUTCDay, 
       estado: 1
     }
-    console.log(historialBusqueda);
     this._historialB.postHistorialB(historialBusqueda).subscribe({
       next: (data) => {
         
