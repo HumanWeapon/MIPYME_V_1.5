@@ -45,13 +45,11 @@ export class ResetPasswordComponent implements OnInit {
 
   ngOnInit(): void {
     this.resetToken = this.route.snapshot.params['token'];
-    console.log('El Token capturado es: '+ this.resetToken);
     const userLocal = localStorage.getItem('usuario');
     if(userLocal == null){
 
     }else{
       this.user.usuario = userLocal;
-      console.log('El Usuario es: ' + userLocal)
     }
   }
 
@@ -67,10 +65,6 @@ export class ResetPasswordComponent implements OnInit {
       this.toastr.warning('Las contraseñas no coinciden.');
       return;
     }
-  
-    // Imprime el token y la nueva contraseña para depuración
-    console.log('Token de restablecimiento:', this.resetToken);
-    console.log('Nueva contraseña:', this.newPassword);
   
     // Envía la solicitud para restablecer la contraseña
     this._userService.resetPassword(this.newPassword, this.resetToken)
