@@ -30,6 +30,7 @@ export class UsuariosService {
   login(usuario: Usuario): Observable<string> {
     return this.http.post<string>(`${this.myAppUrl}${this.myApiUrl}/login`, usuario)
   }
+
   getOneUsuario(usuario: any): Observable<Usuario> {
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
@@ -42,7 +43,6 @@ export class UsuariosService {
     return this.http.post<Usuario>(`${this.myAppUrl}${this.myApiUrl}/getUsuario`, usuario, { headers: headers })
   }
   
-
   getAllUsuarios(): Observable<Usuario[]> {
     return this.http.get<Usuario[]>(`${this.myAppUrl}${this.myApiUrl}/getAllUsuarios`)
   }
@@ -87,12 +87,14 @@ export class UsuariosService {
   }
 
   resetPassword(newPassword: string, resetToken: string): Observable<any> {
-    const headers = new HttpHeaders().set('Content-Type', 'application/json');
-    const body = { newPassword, resetToken };
-    return this.http.put(`${this.myAppUrl}${this.myApiUrl}/resetPassword/${resetToken}`, body, { headers });
-  }
-  
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'reset': resetToken // Envía el token como un encabezado personalizado
+    });
 
+    const body = { newPassword };
+    return this.http.put(`${this.myAppUrl}${this.myApiUrl}/resetPassword`, body, { headers });
+  }
 
   
 }

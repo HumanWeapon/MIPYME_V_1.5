@@ -45,6 +45,12 @@ export class ResetPasswordComponent implements OnInit {
 
   ngOnInit(): void {
     this.resetToken = this.route.snapshot.params['token'];
+    console.log('El Token capturado es: '+ this.resetToken)
+    /*this._userService.getOneUsuario(this.user).subscribe(
+      (usuario: Usuario) => {
+        usuario = usuario;
+        localStorage.setItem('usuario', usuario.usuario)
+      })*/
   }
 
   validarPassword() {
@@ -58,6 +64,8 @@ export class ResetPasswordComponent implements OnInit {
       return;
     }
   
+    console.log('Token de restablecimiento:', this.resetToken); // Agrega este registro de depuración
+  
     this._userService.resetPassword(this.newPassword, this.resetToken)
       .subscribe(
         response => {
@@ -65,7 +73,6 @@ export class ResetPasswordComponent implements OnInit {
           this.resetSuccessful = true;
           this.toastr.success('Contraseña Recuperada Exitosamente.');
           this.router.navigate(['/login']);
-          
         },
         error => {
           console.error('Error al restablecer la contraseña:', error);

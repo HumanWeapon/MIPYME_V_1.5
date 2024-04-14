@@ -122,6 +122,12 @@ export class LoginComponent {
         this.getUsuario();
         
         if(this.ultimaConexion == null){
+          this._userService.getOneUsuario(this.usuario).subscribe(
+            (usuario:Usuario) => {
+              usuario = usuario;
+              localStorage.setItem('usuario', usuario.usuario)
+            }
+          )
           localStorage.setItem('firstLogin', this.usuario);
           this._router.navigate(['/firstlogin'])
         }

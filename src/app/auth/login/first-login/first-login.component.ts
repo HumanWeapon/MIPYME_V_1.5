@@ -126,6 +126,8 @@ export class FirstLoginComponent {
       // Manejar el caso en el que 'usuario' no se encuentra en el localStorage
     }
   }
+
+  
   updateUltimaConexionUsuario(update: Usuario){
     this._usuarioService.editarUsuario(update).subscribe(data => {
       console.log(data)

@@ -57,6 +57,20 @@ export class PasswordEmailComponent implements OnInit {
       return;
     }
 
+        // Verificar si el usuario existe
+        this.usuarioService.getOneUsuario(this.usuario.usuario).subscribe(
+          (usuario: Usuario) => {
+            // Si se encontró el usuario, continuar con el proceso de recuperación de contraseña
+            this.usuario = usuario;
+            this.usuarioService.usuario = this.usuario;
+            localStorage.setItem('usuario', usuario.usuario)
+          },
+          () => {
+            // Si no se encontró el usuario, mostrar un mensaje de error
+            this.toastr.error('El usuario no existe.');
+          }
+        );
+
     if (this.correoElectronico !== this.usuario.correo_electronico) {
       this.toastr.error('El correo electrónico ingresado no coincide con el del usuario.');
       return;
