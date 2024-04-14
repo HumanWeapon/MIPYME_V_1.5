@@ -45,41 +45,51 @@ export class ResetPasswordComponent implements OnInit {
 
   ngOnInit(): void {
     this.resetToken = this.route.snapshot.params['token'];
-    console.log('El Token capturado es: '+ this.resetToken)
-    /*this._userService.getOneUsuario(this.user).subscribe(
-      (usuario: Usuario) => {
-        usuario = usuario;
-        localStorage.setItem('usuario', usuario.usuario)
-      })*/
+    console.log('El Token capturado es: '+ this.resetToken);
+    const userLocal = localStorage.getItem('usuario');
+    if(userLocal == null){
+
+    }else{
+      this.user.usuario = userLocal;
+      console.log('El Usuario es: ' + userLocal)
+    }
   }
 
   validarPassword() {
-    if (this.confirPassword === '' || this.user.contrasena === '') {
+    // Comprueba si las contraseñas están completas
+    if (this.confirPassword === '' || this.newPassword === '') {
       this.toastr.warning('Por favor completa todos los campos.');
       return;
     }
   
-    if (this.confirPassword !== this.user.contrasena) {
+    // Comprueba si las contraseñas coinciden
+    if (this.confirPassword !== this.newPassword) {
       this.toastr.warning('Las contraseñas no coinciden.');
       return;
     }
   
-    console.log('Token de restablecimiento:', this.resetToken); // Agrega este registro de depuración
+    // Imprime el token y la nueva contraseña para depuración
+    console.log('Token de restablecimiento:', this.resetToken);
+    console.log('Nueva contraseña:', this.newPassword);
   
+    // Envía la solicitud para restablecer la contraseña
     this._userService.resetPassword(this.newPassword, this.resetToken)
       .subscribe(
         response => {
+          // Maneja la respuesta exitosa
           console.log('Contraseña restablecida con éxito');
           this.resetSuccessful = true;
           this.toastr.success('Contraseña Recuperada Exitosamente.');
           this.router.navigate(['/login']);
         },
         error => {
+          // Maneja el error
           console.error('Error al restablecer la contraseña:', error);
           this.resetError = 'Error al restablecer la contraseña';
         }
       );
   }
+  
   
 
   }

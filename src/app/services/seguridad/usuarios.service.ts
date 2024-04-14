@@ -89,12 +89,14 @@ export class UsuariosService {
   resetPassword(newPassword: string, resetToken: string): Observable<any> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
-      'reset': resetToken // Envía el token como un encabezado personalizado
+      'reset': resetToken // Establece el token en el encabezado 'reset'
     });
-
+  
     const body = { newPassword };
     return this.http.put(`${this.myAppUrl}${this.myApiUrl}/resetPassword`, body, { headers });
   }
+  
+  
 
   
 }
