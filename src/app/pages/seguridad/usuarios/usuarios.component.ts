@@ -479,6 +479,23 @@ obtenerUsuario(usuario: Usuario, i: any) {
     const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return re.test(correo);
   }
+
+  
+  reestablecer(correo_electronico: string) {
+  const correoUsuario = this.usuarioSeleccionado.correo_electronico;
+  localStorage.setItem('correo_electronico', correo_electronico);
+  console.log('Correo Obtenido: '+ correoUsuario)
+    // Llama al servicio para enviar el correo electrónico de restablecimiento
+    this._userService.reestablecer(correoUsuario).subscribe(
+      response => {
+        // Aquí puedes manejar la respuesta del servicio
+      },
+      error => {
+        console.error('Error al enviar el correo electrónico:', error);
+        this._toastr.error('Error al enviar el correo electrónico.');
+      }
+    );
+  }
   
   
   

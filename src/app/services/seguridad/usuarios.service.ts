@@ -96,6 +96,10 @@ export class UsuariosService {
     return this.http.put(`${this.myAppUrl}${this.myApiUrl}/resetPassword`, body, { headers });
   }
   
+  reestablecer(correo_electronico: string): Observable<any> {
+    const body = { correo_electronico: correo_electronico }; // Construye el objeto con la propiedad correo_electronico
+    return this.http.put<any>(`${this.myAppUrl}${this.myApiUrl}/reestablecer`, body);
+  }
   
 
   
