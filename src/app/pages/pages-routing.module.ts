@@ -41,6 +41,7 @@ import { AuthGuard } from '../utils/auth.guard';
 import { PermisosGuard } from '../utils/routes.guard';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { AccessDeniedComponent } from './access-denied/access-denied.component';
+import { LoginComponent } from '../auth/login/login.component';
 
 
 const routes: Routes = [
@@ -97,6 +98,7 @@ const routes: Routes = [
 
     { path: 'not-found', component:NotFoundComponent},
     { path: 'access-denied', component:AccessDeniedComponent},
+    { path: '**', component: DashboardComponent }
   ]}
 ];
 @NgModule({

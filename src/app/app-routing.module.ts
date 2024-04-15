@@ -5,11 +5,14 @@ import { CommonModule } from '@angular/common';
 import { AuthRoutingModule } from './auth/auth-routing.module';
 import { RegisterPymeComponent } from './auth/register-pyme/register-pyme.component';
 import { LoginPymeComponent } from './auth/login-pyme/login-pyme.component';
+import { LoginComponent } from './auth/login/login.component';
 
 const routes: Routes = [
   { path:'' ,redirectTo:'login', pathMatch:'full' },
   { path: 'register-pyme', component: RegisterPymeComponent },
   { path: 'login-pyme', component: LoginPymeComponent },
+  { path: '**', component: LoginPymeComponent }
+  
 ];
 
 @NgModule({
