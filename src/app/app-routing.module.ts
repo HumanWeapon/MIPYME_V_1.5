@@ -7,7 +7,7 @@ import { RegisterPymeComponent } from './auth/register-pyme/register-pyme.compon
 import { LoginPymeComponent } from './auth/login-pyme/login-pyme.component';
 
 const routes: Routes = [
-  {path:'' ,redirectTo:'login', pathMatch:'full'},
+  { path:'' ,redirectTo:'login', pathMatch:'full' },
   { path: 'register-pyme', component: RegisterPymeComponent },
   { path: 'login-pyme', component: LoginPymeComponent },
 ];

@@ -39,15 +39,18 @@ import { PerfilPymeComponent } from './perfil_pyme/perfil_pyme.component';
 import { HistorialPymeComponent } from './historial-pyme/historial-pyme.component';
 import { AuthGuard } from '../utils/auth.guard';
 import { PermisosGuard } from '../utils/routes.guard';
+import { NotFoundComponent } from './not-found/not-found.component';
+import { AccessDeniedComponent } from './access-denied/access-denied.component';
 
 
 const routes: Routes = [
+  {path:'' ,redirectTo:'dashboard', pathMatch:'full'},
   {path:'dashboard',component:PagesComponent, canActivate: [AuthGuard],
   children:[
     //RUTAS DEL SIDEBAR
     //ABC modulo seguridad.
-    { path: 'seguridad', component: SeguridadComponent, data:{titulo: 'COMPONENTES DE SEGURIDAD'}},
-    { path: 'usuarios', component: UsuariosComponent, data:{titulo: 'Usuarios'}},
+    { path: 'seguridad', component: SeguridadComponent, data:{titulo: 'Componentes de seguridad'}},
+    { path: 'usuarios', component: UsuariosComponent, canActivate: [PermisosGuard], data:{titulo: 'Usuarios'}},
     { path: 'objetos', component: ObjetosComponent, canActivate: [PermisosGuard], data:{titulo: 'Objetos'}},
     { path: 'permisos', component: PermisosComponent, canActivate: [PermisosGuard], data:{titulo: 'Permisos'}},
     { path: 'roles', component: RolesComponent, canActivate: [PermisosGuard], data:{titulo: 'Roles'}},
@@ -55,13 +58,13 @@ const routes: Routes = [
     { path: 'parametros', component: ParametrosComponent, canActivate: [PermisosGuard], data:{titulo: 'Parámetros'}},
 
    //ABC modulo administracion.
-    { path: 'administracion', component: AdministracionComponent, data:{titulo: 'COMPONENTES DE ADMINISTRACION'}},
+    { path: 'administracion', component: AdministracionComponent, data:{titulo: 'Componentes de administración'}},
     { path: 'bitacora', canActivate: [PermisosGuard], component:BitacoraComponent, data:{titulo: 'Bitácora'}},
     { path: 'backup', canActivate: [PermisosGuard], component:BackupComponent, data:{titulo: 'Backup & Restore'}},
     { path: 'restore', canActivate: [PermisosGuard], component:RestoreComponent, data:{titulo: 'Restaurar'}},
     
     //ABC modulo mantenimiento.
-    { path: 'mantenimiento', component: MantenimientoComponent, data:{titulo: 'COMPONENTES DE MANTENIMIENTO'}},
+    { path: 'mantenimiento', component: MantenimientoComponent, data:{titulo: 'Componentes de mantenimiento'}},
     { path: 'paises', component: PaisesComponent, canActivate: [PermisosGuard], data:{titulo: 'Países'}},
     { path: 'ciudades', component:CiudadesComponent, canActivate: [PermisosGuard], data:{titulo: 'Ciudades'}},
     { path: 'Categoria_productos', component:CategoriaProductosComponent, canActivate: [PermisosGuard], data:{titulo: 'Categorías de productos'}},
@@ -92,6 +95,8 @@ const routes: Routes = [
     //ABC grado C.
     //{ path: 'contactos', component:ContactoEmpresasComponent, data:{titulo: 'Contactos'}},
 
+    { path: 'not-found', component:NotFoundComponent},
+    { path: 'access-denied', component:AccessDeniedComponent},
   ]}
 ];
 @NgModule({

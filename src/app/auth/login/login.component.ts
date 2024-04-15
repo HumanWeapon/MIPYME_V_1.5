@@ -15,8 +15,6 @@ import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 export class LoginComponent {
   usuario: string = '';
   contrasena: string = '';
-  id_rol: number = 0;
-  id_usuario: number = 0;
   loading: boolean = false;
   ultimaConexion: string = '';
 
@@ -131,7 +129,6 @@ export class LoginComponent {
         }
         else{
           localStorage.setItem('usuario', this.usuario);
-          localStorage.setItem('id_usuario', this.id_usuario.toString() )
           localStorage.setItem('CCP',this.contrasena);
           this._router.navigate(['dashboard'])
         }
@@ -163,9 +160,9 @@ export class LoginComponent {
     this._userService.getUsuario(this.getUser).subscribe({
       next: (data) => {
         this.getUser = data;
-        this.id_rol = data.id_rol;
-        this.id_usuario = data.id_usuario;
-        localStorage.setItem('id_rol', this.id_rol.toString());
+        localStorage.setItem('id_rol', data.id_rol.toString());
+        localStorage.setItem('id_usuario', data.id_usuario.toString());
+        console.log(data);
         this.updateUltimaConexionUsuario()
       },
       error: (e: HttpErrorResponse) => {
