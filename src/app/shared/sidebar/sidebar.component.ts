@@ -133,4 +133,8 @@ export class SidebarComponent implements OnInit{
       }
     });
   }
+  get_id_Objetos(item: any){
+    localStorage.setItem('id_objeto', item);
+    console.log(item);
+  }
 }

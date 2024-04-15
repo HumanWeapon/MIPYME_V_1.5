@@ -150,15 +150,15 @@ export class UsuariosComponent {
   
   // Variable de estado para alternar funciones
 
-toggleFunction(user: any, i: number) {
+  toggleFunction(user: any, i: number) {
 
-  // Ejecuta una función u otra según el estado
-  if (user.estado_usuario === 1 ) {
-    this.inactivarUsuario(user, i); // Ejecuta la primera función
-  } else {
-    this.activarUsuario(user, i); // Ejecuta la segunda función
+    // Ejecuta una función u otra según el estado
+    if (user.estado_usuario === 1 ) {
+      this.inactivarUsuario(user, i); // Ejecuta la primera función
+    } else {
+      this.activarUsuario(user, i); // Ejecuta la segunda función
+    }
   }
-}
 
   inactivarUsuario(usuario: any, i: any) {
     this._userService.inactivarUsuario(usuario).subscribe({
@@ -196,7 +196,7 @@ toggleFunction(user: any, i: number) {
   /*****************************************************************************************************/
 
    /*****************************************************************************************************/
-   generateExcel() {
+  generateExcel() {
     const headers = ['ID', 'Usuario', 'Nombre Usuario', 'Correo Electronico', 'Rol', 'Creador', 'Ultima Conexion', 'Fecha de Vencimiento', 'Estado'];
     const data: any[][] = [];
 
@@ -319,73 +319,73 @@ toggleFunction(user: any, i: number) {
   
 
 /**************************************************************/
-agregarNuevoUsuario() {
-  const LocalUser = localStorage.getItem('usuario');
-  if (LocalUser) {
-    this.newUser = {
-      id_usuario: 0,
-      creado_por: LocalUser,
-      fecha_creacion: new Date(),
-      modificado_por: LocalUser,
-      fecha_modificacion: new Date(),
-      usuario: this.newUser.usuario,
-      nombre_usuario: this.newUser.nombre_usuario,
-      correo_electronico: this.newUser.correo_electronico,
-      estado_usuario: 1,
-      contrasena: this.newUser.usuario,
-      id_rol: this.newUser.id_rol,
-      fecha_ultima_conexion: new Date(),
-      fecha_vencimiento: this.newUser.fecha_vencimiento,
-      intentos_fallidos: 0
-    };
+  agregarNuevoUsuario() {
+    const LocalUser = localStorage.getItem('usuario');
+    if (LocalUser) {
+      this.newUser = {
+        id_usuario: 0,
+        creado_por: LocalUser,
+        fecha_creacion: new Date(),
+        modificado_por: LocalUser,
+        fecha_modificacion: new Date(),
+        usuario: this.newUser.usuario,
+        nombre_usuario: this.newUser.nombre_usuario,
+        correo_electronico: this.newUser.correo_electronico,
+        estado_usuario: 1,
+        contrasena: this.newUser.usuario,
+        id_rol: this.newUser.id_rol,
+        fecha_ultima_conexion: new Date(),
+        fecha_vencimiento: this.editUser.fecha_vencimiento,
+        intentos_fallidos: 0
+      };
 
-    if (!this.newUser.usuario || !this.newUser.nombre_usuario || !this.newUser.correo_electronico || !this.newUser.contrasena || !this.newUser.id_rol) {
-      this._toastr.warning('Debes completar los campos vacíos');
-      this.newUser.usuario = '';
-      this.newUser.nombre_usuario = '';
-      this.newUser.correo_electronico = '';
-      this.newUser.contrasena = '';
-    } else {
-      if (!this.validarCorreoElectronico(this.newUser.correo_electronico)) {
-        this._toastr.warning('Por favor, ingresa un correo electrónico válido.');
-        return;
-      }
-      this._userService.addUsuario(this.newUser).subscribe({
-        next: (data) => {
-          this.insertBitacora(data);
-          this._toastr.success('Usuario agregado con éxito')
-          this.usuariosAllRoles.push(data)
-        },
-        error: (e: HttpErrorResponse) => {
-          this._errorService.msjError(e);
+      if (!this.newUser.usuario || !this.newUser.nombre_usuario || !this.newUser.correo_electronico || !this.newUser.contrasena || !this.newUser.id_rol) {
+        this._toastr.warning('Debes completar los campos vacíos');
+        this.newUser.usuario = '';
+        this.newUser.nombre_usuario = '';
+        this.newUser.correo_electronico = '';
+        this.newUser.contrasena = '';
+      } else {
+        if (!this.validarCorreoElectronico(this.newUser.correo_electronico)) {
+          this._toastr.warning('Por favor, ingresa un correo electrónico válido.');
+          return;
         }
-      });
+        this._userService.addUsuario(this.newUser).subscribe({
+          next: (data) => {
+            this.insertBitacora(data);
+            this._toastr.success('Usuario agregado con éxito')
+            this.usuariosAllRoles.push(data)
+          },
+          error: (e: HttpErrorResponse) => {
+            this._errorService.msjError(e);
+          }
+        });
+      }
     }
   }
-}
 
-obtenerUsuario(usuario: Usuario, i: any) {
-  const localuser = localStorage.getItem('usuario');
-  if(localuser){
-    this.usuarioSeleccionado = {
-      id_usuario: usuario.id_usuario,
-      creado_por: usuario.creado_por,
-      fecha_creacion: usuario.fecha_creacion,
-      modificado_por: localuser,
-      fecha_modificacion: usuario.fecha_modificacion,
-      usuario: usuario.usuario,
-      nombre_usuario: usuario.nombre_usuario,
-      correo_electronico: usuario.correo_electronico,
-      estado_usuario: usuario.estado_usuario,
-      contrasena: usuario.contrasena,
-      id_rol: usuario.id_rol,
-      fecha_ultima_conexion: usuario.fecha_ultima_conexion,
-      fecha_vencimiento: usuario.fecha_vencimiento,
-      intentos_fallidos: usuario.intentos_fallidos,
-    };
+  obtenerUsuario(usuario: Usuario, i: any) {
+    const localuser = localStorage.getItem('usuario');
+    if(localuser){
+      this.usuarioSeleccionado = {
+        id_usuario: usuario.id_usuario,
+        creado_por: usuario.creado_por,
+        fecha_creacion: usuario.fecha_creacion,
+        modificado_por: localuser,
+        fecha_modificacion: usuario.fecha_modificacion,
+        usuario: usuario.usuario,
+        nombre_usuario: usuario.nombre_usuario,
+        correo_electronico: usuario.correo_electronico,
+        estado_usuario: usuario.estado_usuario,
+        contrasena: usuario.contrasena,
+        id_rol: usuario.id_rol,
+        fecha_ultima_conexion: usuario.fecha_ultima_conexion,
+        fecha_vencimiento: usuario.fecha_vencimiento,
+        intentos_fallidos: usuario.intentos_fallidos,
+      };
+    }
+    this.indiceUser = i;
   }
-  this.indiceUser = i;
-}
 
   obtenerIdUsuario(usuario: Usuario, i: any) {
     const localuser = localStorage.getItem('usuario');

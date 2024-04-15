@@ -9,6 +9,9 @@ import { Observable, catchError } from 'rxjs';
   providedIn: 'root'
 })
 export class ObjetosService {
+    getIdFromName(objeto: any) {
+        throw new Error('Method not implemented.');
+    }
 
   public objetos: Objetos | undefined;
   
@@ -75,5 +78,11 @@ export class ObjetosService {
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
     return this.http.get<any[]>(`${this.myAppUrl}${this.myApiUrl}/objetosJSON/${id_rol}/${submenu}`, { headers: headers })
+  }
+  
+  get_id_Objetos(objeto: any): Observable<any> {
+    const token = localStorage.getItem('token')
+    const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
+    return this.http.get<any>(`${this.myAppUrl}${this.myApiUrl}/get_id_Objetos/${objeto}`, { headers: headers })
   }
 }

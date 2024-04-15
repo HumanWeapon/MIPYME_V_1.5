@@ -16,6 +16,7 @@ export class LoginComponent {
   usuario: string = '';
   contrasena: string = '';
   id_rol: number = 0;
+  id_usuario: number = 0;
   loading: boolean = false;
   ultimaConexion: string = '';
 
@@ -57,7 +58,6 @@ export class LoginComponent {
 
 
   //Función que permite navegar al primer formulario del login, ocultando las otras ventanas
-
   //Muestra el segundo formulario del Login
   navegateToMetodo(){
     this._router.navigate(['/metodo'])
@@ -93,7 +93,6 @@ export class LoginComponent {
       this._toastr.error('Todos los campos son obligatorios', 'Error');
       return
     }
-
     // Creamos el body
     const usuario: Usuario = {
       usuario: this.usuario,
@@ -113,7 +112,6 @@ export class LoginComponent {
     }
     
     this.loading = true;
-
     this._userService.login(usuario).subscribe({
       next: (token) => {
         localStorage.setItem('token', token);
@@ -121,11 +119,11 @@ export class LoginComponent {
 
         this.getUsuario();
         
-        if(this.ultimaConexion == null){
+        if(!this.ultimaConexion){
           this._userService.getOneUsuario(this.usuario).subscribe(
             (usuario:Usuario) => {
               usuario = usuario;
-              localStorage.setItem('usuario', usuario.usuario)
+              localStorage.setItem('usuario', usuario.usuario);
             }
           )
           localStorage.setItem('firstLogin', this.usuario);
@@ -133,6 +131,7 @@ export class LoginComponent {
         }
         else{
           localStorage.setItem('usuario', this.usuario);
+          localStorage.setItem('id_usuario', this.id_usuario.toString() )
           localStorage.setItem('CCP',this.contrasena);
           this._router.navigate(['dashboard'])
         }
@@ -165,6 +164,7 @@ export class LoginComponent {
       next: (data) => {
         this.getUser = data;
         this.id_rol = data.id_rol;
+        this.id_usuario = data.id_usuario;
         localStorage.setItem('id_rol', this.id_rol.toString());
         this.updateUltimaConexionUsuario()
       },
