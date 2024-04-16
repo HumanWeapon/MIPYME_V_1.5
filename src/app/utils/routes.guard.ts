@@ -20,9 +20,9 @@ export class PermisosGuard implements CanActivate {
     const id_objeto = localStorage.getItem('id_objeto');
     const id_usuario = localStorage.getItem('id_usuario');
 
-    console.log(id_rol);
-    console.log(id_objeto);
-    console.log(id_usuario);
+    //console.log(id_rol);
+    //console.log(id_objeto);
+    //console.log(id_usuario);
     // Verificar si todos los identificadores están disponibles
     if(id_rol && id_objeto && id_usuario) {
 

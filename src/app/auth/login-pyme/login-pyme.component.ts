@@ -148,6 +148,8 @@ export class LoginPymeComponent implements OnDestroy {
     const getPymeSubscription = this._pymeService.getPyme(this.getPyme).subscribe({
       next: (data) => {
         this.getPyme = data;
+        localStorage.setItem('id_rol', data.id_rol.toString());
+        localStorage.setItem('id_pyme', data.id_pyme.toString());
       },
       error: (e: HttpErrorResponse) => {
         this._errorService.msjError(e); 

@@ -79,9 +79,9 @@ const routes: Routes = [
     { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard],  data:{titulo: 'Dashboard'}},
     { path: 'perfil', component: PerfilComponent, canActivate: [PermisosGuard], data:{titulo: 'Mi Perfil'}},
     { path: 'perfil_pyme', component: PerfilPymeComponent, canActivate: [PermisosGuard], data:{titulo: 'Mi Perfil Pyme'}},
-    { path: 'search', component: SearchComponent, canActivate: [PermisosGuard]},
+    { path: 'search', component: SearchComponent},
     { path: 'historial_busqueda', component: HistorialBusquedaComponent, canActivate: [PermisosGuard], data:{titulo: 'Búsquedas PYME'}},
-    { path: 'historial_busqueda_pyme', component: HistorialPymeComponent, canActivate: [PermisosGuard], data:{titulo: 'Mis Búsquedas'}},
+    { path: 'historial_busqueda_pyme', component: HistorialPymeComponent, data:{titulo: 'Mis Búsquedas'}},
 
 
     //ABC grado B.
