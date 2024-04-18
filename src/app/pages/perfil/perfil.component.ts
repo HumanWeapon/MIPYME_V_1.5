@@ -27,9 +27,6 @@ modoEdicionPregunta: boolean = false;
 preguntasSeleccionadas: any[] = [];
 preguntasSeleccionadasOriginal: any[] = [];
 respuestasOriginal: string[] = [];
-idPregunta: number[] = [];
-respuesta: string[] = [];
-
 /********************************************/
   contrasenaActual: string = '';
   nuevaContrasena: string = '';
@@ -465,67 +462,53 @@ editarPregunta() {
 }
 
 
-guardarPreguntas() {
-    // Verificar que todos los campos estén llenos
-    if (!this.respuestas.every(respuestas => respuestas) || !this.idPregunta.every(pregunta => pregunta)) {
-      this.toastr.warning('Responde a todas las preguntas seleccionadas');
-      return;
-    }
-  
-    // Verificar que no haya preguntas repetidas
-    const preguntasUnicas = new Set(this.idPregunta);
-    if (preguntasUnicas.size !== this.idPregunta.length) {
-      this.toastr.warning('Las preguntas no deben repetirse');
-      return;
-    }
-  
-    // Guardar cada pregunta de usuario
-    this.idPregunta.forEach((preguntaId, i) => {
-      // Verificar si el select está vacío
-      if (preguntaId === 0) {
-        this.toastr.warning('Selecciona una pregunta para cada campo');
-        return;
-      }
-  
-      const preguntaUsuario = {
-        id_preguntas_usuario: this.usuario.id_usuario,
-        id_pregunta: preguntaId,
-        id_usuario: this.usuario.id_usuario,
-        respuesta: this.respuestas[i],
-        creado_por: this.usuario.usuario.toUpperCase(),
-        fecha_creacion: new Date(),
-        modificado_por: this.usuario.usuario.toUpperCase(),
-        fecha_modificacion: new Date()
-      };
-  
-      // Llamar al servicio para guardar cada pregunta de usuario
-      this._preguntasUsuarioService.postPreguntasUsuario(preguntaUsuario).subscribe(data => {
-        this.toastr.success('Preguntas editadas exitosamente');
-        // Navegar a la página de recuperar después de guardar todas las preguntas
-        if (i === this.idPregunta.length - 1) {
+guardarPreguntasRespuestas() {
+  console.log('Guardando preguntas y respuestas...'); // Agregar un console.log para verificar que la función se esté llamando
 
-        }
-      });
-    });
-  
-    // Actualizar la última conexión del usuario
-    const updateUsuario = {
-      id_usuario: this.usuario.id_usuario,
-      creado_por: this.usuario.creado_por,
-      fecha_creacion: this.usuario.fecha_creacion,
-      modificado_por: this.usuario.modificado_por,
-      fecha_modificacion: this.usuario.fecha_modificacion,
-      usuario: this.usuario.usuario,
-      nombre_usuario: this.usuario.nombre_usuario,
-      correo_electronico: this.usuario.correo_electronico,
-      estado_usuario: this.usuario.estado_usuario,
-      contrasena: this.usuario.contrasena,
-      id_rol: this.usuario.id_rol,
-      fecha_ultima_conexion: new Date(),
-      fecha_vencimiento: this.usuario.fecha_vencimiento,
-      intentos_fallidos: this.usuario.intentos_fallidos
-    };
+  // Verificar que todas las respuestas estén llenas
+  if (!this.respuestas.every(respuesta => respuesta) || !this.preguntasSeleccionadas.every(pregunta => pregunta)) {
+    this.toastr.warning('Responde a todas las preguntas seleccionadas');
+    return;
   }
+  console.log('Guardando preguntas y respuestas... PASO 2'); // Agregar un console.log para verificar que la función se esté llamando
+
+  // Verificar que no haya preguntas repetidas
+  const preguntasUnicas = new Set(this.preguntasSeleccionadas);
+  if (preguntasUnicas.size !== this.preguntasSeleccionadas.length) {
+    this.toastr.warning('Las preguntas no deben repetirse');
+    return;
+  }
+
+  console.log('Guardando preguntas y respuestas... PASO 3'); // Agregar un console.log para verificar que la función se esté llamando
+
+
+  // Guardar cada pregunta de usuario
+  this.preguntasSeleccionadas.forEach((pregunta, index) => {
+    // Verificar si el select está vacío
+    if (!pregunta) {
+      this.toastr.warning('Selecciona una pregunta para cada campo');
+      return;
+    }
+
+    const preguntaUsuario = {
+      id_preguntas_usuario: this.usuario.id_usuario,
+      id_pregunta: pregunta.id_pregunta,
+      id_usuario: this.usuario.id_usuario,
+      respuesta: this.respuestas[index],
+      creado_por: this.usuario.usuario.toUpperCase(),
+      fecha_creacion: new Date(),
+      modificado_por: this.usuario.usuario.toUpperCase(),
+      fecha_modificacion: new Date()
+    };
+
+    // Llamar al servicio para guardar cada pregunta de usuario
+    this._preguntasUsuarioService.postPreguntasUsuario(preguntaUsuario).subscribe(data => {
+      this.toastr.success('Pregunta registrada exitosamente');
+      // Navegar a la página de recuperar después de guardar todas las preguntas
+    });
+  });
+
+}
 
 cancelarEdicionPregunta() {
   // Restaurar los datos originales

@@ -179,11 +179,11 @@
     <div class="form-group row" *ngFor="let pregunta of preguntasFiltradas; let i = index">
       <label for="inputName" class="col-sm-2 col-form-label">Pregunta #{{ i + 1 }}</label>
       <div class="col-sm-10">
-        <select class="form-control" id="pregunta{{ i }}" [(ngModel)]="preguntasSeleccionadas[i]">
-          <option value="">Seleccione su pregunta</option> <!-- Opción predeterminada -->
-          <option *ngFor="let preguntaItem of listPreguntas" [ngValue]="preguntaItem" [selected]="preguntaItem.id_pregunta === pregunta.id_pregunta">{{ preguntaItem.pregunta }}</option>
+        <select [(ngModel)]="preguntasSeleccionadas[i]" class="form-control">
+          <option value="" disabled selected>Seleccione su pregunta</option>
+          <option *ngFor="let preguntaItem of listPreguntas" [value]="preguntaItem.id_pregunta" [selected]="preguntaItem.id_pregunta === preguntasSeleccionadas[i]">{{ preguntaItem.pregunta }}</option>
         </select>
-        <input class="form-control mt-2" id="respuesta{{ i }}" [(ngModel)]="respuestas[i]" placeholder="Respuesta">
+        <input [(ngModel)]="respuestas[i]" name="respuesta{{ i }}" class="form-control mt-1" type="text" placeholder="Ingresa tu respuesta" style="text-transform: uppercase;">
       </div>
     </div>
     <div class="form-group row">
@@ -191,12 +191,13 @@
         <button type="button" class="btn btn-danger btn-sm mr-2" (click)="cancelarEdicionPregunta()">
           <i class="fa fa-times"></i> Cancelar
         </button>
-        <button type="button" class="btn btn-success btn-sm" (click)="guardarPreguntas()">
+        <button type="button" class="btn btn-success btn-sm" (click)="guardarPreguntasRespuestas()">
           <i class="fa fa-check"></i> Guardar
         </button>
       </div>
     </div>
   </div>
+  
   
   
   
