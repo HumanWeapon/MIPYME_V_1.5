@@ -97,8 +97,10 @@ export class UsuariosService {
   }
   
   reestablecer(correo_electronico: string): Observable<any> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     const body = { correo_electronico: correo_electronico }; // Construye el objeto con la propiedad correo_electronico
-    return this.http.put<any>(`${this.myAppUrl}${this.myApiUrl}/reestablecer`, body);
+    return this.http.put<any>(`${this.myAppUrl}${this.myApiUrl}/reestablecer`, body, { headers: headers });
   }
   
 

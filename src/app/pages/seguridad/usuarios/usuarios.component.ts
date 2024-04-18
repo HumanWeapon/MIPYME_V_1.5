@@ -75,6 +75,7 @@ export class UsuariosComponent {
     private _toastr: ToastrService,
     private _rolService: RolesService,
     private _bitacoraService: BitacoraService,
+    private router: Router,
     private _errorService: ErrorService
   ) {}
 
@@ -480,7 +481,6 @@ obtenerUsuario(usuario: Usuario, i: any) {
     return re.test(correo);
   }
 
-  
   reestablecer(correo_electronico: string) {
   const correoUsuario = this.usuarioSeleccionado.correo_electronico;
   localStorage.setItem('correo_electronico', correo_electronico);
@@ -489,6 +489,8 @@ obtenerUsuario(usuario: Usuario, i: any) {
     this._userService.reestablecer(correoUsuario).subscribe(
       response => {
         // Aquí puedes manejar la respuesta del servicio
+        this._toastr.success('Nueva Contraseña enviada con Exito.');
+        console.log('contraseña nueva: '+ this.usuarioSeleccionado.contrasena)
       },
       error => {
         console.error('Error al enviar el correo electrónico:', error);
