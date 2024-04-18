@@ -48,7 +48,7 @@ export class PreguntasUsuarioService {
   updatePreguntaUsuario(pregunta: Preguntas_Usuario): Observable<any> {
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
-    return this.http.post<any>(`${this.myAppUrl}${this.myApiUrl}/updatePreguntaUsuario`, pregunta, { headers: headers })
+    return this.http.put<any>(`${this.myAppUrl}${this.myApiUrl}/updatePreguntaUsuario`, pregunta, { headers: headers })
   }
   
 }
