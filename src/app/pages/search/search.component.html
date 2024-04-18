@@ -31,6 +31,11 @@
               </div>
             </div>
           </div>
+          <div *ngIf="list_productosFilter.length === 0" class="col-12">
+            <br>
+            <p class="text-center alert-warning">¡Ningún producto coincide con tu criterio de búsqueda!</p>
+            <br><br>
+          </div>
         </div>
         <pagination-controls (pageChange)="p = $event"  previousLabel="Anterior" nextLabel="Siguiente" style="text-align: center;"></pagination-controls>
       </section>
