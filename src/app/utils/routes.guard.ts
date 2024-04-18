@@ -50,10 +50,8 @@ export class PermisosGuard implements CanActivate{
             return true;
           } else {
             // Si el usuario no tiene permisos, redirige a una página de acceso denegado
-            
             return this.router.createUrlTree(['/dashboard/access-denied']);
           }
-          
         }),
         catchError(() => {
           this.router.navigate(['/dashboard/not-found']);
