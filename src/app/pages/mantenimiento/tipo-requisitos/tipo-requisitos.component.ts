@@ -13,6 +13,8 @@ import * as XLSX from 'xlsx';
 import { Usuario } from 'src/app/interfaces/seguridad/usuario';
 import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 import { DatePipe } from '@angular/common';
+import { Paises } from 'src/app/interfaces/empresa/paises';
+import { PaisesService } from 'src/app/services/empresa/paises.service';
 
 
 @Component({
@@ -23,10 +25,10 @@ import { DatePipe } from '@angular/common';
 export class TipoRequisitosComponent implements OnInit {
 
     trAnterior: any;
+    listPaises: Paises [] = [];
 
     tipoRequisitoEditando: TipoRequisito = {
       id_tipo_requisito: 0, 
-      id_empresa: 0,
       id_pais: 0,
       tipo_requisito: '', 
       descripcion:'',
@@ -38,7 +40,6 @@ export class TipoRequisitosComponent implements OnInit {
     };
     nuevoTipoRequisito: TipoRequisito = {
         id_tipo_requisito: 0, 
-        id_empresa: 0,
         id_pais: 0,
         tipo_requisito: '', 
         descripcion:'',
@@ -67,29 +68,31 @@ export class TipoRequisitosComponent implements OnInit {
     private _errorService: ErrorService,
     private _userService: UsuariosService,
     private ngZone: NgZone,
-    private _datePipe: DatePipe
+    private _datePipe: DatePipe,
+    private _paisService: PaisesService
     ) {}
 
-    ngOnInit(): void {
-      this.getUsuario()
-        this.dtOptions = {
-          pagingType: 'full_numbers',
-          pageLength: 10,
-          language: {url:'//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'},
-          responsive: true
-        };
-        this._tipoRequisitoService.requisitosAllPaisesEmpresas().subscribe({
-          next: (data) =>{
-            this.requisitosAllPaisesEmpresas = data;
-            this.dtTrigger.next(0);
-          }
-        });
-    }
+  ngOnInit(): void {
+    this.getAllPaises();
+    this.getUsuario()
+      this.dtOptions = {
+        pagingType: 'full_numbers',
+        pageLength: 10,
+        language: {url:'//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'},
+        responsive: true
+      };
+      this._tipoRequisitoService.requisitosAllPaisesEmpresas().subscribe({
+        next: (data) =>{
+          this.requisitosAllPaisesEmpresas = data;
+          this.dtTrigger.next(0);
+        }
+      });
+  }
 
-      ngOnDestroy(): void {
-        // Do not forget to unsubscribe the event
-        this.dtTrigger.unsubscribe();
-      }
+  ngOnDestroy(): void {
+    // Do not forget to unsubscribe the event
+    this.dtTrigger.unsubscribe();
+  }
       
   // Variable de estado para alternar funciones
   toggleFunctionRequi(TRequi: any, i: number) {
@@ -101,13 +104,29 @@ export class TipoRequisitosComponent implements OnInit {
       this.activarTipoRequi(TRequi, i); // Ejecuta la segunda función
     }
    }
+  getAllPaises(){
+    this._paisService.getAllPaises().subscribe({
+      next: (data) =>{
+        this.listPaises = data.filter(paises => paises.estado == 1);
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
+  }
+  paisSeleccionado(event: Event): void {
+    const idPais = (event.target as HTMLSelectElement).value;
+    this.nuevoTipoRequisito.id_pais = Number(idPais);
+    this.tipoRequisitoEditando.id_pais = Number(idPais);
+    console.log("ID_PAIS: "+idPais);
+  }
 
- getDate(): string {
-  // Obtener la fecha actual
-  const currentDate = new Date();
-  // Formatear la fecha en el formato deseado
-  return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
-}
+  getDate(): string {
+    // Obtener la fecha actual
+    const currentDate = new Date();
+    // Formatear la fecha en el formato deseado
+    return format(currentDate, 'EEEE, dd MMMM yyyy', { locale: es });
+  }
 
 /*********************************************************************************************/
       inactivarTipoRequi(tipoRequisito: TipoRequisito, i: any){
@@ -304,64 +323,63 @@ getEstadoText(estado: number): string {
 
 /**************************************************************/
 
-      agregarNuevoTipoRequisito() {
-    
-        const userLocal = localStorage.getItem('usuario');
-    if (userLocal){
+  agregarNuevoTipoRequisito() {
 
+    const userLocal = localStorage.getItem('usuario');
+    if (userLocal){
       const fechaActual = new Date();
       const fechaFormateada = this._datePipe.transform(fechaActual, 'yyyy-MM-dd');
-        this.nuevoTipoRequisito = {
-          id_tipo_requisito: 0,
-          id_empresa: 0,
-          id_pais: 0, 
-          tipo_requisito: this.nuevoTipoRequisito.tipo_requisito, 
-          descripcion:this.nuevoTipoRequisito.descripcion,
-          creado_por: userLocal, 
-          fecha_creacion: fechaFormateada as unknown as Date, 
-          modificado_por: userLocal, 
-          fecha_modificacion: fechaFormateada as unknown as Date, 
-          estado: 1,
-    
-        };
-        if (!this.nuevoTipoRequisito.tipo_requisito || !this.nuevoTipoRequisito.descripcion) {
-          this.toastr.warning('Debes completar los campos vacíos');
-          this.nuevoTipoRequisito.tipo_requisito = '';
-          this.nuevoTipoRequisito.descripcion = '';
-        }else{
+      this.nuevoTipoRequisito = {
+        id_tipo_requisito: this.nuevoTipoRequisito.id_tipo_requisito,
+        id_pais: this.nuevoTipoRequisito.id_pais, 
+        tipo_requisito: this.nuevoTipoRequisito.tipo_requisito, 
+        descripcion:this.nuevoTipoRequisito.descripcion,
+        creado_por: userLocal, 
+        fecha_creacion: fechaFormateada as unknown as Date, 
+        modificado_por: userLocal, 
+        fecha_modificacion: fechaFormateada as unknown as Date, 
+        estado: 1,
+
+      };
+      console.log(this.nuevoTipoRequisito)
+      if (!this.nuevoTipoRequisito.tipo_requisito || !this.nuevoTipoRequisito.descripcion) {
+        this.toastr.warning('Debes completar los campos vacíos');
+        this.nuevoTipoRequisito.tipo_requisito = '';
+        this.nuevoTipoRequisito.descripcion = '';
+      }else{
         this._tipoRequisitoService.addTipoRequisito(this.nuevoTipoRequisito).subscribe({
           next: (data) => {
             this.insertBitacora(data);
             this.toastr.success('Tipo de Requisito agregado con éxito')
-            this.listTipoR.push(this.nuevoTipoRequisito)
+            this.requisitosAllPaisesEmpresas.push(data);
+            this.nuevoTipoRequisito.descripcion = '';
+            this.nuevoTipoRequisito.id_pais = 0;
+            this.nuevoTipoRequisito.tipo_requisito = '';
           },
           error: (e: HttpErrorResponse) => {
             this._errorService.msjError(e);
           }
         });
       }
-      }
     }
+  }
     
-      obtenerIdTipoRequisito(tipoR: TipoRequisito, i: any){
-    
-        this.tipoRequisitoEditando = {
-          
-        id_tipo_requisito: tipoR.id_tipo_requisito, 
-        id_empresa: tipoR.id_empresa,
-        id_pais: tipoR.id_pais,
-        tipo_requisito: tipoR.tipo_requisito, 
-        descripcion: tipoR.descripcion,
-        creado_por: tipoR.creado_por, 
-        fecha_creacion: tipoR.fecha_creacion, 
-        modificado_por: tipoR.modificado_por, 
-        fecha_modificacion: tipoR.fecha_modificacion,
-        estado: tipoR.estado,
-    
-        };
-        this.indice = i;
-        this.trAnterior = this.requisitosAllPaisesEmpresas;
-      }
+  obtenerIdTipoRequisito(tipoR: TipoRequisito, i: any){
+
+    this.tipoRequisitoEditando = {
+      id_tipo_requisito: tipoR.id_tipo_requisito, 
+      id_pais: tipoR.id_pais,
+      tipo_requisito: tipoR.tipo_requisito, 
+      descripcion: tipoR.descripcion,
+      creado_por: tipoR.creado_por, 
+      fecha_creacion: tipoR.fecha_creacion, 
+      modificado_por: tipoR.modificado_por, 
+      fecha_modificacion: tipoR.fecha_modificacion,
+      estado: tipoR.estado,
+    };
+    this.indice = i;
+    this.trAnterior = this.requisitosAllPaisesEmpresas;
+  }
     
       editarTipoRequisito(){
         if (!this.tipoRequisitoEditando.tipo_requisito || !this.tipoRequisitoEditando.descripcion) {

@@ -3,8 +3,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
-import { da, id } from 'date-fns/locale';
-import { data, error } from 'jquery';
 import { ToastrService } from 'ngx-toastr';
 import { Contacto } from 'src/app/interfaces/contacto/contacto';
 import { ContactoDirecciones } from 'src/app/interfaces/contacto/contactoDirecciones';
@@ -20,7 +18,6 @@ import { EmpresaService } from 'src/app/services/empresa/empresa.service';
 import { PaisesService } from 'src/app/services/empresa/paises.service';
 import { ErrorService } from 'src/app/services/error.service';
 import { CategoriaService } from 'src/app/services/mantenimiento/categoria.service';
-import { CiudadesService } from 'src/app/services/mantenimiento/ciudades.service';
 import { ProductosService } from 'src/app/services/mantenimiento/producto.service';
 import { TipoContactoService } from 'src/app/services/mantenimiento/tipoContacto.service';
 import { TipoDireccionService } from 'src/app/services/mantenimiento/tipoDireccion.service';
@@ -28,10 +25,8 @@ import { EmpresasContactosService } from 'src/app/services/operaciones/empresas-
 import { EmpresasDireccionesService } from 'src/app/services/operaciones/empresas-direcciones.service';
 import { EmpresasProdcutosService } from 'src/app/services/operaciones/empresas-prodcutos.service';
 import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
-import { ActivatedRoute } from '@angular/router';
 import { TipoRequisitoService } from 'src/app/services/mantenimiento/tipoRequisito.service';
 import { TipoRequisito } from 'src/app/interfaces/mantenimiento/tipoRequisito.service';
-import { identifierName } from '@angular/compiler';
 
 @Component({
   selector: 'app-operaciones-empresas',
@@ -60,6 +55,7 @@ export class OperacionesEmpresasComponent {
   id_ciudad: any;
   id_pais: any;
   localUser: string = '';
+  id_pais_requisito: number = 0;
   
   productosEmpresa: any[] = [];//Obtiene los productos registrados de la Empresa y los muestra en la tabla.
   productosContactos: any[] = [];//Obtiene los contactos registrados de la Empresa y los muestra en la tabla.
@@ -218,7 +214,6 @@ export class OperacionesEmpresasComponent {
 
   tipoRequisitoEditando: TipoRequisito = {
     id_tipo_requisito: 0, 
-    id_empresa: 0,
     id_pais: 0,
     tipo_requisito: '', 
     descripcion:'',
@@ -230,7 +225,6 @@ export class OperacionesEmpresasComponent {
   };
   nuevoTipoRequisito: TipoRequisito = {
       id_tipo_requisito: 0, 
-      id_empresa: 0,
       id_pais: 0,
       tipo_requisito: '', 
       descripcion:'',
@@ -264,7 +258,6 @@ export class OperacionesEmpresasComponent {
     this.getEmpresasProductosPorId();
     this.getProductosNoRegistradosPorId();
     this.getEmpresasContactosPorId();
-    this.getRequisitosEmpresaPorId();
     this.getContactosNoRegistradosPorId();
     this.getDireccionesEmpresaporID();
     this.getCiudadesActivas();
@@ -331,7 +324,7 @@ export class OperacionesEmpresasComponent {
     this._tipoDireccionService.getTipoDirecciones().subscribe({
       next: (data) =>{
         this.listTipoDireccionesActivas = data;
-        console.log(data);
+        this.getRequisitosEmpresaPorId();
       },
       error: (e: HttpErrorResponse) => {
         this._errorService.msjError(e);
@@ -429,7 +422,7 @@ export class OperacionesEmpresasComponent {
   }
   //Obtiene todos los Requisitos registrados a una empresa
   getRequisitosEmpresaPorId() {
-    this._tipoRequisitoService.consultarRequisitosPorId(this.idEmpresa).subscribe({
+    this._tipoRequisitoService.consultarRequisitosPorId(this.id_pais_requisito).subscribe({
       next: (data: any) => {
         this.requisitosAllPaisesEmpresas = data;
         console.log('Datos recibidos:', data); // Agregar console.log aquí
@@ -448,7 +441,6 @@ export class OperacionesEmpresasComponent {
           const fechaFormateada = this._datePipe.transform(fechaActual, 'yyyy-MM-dd');
           this.nuevoTipoRequisito = {
             id_tipo_requisito: 0,
-            id_empresa: this.idEmpresa,
             id_pais: this.nuevoTipoRequisito.id_pais,
             tipo_requisito: this.nuevoTipoRequisito.tipo_requisito,
             descripcion: this.nuevoTipoRequisito.descripcion,
@@ -713,6 +705,8 @@ export class OperacionesEmpresasComponent {
       next: (data: any) => {
         this.direccionesEmpresa = data;
         this.todasLasDirecciones = data;
+        this.id_pais_requisito = data[0].id_pais;
+        this.getRequisitosEmpresaPorId();
       },
       error: (e: HttpErrorResponse) => {
         this._errorService.msjError(e);
@@ -1251,7 +1245,6 @@ obtenerIdTipoRequisito(tipoR: TipoRequisito, i: any){
   this.tipoRequisitoEditando = {
     
   id_tipo_requisito: tipoR.id_tipo_requisito, 
-  id_empresa: tipoR.id_empresa,
   id_pais: tipoR.id_pais,
   tipo_requisito: tipoR.tipo_requisito, 
   descripcion: tipoR.descripcion,

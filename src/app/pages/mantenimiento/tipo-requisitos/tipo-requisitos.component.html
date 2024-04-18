@@ -5,8 +5,11 @@
             <div class="col-12">
               <div class="card">
                 <div class="card-header">
-                    <button type="button" class="btn btn-primary custom-print-button btn-primary" title="Generar el Reporte" data-toggle="modal" data-target="#PDFReQ">
-                      <i class="fas fa-print"></i> Generar Reporte</button>
+                  <button type="button"  data-toggle="modal" data-target="#agregarRequisito" class="btn btn_color_blue btn-sm" >
+                    <i class="fas fa-plus"></i> NUEVO
+                  </button>
+                  <button type="button" class="btn btn-primary custom-print-button btn-primary" title="Generar el Reporte" data-toggle="modal" data-target="#PDFReQ">
+                    <i class="fas fa-print"></i> Generar Reporte</button>
                 </div>
             <!-- /.card-header -->
             <div class="card-body">
@@ -71,7 +74,7 @@
 
 
  
-<!-- Agregar Usuario Form -->
+<!-- Agregar requisito Form -->
 <div class="modal fade" id="agregarRequisito">
 <div class="modal-dialog">
     <div class="modal-content">
@@ -86,6 +89,13 @@
                 <div class="form-group">
                     <label for="nuevoTipoRequisito">Requisito:</label>
                     <input type="text" [(ngModel)]="nuevoTipoRequisito.tipo_requisito" name="nuevoTipoRequisito.tipo_requisito" class="form-control" id="nuevoTipoRequisito" placeholder="Tipo Requisito" (input)="convertirAMayusculas($event, 'tipo_requisito')" (input)="eliminarCaracteresEspeciales($event, 'tipo_requisito')">
+                </div>
+                <div class="form-group">
+                  <label for="inputStatus">País</label>
+                  <select id="inputStatus" class="form-control custom-select" (change)="paisSeleccionado($event)">
+                    <option selected disabled>Seleccionar</option>
+                    <option *ngFor="let obj of listPaises" [value]="obj.id_pais">{{obj.pais}}</option>
+                  </select>
                 </div>
                 <div class="form-group">
                   <label for="nuevoTipoRequisito">Descripción</label>

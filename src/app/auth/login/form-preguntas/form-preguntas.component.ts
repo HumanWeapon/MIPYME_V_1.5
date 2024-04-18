@@ -89,6 +89,7 @@ export class FormPreguntasComponent implements OnInit{
       intentos_fallidos: 0
     }
     this._userService.getUsuario(user).subscribe(data =>{
+      console.log(data);
       this.usuario = data; 
       this.getPreguntasUsuario(); // Llama a getPreguntasUsuario después de que usuario se inicialice
       this.getPreguntas(); // Llama a getPreguntas después de que usuario se inicialice
@@ -149,7 +150,6 @@ export class FormPreguntasComponent implements OnInit{
     else{
       this.validarRespuesta();
     }
-
   }
 
   validarRespuesta() {

@@ -122,7 +122,7 @@
         <nav>
           <ul class="nav nav-pills nav-sidebar flex-column mt-4 mb-2">
             <li class="nav-item" *ngFor="let item of listMenu">
-              <a  [routerLink]='item.objetos.url' class="nav-link" style="cursor: pointer;">
+              <a (click)="get_id_Objetos(item.objetos.id_objeto)" [routerLink]='item.objetos.url' class="nav-link" style="cursor: pointer;">
                 <i class="{{item.objetos.icono}}"></i>
                   <p class="ml-2">
                     {{item.objetos.objeto}}
@@ -131,14 +131,8 @@
             </li>
           </ul>
         </nav>
-        
-        <hr class="hr"/>
       </div>
     <!-- /.sidebar -->
-
-    <div class="sidebar-custom">
-      <a (click)="logout()" class="btn btn-link"><i class="fas fa-cogs mr-2 ml-4"></i> Cerrar Sesión</a>
-    </div>
     <!-- /.sidebar-custom -->
 </aside>
 

@@ -42,7 +42,9 @@ import { HistorialBusquedaComponent } from './historial-busqueda/historial-busqu
 import { PerfilPymeComponent } from './perfil_pyme/perfil_pyme.component';
 import { HistorialPymeComponent } from './historial-pyme/historial-pyme.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ReactiveFormsModule } from '@angular/forms'; // Asegúrate de importar ReactiveFormsModule
+import { ReactiveFormsModule } from '@angular/forms';
+import { NotFoundComponent } from './not-found/not-found.component';
+import { AccessDeniedComponent } from './access-denied/access-denied.component'; // Asegúrate de importar ReactiveFormsModule
 
 
 @NgModule({
@@ -83,6 +85,8 @@ import { ReactiveFormsModule } from '@angular/forms'; // Asegúrate de importar 
     HistorialBusquedaComponent,
     PerfilPymeComponent,
     HistorialPymeComponent,
+    NotFoundComponent,
+    AccessDeniedComponent,
   ],
   imports: [
     CommonModule,

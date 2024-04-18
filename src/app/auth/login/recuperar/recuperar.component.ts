@@ -29,6 +29,7 @@ export class RecuperarComponent implements OnInit{
     fecha_vencimiento: new Date(),
     intentos_fallidos: 0
   }
+  passnew: string = '';
   confirPassword: string = '';
 
   constructor(
@@ -42,21 +43,25 @@ export class RecuperarComponent implements OnInit{
 
   getUsuario() {
     this.user.usuario = localStorage.getItem("usuario");
+    this._userService.getUsuario(this.user).subscribe(data => {
+      this.user = data;
+    });
     console.log(this.user.usuario);
   }
 
   validarPassword() {
-    if (this.confirPassword === '' || this.user.contrasena === '') {
+    if (this.confirPassword === '' || this.passnew === '') {
       this.toastr.warning('Por favor completa todos los campos.');
       return;
     }
   
-    if (this.confirPassword !== this.user.contrasena) {
+    if (this.confirPassword !== this.passnew) {
       this.toastr.warning('Las contraseñas no coinciden.');
       return;
     }
   
     // Validar aquí los criterios de seguridad de la contraseña si es necesario
+    this.user.contrasena = this.passnew;
     this._userService.cambiarContrasena(this.user).subscribe(
       (data) => {
         this.toastr.success('¡Contraseña actualizada con éxito!', 'Éxito');

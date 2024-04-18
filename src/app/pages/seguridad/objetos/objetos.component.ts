@@ -3,13 +3,11 @@ import { ToastrService } from 'ngx-toastr';
 import { Subject } from 'rxjs';
 import { Objetos } from 'src/app/interfaces/seguridad/objetos';
 import { ObjetosService } from 'src/app/services/seguridad/objetos.service';
-import { NgZone } from '@angular/core';
 import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 import { ErrorService } from 'src/app/services/error.service';
 import { BitacoraService } from 'src/app/services/administracion/bitacora.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Usuario } from 'src/app/interfaces/seguridad/usuario';
-import { DatePipe } from '@angular/common';
 import * as XLSX from 'xlsx';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale'; 
@@ -22,8 +20,7 @@ import { SubmenuData } from 'src/app/interfaces/subMenuData/subMenuData';
   styleUrls: ['./objetos.component.css']
 })
 export class ObjetosComponent implements OnInit{
-
-objetoAnterior: any;
+  objetoAnterior: any;
 
   objetoEditando: Objetos = {
     id_objeto: 0, 
@@ -70,11 +67,9 @@ objetoAnterior: any;
   constructor(
     private _objService: ObjetosService,
     private toastr: ToastrService,
-    private _ngZone: NgZone,
     private _bitacoraService: BitacoraService,
     private _errorService: ErrorService,
     private _userService: UsuariosService,
-    private datePipe: DatePipe
     ) {}
 
   
@@ -94,7 +89,6 @@ objetoAnterior: any;
       });
     this.getUsuario();
   }
-
 
   ngOnDestroy(): void {
     // Do not forget to unsubscribe the event

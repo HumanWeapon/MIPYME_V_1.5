@@ -89,9 +89,9 @@ export class FirstLoginComponent {
   }
 
   ngOnInit(): void {
+    this.getUsuario();
     this.getParametros();
     this.getPreguntas();
-    this.getUsuario();
   }
 
   getParametros(){
@@ -121,13 +121,13 @@ export class FirstLoginComponent {
       this.usuario.usuario = user;
       this._usuarioService.getUsuario(this.usuario).subscribe(data => {
         this.usuario = data;
+        console.log(data);
       });
     } else {
       // Manejar el caso en el que 'usuario' no se encuentra en el localStorage
     }
   }
 
-  
   updateUltimaConexionUsuario(update: Usuario){
     this._usuarioService.editarUsuario(update).subscribe(data => {
       console.log(data)
@@ -194,6 +194,7 @@ export class FirstLoginComponent {
       fecha_vencimiento: this.usuario.fecha_vencimiento,
       intentos_fallidos: this.usuario.intentos_fallidos
     };
+    console.log(updateUsuario);
     this.updateUltimaConexionUsuario(updateUsuario);
   }
   

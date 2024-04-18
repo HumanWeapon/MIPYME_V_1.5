@@ -5,15 +5,17 @@
             <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
         </li>
         <li class="nav-item d-none d-sm-inline-block">
-            <a href="#" class="nav-link">Inicio</a>
+            <a href="/dashboard" class="nav-link">Inicio</a>
         </li>
         <li class="nav-item d-none d-sm-inline-block">
-            <a href="#" class="nav-link">Contacto</a>
+            <a href="https://www.unah.edu.hn/" class="nav-link">Contacto</a>
         </li>
         </ul>
     
         <!-- Right navbar links -->
         <ul class="navbar-nav ml-auto">
-    
+            <div class="navbar-nav">
+                <a type="button" (click)="logout()" class="nav-link"><i class="fas fa-solid fa-door-closed mr-2 ml-4"></i> Cerrar sesión</a>
+            </div>
         </ul>
 </nav>

@@ -38,65 +38,69 @@ import { HistorialBusquedaComponent } from './historial-busqueda/historial-busqu
 import { PerfilPymeComponent } from './perfil_pyme/perfil_pyme.component';
 import { HistorialPymeComponent } from './historial-pyme/historial-pyme.component';
 import { AuthGuard } from '../utils/auth.guard';
+import { PermisosGuard } from '../utils/routes.guard';
+import { NotFoundComponent } from './not-found/not-found.component';
+import { AccessDeniedComponent } from './access-denied/access-denied.component';
+import { LoginComponent } from '../auth/login/login.component';
 
 
 const routes: Routes = [
+  {path:'' ,redirectTo:'dashboard', pathMatch:'full'},
   {path:'dashboard',component:PagesComponent, canActivate: [AuthGuard],
   children:[
     //RUTAS DEL SIDEBAR
     //ABC modulo seguridad.
-    { path: 'seguridad', component: SeguridadComponent, data:{titulo: 'COMPONENTES DE SEGURIDAD'}},
-    { path: 'usuarios', component: UsuariosComponent, data:{titulo: 'Usuarios'}},
-    { path: 'objetos', component: ObjetosComponent, data:{titulo: 'Objetos'}},
-    { path: 'permisos', component: PermisosComponent, data:{titulo: 'Permisos'}},
-    { path: 'roles', component: RolesComponent, data:{titulo: 'Roles'}},
-    { path: 'preguntas_usuario', component: PreguntasComponent, data:{titulo: 'Preguntas'}},
-    { path: 'parametros', component: ParametrosComponent, data:{titulo: 'Parámetros'}},
+    { path: 'seguridad', component: SeguridadComponent, data:{titulo: 'Componentes de seguridad'}},
+    { path: 'usuarios', component: UsuariosComponent, canActivate: [PermisosGuard], data:{titulo: 'Usuarios'}},
+    { path: 'objetos', component: ObjetosComponent, canActivate: [PermisosGuard], data:{titulo: 'Objetos'}},
+    { path: 'permisos', component: PermisosComponent, canActivate: [PermisosGuard], data:{titulo: 'Permisos'}},
+    { path: 'roles', component: RolesComponent, canActivate: [PermisosGuard], data:{titulo: 'Roles'}},
+    { path: 'preguntas_usuario', component: PreguntasComponent, canActivate: [PermisosGuard], data:{titulo: 'Preguntas'}},
+    { path: 'parametros', component: ParametrosComponent, canActivate: [PermisosGuard], data:{titulo: 'Parámetros'}},
 
    //ABC modulo administracion.
-    { path: 'administracion', component: AdministracionComponent, data:{titulo: 'COMPONENTES DE ADMINISTRACION'}},
-    { path: 'bitacora', component:BitacoraComponent, data:{titulo: 'Bitácora'}},
-    { path: 'backup', component:BackupComponent, data:{titulo: 'Backup & Restore'}},
-    { path: 'restore', component:RestoreComponent, data:{titulo: 'Restaurar'}},
+    { path: 'administracion', component: AdministracionComponent, data:{titulo: 'Componentes de administración'}},
+    { path: 'bitacora', canActivate: [PermisosGuard], component:BitacoraComponent, data:{titulo: 'Bitácora'}},
+    { path: 'backup', canActivate: [PermisosGuard], component:BackupComponent, data:{titulo: 'Backup & Restore'}},
+    { path: 'restore', canActivate: [PermisosGuard], component:RestoreComponent, data:{titulo: 'Restaurar'}},
     
     //ABC modulo mantenimiento.
-    { path: 'mantenimiento', component: MantenimientoComponent, data:{titulo: 'COMPONENTES DE MANTENIMIENTO'}},
-    { path: 'paises', component: PaisesComponent, data:{titulo: 'Países'}},
-    { path: 'ciudades', component:CiudadesComponent, data:{titulo: 'Ciudades'}},
-    { path: 'Categoria_productos', component:CategoriaProductosComponent, data:{titulo: 'Categorías de productos'}},
-    { path: 'productos', component:ProductosComponent, data:{titulo: 'Productos'}},
-    { path: 'tipo_telefono', component:TipoTelefonoComponent, data:{titulo: 'Tipos de teléfono'}},
-    { path: 'tipo_contacto', component:TipoContactoComponent, data:{titulo: 'Tipos de Contacto'}},
-    { path: 'tipo_empresa', component:TipoEmpresaComponent, data:{titulo: 'Tipos de Empresa'}},
-    { path: 'tipo_direccion', component:TipoDireccionComponent, data:{titulo: 'Tipos de direcciones'}},
-    { path: 'tipo_requisito', component:TipoRequisitosComponent, data:{titulo: 'Requisitos de Exportación'}},
+    { path: 'mantenimiento', component: MantenimientoComponent, data:{titulo: 'Componentes de mantenimiento'}},
+    { path: 'paises', component: PaisesComponent, canActivate: [PermisosGuard], data:{titulo: 'Países'}},
+    { path: 'ciudades', component:CiudadesComponent, canActivate: [PermisosGuard], data:{titulo: 'Ciudades'}},
+    { path: 'Categoria_productos', component:CategoriaProductosComponent, canActivate: [PermisosGuard], data:{titulo: 'Categorías de productos'}},
+    { path: 'productos', component:ProductosComponent, canActivate: [PermisosGuard], data:{titulo: 'Productos'}},
+    { path: 'tipo_telefono', component:TipoTelefonoComponent, canActivate: [PermisosGuard], data:{titulo: 'Tipos de teléfono'}},
+    { path: 'tipo_contacto', component:TipoContactoComponent, canActivate: [PermisosGuard], data:{titulo: 'Tipos de Contacto'}},
+    { path: 'tipo_empresa', component:TipoEmpresaComponent, canActivate: [PermisosGuard], data:{titulo: 'Tipos de Empresa'}},
+    { path: 'tipo_direccion', component:TipoDireccionComponent, canActivate: [PermisosGuard], data:{titulo: 'Tipos de direcciones'}},
+    { path: 'tipo_requisito', component:TipoRequisitosComponent, canActivate: [PermisosGuard], data:{titulo: 'Requisitos de Exportación'}},
     
     { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard],  data:{titulo: 'Dashboard'}},
-    { path: 'perfil', component: PerfilComponent, data:{titulo: 'Mi Perfil'}},
-    { path: 'perfil_pyme', component: PerfilPymeComponent, data:{titulo: 'Mi Perfil Pyme'}},
+    { path: 'perfil', component: PerfilComponent, canActivate: [PermisosGuard], data:{titulo: 'Mi Perfil'}},
+    { path: 'perfil_pyme', component: PerfilPymeComponent, canActivate: [PermisosGuard], data:{titulo: 'Mi Perfil Pyme'}},
     { path: 'search', component: SearchComponent},
-    { path: 'historial_busqueda', component: HistorialBusquedaComponent, data:{titulo: 'Búsquedas PYME'}},
+    { path: 'historial_busqueda', component: HistorialBusquedaComponent, canActivate: [PermisosGuard], data:{titulo: 'Búsquedas PYME'}},
     { path: 'historial_busqueda_pyme', component: HistorialPymeComponent, data:{titulo: 'Mis Búsquedas'}},
 
-    
+
     //ABC grado B.
-    { path: 'pymes', component:PymeComponent, data:{titulo:'Pyme'}},
-    { path: 'empresas', component:EmpresasComponent, data:{titulo:'Empresas'}},
-    { path: 'operaciones_empresas', component:OperacionesEmpresasComponent, data:{titulo:'Operaciones Empresas'}},
-    { path: 'requisitos_exportacion', component:RequisitosExportacionComponent, data:{titulo: 'Requisitos de exportación'}},
-    { path: 'empresas_productos', component:EmpresasProductosComponent, data:{titulo: 'Productos de empresas'}},
-    { path: 'contactos', component:ContactoComponent, data:{titulo: 'Contacto'}},
-    { path: 'telefonos', component:TelefonosComponent, data:{titulo: 'Teléfonos'}},
-    { path: 'direcciones', component:DireccionesComponent, data:{titulo: 'Direcciones de Empresa'}},
-
-
+    { path: 'pymes', component:PymeComponent, canActivate: [PermisosGuard], data:{titulo:'Pyme'}},
+    { path: 'empresas', component:EmpresasComponent, canActivate: [PermisosGuard], data:{titulo:'Empresas'}},
+    { path: 'operaciones_empresas', component:OperacionesEmpresasComponent, canActivate: [PermisosGuard], data:{titulo:'Operaciones Empresas'}},
+    { path: 'requisitos_exportacion', component:RequisitosExportacionComponent, canActivate: [PermisosGuard], data:{titulo: 'Requisitos de exportación'}},
+    { path: 'empresas_productos', component:EmpresasProductosComponent, canActivate: [PermisosGuard], data:{titulo: 'Productos de empresas'}},
+    { path: 'contactos', component:ContactoComponent, canActivate: [PermisosGuard], data:{titulo: 'Contacto'}},
+    { path: 'telefonos', component:TelefonosComponent, canActivate: [PermisosGuard], data:{titulo: 'Teléfonos'}},
+    { path: 'direcciones', component:DireccionesComponent, canActivate: [PermisosGuard], data:{titulo: 'Direcciones de Empresa'}},
     //ABC grado C.
     //{ path: 'contactos', component:ContactoEmpresasComponent, data:{titulo: 'Contactos'}},
 
+    { path: 'not-found', component:NotFoundComponent},
+    { path: 'access-denied', component:AccessDeniedComponent},
+    { path: '**', component: DashboardComponent }
   ]}
 ];
-
-
 @NgModule({
   declarations: [],
   imports: [
@@ -107,4 +111,5 @@ const routes: Routes = [
     RouterModule
   ]
 })
-export class PagesRoutingModule { }
+export class PagesRoutingModule {
+ }

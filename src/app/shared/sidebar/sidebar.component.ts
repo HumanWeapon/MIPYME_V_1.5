@@ -72,16 +72,7 @@ export class SidebarComponent implements OnInit{
     };
   }
 
-  logout(){
-    if(this.getPyme.id_rol){
-      this.router.navigateByUrl('/login-pyme');
-      localStorage.clear();
-    }
-    if(this.user.id_rol){
-      this.router.navigateByUrl('/login');
-      localStorage.clear();
-    }
-  }
+
   consolidadloguin(parametro: any){
 
   }
@@ -132,5 +123,9 @@ export class SidebarComponent implements OnInit{
         this._errorService.msjError(e);
       }
     });
+  }
+  get_id_Objetos(item: any){
+    localStorage.setItem('id_objeto', item);
+    console.log(item);
   }
 }

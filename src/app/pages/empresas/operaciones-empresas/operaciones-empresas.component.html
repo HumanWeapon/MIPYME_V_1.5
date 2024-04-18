@@ -271,10 +271,12 @@
                   <div class="mb-2 mt-0">
                     <div class="input-group input-group-sm" >
                       <div class="ml-auto"> <!-- Agrega la clase ml-auto aquí -->
+                        <!-- /Productos de la empresa
+
                         <button type="button" class="btn btn-block btn_color_blue btn-sm"data-toggle="modal" data-target="#agregarRequisito">
                           <i class="fas fa-plus"></i> Nuevo
-                        </button>
-                    </div>
+                        </button> -->
+                      </div>
                     </div>
                   </div>
   
@@ -309,8 +311,7 @@
                             <th>Fecha Creación</th>
                             <th>Modificado</th>
                             <th>Fecha Modificación</th>
-                            <th>Estado</th>
-                            <th>Acciones</th>
+                            <!--  <th>Acciones</th> -->
                           </tr>
                         </thead>
                         <tbody>
@@ -322,12 +323,7 @@
                             <td>{{ TRequi.fecha_creacion | date: 'yyyy-MM-dd' }}</td>
                             <td>{{ TRequi.modificado_por | uppercase}}</td>
                             <td>{{ TRequi.fecha_modificacion | date: 'yyyy-MM-dd' }}</td>
-                            <td>
-                              <ng-container *ngIf="TRequi.estado === 1">ACTIVO</ng-container>
-                              <ng-container *ngIf="TRequi.estado === 2">INACTIVO</ng-container>
-                              
-                            </td>
-                            <td class="text-center">
+                            <!--  <td class="text-center">
                               <div class="btn-group">
                                 <div class="form-check form-switch ml-4">
                                   <input class="form-check-input" (click)="toggleFunctionRequi(TRequi, i)" [title]="TRequi.estado == 1 ? 'Desactivar' : 'Activar'" type="checkbox" 
@@ -335,7 +331,7 @@
                                   </div>
                                   <button type="button" (click)="obtenerIdTipoRequisito(TRequi, i)" title="Editar Tipo de Requisito" data-toggle="modal" data-target="#abrirModalEditarTipoRequisito" class="btna" ><i class="fas fa-solid fa-pen"></i></button>
                                 </div>
-                            </td>
+                            </td>  -->
                           </tr>
                         </tbody>
                       </table>
