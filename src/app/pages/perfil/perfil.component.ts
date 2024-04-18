@@ -24,7 +24,7 @@ export class PerfilComponent  implements OnInit{
 respuestas: string[] = [];
 nuevasRespuestas: string[] = [];
 modoEdicionPregunta: boolean = false;
-preguntasSeleccionadas: any[] = [];
+preguntasSeleccionadas: number[] = [];
 preguntasSeleccionadasOriginal: any[] = [];
 respuestasOriginal: string[] = [];
 /********************************************/
@@ -462,60 +462,53 @@ editarPregunta() {
 }
 
 
-guardarPreguntasRespuestas() {
-  console.log('Guardando preguntas y respuestas...'); // Agregar un console.log para verificar que la función se esté llamando
-
-  // Verificar que todas las respuestas estén llenas
-  if (!this.respuestas.every(respuesta => respuesta) || !this.preguntasSeleccionadas.every(pregunta => pregunta)) {
-    this.toastr.warning('Responde a todas las preguntas seleccionadas');
-    return;
-  }
-  console.log('Guardando preguntas y respuestas... PASO 2'); // Agregar un console.log para verificar que la función se esté llamando
-
-  // Verificar que no haya preguntas repetidas
-  const preguntasUnicas = new Set(this.preguntasSeleccionadas);
-  if (preguntasUnicas.size !== this.preguntasSeleccionadas.length) {
-    this.toastr.warning('Las preguntas no deben repetirse');
-    return;
-  }
-
-  console.log('Guardando preguntas y respuestas... PASO 3'); // Agregar un console.log para verificar que la función se esté llamando
-
-
-  // Guardar cada pregunta de usuario
-  this.preguntasSeleccionadas.forEach((pregunta, index) => {
-    // Verificar si el select está vacío
-    if (!pregunta) {
-      this.toastr.warning('Selecciona una pregunta para cada campo');
+save() {
+    // Verificar que todos los campos estén llenos
+    if (!this.respuestas.every(respuestas => respuestas) || !this.preguntasSeleccionadas.every(preguntaItem => preguntaItem)) {
+      this.toastr.warning('Responde a todas las preguntas seleccionadas');
       return;
     }
 
-    const preguntaUsuario = {
-      id_preguntas_usuario: this.usuario.id_usuario,
-      id_pregunta: pregunta.id_pregunta,
+        // Verificar que no haya preguntas repetidas
+        const preguntasUnicas = new Set(this.preguntasSeleccionadas);
+        if (preguntasUnicas.size !== this.preguntasSeleccionadas.length) {
+          this.toastr.warning('Las preguntas no deben repetirse');
+          return;
+        }
+        
+  // Guardar cada pregunta de usuario
+  this.preguntasSeleccionadas.forEach((preguntaId, index) => {
+    const preguntaUsuario: Preguntas_Usuario = {
+      id_preguntas_usuario: this.usuario.id_usuario, // Reemplaza esto con el valor correcto si es necesario
+      id_pregunta: preguntaId, // Reemplaza esto con el ID de la pregunta que se está editando
       id_usuario: this.usuario.id_usuario,
-      respuesta: this.respuestas[index],
-      creado_por: this.usuario.usuario.toUpperCase(),
-      fecha_creacion: new Date(),
+      respuesta: this.respuestas[index], // Reemplaza esto con la respuesta editada
+      creado_por: this.usuario.usuario.toUpperCase(), // Reemplaza esto con el valor correcto si es necesario
+      fecha_creacion: new Date(), // Reemplaza esto con el valor correcto si es necesario
       modificado_por: this.usuario.usuario.toUpperCase(),
       fecha_modificacion: new Date()
     };
 
-    // Llamar al servicio para guardar cada pregunta de usuario
-    this._preguntasUsuarioService.postPreguntasUsuario(preguntaUsuario).subscribe(data => {
-      this.toastr.success('Pregunta registrada exitosamente');
-      // Navegar a la página de recuperar después de guardar todas las preguntas
-    });
+    // Llamar al servicio para actualizar la pregunta de usuario
+    this._preguntasUsuarioService.updatePreguntaUsuario(preguntaUsuario).subscribe(
+      (data) => {
+        this.toastr.success('Pregunta actualizada exitosamente');
+        // Puedes agregar lógica adicional aquí, si es necesario
+      },
+      (error) => {
+        console.error('Error al actualizar la pregunta:', error);
+        this.toastr.error('Error al actualizar la pregunta');
+      }
+    );
   });
-
 }
 
 cancelarEdicionPregunta() {
+
   // Restaurar los datos originales
   this.preguntasSeleccionadas = [...this.preguntasSeleccionadasOriginal];
   this.respuestas = [...this.respuestasOriginal];
   this.modoEdicionPregunta = false;
 }
-
 
 }
