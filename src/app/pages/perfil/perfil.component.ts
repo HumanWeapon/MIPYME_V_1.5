@@ -109,6 +109,8 @@ respuestasOriginal: string[] = [];
     fecha_modificacion: new Date(),
   };
 
+  guardando: boolean = false;
+
   constructor(
     private _preguntasUsuarioService: PreguntasUsuarioService,
     private _preguntasService: PreguntasService,
@@ -461,54 +463,93 @@ editarPregunta() {
   });
 }
 
-
-save() {
-    // Verificar que todos los campos estén llenos
-    if (!this.respuestas.every(respuestas => respuestas) || !this.preguntasSeleccionadas.every(preguntaItem => preguntaItem)) {
-      this.toastr.warning('Responde a todas las preguntas seleccionadas');
-      return;
-    }
-
-        // Verificar que no haya preguntas repetidas
-        const preguntasUnicas = new Set(this.preguntasSeleccionadas);
-        if (preguntasUnicas.size !== this.preguntasSeleccionadas.length) {
-          this.toastr.warning('Las preguntas no deben repetirse');
-          return;
-        }
-        
-  // Guardar cada pregunta de usuario
-  this.preguntasSeleccionadas.forEach((preguntaId, index) => {
-    const preguntaUsuario: Preguntas_Usuario = {
-      id_preguntas_usuario: this.usuario.id_usuario, // Reemplaza esto con el valor correcto si es necesario
-      id_pregunta: preguntaId, // Reemplaza esto con el ID de la pregunta que se está editando
-      id_usuario: this.usuario.id_usuario,
-      respuesta: this.respuestas[index], // Reemplaza esto con la respuesta editada
-      creado_por: this.usuario.usuario.toUpperCase(), // Reemplaza esto con el valor correcto si es necesario
-      fecha_creacion: new Date(), // Reemplaza esto con el valor correcto si es necesario
-      modificado_por: this.usuario.usuario.toUpperCase(),
-      fecha_modificacion: new Date()
-    };
-
-    // Llamar al servicio para actualizar la pregunta de usuario
-    this._preguntasUsuarioService.updatePreguntaUsuario(preguntaUsuario).subscribe(
-      (data) => {
-        this.toastr.success('Pregunta actualizada exitosamente');
-        // Puedes agregar lógica adicional aquí, si es necesario
-      },
-      (error) => {
-        console.error('Error al actualizar la pregunta:', error);
-        this.toastr.error('Error al actualizar la pregunta');
-      }
-    );
-  });
-}
-
 cancelarEdicionPregunta() {
 
   // Restaurar los datos originales
   this.preguntasSeleccionadas = [...this.preguntasSeleccionadasOriginal];
   this.respuestas = [...this.respuestasOriginal];
   this.modoEdicionPregunta = false;
+}
+
+/*******************************************************************************************************/
+idPregunta: number[] = [];
+respuesta: string[] = [];
+preguntas: any[] = []; // Asegúrate de inicializar preguntas como un arreglo vacío
+parametroPreguntas: any;
+
+range(count: number): number[] {
+  return Array(count).fill(0).map((x, i) => i);
+}
+
+PostPreguntaUsuario() {
+  // Verificar que todos los campos estén llenos
+  if (!this.respuesta.every(respuesta => respuesta) || !this.preguntasSeleccionadas.every(pregunta => pregunta)) {
+    this.toastr.warning('Responde a todas las preguntas seleccionadas');
+    return;
+  }
+
+  // Verificar que no haya preguntas repetidas
+  const preguntasUnicas = new Set(this.preguntasSeleccionadas);
+  if (preguntasUnicas.size !== this.preguntasSeleccionadas.length) {
+    this.toastr.warning('Las preguntas no deben repetirse');
+    return;
+  }
+
+  // Guardar cada pregunta de usuario
+  this.preguntasSeleccionadas.forEach((preguntaId, index) => {
+    // Verificar si el select está vacío
+    if (preguntaId === 0) {
+      this.toastr.warning('Selecciona una pregunta para cada campo');
+      return;
+    }
+
+    const preguntaUsuario = {
+      id_preguntas_usuario: this.usuario.id_usuario,
+      id_pregunta: preguntaId,
+      id_usuario: this.usuario.id_usuario,
+      respuesta: this.respuestas[index],
+      creado_por: this.usuario.usuario.toUpperCase(),
+      fecha_creacion: new Date(),
+      modificado_por: this.usuario.usuario.toUpperCase(),
+      fecha_modificacion: new Date()
+    };
+
+    // Llamar al servicio para guardar cada pregunta de usuario
+    this._preguntasUsuarioService.postPreguntasUsuario(preguntaUsuario).subscribe(data => {
+      this.toastr.success('Pregunta registrada exitosamente');
+      // Navegar a la página de recuperar después de guardar todas las preguntas
+      if (index === this.preguntasSeleccionadas.length - 1) {
+        this.modoEdicionPregunta = false;
+      }
+    });
+  });
+
+  // Actualizar la última conexión del usuario
+  const updateUsuario = {
+    id_usuario: this.usuario.id_usuario,
+    creado_por: this.usuario.creado_por,
+    fecha_creacion: this.usuario.fecha_creacion,
+    modificado_por: this.usuario.modificado_por,
+    fecha_modificacion: this.usuario.fecha_modificacion,
+    usuario: this.usuario.usuario,
+    nombre_usuario: this.usuario.nombre_usuario,
+    correo_electronico: this.usuario.correo_electronico,
+    estado_usuario: this.usuario.estado_usuario,
+    contrasena: this.usuario.contrasena,
+    id_rol: this.usuario.id_rol,
+    fecha_ultima_conexion: new Date(),
+    fecha_vencimiento: this.usuario.fecha_vencimiento,
+    intentos_fallidos: this.usuario.intentos_fallidos
+  };
+  console.log(updateUsuario);
+  this.updateUltimaConexionUsuario(updateUsuario);
+}
+
+
+
+updateUltimaConexionUsuario(update: Usuario){
+  this._userService.editarUsuario(update).subscribe(data => {
+  })
 }
 
 }
