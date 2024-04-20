@@ -280,12 +280,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button *ngIf="usuarioSeleccionado && (usuarioSeleccionado.id_rol === 4 || usuarioSeleccionado.id_rol === 1)" 
-         type="button" 
-         class="btn btn-warning" 
-         (click)="reestablecer(correo_electronico)">
-          Reestablecer Contraseña
-        </button>        
+        <button type="button" class="btn btn-warning" (click)="reestablecer(correo_electronico)"> Reestablecer Contraseña </button>        
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
       </div>
     </div>

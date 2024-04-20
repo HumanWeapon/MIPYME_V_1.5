@@ -483,8 +483,8 @@ range(count: number): number[] {
 
 GuardarNuevasPreguntasEdicion() {
   // Verificar que todos los campos estén llenos
-  if (!this.respuesta.every(respuesta => respuesta) || !this.preguntasSeleccionadas.every(pregunta => pregunta)) {
-    this.toastr.warning('Responde a todas las preguntas seleccionadas');
+  if (!this.preguntasSeleccionadas.every(pregunta => pregunta)) {
+    this.toastr.warning('Selecciona las preguntas y responde las seleccionadas');
     return;
   }
 
@@ -518,10 +518,12 @@ GuardarNuevasPreguntasEdicion() {
 
       // Llamar al servicio para guardar cada pregunta de usuario
       this._preguntasUsuarioService.postPreguntasUsuario(preguntaUsuario).subscribe(data => {
-        this.toastr.success('Pregunta registrada exitosamente');
+        this.toastr.success('Preguntas registradas exitosamente');     
         // Navegar a la página de recuperar después de guardar todas las preguntas
         if (index === this.preguntasSeleccionadas.length - 1) {
+          // Después de guardar todas las preguntas, cargar nuevamente las preguntas del usuario
           this.modoEdicionPregunta = false;
+          location.reload();
         }
       });
     });
@@ -548,12 +550,19 @@ GuardarNuevasPreguntasEdicion() {
   this.updateUltimaConexionUsuario(updateUsuario);
 }
 
-
-
-
 updateUltimaConexionUsuario(update: Usuario){
   this._userService.editarUsuario(update).subscribe(data => {
   })
 }
+
+todosLosCamposLlenos(): boolean {
+  for (let i = 0; i < this.preguntasFiltradas.length; i++) {
+    if (!this.preguntasSeleccionadas[i] || !this.respuestas[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
 
 }

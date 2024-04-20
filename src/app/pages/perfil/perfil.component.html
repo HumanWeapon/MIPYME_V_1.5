@@ -183,7 +183,7 @@
           <option value="" disabled selected>Seleccione su pregunta</option>
           <option *ngFor="let preguntaItem of listPreguntas" [value]="preguntaItem.id_pregunta" [selected]="preguntaItem.id_pregunta === preguntasSeleccionadas[i]">{{ preguntaItem.pregunta }}</option>
         </select>
-        <input [(ngModel)]="respuestas[i]" name="respuesta[i]" class="form-control mt-1" type="text" placeholder="Ingresa tu respuesta" style="text-transform: uppercase;">
+        <input [(ngModel)]="respuestas[i]" name="respuestas[i]" class="form-control mt-1" type="text" placeholder="Ingresa tu respuesta" style="text-transform: uppercase;">
       </div>
     </div>
     <div class="form-group row">
@@ -191,12 +191,13 @@
         <button type="button" class="btn btn-danger btn-sm mr-2" (click)="cancelarEdicionPregunta()">
           <i class="fa fa-times"></i> Cancelar
         </button>
-        <button type="submit" class="btn btn-success btn-sm" (click)="GuardarNuevasPreguntasEdicion()">
+        <button type="submit" class="btn btn-success btn-sm" [disabled]="!todosLosCamposLlenos()" (click)="GuardarNuevasPreguntasEdicion()">
           <i class="fa fa-check"></i> Guardar
         </button>
       </div>
     </div>
   </div>
+  
   
   <br>
   <br>
