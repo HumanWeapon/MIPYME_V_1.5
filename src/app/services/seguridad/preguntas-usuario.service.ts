@@ -50,5 +50,11 @@ export class PreguntasUsuarioService {
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)
     return this.http.put<any>(`${this.myAppUrl}${this.myApiUrl}/updatePreguntaUsuario`, pregunta, { headers: headers })
   }
+
+  deletePreguntasUsuario(id_usuario: number): Observable<any> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.delete<any>(`${this.myAppUrl}${this.myApiUrl}/deletePreguntaUsuario/${id_usuario}`, { headers: headers });
+  }
   
 }
