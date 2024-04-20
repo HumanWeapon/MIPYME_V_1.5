@@ -77,8 +77,8 @@ const routes: Routes = [
     { path: 'tipo_requisito', component:TipoRequisitosComponent, canActivate: [PermisosGuard], data:{titulo: 'Requisitos de Exportación'}},
     
     { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard],  data:{titulo: 'Dashboard'}},
-    { path: 'perfil', component: PerfilComponent, canActivate: [PermisosGuard], data:{titulo: 'Mi Perfil'}},
-    { path: 'perfil_pyme', component: PerfilPymeComponent, canActivate: [PermisosGuard], data:{titulo: 'Mi Perfil Pyme'}},
+    { path: 'perfil', component: PerfilComponent, data:{titulo: 'Mi Perfil'}},
+    { path: 'perfil_pyme', component: PerfilPymeComponent, data:{titulo: 'Mi Perfil Pyme'}},
     { path: 'search', component: SearchComponent},
     { path: 'historial_busqueda', component: HistorialBusquedaComponent, canActivate: [PermisosGuard], data:{titulo: 'Búsquedas PYME'}},
     { path: 'historial_busqueda_pyme', component: HistorialPymeComponent, data:{titulo: 'Mis Búsquedas'}},

@@ -626,8 +626,8 @@
                     <thead>
                       <tr>
                         <th scope="col">Cod_Pais</th>
-                        <th scope="col">Pais</th>
                         <th scope="col">Cod_area</th>
+                        <th scope="col">Pais</th>
                         <th scope="col">Teléfono</th>
                         <th scope="col">Descripcion</th>
                         <th scope="col">Estado</th>
@@ -637,8 +637,8 @@
                     <tbody>
                       <tr *ngFor="let producto of telefonosContactos let i= index">
                         <td>{{producto.paises.cod_pais }}</td>
-                        <td>{{producto.paises.pais | uppercase }}</td>
                         <td>{{producto.cod_area }}</td>
+                        <td>{{producto.paises.pais | uppercase }}</td>
                         <td>{{ formatPhoneNumber(producto.telefono) }}</td> <!-- Llamar a la función formatPhoneNumber -->
                         <td>{{producto.descripcion }}</td>
                         <td>
@@ -727,14 +727,14 @@
                     <option *ngFor="let item of listPaises; let value = index" [value]="item.id_pais">{{ item.pais }}</option>
                   </select>
                 </div>
+                <div class="form-group">
+                  <label for="nuevoContactoT">Cod_area</label>
+                  <input type="text" [(ngModel)]="nuevoContactoT.cod_area" name="nuevoContactoT.cod_area"  class="form-control" id="nuevoContactoT" placeholder="Cod_area" (input)="convertirAMayusculas($event, 'cod_area')" (input)="eliminarCaracteresEspeciales($event, 'cod_area')">
+              </div> 
                   <div class="form-group">
                       <label for="nuevoContactoT">Teléfono:</label>
                       <input type="text" [(ngModel)]="nuevoContactoT.telefono" name="nuevoContactoT.telefono" class="form-control" id="nuevoContactoT" placeholder="Teléfono" (input)="convertirAMayusculas($event, 'telefono')" (input)="eliminarCaracteresEspeciales($event, 'telefono')">
-                  </div>
-                  <div class="form-group">
-                    <label for="nuevoContactoT">Cod_area</label>
-                    <input type="text" [(ngModel)]="nuevoContactoT.cod_area" name="nuevoContactoT.cod_area"  class="form-control" id="nuevoContactoT" placeholder="Cod_area" (input)="convertirAMayusculas($event, 'cod_area')" (input)="eliminarCaracteresEspeciales($event, 'cod_area')">
-                </div>  
+                  </div> 
                 <div class="form-group">
                   <label for="nuevoContactoT">Descripción</label>
                   <textarea rows="4" type="text" [(ngModel)]="nuevoContactoT.descripcion" name="nuevoContactoT.descripcion" class="form-control" id="nuevoContactoT" placeholder="Descripción" (input)="convertirAMayusculas($event, 'descripcion')" (input)="eliminarCaracteresEspeciales($event, 'descripcion')"></textarea>

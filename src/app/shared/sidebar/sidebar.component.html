@@ -1,18 +1,18 @@
 <aside class="main-sidebar main-sidebar-custom sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="../../index3.html" class="brand-link">
+    <a class="brand-link">
         <img src="../../../assets/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3 mr-4" style="opacity: .8">
         <span style="color: white;" class="brand-text font-weight-light"> <strong>MIPYME</strong> </span>
     </a>
 
-    <a href="../../index3.html" class="brand-link">
+    <a class="brand-link">
       <img
         [src]="getPyme.nombre_pyme ? 'assets/dist/img/avatar1.png' : 'assets/dist/img/avatar6.png'" 
         style="margin: 0%;" 
         alt="User profile picture" 
         class="brand-image img-circle elevation-3 mr-4" style="opacity: .8">
         <div class="info">
-          <a title="Ver Perfil" [routerLink]="getPyme.nombre_pyme ? 'perfil_pyme' : 'perfil'" class="d-block mb-0 mr-3" style="color: white;"> {{ getPyme.nombre_pyme ? getPyme.nombre_pyme : userName }}</a>
+          <a title="Ver Perfil" [routerLink]="getPyme.nombre_pyme ? 'perfil_pyme' : 'perfil'" class="d-block mb-0 mr-3" style="color: white;"> MI PERFIL </a>
         </div>
     </a>
     <!-- Sidebar -->

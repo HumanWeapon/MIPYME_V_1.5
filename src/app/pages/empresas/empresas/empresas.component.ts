@@ -355,7 +355,6 @@ getEstadoText(estado: number): string {
       const inputValue = event.target.value;
       const uppercaseValue = inputValue.toUpperCase();
       event.target.value = uppercaseValue;
-      this.nuevaEmpresa[field] = event.target.value.trim();
     }
   }
 
