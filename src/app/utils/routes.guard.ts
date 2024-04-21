@@ -25,27 +25,21 @@ export class PermisosGuard implements CanActivate{
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-
-    
-
-    
-
-
     //console.log(id_rol);
     //console.log(id_objeto);
     //console.log(id_usuario);
     // Verificar si todos los identificadores están disponibles
 
-    console.log(this.id_rol);
-    console.log(this.id_objeto);
-    console.log(this.id_usuario);
+    //console.log(this.id_rol);
+    //console.log(this.id_objeto);
+    //console.log(this.id_usuario);
 
     if(this.id_rol && this.id_objeto && this.id_usuario) {
 
       return this._permisosService.permisosdeRoutes(this.id_rol, this.id_objeto2, this.id_usuario).pipe(
         map(permisos => {
           if (permisos) {
-            console.log(permisos)
+            //console.log(permisos)
             // Si el usuario tiene permisos, permite el acceso a la ruta
             return true;
           } else {
