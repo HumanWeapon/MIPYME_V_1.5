@@ -202,5 +202,6 @@ export class FirstLoginComponent {
     const inputValue = event.target.value;
     event.target.value = inputValue.toUpperCase();
   }
+  
 
 }
