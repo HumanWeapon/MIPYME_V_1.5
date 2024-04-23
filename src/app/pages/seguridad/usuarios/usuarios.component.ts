@@ -340,6 +340,13 @@ export class UsuariosComponent {
         intentos_fallidos: 0
       };
 
+    // Verifica si el correo electrónico ya está registrado en la lista de usuarios
+    const correoExistente = this.usuariosAllRoles.some(user => user.correo_electronico === this.newUser.correo_electronico);
+    if (correoExistente) {
+      this._toastr.error('El correo electrónico ya está en uso. Por favor, ingresa otro correo electrónico.');
+      return;
+    }
+
       if (!this.newUser.usuario || !this.newUser.nombre_usuario || !this.newUser.correo_electronico || !this.newUser.contrasena || !this.newUser.id_rol) {
         this._toastr.warning('Debes completar los campos vacíos');
         this.newUser.usuario = '';

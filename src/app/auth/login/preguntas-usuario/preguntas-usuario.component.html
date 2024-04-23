@@ -13,14 +13,7 @@
               <form [formGroup]="securityForm" (submit)="onSubmit()" >
                 <div *ngFor="let pregunta of preguntasRespuestas">
                   <label>{{ pregunta.pregunta.pregunta }}</label>
-                  <input
-                  type="text"
-                  [formControlName]="pregunta.id_pregunta"
-                  class="form-control mb-3"
-                  id="exampleInputBorderWidth2"
-                  placeholder="Respuesta"
-                  name="respuesta"
-                />
+                  <input type="text" (input)="convertirAMayusculas($event)" [formControlName]="pregunta.id_pregunta" class="form-control mb-3" id="exampleInputBorderWidth2" placeholder="Respuesta" name="respuesta" (input)="onInputChange($event)">
                 </div>
                 <div class="row mb-3">
                   <div class="col-6" >

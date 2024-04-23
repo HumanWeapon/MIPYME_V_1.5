@@ -15,7 +15,7 @@
                 <option value="0" disabled selected>Seleccione una pregunta</option>
                 <option *ngFor="let pregunta of preguntas" [value]="pregunta.id_pregunta"> {{pregunta.pregunta}} </option>
               </select>
-              <input [(ngModel)]="respuesta[index]" name="respuesta[index]" class="form-control mt-1" type="text" placeholder="Ingresa tu respuesta" style="text-transform: uppercase;">
+              <input [(ngModel)]="respuesta[index]" name="respuesta[index]" (input)="convertirAMayusculas($event, 'respuesta')" class="form-control mt-1" type="text" placeholder="Ingresa tu respuesta" style="text-transform: uppercase;">
             </div>
           </div>
         </div>

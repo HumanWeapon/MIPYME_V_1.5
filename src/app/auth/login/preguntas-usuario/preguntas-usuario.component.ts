@@ -79,6 +79,12 @@ export class PreguntasUsuarioComponent implements OnInit {
     event.target.value = inputValue.toUpperCase();
   }
 
+  onInputChange(event: any) {
+    const inputElement = event.target as HTMLInputElement; // Obtener el elemento input
+    const newValue = inputElement.value.toUpperCase(); // Convertir el valor a mayúsculas
+    inputElement.value = newValue; // Asignar el valor convertido de vuelta al input
+  }
+  
   onSubmit() {
     const respuestasUsuario = this.securityForm.value;
     let respuestasCorrectasCount = 0; // Contador para contar las respuestas correctas

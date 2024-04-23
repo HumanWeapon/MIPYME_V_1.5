@@ -198,13 +198,9 @@ export class FirstLoginComponent {
     this.updateUltimaConexionUsuario(updateUsuario);
   }
   
-
-
-  convertirAMayusculas(): void {
-    this.respuesta[0] = this.respuesta[0].toUpperCase();
-    this.respuesta[1] = this.respuesta[1].toUpperCase();
-    this.respuesta[2] = this.respuesta[2].toUpperCase(); // Convierte el valor a mayúsculas
+  convertirAMayusculas(event: any, field: string) {
+    const inputValue = event.target.value;
+    event.target.value = inputValue.toUpperCase();
   }
-
 
 }
