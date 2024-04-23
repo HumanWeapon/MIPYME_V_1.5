@@ -482,7 +482,7 @@ export class UsuariosComponent {
   }
 
   reestablecer(correo_electronico: string) {
-    const correoUsuario = this.usuarioSeleccionado.correo_electronico;
+    const correoUsuario = this.editUser.correo_electronico;
     localStorage.setItem('correo_electronico', correo_electronico);
     console.log('Correo Obtenido: ' + correoUsuario);
   
@@ -491,7 +491,7 @@ export class UsuariosComponent {
       response => {
         // Aquí puedes manejar la respuesta del servicio
         this._toastr.success('Nueva Contraseña enviada con Exito.');
-        console.log('contraseña nueva: ' + this.usuarioSeleccionado.contrasena);
+        console.log('contraseña nueva: ' + this.editUser.contrasena);
   
         // Compara el correo electrónico restablecido con el correo del usuario actual
         if (correoUsuario === correo_electronico) {
