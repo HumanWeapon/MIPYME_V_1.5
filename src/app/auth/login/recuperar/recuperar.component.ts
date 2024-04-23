@@ -50,17 +50,37 @@ export class RecuperarComponent implements OnInit{
   }
 
   validarPassword() {
+    // Verificar si los campos de contraseña están completos
     if (this.confirPassword === '' || this.passnew === '') {
       this.toastr.warning('Por favor completa todos los campos.');
       return;
     }
   
+    // Verificar si las contraseñas coinciden
     if (this.confirPassword !== this.passnew) {
       this.toastr.warning('Las contraseñas no coinciden.');
       return;
     }
   
-    // Validar aquí los criterios de seguridad de la contraseña si es necesario
+    // Definir las reglas de validación de la contraseña
+    const longitudMinima = 8; // Mínimo 8 caracteres
+    const tieneMayusculas = /[A-Z]/.test(this.passnew);
+    const tieneMinusculas = /[a-z]/.test(this.passnew);
+    const tieneNumeros = /[0-9]/.test(this.passnew);
+    const tieneCaracteresEspeciales = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(this.passnew);
+  
+    // Realizar la validación de la contraseña
+    if (this.passnew.length < longitudMinima) {
+      this.toastr.warning(`La nueva contraseña debe tener al menos ${longitudMinima} caracteres`);
+      return;
+    }
+  
+    if (!tieneMayusculas || !tieneMinusculas || !tieneNumeros || !tieneCaracteresEspeciales) {
+      this.toastr.warning('La nueva contraseña debe contener al menos una letra mayúscula, una letra minúscula, un número y un caracter especial');
+      return;
+    }
+  
+    // Si la contraseña pasa todas las validaciones, proceder a cambiarla
     this.user.contrasena = this.passnew;
     this._userService.cambiarContrasena(this.user).subscribe(
       (data) => {
@@ -77,5 +97,6 @@ export class RecuperarComponent implements OnInit{
       }
     );
   }
+  
   
 }

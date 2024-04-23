@@ -66,7 +66,25 @@ export class ResetPasswordComponent implements OnInit {
       return;
     }
   
-    // Envía la solicitud para restablecer la contraseña
+    // Definir las reglas de validación de la contraseña
+    const longitudMinima = 8; // Mínimo 8 caracteres
+    const tieneMayusculas = /[A-Z]/.test(this.newPassword);
+    const tieneMinusculas = /[a-z]/.test(this.newPassword);
+    const tieneNumeros = /[0-9]/.test(this.newPassword);
+    const tieneCaracteresEspeciales = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(this.newPassword);
+  
+    // Realizar la validación de la contraseña
+    if (this.newPassword.length < longitudMinima) {
+      this.toastr.warning(`La nueva contraseña debe tener al menos ${longitudMinima} caracteres`);
+      return;
+    }
+  
+    if (!tieneMayusculas || !tieneMinusculas || !tieneNumeros || !tieneCaracteresEspeciales) {
+      this.toastr.warning('La nueva contraseña debe contener al menos una letra mayúscula, una letra minúscula, un número y un caracter especial');
+      return;
+    }
+  
+    // Si la contraseña pasa todas las validaciones, proceder a restablecerla
     this._userService.resetPassword(this.newPassword, this.resetToken)
       .subscribe(
         response => {
@@ -83,6 +101,7 @@ export class ResetPasswordComponent implements OnInit {
         }
       );
   }
+  
   
   
 
