@@ -321,6 +321,14 @@ validarPassword() {
   // Obtener la contraseña almacenada en el Local Storage
   const userLocal = localStorage.getItem('CCP');
 
+  // Definir las reglas de validación de la contraseña
+  const longitudMinima = 8; // Mínimo 8 caracteres
+  const tieneMayusculas = /[A-Z]/.test(this.nuevaContrasena);
+  const tieneMinusculas = /[a-z]/.test(this.nuevaContrasena);
+  const tieneNumeros = /[0-9]/.test(this.nuevaContrasena);
+  const tieneCaracteresEspeciales = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(this.nuevaContrasena);
+
+  // Realizar la validación de la contraseña
   if (this.contrasenaActual === '') {
     // Contraseña actual no proporcionada, realizar la actualización de usuario, nombre y correo
     this.validarCambios();
@@ -331,11 +339,15 @@ validarPassword() {
     } else if (this.confirmarContrasena !== this.nuevaContrasena) {
       this.toastr.warning('Las contraseñas no coinciden');
     } else if (userLocal === null) {
-      this.toastr.warning('No se encontró una contraseña almacenada en el Local Storage');
+      this.toastr.warning('No se encontró una contraseña almacenada en la Base de Datos');
     } else if (this.contrasenaActual !== userLocal) {
       this.toastr.warning('La contraseña actual no coincide con la contraseña almacenada');
+    } else if (this.nuevaContrasena.length < longitudMinima) {
+      this.toastr.warning(`La nueva contraseña debe tener al menos ${longitudMinima} caracteres`);
+    } else if (!tieneMayusculas || !tieneMinusculas || !tieneNumeros || !tieneCaracteresEspeciales) {
+      this.toastr.warning('La nueva contraseña debe contener al menos una letra mayúscula, una letra minúscula, un número y un caracter especial');
     } else {
-      // Contraseñas coinciden, procede a cambiar la contraseña
+      // Contraseña válida, procede a cambiarla
       this.usuario.contrasena = this.nuevaContrasena; // Asigna la nueva contraseña
       this._userService.cambiarContrasena(this.usuario).subscribe((data) => {
         if (data) {
@@ -361,6 +373,7 @@ validarPassword() {
   this.toggleInputTypeN('password');
   this.toggleInputTypeC('password');
 }
+
 
 imagenPerfil(event: Event): any {
   // Verificar que event.target no sea nulo
