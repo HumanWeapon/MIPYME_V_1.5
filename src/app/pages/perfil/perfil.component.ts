@@ -123,10 +123,10 @@ respuestasOriginal: string[] = [];
 
   ngOnInit(): void {
     this.getUsuario();
-    this.getRoles();
-    this.getPreguntas();
     this.conbinarPreguntas();
     this.getPreguntasUsuario();
+    this.getRoles();
+    this.getPreguntas();
   }
 
   getUsuario(){
@@ -140,6 +140,7 @@ respuestasOriginal: string[] = [];
         this.usuarioOriginal = { ...this.usuario }; // Copia del usuario original
         this.getPreguntasUsuario(); // Llama a getPreguntasUsuario después de que usuario se inicialice
         this.getPreguntas(); // Llama a getPreguntas después de que usuario se inicialice
+        this.conbinarPreguntas();
       });
     }
   }
