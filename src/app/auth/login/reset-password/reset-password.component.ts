@@ -100,7 +100,7 @@ export class ResetPasswordComponent implements OnInit {
                 if (error.status === 401 && error.error && error.error.message === 'El enlace o token ha expirado. Por favor, solicita un nuevo enlace de restablecimiento de contraseña.') {
                     this.toastr.error(error.error.message);
                 } else {
-                    this.toastr.error('Error al restablecer la contraseña');
+                    //this.toastr.error('Error al restablecer la contraseña');
                 }
             }
         );
