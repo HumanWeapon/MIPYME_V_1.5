@@ -56,14 +56,14 @@ export class ResetPasswordComponent implements OnInit {
   validarPassword() {
     // Comprueba si las contraseñas están completas
     if (this.confirPassword === '' || this.newPassword === '') {
-      this.toastr.warning('Por favor completa todos los campos.');
-      return;
+        this.toastr.warning('Por favor completa todos los campos.');
+        return;
     }
   
     // Comprueba si las contraseñas coinciden
     if (this.confirPassword !== this.newPassword) {
-      this.toastr.warning('Las contraseñas no coinciden.');
-      return;
+        this.toastr.warning('Las contraseñas no coinciden.');
+        return;
     }
   
     // Definir las reglas de validación de la contraseña
@@ -75,32 +75,37 @@ export class ResetPasswordComponent implements OnInit {
   
     // Realizar la validación de la contraseña
     if (this.newPassword.length < longitudMinima) {
-      this.toastr.warning(`La nueva contraseña debe tener al menos ${longitudMinima} caracteres`);
-      return;
+        this.toastr.warning(`La nueva contraseña debe tener al menos ${longitudMinima} caracteres`);
+        return;
     }
   
     if (!tieneMayusculas || !tieneMinusculas || !tieneNumeros || !tieneCaracteresEspeciales) {
-      this.toastr.warning('La nueva contraseña debe contener al menos una letra mayúscula, una letra minúscula, un número y un caracter especial');
-      return;
+        this.toastr.warning('La nueva contraseña debe contener al menos una letra mayúscula, una letra minúscula, un número y un caracter especial');
+        return;
     }
   
     // Si la contraseña pasa todas las validaciones, proceder a restablecerla
     this._userService.resetPassword(this.newPassword, this.resetToken)
-      .subscribe(
-        response => {
-          // Maneja la respuesta exitosa
-          console.log('Contraseña restablecida con éxito');
-          this.resetSuccessful = true;
-          this.toastr.success('Contraseña Recuperada Exitosamente.');
-          this.router.navigate(['/login']);
-        },
-        error => {
-          // Maneja el error
-          console.error('Error al restablecer la contraseña:', error);
-          this.resetError = 'Error al restablecer la contraseña';
-        }
-      );
-  }
+        .subscribe(
+            response => {
+                // Maneja la respuesta exitosa
+                console.log('Contraseña restablecida con éxito');
+                this.resetSuccessful = true;
+                this.toastr.success('Contraseña Recuperada Exitosamente.');
+                this.router.navigate(['/login']);
+            },
+            error => {
+                // Maneja el error
+                console.error('Error al restablecer la contraseña:', error);
+                if (error.error && error.error.message) {
+                    this.toastr.error(error.error.message);
+                } else {
+                    this.toastr.error('Error al restablecer la contraseña');
+                }
+            }
+        );
+}
+
   
   
   
