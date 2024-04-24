@@ -125,6 +125,8 @@ respuestasOriginal: string[] = [];
     this.getUsuario();
     this.getRoles();
     this.getPreguntas();
+    this.conbinarPreguntas();
+    this.getPreguntasUsuario();
   }
 
   getUsuario(){
