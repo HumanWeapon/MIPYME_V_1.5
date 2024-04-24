@@ -97,7 +97,7 @@ export class ResetPasswordComponent implements OnInit {
             error => {
                 // Maneja el error
                 console.error('Error al restablecer la contraseña:', error);
-                if (error.error && error.error.message) {
+                if (error.status === 401 && error.error && error.error.message) {
                     this.toastr.error(error.error.message);
                 } else {
                     this.toastr.error('Error al restablecer la contraseña');
@@ -105,6 +105,7 @@ export class ResetPasswordComponent implements OnInit {
             }
         );
 }
+
 
   
   
