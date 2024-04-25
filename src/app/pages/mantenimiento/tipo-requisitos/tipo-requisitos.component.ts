@@ -117,7 +117,6 @@ export class TipoRequisitosComponent implements OnInit {
         }
       });
     }
-
   }
       
   // Variable de estado para alternar funciones
