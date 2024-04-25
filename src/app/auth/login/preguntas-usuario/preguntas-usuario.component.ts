@@ -93,7 +93,10 @@ export class PreguntasUsuarioComponent implements OnInit {
       // Recopila las respuestas del usuario y compáralas con las de la API
   
       for (const item of this.preguntasRespuestas) {
-        const respuestaUsuario = respuestasUsuario[item.id_pregunta]; 
+        let respuestaUsuario = respuestasUsuario[item.id_pregunta];
+        
+        // Convertir la respuesta a mayúsculas
+        respuestaUsuario = respuestaUsuario.toUpperCase();
   
         const body: Preguntas_Usuario = {
           id_preguntas_usuario: item.id_preguntas_usuario,
@@ -132,6 +135,7 @@ export class PreguntasUsuarioComponent implements OnInit {
       }
     }
   }
+  
   
   navigateRecuperar(){
     this.router.navigate(['/recuperar'])
