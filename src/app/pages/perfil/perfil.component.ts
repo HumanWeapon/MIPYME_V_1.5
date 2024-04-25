@@ -514,6 +514,9 @@ GuardarNuevasPreguntasEdicion() {
   // Antes de guardar, mostrar las respuestas
   console.log('Respuestas antes de guardar:', this.respuestas);
 
+  // Convertir las respuestas a mayúsculas
+  const respuestasEnMayuscula = this.respuestas.map(respuesta => respuesta.toUpperCase());
+
   // Eliminar las preguntas anteriores del usuario
   this._preguntasUsuarioService.deletePreguntasUsuario(this.usuario.id_usuario).subscribe(() => {
     // Guardar cada pregunta de usuario
@@ -528,7 +531,7 @@ GuardarNuevasPreguntasEdicion() {
         id_preguntas_usuario: this.usuario.id_usuario,
         id_pregunta: preguntaId,
         id_usuario: this.usuario.id_usuario,
-        respuesta: this.respuestas[index],
+        respuesta: respuestasEnMayuscula[index], // Utilizar la respuesta en mayúscula
         creado_por: this.usuario.usuario.toUpperCase(),
         fecha_creacion: new Date(),
         modificado_por: this.usuario.usuario.toUpperCase(),
@@ -548,7 +551,7 @@ GuardarNuevasPreguntasEdicion() {
     });
 
     // Después de guardar, mostrar las respuestas nuevamente
-    console.log('Respuestas después de guardar:', this.respuestas);
+    console.log('Respuestas después de guardar:', respuestasEnMayuscula);
   });
 
   // Actualizar la última conexión del usuario
