@@ -5,3 +5,23 @@
     font-weight: bold; /* Peso de la letra */
     text-align: center;
   }
+
+  .card-header.text-center {
+    width: 100%;
+    height: 60px; /* Redujimos la altura del encabezado a 60px */
+    background-color: #0074b9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .card-header.text-center::before {
+    content: "";
+    width: 100%;
+    height: 60px; /* Ajustamos la altura de la imagen */
+    background-image: url(src\assets\dist\img\mipyme.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+  
