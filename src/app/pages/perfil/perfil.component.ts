@@ -511,6 +511,9 @@ GuardarNuevasPreguntasEdicion() {
     return;
   }
 
+  // Antes de guardar, mostrar las respuestas
+  console.log('Respuestas antes de guardar:', this.respuestas);
+
   // Eliminar las preguntas anteriores del usuario
   this._preguntasUsuarioService.deletePreguntasUsuario(this.usuario.id_usuario).subscribe(() => {
     // Guardar cada pregunta de usuario
@@ -543,6 +546,9 @@ GuardarNuevasPreguntasEdicion() {
         }
       });
     });
+
+    // Después de guardar, mostrar las respuestas nuevamente
+    console.log('Respuestas después de guardar:', this.respuestas);
   });
 
   // Actualizar la última conexión del usuario
@@ -565,6 +571,7 @@ GuardarNuevasPreguntasEdicion() {
   console.log(updateUsuario);
   this.updateUltimaConexionUsuario(updateUsuario);
 }
+
 
 updateUltimaConexionUsuario(update: Usuario){
   this._userService.editarUsuario(update).subscribe(data => {
