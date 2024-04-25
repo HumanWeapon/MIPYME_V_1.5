@@ -14,6 +14,7 @@ import * as XLSX from 'xlsx';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale'; // Importa el idioma español
 import { DatePipe } from '@angular/common';
+import { PermisosService } from 'src/app/services/seguridad/permisos.service';
 
 
 
@@ -23,6 +24,11 @@ import { DatePipe } from '@angular/common';
   styleUrls: ['./requisitos-exportacion.component.css']
 })
 export class RequisitosExportacionComponent implements OnInit{
+
+  consultar: boolean = false;
+  insertar: boolean = false;
+  actualizar: boolean = false;
+  eliminar: boolean = false;
 
   requisitoAnterior: any;
 
@@ -66,12 +72,14 @@ export class RequisitosExportacionComponent implements OnInit{
     private _bitacoraService: BitacoraService,
     private _errorService: ErrorService,
     private _userService: UsuariosService,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    private _permisosService: PermisosService
     ) { }
 
   
   ngOnInit(): void {
-    this.getUsuario()
+    this.getPermnisosObjetos();
+    this.getUsuario();
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 10,
@@ -90,7 +98,30 @@ export class RequisitosExportacionComponent implements OnInit{
     // Do not forget to unsubscribe the event
     this.dtTrigger.unsubscribe();
   }
+  getPermnisosObjetos(){
+    const idObjeto = localStorage.getItem('id_objeto');
+    const idRol = localStorage.getItem('id_rol');
+    console.log(idObjeto)
+    console.log(idRol)
+    if(idObjeto && idRol){
+      this._permisosService.getPermnisosObjetos(idRol, idObjeto).subscribe({
+        next: (data: any) => {
+          this.consultar = data.consultar;
+          this.insertar = data.insertar;
+          this.actualizar = data.actualizar;
+          this.eliminar = data.eliminar;
+          console.log("consultar: "+this.consultar)
+          console.log("insertar: "+this.insertar)
+          console.log("actualizar: "+this.actualizar)
+          console.log("eliminar: "+this.eliminar)
+        },
+        error: (e: HttpErrorResponse) => {
+          this._errorService.msjError(e);
+        }
+      });
+    }
 
+  }
 
 onInputChange(event: any, field: string) {
   if (field === 'tipo_requisito' || field === 'descripcion') {
