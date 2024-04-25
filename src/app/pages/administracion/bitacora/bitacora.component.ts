@@ -83,26 +83,28 @@ getDate(): string {
 }
 
 filtrarRegistros() {
-   // Verificar que se hayan seleccionado ambas fechas
-   if (!this.fechaDesde || !this.fechaHasta) {
-    this.bitacoraFilter = this.bitacora
-    console.log("Debe seleccionar ambas fechas.");
-    return;
-  }
+  // Verificar que se hayan seleccionado ambas fechas
+  if (!this.fechaDesde || !this.fechaHasta) {
+   this.bitacoraFilter = this.bitacora
+   console.log("Debe seleccionar ambas fechas.");
+   return;
+ }
 
-  // Filtrar los registros según las fechas seleccionadas
-  this.bitacoraFilter = this.bitacora.filter(registro => {
-    // Suponiendo que la fecha de cada registro está en un campo llamado 'fecha'
-    const fechaRegistro = new Date(registro.fecha);
-    const fechaInicio = new Date(this.fechaDesde);
-    const fechaFin = new Date(this.fechaHasta);
-    this.bitacora = this.bitacoraFilter;
-    return fechaRegistro >= fechaInicio && fechaRegistro <= fechaFin;
-  });
+ // Filtrar los registros según las fechas seleccionadas
+ this.bitacoraFilter = this.bitacora.filter(registro => {
+   // Suponiendo que la fecha de cada registro está en un campo llamado 'fecha'
+   const fechaRegistro = new Date(registro.fecha);
+   const fechaInicio = new Date(this.fechaDesde);
+   const fechaFin = new Date(this.fechaHasta);
+   return fechaRegistro >= fechaInicio && fechaRegistro <= fechaFin;
+ });
 
-  console.log("Registros filtrados:", this.bitacoraFilter);
- 
+ // Ordenar los registros filtrados por fecha
+ this.bitacoraFilter.sort((a, b) => new Date(a.fecha).getTime() - new Date(b.fecha).getTime());
+
+ console.log("Registros filtrados y ordenados por fecha:", this.bitacoraFilter);
 }
+
 
 
 

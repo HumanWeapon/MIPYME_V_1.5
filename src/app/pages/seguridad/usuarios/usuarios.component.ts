@@ -197,51 +197,43 @@ export class UsuariosComponent {
   /*****************************************************************************************************/
 
    /*****************************************************************************************************/
-  generateExcel() {
-    const headers = ['ID', 'Usuario', 'Nombre Usuario', 'Correo Electronico', 'Rol', 'Creador', 'Ultima Conexion', 'Fecha de Vencimiento', 'Estado'];
-    const data: any[][] = [];
-
-    
+   generateExcel() {
+    // Define los encabezados de la hoja de Excel
+    const headers = ['ID', 'Usuario', 'Nombre Usuario', 'Correo Electrónico', 'Rol', 'Creador', 'Última Conexión', 'Fecha de Vencimiento', 'Estado'];
   
-    // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
-    this.usuariosAllRoles.forEach((user, index) => {
-      const row = [
-        user.id_usuario,
-        user.usuario,
-        user.nombre_usuario,
-        user.correo_electronico,
-        user.roles.rol,
-        user.creado_por,
-        user.fecha_ultima_conexion,
-        user.fecha_vencimiento,
-        this.getEstadoText(user.estado_usuario) // Función para obtener el texto del estado
-      ];
-      data.push(row);
-    });
+    // Prepara los datos para la hoja de Excel
+    const data = this.usuariosAllRoles.map(user => [
+      user.id_usuario,
+      user.usuario,
+      user.nombre_usuario,
+      user.correo_electronico,
+      user.roles.rol,
+      user.creado_por,
+      user.fecha_ultima_conexion,
+      user.fecha_vencimiento,
+      this.getEstadoText(user.estado_usuario) // Función para obtener el texto del estado
+    ]);
   
-    // Crea un nuevo libro de Excel
+    // Crea un nuevo libro de Excel y agrega una hoja con los datos
     const workbook = XLSX.utils.book_new();
     const worksheet = XLSX.utils.aoa_to_sheet([headers, ...data]);
-    
-    // Agrega la hoja al libro de Excel
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Usuarios');
   
-    // Guarda el libro de Excel como un archivo binario
+    // Convierte el libro de Excel en un archivo binario
     const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
     const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
   
-    // Crea un objeto URL para el blob
+    // Crea un enlace de descarga para el archivo Excel
     const url = window.URL.createObjectURL(blob);
-  
-    // Crea un enlace para descargar el archivo Excel
     const a = document.createElement('a');
     a.href = url;
     a.download = 'My Pyme-Reporte Usuario.xlsx';
   
+    // Agrega el enlace de descarga al cuerpo del documento y lo activa
     document.body.appendChild(a);
     a.click();
   
-    // Limpia el objeto URL creado
+    // Limpia los recursos utilizados para el enlace de descarga
     window.URL.revokeObjectURL(url);
     document.body.removeChild(a);
   }
