@@ -138,9 +138,9 @@ respuestasOriginal: string[] = [];
       this._userService.getUsuario(this.usuario).subscribe(data => {
         this.usuario = data;
         this.usuarioOriginal = { ...this.usuario }; // Copia del usuario original
+        this.conbinarPreguntas();
         this.getPreguntasUsuario(); // Llama a getPreguntasUsuario después de que usuario se inicialice
         this.getPreguntas(); // Llama a getPreguntas después de que usuario se inicialice
-        this.conbinarPreguntas();
       });
     }
   }
