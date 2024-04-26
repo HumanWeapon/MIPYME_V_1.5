@@ -18,6 +18,7 @@ import { da } from 'date-fns/locale';
 import * as XLSX from 'xlsx';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale'; // Importa el idioma español
+import { PermisosService } from 'src/app/services/seguridad/permisos.service';
 
 @Component({
   selector: 'app-empresas',
@@ -25,6 +26,10 @@ import { es } from 'date-fns/locale'; // Importa el idioma español
   styleUrls: ['./empresas.component.css']
 })
 export class EmpresasComponent {
+  consultar: boolean = false;
+  insertar: boolean = false;
+  actualizar: boolean = false;
+  eliminar: boolean = false;
 
   empresaAnterior: any;
 
@@ -78,11 +83,13 @@ export class EmpresasComponent {
     private _userService: UsuariosService,
     private _tipoEmpresa: TipoEmpresaService,
     private el: ElementRef,
-    private _router: Router
+    private _router: Router,
+    private _permisosService: PermisosService
   ) {}
   
   ngOnInit(): void {
   this.getUsuario();
+  this.getPermnisosObjetos();
   this.getTipoEmpresa();
   
   this.dtOptions = {
@@ -228,6 +235,24 @@ getDate(): string {
     this.listEmpresa[i].estado = 2;
   }
 
+
+  getPermnisosObjetos(){
+    const idObjeto = localStorage.getItem('id_objeto');
+    const idRol = localStorage.getItem('id_rol');
+    if(idObjeto && idRol){
+      this._permisosService.getPermnisosObjetos(idRol, idObjeto).subscribe({
+        next: (data: any) => {
+          this.consultar = data.permiso_consultar;
+          this.insertar = data.permiso_insercion;
+          this.actualizar = data.permiso_actualizacion;
+          this.eliminar = data.permiso_eliminacion;
+        },
+        error: (e: HttpErrorResponse) => {
+          this._errorService.msjError(e);
+        }
+      });
+    }
+  }
 
 
 

@@ -484,6 +484,7 @@ cancelarInput(){
     };
     this.indice = i;
     this.permisoAnterior = permisos;
+    console.log(this.permisoeditando);
   }
 
 
@@ -493,9 +494,7 @@ cancelarInput(){
       this.updateBitacora(this.data);
       this.toastr.success('Permiso editado con éxito');
       this.listPermisos[this.indice] = { ...this.permisoeditando };
-      // Actualizar la vista
-      this.ngZone.run(() => {        
-      });
+  
     });
   }
   getRolNombre(idRol: number): string {

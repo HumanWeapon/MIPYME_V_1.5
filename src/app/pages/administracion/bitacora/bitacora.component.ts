@@ -10,6 +10,7 @@ import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 import * as XLSX from 'xlsx';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale'; // Importa el idioma español
+import { PermisosService } from 'src/app/services/seguridad/permisos.service';
 
 @Component({
   selector: 'app-bitacora',
@@ -17,6 +18,11 @@ import { es } from 'date-fns/locale'; // Importa el idioma español
   styleUrls: ['./bitacora.component.css']
 })
 export class BitacoraComponent implements OnInit{
+
+  consultar: boolean = false;
+  insertar: boolean = false;
+  actualizar: boolean = false;
+  eliminar: boolean = false;
 
   fechaDesde: string = '';
   fechaHasta: string = '';
@@ -33,21 +39,26 @@ export class BitacoraComponent implements OnInit{
     private _bitacoraService: BitacoraService,
     private _userService: UsuariosService,
     private _toastr: ToastrService,
-    private _errorService: ErrorService){}
+    private _errorService: ErrorService,
+    private _permisosService: PermisosService
+  ){}
 
   ngOnInit(): void {
     this.getBitacora();
-    this.getBitacoraDescendente();
+    this.getPermnisosObjetos();
+   
   }
   getBitacora(){
     this.dtOptions = {
       pagingType: 'full_numbers',
+      order: [[0, 'desc']],
       pageLength: 10,
       language: {url:'//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json'},
       responsive: true
     };
     this._bitacoraService.getBitacora().subscribe((res: any) =>{
       this.bitacora = res;
+      console.log(res)
       this.dtTrigger.next(0);
       this.filtrarRegistros();
     })
@@ -62,11 +73,7 @@ export class BitacoraComponent implements OnInit{
      }
    });
  }
- 
- getBitacoraDescendente(): void {
-  this._bitacoraService.getBitacoraDescendente()
-    .subscribe(bitacora => this.bitacora = bitacora);
-}
+
  
  deleteBitacora() {
   this._bitacoraService.DeleteBitacora().subscribe(
@@ -80,6 +87,24 @@ export class BitacoraComponent implements OnInit{
   );
 }
 
+getPermnisosObjetos(){
+  const idObjeto = localStorage.getItem('id_objeto');
+  const idRol = localStorage.getItem('id_rol');
+  if(idObjeto && idRol){
+    this._permisosService.getPermnisosObjetos(idRol, idObjeto).subscribe({
+      next: (data: any) => {
+        this.consultar = data.permiso_consultar;
+        this.insertar = data.permiso_insercion;
+        this.actualizar = data.permiso_actualizacion;
+        this.eliminar = data.permiso_eliminacion;
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
+  }
+}
+
 getDate(): string {
   // Obtener la fecha actual
   const currentDate = new Date();
@@ -90,7 +115,7 @@ getDate(): string {
 filtrarRegistros() {
   // Verificar que se hayan seleccionado ambas fechas
   if (!this.fechaDesde || !this.fechaHasta) {
-   this.bitacoraFilter = this.bitacora
+   this.bitacoraFilter = this.bitacora;
    console.log("Debe seleccionar ambas fechas.");
    return;
  }
@@ -104,11 +129,12 @@ filtrarRegistros() {
    return fechaRegistro >= fechaInicio && fechaRegistro <= fechaFin;
  });
 
- // Ordenar los registros filtrados por fecha
- this.bitacoraFilter.sort((a, b) => new Date(a.fecha).getTime() - new Date(b.fecha).getTime());
+ // Ordenar los registros filtrados por id_bitacora (de mayor a menor)
+ this.bitacoraFilter.sort((b, a) => b.id_bitacora - a.id_bitacora);
 
- console.log("Registros filtrados y ordenados por fecha:", this.bitacoraFilter);
+ console.log("Registros filtrados y ordenados por id_bitacora:", this.bitacoraFilter);
 }
+
 
 
 
@@ -125,7 +151,7 @@ generateExcel() {
   // Recorrer los registros de la bitácora y agregarlos a la matriz 'data'
   this.bitacoraFilter.forEach((registro) => {
     const row = [
-      registro.Id_bitacora,
+      registro.id_bitacora,
       registro.fecha,
       registro.usuario.usuario,
       registro.objeto.objeto,
@@ -204,7 +230,7 @@ generatePDF() {
     // Recorrer los registros y agregarlos a la tabla de datos
     this.bitacoraFilter.forEach((bitacora, index) => {
       const row = [
-        bitacora.Id_bitacora,
+        bitacora.id_bitacora,
         bitacora.fecha,
         bitacora.usuario.usuario,
         bitacora.objeto.objeto,

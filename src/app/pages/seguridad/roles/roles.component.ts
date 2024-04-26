@@ -14,6 +14,7 @@ import { DatePipe } from '@angular/common';
 import * as XLSX from 'xlsx';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale'; 
+import { PermisosService } from 'src/app/services/seguridad/permisos.service';
 
 
 
@@ -23,6 +24,11 @@ import { es } from 'date-fns/locale';
   styleUrls: ['./roles.component.css']
 })
 export class RolesComponent implements OnInit{
+
+  consultar: boolean = false;
+  insertar: boolean = false;
+  actualizar: boolean = false;
+  eliminar: boolean = false;
 
   rolAnterior: any;
 
@@ -67,11 +73,13 @@ export class RolesComponent implements OnInit{
     private _errorService: ErrorService,
     private _userService: UsuariosService,
     private _bitacoraService: BitacoraService,
-    private _datePipe: DatePipe
+    private _datePipe: DatePipe,
+    private _permisosService: PermisosService
     ) { }
 
   
   ngOnInit(): void {
+    this.getPermnisosObjetos();
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 10,
@@ -122,6 +130,25 @@ convertirAMayusculas(event: any, field: string) {
     event.target.value = inputValue.toUpperCase();
   });
 }
+
+getPermnisosObjetos(){
+  const idObjeto = localStorage.getItem('id_objeto');
+  const idRol = localStorage.getItem('id_rol');
+  if(idObjeto && idRol){
+    this._permisosService.getPermnisosObjetos(idRol, idObjeto).subscribe({
+      next: (data: any) => {
+        this.consultar = data.permiso_consultar;
+        this.insertar = data.permiso_insercion;
+        this.actualizar = data.permiso_actualizacion;
+        this.eliminar = data.permiso_eliminacion;
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
+  }
+}
+
 
 getDate(): string {
   // Obtener la fecha actual

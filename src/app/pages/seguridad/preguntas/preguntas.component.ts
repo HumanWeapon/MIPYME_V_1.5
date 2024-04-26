@@ -15,6 +15,7 @@ import { DatePipe } from '@angular/common';
 import * as XLSX from 'xlsx';
 import { format } from 'date-fns';
 import { da, es } from 'date-fns/locale'; // Importa el idioma español
+import { PermisosService } from 'src/app/services/seguridad/permisos.service';
 
 
 
@@ -24,6 +25,12 @@ import { da, es } from 'date-fns/locale'; // Importa el idioma español
   styleUrls: ['./preguntas.component.css']
 })
 export class PreguntasComponent implements OnInit{
+
+  consultar: boolean = false;
+  insertar: boolean = false;
+  actualizar: boolean = false;
+  eliminar: boolean = false;
+
   getPregunta: any;
 
   
@@ -70,10 +77,12 @@ editQuestion: Preguntas = {
     private _bitacoraService: BitacoraService,
     private _errorService: ErrorService,
     private _userService: UsuariosService,
+    private _permisosService: PermisosService
     ) { }
 
 
   ngOnInit(): void {
+    this.getPermnisosObjetos();
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 5,
@@ -110,6 +119,24 @@ toggleFunction(pregunta: any, i: number) {
     this.inactivarPregunta(pregunta, i); // Ejecuta la primera función
   } else {
     this.activarPregunta(pregunta, i); // Ejecuta la segunda función
+  }
+}
+
+getPermnisosObjetos(){
+  const idObjeto = localStorage.getItem('id_objeto');
+  const idRol = localStorage.getItem('id_rol');
+  if(idObjeto && idRol){
+    this._permisosService.getPermnisosObjetos(idRol, idObjeto).subscribe({
+      next: (data: any) => {
+        this.consultar = data.permiso_consultar;
+        this.insertar = data.permiso_insercion;
+        this.actualizar = data.permiso_actualizacion;
+        this.eliminar = data.permiso_eliminacion;
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
   }
 }
 

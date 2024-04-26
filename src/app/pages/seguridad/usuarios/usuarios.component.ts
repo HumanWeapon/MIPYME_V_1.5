@@ -13,6 +13,7 @@ import { ErrorService } from 'src/app/services/error.service';
 import * as XLSX from 'xlsx';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale'; // Importa el idioma español
+import { PermisosService } from 'src/app/services/seguridad/permisos.service';
 
 @Component({
   selector: 'app-usuarios',
@@ -20,6 +21,11 @@ import { es } from 'date-fns/locale'; // Importa el idioma español
   styleUrls: ['./usuarios.component.css']
 })
 export class UsuariosComponent {
+
+  consultar: boolean = false;
+  insertar: boolean = false;
+  actualizar: boolean = false;
+  eliminar: boolean = false;
 
   usuarioSeleccionado: any;
   usuarioAnterior: any;
@@ -76,10 +82,12 @@ export class UsuariosComponent {
     private _rolService: RolesService,
     private _bitacoraService: BitacoraService,
     private router: Router,
-    private _errorService: ErrorService
+    private _errorService: ErrorService,
+    private _permisosService: PermisosService
   ) {}
 
   ngOnInit(): void {
+    this.getPermnisosObjetos();
     this.getAllRoles();
     this.getUsuario();
     this.getAllUsuarios();
@@ -187,6 +195,27 @@ export class UsuariosComponent {
     this.usuariosAllRoles[i].estado_usuario = 1;
   }
 
+
+
+  getPermnisosObjetos(){
+    const idObjeto = localStorage.getItem('id_objeto');
+    const idRol = localStorage.getItem('id_rol');
+    if(idObjeto && idRol){
+      this._permisosService.getPermnisosObjetos(idRol, idObjeto).subscribe({
+        next: (data: any) => {
+          this.consultar = data.permiso_consultar;
+          this.insertar = data.permiso_insercion;
+          this.actualizar = data.permiso_actualizacion;
+          this.eliminar = data.permiso_eliminacion;
+        },
+        error: (e: HttpErrorResponse) => {
+          this._errorService.msjError(e);
+        }
+      });
+    }
+  }
+
+  
   getDate(): string {
     // Obtener la fecha actual
     const currentDate = new Date();

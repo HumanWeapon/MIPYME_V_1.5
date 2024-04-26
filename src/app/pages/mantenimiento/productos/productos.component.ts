@@ -19,6 +19,7 @@ import * as XLSX from 'xlsx';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale'; // Importa el idioma español
 import { DatePipe } from '@angular/common';
+import { PermisosService } from 'src/app/services/seguridad/permisos.service';
 
 
 @Component({
@@ -28,6 +29,12 @@ import { DatePipe } from '@angular/common';
 })
 
 export class ProductosComponent implements OnInit{
+
+
+  consultar: boolean = false;
+  insertar: boolean = false;
+  actualizar: boolean = false;
+  eliminar: boolean = false;
   
   getProducto: any;
   productoAnterior: any;
@@ -86,13 +93,15 @@ export class ProductosComponent implements OnInit{
     private _errorService: ErrorService,
     private _userService: UsuariosService,
     private _categoriaProductos: CategoriaService,
-    private _datePipe: DatePipe
+    private _datePipe: DatePipe,
+    private _permisosService: PermisosService 
     ) {}
 
   
   ngOnInit(): void {
     this.getUsuario();
     this.getAllCategorias();
+    this.getPermnisosObjetos();
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 10,
@@ -137,6 +146,24 @@ export class ProductosComponent implements OnInit{
       const inputValue = event.target.value;
       event.target.value = inputValue.toUpperCase();
     });
+  }
+
+  getPermnisosObjetos(){
+    const idObjeto = localStorage.getItem('id_objeto');
+    const idRol = localStorage.getItem('id_rol');
+    if(idObjeto && idRol){
+      this._permisosService.getPermnisosObjetos(idRol, idObjeto).subscribe({
+        next: (data: any) => {
+          this.consultar = data.permiso_consultar;
+          this.insertar = data.permiso_insercion;
+          this.actualizar = data.permiso_actualizacion;
+          this.eliminar = data.permiso_eliminacion;
+        },
+        error: (e: HttpErrorResponse) => {
+          this._errorService.msjError(e);
+        }
+      });
+    }
   }
 
   getDate(): string {

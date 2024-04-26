@@ -13,6 +13,7 @@ import * as XLSX from 'xlsx';
 import { Usuario } from 'src/app/interfaces/seguridad/usuario';
 import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 import { DatePipe } from '@angular/common';
+import { PermisosService } from 'src/app/services/seguridad/permisos.service';
 
 @Component({
   selector: 'app-tipo-direccion',
@@ -20,6 +21,11 @@ import { DatePipe } from '@angular/common';
   styleUrls: ['./tipo-direccion.component.css']
 })
 export class TipoDireccionComponent {
+
+    consultar: boolean = false;
+    insertar: boolean = false;
+    actualizar: boolean = false;
+    eliminar: boolean = false;
 
     tdAnterior: any;
 
@@ -61,11 +67,13 @@ export class TipoDireccionComponent {
     private _errorService: ErrorService,
     private _userService: UsuariosService,
     private ngZone: NgZone,
-    private _datePipe: DatePipe
+    private _datePipe: DatePipe,
+    private _permisosService: PermisosService
     ) {}
 
     ngOnInit(): void {
-      this.getUsuario()
+      this.getUsuario();
+      this.getPermnisosObjetos();
         this.dtOptions = {
           pagingType: 'full_numbers',
           pageLength: 10,
@@ -123,6 +131,27 @@ export class TipoDireccionComponent {
         this.listTipoDireccion[i].estado = 1;
         
       }
+
+
+      getPermnisosObjetos(){
+        const idObjeto = localStorage.getItem('id_objeto');
+        const idRol = localStorage.getItem('id_rol');
+        if(idObjeto && idRol){
+          this._permisosService.getPermnisosObjetos(idRol, idObjeto).subscribe({
+            next: (data: any) => {
+              this.consultar = data.permiso_consultar;
+              this.insertar = data.permiso_insercion;
+              this.actualizar = data.permiso_actualizacion;
+              this.eliminar = data.permiso_eliminacion;
+            },
+            error: (e: HttpErrorResponse) => {
+              this._errorService.msjError(e);
+            }
+          });
+        }
+      }
+
+
 
       getDate(): string {
         // Obtener la fecha actual

@@ -15,6 +15,7 @@ import { format } from 'date-fns';
 import { da, es } from 'date-fns/locale'; // Importa el idioma español
 import { ContactoService } from 'src/app/services/contacto/contacto.service';
 import { DatePipe } from '@angular/common';
+import { PermisosService } from 'src/app/services/seguridad/permisos.service';
 
 
 
@@ -24,6 +25,11 @@ import { DatePipe } from '@angular/common';
   styleUrls: ['./telefonos.component.css']
 })
 export class TelefonosComponent implements OnInit{
+
+  consultar: boolean = false;
+  insertar: boolean = false;
+  actualizar: boolean = false;
+  eliminar: boolean = false;
 
   getTelefono: any;
   telefonosAllContactos: any[] = [];
@@ -77,12 +83,14 @@ export class TelefonosComponent implements OnInit{
     private _errorService: ErrorService,
     private _userService: UsuariosService,
     private _contactoService: ContactoService,
-    private _datePipe: DatePipe
+    private _datePipe: DatePipe,
+    private _permisosService: PermisosService
   ) {}
 
   
   ngOnInit(): void {
     this.getUsuario();
+    this.getPermnisosObjetos();
     this.getAllTelefonosContacto();
     this.getAllContactos();
   }
@@ -136,6 +144,24 @@ export class TelefonosComponent implements OnInit{
       this.inactivarContactoTelefono(conT, i); // Ejecuta la primera función
     } else {
       this.activarContactoTelefono(conT, i); // Ejecuta la segunda función
+    }
+  }
+
+  getPermnisosObjetos(){
+    const idObjeto = localStorage.getItem('id_objeto');
+    const idRol = localStorage.getItem('id_rol');
+    if(idObjeto && idRol){
+      this._permisosService.getPermnisosObjetos(idRol, idObjeto).subscribe({
+        next: (data: any) => {
+          this.consultar = data.permiso_consultar;
+          this.insertar = data.permiso_insercion;
+          this.actualizar = data.permiso_actualizacion;
+          this.eliminar = data.permiso_eliminacion;
+        },
+        error: (e: HttpErrorResponse) => {
+          this._errorService.msjError(e);
+        }
+      });
     }
   }
 

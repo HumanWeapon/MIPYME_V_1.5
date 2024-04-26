@@ -12,8 +12,7 @@
                     <i class="fas fa-print"></i> Generar Reporte</button>
               </div>
               <!-- /.card-header -->
-              <div class="card-body">
-                <div class="table-responsive">
+              <div class="card-body table-responsive p-0" style="font-size:medium;">
                   <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover">
                     <thead>
                       <tr>
@@ -79,7 +78,6 @@
           <!-- /.col -->
         </div>
         <!-- /.row -->
-      </div>
       <!-- /.container-fluid -->
   </section>
     <!-- /.content --> 
@@ -163,14 +161,14 @@
             <form>              
               <div class="form-group">
                 <label for="permisoEditando">Rol</label>
-                <select [(ngModel)]="permisoeditando.id_rol" name="permisoEditando.id_rol" class="form-control" id="editarid_rol" placeholder="Rol">
+                <select [(ngModel)]="permisoeditando.id_rol" name="permisoeditando.id_rol" class="form-control" id="editarid_rol" placeholder="Rol">
                     <option *ngFor="let rol of roles" [value]="rol.id_rol">{{ rol.rol }}</option>
                 </select>
             </div>                          
             <div class="form-group">
               <label for="permisoEditando">Objeto:</label>
-              <select [(ngModel)]="permisoeditando.id_objeto" name="permisoEditando.id_objeto" class="form-control" id="editarid_objeto">
-                  <option *ngFor="let objeto of objetosSinRol" [value]="objeto.id_objeto">{{ objeto.objeto }}</option>
+              <select [(ngModel)]="permisoeditando.id_objeto" name="permisoeditando.id_objeto" class="form-control" id="editarid_objeto">
+                  <option *ngFor="let objeto of objetosSinRol" [value]="objeto.id_objeto">{{ objeto.id_objeto }}</option>
               </select>
           </div>
           <div class="form-group">

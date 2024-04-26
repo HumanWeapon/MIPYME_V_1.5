@@ -10,7 +10,8 @@ import { BackupService } from 'src/app/services/administracion/backup.service';
 export class RestoreComponent {
   
   constructor(private backupService: BackupService,
-    private _toastr: ToastrService  ) { }
+    private _toastr: ToastrService  
+  ) { }
 
     
   restaurarCopiaSeguridad() {

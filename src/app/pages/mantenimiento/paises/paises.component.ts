@@ -11,6 +11,7 @@ import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 import * as XLSX from 'xlsx';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale'; // Importa el idioma español
+import { PermisosService } from 'src/app/services/seguridad/permisos.service';
 
 @Component({
   selector: 'app-paises',
@@ -19,6 +20,12 @@ import { es } from 'date-fns/locale'; // Importa el idioma español
 })
 
 export class PaisesComponent implements OnInit{
+
+  consultar: boolean = false;
+  insertar: boolean = false;
+  actualizar: boolean = false;
+  eliminar: boolean = false;
+
   getPais: any;
   paisAnterior: any;
 
@@ -67,12 +74,14 @@ export class PaisesComponent implements OnInit{
     private ngZone: NgZone,
     private _bitacoraService: BitacoraService,
     private _errorService: ErrorService,
-    private _userService: UsuariosService
+    private _userService: UsuariosService,
+    private _permisosService: PermisosService
     ) {}
 
   
   ngOnInit(): void {
-    this.getUsuario()
+    this.getUsuario();
+    this.getPermnisosObjetos();
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 10,
@@ -133,6 +142,25 @@ toggleFunction(paises: any, i: number) {
     this.inactivarPais(paises, i); // Ejecuta la primera función
   } else {
     this.activarPais(paises, i); // Ejecuta la segunda función
+  }
+}
+
+
+getPermnisosObjetos(){
+  const idObjeto = localStorage.getItem('id_objeto');
+  const idRol = localStorage.getItem('id_rol');
+  if(idObjeto && idRol){
+    this._permisosService.getPermnisosObjetos(idRol, idObjeto).subscribe({
+      next: (data: any) => {
+        this.consultar = data.permiso_consultar;
+        this.insertar = data.permiso_insercion;
+        this.actualizar = data.permiso_actualizacion;
+        this.eliminar = data.permiso_eliminacion;
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
   }
 }
 

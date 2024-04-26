@@ -12,7 +12,7 @@
                     <i class="fas fa-print"></i> Generar Reporte</button>
                 </div>
             <!-- /.card-header -->
-            <div class="card-body">
+            <div class="card-body table-responsive p-0" style="font-size:medium;">
                 <table *ngIf="consultar" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover">
                     <thead>
                         <tr>
@@ -84,6 +84,7 @@
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
+        
         <div class="modal-body">
             <form (submit)="agregarNuevoTipoRequisito()">
                 <div class="form-group">

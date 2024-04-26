@@ -16,6 +16,7 @@ import { es } from 'date-fns/locale'; // Importa el idioma español
 import jsPDF from 'jspdf';
 import 'jspdf-autotable'; 
 import { DatePipe } from '@angular/common';
+import { PermisosService } from 'src/app/services/seguridad/permisos.service';
 
 
 @Component({
@@ -24,6 +25,12 @@ import { DatePipe } from '@angular/common';
   styleUrls: ['./parametros.component.css']
 })
 export class ParametrosComponent implements OnInit{
+
+  consultar: boolean = false;
+  insertar: boolean = false;
+  actualizar: boolean = false;
+  eliminar: boolean = false;
+
   getUserId: any;
  getParametro: any;
  parametrosAnterior: any;
@@ -74,11 +81,13 @@ export class ParametrosComponent implements OnInit{
     private _bitacoraService: BitacoraService,
     private _errorService: ErrorService,
     private _userService: UsuariosService,
-    private _datePipe: DatePipe
+    private _datePipe: DatePipe,
+    private _permisosService: PermisosService
     ) { }
 
   
   ngOnInit(): void {
+    this.getPermnisosObjetos();
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 10,
@@ -135,6 +144,24 @@ toggleFunction(parametros: any, i: number) {
     this.inactivateParametro(parametros, i); // Ejecuta la primera función
   } else {
     this.activateParametro(parametros, i); // Ejecuta la segunda función
+  }
+}
+
+getPermnisosObjetos(){
+  const idObjeto = localStorage.getItem('id_objeto');
+  const idRol = localStorage.getItem('id_rol');
+  if(idObjeto && idRol){
+    this._permisosService.getPermnisosObjetos(idRol, idObjeto).subscribe({
+      next: (data: any) => {
+        this.consultar = data.permiso_consultar;
+        this.insertar = data.permiso_insercion;
+        this.actualizar = data.permiso_actualizacion;
+        this.eliminar = data.permiso_eliminacion;
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
   }
 }
 

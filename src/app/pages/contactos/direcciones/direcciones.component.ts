@@ -19,6 +19,7 @@ import { es } from 'date-fns/locale'; // Importa el idioma español
 import { DatePipe } from '@angular/common';
 import { TipoContacto } from 'src/app/interfaces/mantenimiento/tipoContacto';
 import { TipoContactoService } from 'src/app/services/mantenimiento/tipoContacto.service';
+import { PermisosService } from 'src/app/services/seguridad/permisos.service';
 
 @Component({
   selector: 'app-direcciones',
@@ -26,7 +27,12 @@ import { TipoContactoService } from 'src/app/services/mantenimiento/tipoContacto
   styleUrls: ['./direcciones.component.css']
 })
 export class DireccionesComponent {
-  
+
+  consultar: boolean = false;
+  insertar: boolean = false;
+  actualizar: boolean = false;
+  eliminar: boolean = false;
+    
   getDireccion: any;
   direccionAnterior: any;
 
@@ -92,11 +98,13 @@ export class DireccionesComponent {
     private _contacto: ContactoService,
     private _tipoContacto: TipoContactoService,
     private _Tipodireccion: TipoDireccionService,
-    private _datePipe: DatePipe
+    private _datePipe: DatePipe,
+    private _permisosService: PermisosService
     ) {}
 
   
   ngOnInit(): void {
+    this.getPermnisosObjetos();
     this.getUsuario();
     this.dtOptions = {
       pagingType: 'full_numbers',
@@ -138,6 +146,25 @@ export class DireccionesComponent {
   ciudadSeleccionada(event: Event): void {
     const id_ciudad = (event.target as HTMLSelectElement).value;
     this.id_ciudad = Number(id_ciudad);
+  }
+
+
+  getPermnisosObjetos(){
+    const idObjeto = localStorage.getItem('id_objeto');
+    const idRol = localStorage.getItem('id_rol');
+    if(idObjeto && idRol){
+      this._permisosService.getPermnisosObjetos(idRol, idObjeto).subscribe({
+        next: (data: any) => {
+          this.consultar = data.permiso_consultar;
+          this.insertar = data.permiso_insercion;
+          this.actualizar = data.permiso_actualizacion;
+          this.eliminar = data.permiso_eliminacion;
+        },
+        error: (e: HttpErrorResponse) => {
+          this._errorService.msjError(e);
+        }
+      });
+    }
   }
 
   getDate(): string {

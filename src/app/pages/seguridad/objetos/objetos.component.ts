@@ -12,6 +12,7 @@ import * as XLSX from 'xlsx';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale'; 
 import { SubmenuData } from 'src/app/interfaces/subMenuData/subMenuData';
+import { PermisosService } from 'src/app/services/seguridad/permisos.service';
 
 
 @Component({
@@ -20,6 +21,12 @@ import { SubmenuData } from 'src/app/interfaces/subMenuData/subMenuData';
   styleUrls: ['./objetos.component.css']
 })
 export class ObjetosComponent implements OnInit{
+
+  consultar: boolean = false;
+  insertar: boolean = false;
+  actualizar: boolean = false;
+  eliminar: boolean = false;
+
   objetoAnterior: any;
 
   objetoEditando: Objetos = {
@@ -70,10 +77,12 @@ export class ObjetosComponent implements OnInit{
     private _bitacoraService: BitacoraService,
     private _errorService: ErrorService,
     private _userService: UsuariosService,
+    private _permisosService: PermisosService
     ) {}
 
   
   ngOnInit(): void {
+    this.getPermnisosObjetos();
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 10,
@@ -136,6 +145,24 @@ eliminarCaracteresEspeciales(event: any, field: string) {
   });
 }
 
+
+getPermnisosObjetos(){
+  const idObjeto = localStorage.getItem('id_objeto');
+  const idRol = localStorage.getItem('id_rol');
+  if(idObjeto && idRol){
+    this._permisosService.getPermnisosObjetos(idRol, idObjeto).subscribe({
+      next: (data: any) => {
+        this.consultar = data.permiso_consultar;
+        this.insertar = data.permiso_insercion;
+        this.actualizar = data.permiso_actualizacion;
+        this.eliminar = data.permiso_eliminacion;
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
+  }
+}
 
 getDate(): string {
   // Obtener la fecha actual
