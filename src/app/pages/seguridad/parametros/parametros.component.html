@@ -31,7 +31,7 @@
                         <tr *ngFor="let parametros of listParametros; let i = index">
                           <td>{{ parametros.id_parametro }}</td>
                           <td>{{ parametros.parametro | uppercase }}</td>
-                          <td>{{ parametros.valor }}</td>
+                          <td>{{ parametros.valor | uppercase }}</td>
                           <td>{{ parametros.creado_por | uppercase }}</td>
                           <td>{{ parametros.fecha_creacion | date: 'yyyy-MM-dd' }}</td>
                           <td>{{ parametros.modificado_por | uppercase }}</td>
@@ -178,7 +178,7 @@
       <tr *ngFor="let parametros of listParametros; let i = index">
         <td>{{ parametros.id_parametro }}</td>
         <td>{{ parametros.parametro | uppercase }}</td>
-        <td>{{ parametros.valor }}</td>
+        <td>{{ parametros.valor | uppercase }}</td>
         <td>{{ parametros.creado_por | uppercase }}</td>
         <td>{{ parametros.fecha_creacion | date: 'yyyy-MM-dd' }}</td>
         <td>{{ parametros.modificado_por | uppercase }}</td>
