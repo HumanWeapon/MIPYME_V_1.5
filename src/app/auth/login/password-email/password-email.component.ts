@@ -73,41 +73,51 @@ export class PasswordEmailComponent implements OnInit {
 
 
   onEnviarCorreo() {
+    // Verificar si el correo es válido
     if (!this.validarCorreoElectronico(this.correoElectronico)) {
       this.toastr.warning('Por favor, ingresa un correo electrónico válido.');
       return;
     }
-
-        // Verificar si el usuario existe
-        this.usuarioService.getOneUsuario(this.usuario.usuario).subscribe(
-          (usuario: Usuario) => {
-            // Si se encontró el usuario, continuar con el proceso de recuperación de contraseña
-            this.usuario = usuario;
-            this.usuarioService.usuario = this.usuario;
-            localStorage.setItem('usuario', usuario.usuario)
-          },
-          () => {
-            // Si no se encontró el usuario, mostrar un mensaje de error
-            this.toastr.error('El usuario no existe.');
-          }
-        );
-
-    if (this.correoElectronico !== this.usuario.correo_electronico) {
-      this.toastr.error('El correo electrónico ingresado no coincide con el del usuario.');
+  
+    // Verificar si el valor del parámetro es 465
+    if (this.parametroCorreo !== '465') {
+      this.toastr.error('El parámetro no tiene el valor correcto para enviar correos electrónicos.');
       return;
     }
-    // Llamar al servicio para enviar el correo electrónico
-    this.usuarioService.forgotPassword(this.correoElectronico).subscribe(
-      response => {
-        // Aquí puedes navegar a la siguiente página o mostrar otro mensaje según la respuesta del servicio
-        this.toastr.success('Correo Enviado Exitosamente');
+  
+    // Verificar si el usuario existe
+    this.usuarioService.getOneUsuario(this.usuario.usuario).subscribe(
+      (usuario: Usuario) => {
+        // Si se encontró el usuario, continuar con el proceso de recuperación de contraseña
+        this.usuario = usuario;
+        this.usuarioService.usuario = this.usuario;
+        localStorage.setItem('usuario', usuario.usuario);
+        
+        // Verificar si el correo electrónico ingresado coincide con el del usuario
+        if (this.correoElectronico !== this.usuario.correo_electronico) {
+          this.toastr.error('El correo electrónico ingresado no coincide con el del usuario.');
+          return;
+        }
+  
+        // Llamar al servicio para enviar el correo electrónico
+        this.usuarioService.forgotPassword(this.correoElectronico).subscribe(
+          response => {
+            // Aquí puedes navegar a la siguiente página o mostrar otro mensaje según la respuesta del servicio
+            this.toastr.success('Correo Enviado Exitosamente');
+          },
+          error => {
+            console.error('Error al enviar el correo electrónico:', error);
+            this.toastr.error('Error al enviar el correo electrónico.');
+          }
+        );
       },
-      error => {
-        console.error('Error al enviar el correo electrónico:', error);
-        this.toastr.error('Error al enviar el correo electrónico.');
+      () => {
+        // Si no se encontró el usuario, mostrar un mensaje de error
+        this.toastr.error('El usuario no existe.');
       }
     );
   }
+  
 
   validarCorreoElectronico(correoElectronico: string): boolean {
     const expresionRegularCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
