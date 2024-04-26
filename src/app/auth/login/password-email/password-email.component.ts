@@ -121,9 +121,14 @@ export class PasswordEmailComponent implements OnInit {
   }
   
   mostrarModal() {
-    // Mostrar el modal solo si el valor del parámetro es 465
-    if (this.parametroCorreo === '465') {
-      this.correoEnviadoModal.show();
+    // Verificar si correoEnviadoModal está definido
+    if (this.correoEnviadoModal) {
+      // Mostrar el modal solo si el valor del parámetro es 465
+      if (this.parametroCorreo === '465') {
+        this.correoEnviadoModal.show();
+      }
+    } else {
+      console.error('Error: correoEnviadoModal no está definido.');
     }
   }
 
