@@ -53,7 +53,7 @@ export class PasswordEmailComponent implements OnInit {
   }
 
   getParametros(){
-    this._parametrosService.getParametroPreguntasdeSeguridad().subscribe({
+    this._parametrosService.getParametroPuertoCorreo().subscribe({
       next: (data) => {
         this.parametroCorreo = data.valor;
         console.log('El valor del parametro es: '+ data.valor)
