@@ -228,8 +228,9 @@ filtrarObjetosUnicos() {
 
   generatePDF() {
     const { jsPDF } = require("jspdf");
-    const doc = new jsPDF();
-    const headers = ['Id','Nombre', 'Descripción', 'Tipo', 'Creador', 'Fecha Creación', 'Modificado por', 'Fecha Modificación', 'Estado'];
+    const doc = new jsPDF({ orientation: 'landscape' });
+    
+    const headers = ['Id', 'Nombre', 'Descripción', 'Tipo', 'Creador', 'Fecha Creación', 'Modificado por', 'Fecha Modificación', 'Estado'];
 
     // Agregar el logo al PDF
     const logoImg = new Image();
@@ -260,9 +261,29 @@ filtrarObjetosUnicos() {
 
         // Agregar la tabla al PDF
         doc.autoTable({
+            headStyles: { fillColor: [0, 102, 204], textColor: [255, 255, 255] },
             head: [headers],
             body: data,
-            startY: 70 // Ajusta la posición inicial de la tabla según tu diseño
+            startY: 70, // Ajusta la posición inicial de la tabla según tu diseño
+            theme: 'grid',
+            margin: { top: 60, bottom: 30, left: 10, right: 10 }, // Ajuste de los márgenes
+            styles: {
+                fontSize: 10, // Tamaño de fuente para la tabla
+                cellPadding: 3,
+                fillColor: [255, 255, 255],
+                cellWidth: 'auto' // Ancho de la celda ajustado automáticamente
+            },
+            columnStyles: {
+                0: { cellWidth: 15 }, // Ancho de la columna de ID ajustado
+                1: { cellWidth: 40 }, // Ancho de la columna de Nombre aumentado
+                2: { cellWidth: 40 }, // Ancho de la columna de Descripción aumentado
+                3: { cellWidth: 30 }, // Ancho de la columna de Tipo aumentado
+                4: { cellWidth: 30 }, // Ancho de la columna de Creador aumentado
+                5: { cellWidth: 40 }, // Ancho de la columna de Fecha de Creación aumentado
+                6: { cellWidth: 30 }, // Ancho de la columna de Modificado por aumentado
+                7: { cellWidth: 40 }, // Ancho de la columna de Fecha de Modificación aumentado
+                8: { cellWidth: 25 } // Ancho de la columna de Estado aumentado
+            },
         });
 
         // Guardar el PDF

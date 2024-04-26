@@ -198,26 +198,23 @@ activarRol(rol: any, i: number){
 
   generatePDF() {
     const { jsPDF } = require("jspdf");
-    const doc = new jsPDF();
-    const data: any[][] = [];
-    const headers = ['Id','Nombre del Rol', 'Descripción', 'Creado por', 'Fecha de Creación', 'Fecha de Modificación', 'Estado'];
+    const doc = new jsPDF({ orientation: 'landscape' });
   
-    // Agregar el logo al PDF
+    const headers = ['Id', 'Nombre del Rol', 'Descripción', 'Creado por', 'Fecha de Creación', 'Fecha de Modificación', 'Estado'];
+    const data: any[][] = [];
+  
     const logoImg = new Image();
     logoImg.onload = () => {
-      // Dibujar el logo en el PDF
-      doc.addImage(logoImg, 'PNG', 10, 10, 50, 20); // Ajusta las coordenadas y dimensiones según tu diseño
+      doc.addImage(logoImg, 'PNG', 10, 10, 50, 20);
   
-      // Agregar los comentarios al PDF centrados horizontalmente
       const centerX = doc.internal.pageSize.getWidth() / 2;
-      doc.setFontSize(12);
-      doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
-      doc.text("Reporte de Roles", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
-      doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
-      doc.text("Usuario: " + this.getUser.usuario, centerX, 50, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
-
-      // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
-      this.listRoles.forEach((role, index) => {
+      doc.setFontSize(16); // Tamaño de fuente más grande
+      doc.text("Utilidad Mi Pyme", centerX, 30, { align: 'center' });
+      doc.text("Reporte de Roles", centerX, 40, { align: 'center' });
+      doc.text("Fecha: " + this.getCurrentDate(), centerX, 50, { align: 'center' });
+      doc.text("Usuario: " + this.getUser.usuario, centerX, 60, { align: 'center' });
+  
+      this.listRoles.forEach(role => {
         const row = [
           role.id_rol,
           role.rol,
@@ -225,22 +222,38 @@ activarRol(rol: any, i: number){
           role.creado_por,
           role.fecha_creacion,
           role.fecha_modificacion,
-          this.getEstadoText(role.estado_rol),
+          this.getEstadoText(role.estado_rol)
         ];
         data.push(row);
       });
   
-      // Agregar la tabla al PDF
       doc.autoTable({
+        headStyles: { fillColor: [0, 102, 204], textColor: [255, 255, 255] },
         head: [headers],
         body: data,
-        startY: 70 // Ajusta la posición inicial de la tabla según tu diseño
+        startY: 80, // Ajuste de la posición inicial de la tabla
+        theme: 'grid',
+        margin: { top: 70, bottom: 30, left: 10, right: 10 }, // Ajuste de los márgenes
+        styles: {
+          fontSize: 10, // Tamaño de fuente para la tabla
+          cellPadding: 3,
+          fillColor: [255, 255, 255],
+          cellWidth: 'auto' // Ancho de la celda ajustado automáticamente
+        },
+        columnStyles: {
+          0: { cellWidth: 15 },
+          1: { cellWidth: 50 }, // Ancho de la columna aumentado
+          2: { cellWidth: 70 }, // Ancho de la columna aumentado
+          3: { cellWidth: 40 }, // Ancho de la columna aumentado
+          4: { cellWidth: 40 }, // Ancho de la columna aumentado
+          5: { cellWidth: 40 }, // Ancho de la columna aumentado
+          6: { cellWidth: 30 }, // Ancho de la columna aumentado
+        },
       });
   
-      // Guardar el PDF
       doc.save('Reporte de Roles.pdf');
     };
-    logoImg.src = '/assets/dist/img/pym.png'; // Ruta del logo
+    logoImg.src = '/assets/dist/img/pym.png';
   }
   
   getCurrentDate(): string {

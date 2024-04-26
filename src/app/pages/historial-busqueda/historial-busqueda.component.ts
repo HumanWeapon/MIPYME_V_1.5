@@ -211,7 +211,8 @@ export class HistorialBusquedaComponent {
 
   generatePDF() {
     const { jsPDF } = require("jspdf");
-    const doc = new jsPDF();
+    const doc = new jsPDF({ orientation: 'landscape' });
+
     const data: any[][] = [];
     const headers = ['ID', 'ID PYME', 'PYME', 'ID PRODUCTO', 'PRODUCTO', 'ID PAIS', 'PAIS', 'ID EMPRESA', 'EMPRESA', 'FECHA'];
   
@@ -250,14 +251,30 @@ export class HistorialBusquedaComponent {
       doc.autoTable({
         head: [headers],
         body: data,
-        startY: 70 // Ajusta la posición inicial de la tabla según tu diseño
+        startY: 70, // Ajusta la posición inicial de la tabla según tu diseño
+        styles: {
+          fontSize: 8 // Tamaño de fuente para la tabla
+        },
+        columnStyles: {
+          0: { cellWidth: 10 }, // Ancho de la columna ID
+          1: { cellWidth: 15 }, // Ancho de la columna ID PYME
+          2: { cellWidth: 30 }, // Ancho de la columna PYME
+          3: { cellWidth: 15 }, // Ancho de la columna ID PRODUCTO
+          4: { cellWidth: 30 }, // Ancho de la columna PRODUCTO
+          5: { cellWidth: 15 }, // Ancho de la columna ID PAIS
+          6: { cellWidth: 20 }, // Ancho de la columna PAIS
+          7: { cellWidth: 15 }, // Ancho de la columna ID EMPRESA
+          8: { cellWidth: 30 }, // Ancho de la columna EMPRESA
+          9: { cellWidth: 20 } // Ancho de la columna FECHA
+        }
       });
   
       // Guardar el PDF
       doc.save('Reporte de Historial.pdf');
     };
     logoImg.src = '/assets/dist/img/pym.png'; // Ruta del logo
-  }
+}
+
   
   getCurrentDate(): string {
     const currentDate = new Date();

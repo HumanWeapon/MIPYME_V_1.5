@@ -153,7 +153,7 @@ generatePDF() {
   const { jsPDF } = require("jspdf");
   const doc = new jsPDF();
   const data: any[][] = [];
-  const headers = ['Id', 'Tipo de Requisito', 'Descripción', 'Creado por', 'Fecha de Creación', 'Estado'];
+  const headers = ['ID', 'Tipo de Requisito', 'Descripción', 'Creado por', 'Fecha de Creación', 'Estado']; // Se cambió 'Id' a 'ID' para seguir una convención de capitalización uniforme
 
   // Agregar el logo al PDF
   const logoImg = new Image();
@@ -186,13 +186,20 @@ generatePDF() {
     doc.autoTable({
       head: [headers],
       body: data,
-      startY: 70 // Ajusta la posición inicial de la tabla según tu diseño
+      startY: 70, // Ajusta la posición inicial de la tabla según tu diseño
+      styles: {
+        fontSize: 8 // Tamaño de fuente para la tabla
+      },
+      columnStyles: {
+        0: { cellWidth: 10 } // Ancho de la columna ID
+      }
     });
 
     // Guardar el PDF
     doc.save('My Pyme-Reporte Requisitos.pdf');
   };
   logoImg.src = '/assets/dist/img/pym.png'; // Ruta del logo
+
 }
 
 getCurrentDate(): string {

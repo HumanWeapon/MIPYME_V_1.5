@@ -212,46 +212,65 @@ getDate(): string {
 
   generatePDF() {
     const { jsPDF } = require("jspdf");
-    const doc = new jsPDF();
+    const doc = new jsPDF({ orientation: 'landscape' });
+    
     const data: any[][] = [];
-    const headers = ['País', 'Descripción', 'Creador', 'Fecha de Creación', 'Estado'];
-  
+    const headers = ['ID', 'País', 'Descripción', 'Creador', 'Fecha de Creación', 'Estado'];
+    
     // Agregar el logo al PDF
     const logoImg = new Image();
     logoImg.onload = () => {
-      // Dibujar el logo en el PDF
-      doc.addImage(logoImg, 'PNG', 10, 10, 50, 20); // Ajusta las coordenadas y dimensiones según tu diseño
-  
-      // Agregar los comentarios al PDF centrados horizontalmente
-      const centerX = doc.internal.pageSize.getWidth() / 2;
-      doc.setFontSize(12);
-      doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
-      doc.text("Reporte de Países", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
-      doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
-  
-      // Recorre los datos de tu lista de países y agrégalo a la matriz 'data'
-      this.listPaises.forEach((pais, index) => {
-        const row = [
-          pais.pais,
-          pais.descripcion,
-          pais.creado_por,
-          pais.fecha_creacion,
-          this.getEstadoText(pais.estado) // Función para obtener el texto del estado
-        ];
-        data.push(row);
-      });
-  
-      // Agregar la tabla al PDF
-      doc.autoTable({
-        head: [headers],
-        body: data,
-        startY: 70 // Ajusta la posición inicial de la tabla según tu diseño
-      });
-  
-      // Guardar el PDF
-      doc.save('My Pyme-Reporte Países.pdf');
+        // Dibujar el logo en el PDF
+        doc.addImage(logoImg, 'PNG', 10, 10, 50, 20); // Ajusta las coordenadas y dimensiones según tu diseño
+    
+        // Agregar los comentarios al PDF centrados horizontalmente
+        const centerX = doc.internal.pageSize.getWidth() / 2;
+        doc.setFontSize(12);
+        doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+        doc.text("Reporte de Países", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+        doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+        doc.text("Usuario: " + this.getUser.usuario, centerX, 50, { align: 'center' });
+        // Recorre los datos de tu lista de países y agrégalo a la matriz 'data'
+        this.listPaises.forEach((pais, index) => {
+            const row = [
+              pais.id_pais,
+                pais.pais,
+                pais.descripcion,
+                pais.creado_por,
+                pais.fecha_creacion,
+                this.getEstadoText(pais.estado) // Función para obtener el texto del estado
+            ];
+            data.push(row);
+        });
+    
+        // Agregar la tabla al PDF
+        doc.autoTable({
+            headStyles: { fillColor: [0, 102, 204], textColor: [255, 255, 255] },
+            head: [headers],
+            body: data,
+            startY: 70, // Ajusta la posición inicial de la tabla según tu diseño
+            theme: 'grid',
+            margin: { top: 60, bottom: 30, left: 10, right: 10 }, // Ajuste de los márgenes
+            styles: {
+                fontSize: 10, // Tamaño de fuente para la tabla
+                cellPadding: 3,
+                fillColor: [255, 255, 255],
+                cellWidth: 'auto' // Ancho de la celda ajustado automáticamente
+            },
+            columnStyles: {
+                0: { cellWidth: 30 }, // Ancho de la columna de País ajustado
+                1: { cellWidth: 60 }, // Ancho de la columna de Descripción aumentado
+                2: { cellWidth: 30 }, // Ancho de la columna de Creador ajustado
+                3: { cellWidth: 40 }, // Ancho de la columna de Fecha de Creación aumentado
+                4: { cellWidth: 20 } // Ancho de la columna de Estado ajustado
+            },
+        });
+    
+        // Guardar el PDF
+        doc.save('My Pyme-Reporte Países.pdf');
     };
     logoImg.src = '/assets/dist/img/pym.png'; // Ruta del logo
+    
   }
   
   getCurrentDate(): string {

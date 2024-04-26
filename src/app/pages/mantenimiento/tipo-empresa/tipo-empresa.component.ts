@@ -201,46 +201,48 @@ export class TipoEmpresaComponent implements OnInit{
 
 generatePDF() {
   const { jsPDF } = require("jspdf");
-  const doc = new jsPDF();
-  const data: any[][] = [];
-  const headers = ['Tipo de Empresa', 'Descripción', 'Creador', 'Fecha de Creación', 'Estado'];
+const doc = new jsPDF();
+const data: any[][] = [];
+const headers = ['ID', 'Tipo de Empresa', 'Descripción', 'Creador', 'Fecha de Creación', 'Estado'];
 
-  // Agregar el logo al PDF
-  const logoImg = new Image();
-  logoImg.onload = () => {
-      // Dibujar el logo en el PDF
-      doc.addImage(logoImg, 'PNG', 10, 10, 50, 20); // Ajusta las coordenadas y dimensiones según tu diseño
+// Agregar el logo al PDF
+const logoImg = new Image();
+logoImg.onload = () => {
+    // Dibujar el logo en el PDF
+    doc.addImage(logoImg, 'PNG', 10, 10, 50, 20); // Ajusta las coordenadas y dimensiones según tu diseño
 
-      // Agregar los comentarios al PDF centrados horizontalmente
-      const centerX = doc.internal.pageSize.getWidth() / 2;
-      doc.setFontSize(12);
-      doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
-      doc.text("Reporte de Tipos de Empresa", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
-      doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+    // Agregar los comentarios al PDF centrados horizontalmente
+    const centerX = doc.internal.pageSize.getWidth() / 2;
+    doc.setFontSize(12);
+    doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+    doc.text("Reporte de Tipos de Empresa", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+    doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
 
-      // Recorre los datos de tu lista y agrégalo a la matriz 'data'
-      this.listTipoE.forEach((Tempre, index) => {
-          const row = [
-              Tempre.tipo_empresa,
-              Tempre.descripcion,
-              Tempre.creado_por,
-              Tempre.fecha_creacion,
-              this.getEstadoText(Tempre.estado) // Función para obtener el texto del estado
-          ];
-          data.push(row);
-      });
+    // Recorre los datos de tu lista y agrégalo a la matriz 'data'
+    this.listTipoE.forEach((Tempre, index) => {
+        const row = [
+            Tempre.id_tipo_empresa,
+            Tempre.tipo_empresa,
+            Tempre.descripcion,
+            Tempre.creado_por,
+            Tempre.fecha_creacion,
+            this.getEstadoText(Tempre.estado) // Función para obtener el texto del estado
+        ];
+        data.push(row);
+    });
 
-      // Agregar la tabla al PDF
-      doc.autoTable({
-          head: [headers],
-          body: data,
-          startY: 70 // Ajusta la posición inicial de la tabla según tu diseño
-      });
+    // Agregar la tabla al PDF
+    doc.autoTable({
+        head: [headers],
+        body: data,
+        startY: 70 // Ajusta la posición inicial de la tabla según tu diseño
+    });
 
-      // Guardar el PDF
-      doc.save('My Pyme-Reporte Tipo de Empresa.pdf');
-  };
-  logoImg.src = '/assets/dist/img/pym.png'; // Ruta del logo
+    // Guardar el PDF
+    doc.save('My Pyme-Reporte Tipo de Empresa.pdf');
+};
+logoImg.src = '/assets/dist/img/pym.png'; // Ruta del logo
+
 }
 
 getCurrentDate(): string {

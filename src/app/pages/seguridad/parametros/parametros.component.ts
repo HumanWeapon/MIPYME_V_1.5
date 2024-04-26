@@ -220,10 +220,14 @@ generateExcel() {
    /*****************************************************************************************************/
 
    generatePDF() {
-    const doc = new jsPDF();
+   // Importar jsPDF y crear un nuevo documento con orientación horizontal
+   const { jsPDF } = require("jspdf");
+   const doc = new jsPDF({ orientation: 'landscape' });
+
+
     const data: any[][] = [];
-    const headers = ['ID', 'Parámetro', 'Valor', 'ID Usuario', 'Creador', 'Fecha', 'Modificado por', 'Fecha', 'Estado'];
-  
+    const headers = ['ID', 'Parámetro', 'Valor', 'ID Usuario', 'Creador', 'Fecha de Creación', 'Modificado por', 'Fecha de Modificación', 'Estado'];
+    
     // Agregar el logo al PDF
     const logoImg = new Image();
     logoImg.onload = () => {
@@ -232,12 +236,12 @@ generateExcel() {
   
       // Agregar los comentarios al PDF centrados horizontalmente
       const centerX = doc.internal.pageSize.getWidth() / 2;
-      doc.setFontSize(12);
+      doc.setFontSize(14);
       doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
       doc.text("Reporte de Parámetros", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
       doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
       doc.text("Usuario: " + this.getUser.usuario, centerX, 50, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
-
+  
       // Recorre los datos y agrégalos a la matriz 'data'
       this.listParametros.forEach((parametro, index) => {
         const row = [
@@ -249,18 +253,44 @@ generateExcel() {
           parametro.fecha_creacion,
           parametro.modificado_por,
           parametro.fecha_modificacion,
-          parametro.alerta_busqueda,
           this.getEstadoText(parametro.estado_parametro) // Función para obtener el texto del estado
         ];
         data.push(row);
       });
   
-        
+      // Agregar la tabla al PDF
+      doc.autoTable({
+        headStyles: { fillColor: [0, 102, 204], textColor: [255, 255, 255] },
+        head: [headers],
+        body: data,
+        startY: 70, // Ajusta la posición inicial de la tabla según tu diseño
+        theme: 'grid',
+        margin: { top: 60, bottom: 30, left: 10, right: 10 }, // Ajuste de los márgenes
+        styles: {
+          fontSize: 10, // Tamaño de fuente para la tabla
+          cellPadding: 3,
+          fillColor: [255, 255, 255],
+          cellWidth: 'auto' // Ancho de la celda ajustado automáticamente
+        },
+        columnStyles: {
+          0: { cellWidth: 15 },
+          1: { cellWidth: 40 }, // Ancho de la columna de Parámetro aumentado
+          2: { cellWidth: 40 }, // Ancho de la columna de Valor aumentado
+          3: { cellWidth: 20 }, // Ancho de la columna de ID Usuario aumentado
+          4: { cellWidth: 30 }, // Ancho de la columna de Creador aumentado
+          5: { cellWidth: 40 }, // Ancho de la columna de Fecha de Creación aumentado
+          6: { cellWidth: 30 }, // Ancho de la columna de Modificado por aumentado
+          7: { cellWidth: 40 }, // Ancho de la columna de Fecha de Modificación aumentado
+          8: { cellWidth: 25 } // Ancho de la columna de Estado aumentado
+        },
+      });
+  
       // Guardar el PDF
       doc.save('My Pyme-Reporte Parámetros.pdf');
     };
     logoImg.src = '/assets/dist/img/pym.png'; // Ruta del logo
   }
+  
   
   getCurrentDate(): string {
     const currentDate = new Date();

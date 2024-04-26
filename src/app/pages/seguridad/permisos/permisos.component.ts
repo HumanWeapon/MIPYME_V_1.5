@@ -291,28 +291,25 @@ activarPermiso(permiso: any, i: number){
   
  /*****************************************************************************************************/
 
-  generatePDF() {
-    const { jsPDF } = require("jspdf");
-    const doc = new jsPDF();
+ generatePDF() {
+  const { jsPDF } = require("jspdf");
+  const doc = new jsPDF({ orientation: 'landscape' });
+
+    const headers = ['ID', 'ID Rol', 'ID Objeto', 'Inserción', 'Eliminación', 'Consultar', 'Actualización', 'Estado', 'Creador', 'Fecha Creación', 'Fecha Modificación'];
     const data: any[][] = [];
-    const headers = ['ID Permiso', 'ID Rol', 'ID Objeto', 'Insercion', 'Eliminacion', 'Consultar', 'Actualizacion', 'Estado', 'Creador', 'Fecha Creacion', 'Fecha Modificacion'];
   
-    // Agregar el logo al PDF
     const logoImg = new Image();
     logoImg.onload = () => {
-      // Dibujar el logo en el PDF
-      doc.addImage(logoImg, 'PNG', 10, 10, 50, 20); // Ajusta las coordenadas y dimensiones según tu diseño
+      doc.addImage(logoImg, 'PNG', 10, 10, 50, 20);
   
-      // Agregar los comentarios al PDF centrados horizontalmente
       const centerX = doc.internal.pageSize.getWidth() / 2;
-      doc.setFontSize(12);
-      doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
-      doc.text("Reporte de Permisos", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
-      doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
-      doc.text("Usuario: " + this.getUser.usuario, centerX, 50, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
-
-      // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
-      this.listPermisos.forEach((perm, index) => {
+      doc.setFontSize(14); // Tamaño de fuente más pequeño
+      doc.text("Utilidad Mi Pyme", centerX, 30, { align: 'center' });
+      doc.text("Reporte de Permisos", centerX, 40, { align: 'center' });
+      doc.text("Fecha: " + this.getCurrentDate(), centerX, 50, { align: 'center' });
+      doc.text("Usuario: " + this.getUser.usuario, centerX, 60, { align: 'center' });
+  
+      this.listPermisos.forEach(perm => {
         const row = [
           perm.id_permisos,
           this.getRolNombre(perm.id_rol),
@@ -329,18 +326,40 @@ activarPermiso(permiso: any, i: number){
         data.push(row);
       });
   
-      // Agregar la tabla al PDF
       doc.autoTable({
+        headStyles: { fillColor: [0, 102, 204], textColor: [255, 255, 255] },
         head: [headers],
         body: data,
-        startY: 70 // Ajusta la posición inicial de la tabla según tu diseño
+        startY: 80, // Ajuste de la posición inicial de la tabla
+        theme: 'grid',
+        margin: { top: 70, bottom: 30, left: 10, right: 10 }, // Ajuste de los márgenes
+        styles: {
+          fontSize: 8, // Tamaño de fuente más pequeño para la tabla
+          cellPadding: 3,
+          fillColor: [255, 255, 255],
+          cellWidth: 'auto' // Ancho de la celda ajustado automáticamente
+        },
+        columnStyles: {
+          0: { cellWidth: 15 },
+          1: { cellWidth: 30 }, // Ancho de la columna de ID Rol aumentado
+          2: { cellWidth: 30 }, // Ancho de la columna de ID Objeto aumentado
+          3: { cellWidth: 20 }, // Ancho de la columna de Inserción aumentado
+          4: { cellWidth: 20 }, // Ancho de la columna de Eliminación aumentado
+          5: { cellWidth: 20 }, // Ancho de la columna de Consultar aumentado
+          6: { cellWidth: 20 }, // Ancho de la columna de Actualización aumentado
+          7: { cellWidth: 25 }, // Ancho de la columna de Estado aumentado
+          8: { cellWidth: 30 }, // Ancho de la columna de Creador aumentado
+          9: { cellWidth: 30 }, // Ancho de la columna de Fecha Creación aumentado
+          10: { cellWidth: 30 }, // Ancho de la columna de Fecha Modificación aumentado
+        },
       });
   
-      // Guardar el PDF
       doc.save('My Pyme-Reporte Permisos.pdf');
     };
-    logoImg.src = '/assets/dist/img/pym.png'; // Ruta del logo
+    logoImg.src = '/assets/dist/img/pym.png';
   }
+  
+
   
   getCurrentDate(): string {
     const currentDate = new Date();

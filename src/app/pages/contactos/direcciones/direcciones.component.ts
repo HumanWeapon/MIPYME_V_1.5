@@ -332,7 +332,7 @@ generatePDF() {
   const { jsPDF } = require("jspdf");
   const doc = new jsPDF();
   const data: any[][] = [];
-  const headers = ['Direccion', 'Descripcion', 'Creado Por', 'Fecha de Creacion', 'Estado'];
+  const headers = ['Dirección', 'Descripción', 'Creado Por', 'Fecha de Creación', 'Estado'];
 
   // Agregar el logo al PDF
   const logoImg = new Image();
@@ -363,7 +363,17 @@ generatePDF() {
     doc.autoTable({
       head: [headers],
       body: data,
-      startY: 70 // Ajusta la posición inicial de la tabla según tu diseño
+      startY: 70, // Ajusta la posición inicial de la tabla según tu diseño
+      styles: {
+        fontSize: 8 // Tamaño de fuente para la tabla
+      },
+      columnStyles: {
+        0: { cellWidth: 40 }, // Ancho de la columna Dirección
+        1: { cellWidth: 60 }, // Ancho de la columna Descripción
+        2: { cellWidth: 30 }, // Ancho de la columna Creado Por
+        3: { cellWidth: 40 }, // Ancho de la columna Fecha de Creación
+        4: { cellWidth: 20 } // Ancho de la columna Estado
+      }
     });
 
     // Guardar el PDF
@@ -371,6 +381,7 @@ generatePDF() {
   };
   logoImg.src = '/assets/dist/img/pym.png'; // Ruta del logo
 }
+
 
   getCurrentDate(): string {
     const currentDate = new Date();

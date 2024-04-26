@@ -242,46 +242,62 @@ export class UsuariosComponent {
   /*****************************************************************************************************/
 
   generatePDF() {
+    // Importar jsPDF y crear un nuevo documento con orientación horizontal
     const { jsPDF } = require("jspdf");
-    const doc = new jsPDF();
-    const data: any[][] = [];
-    const headers = ['ID','Usuario', 'Nombre Usuario', 'Correo Electronico', 'Rol', 'Creador', 'Ultima Conexion', 'Fecha de Vencimiento', 'Estado'];
+    const doc = new jsPDF({ orientation: 'landscape' });
   
-    // Agregar el logo al PDF
+    // Definir encabezados y datos de la tabla
+    const headers = ['ID', 'Usuario', 'Nombre Usuario', 'Correo Electrónico', 'Rol', 'Creador', 'Última Conexión', 'Fecha de Vencimiento', 'Estado'];
+    const data = this.usuariosAllRoles.map(user => [
+      user.id_usuario,
+      user.usuario,
+      user.nombre_usuario,
+      user.correo_electronico,
+      user.roles.rol,
+      user.creado_por,
+      user.fecha_ultima_conexion,
+      user.fecha_vencimiento,
+      this.getEstadoText(user.estado_usuario)
+    ]);
+  
+    // Agregar el logo al documento
     const logoImg = new Image();
     logoImg.onload = () => {
-      // Dibujar el logo en el PDF
-      doc.addImage(logoImg, 'PNG', 10, 10, 50, 20); // Ajusta las coordenadas y dimensiones según tu diseño
+      doc.addImage(logoImg, 'PNG', 10, 10, 50, 20);
   
-      // Agregar los comentarios al PDF centrados horizontalmente
+      // Agregar texto al documento
       const centerX = doc.internal.pageSize.getWidth() / 2;
-      doc.setFontSize(12);
-      doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
-      doc.text("Reporte de Usuarios", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
-      doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
-      doc.text("Usuario: " + this.getUser.usuario, centerX, 50, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
-
-      // Recorre los datos de tu DataTable y agrégalo a la matriz 'data'
-      this.usuariosAllRoles.forEach((user, index) => {
-        const row = [
-          user.id_usuario,
-          user.usuario,
-          user.nombre_usuario,
-          user.correo_electronico,
-          user.roles.rol,
-          user.creado_por,
-          user.fecha_ultima_conexion,
-          user.fecha_vencimiento,
-          this.getEstadoText(user.estado_usuario) // Función para obtener el texto del estado
-        ];
-        data.push(row);
-      });
+      doc.setFontSize(16);
+      doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' });
+      doc.text("Reporte de Usuarios", centerX, 30, { align: 'center' });
+      doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' });
+      doc.text("Usuario: " + this.getUser.usuario, centerX, 50, { align: 'center' });
   
-      // Agregar la tabla al PDF
+      // Agregar la tabla al documento
       doc.autoTable({
+        headStyles: { fillColor: [0, 102, 204], textColor: [255, 255, 255] },
         head: [headers],
         body: data,
-        startY: 70 // Ajusta la posición inicial de la tabla según tu diseño
+        startY: 70,
+        theme: 'grid',
+        margin: { top: 60, bottom: 30, left: 10, right: 10 },
+        styles: {
+          fontSize: 8,
+          cellPadding: 3,
+          fillColor: [255, 255, 255],
+          cellWidth: 'wrap'
+        },
+        columnStyles: {
+          0: { cellWidth: 15 },
+          1: { cellWidth: 25 },
+          2: { cellWidth: 35 },
+          3: { cellWidth: 45 },
+          4: { cellWidth: 25 },
+          5: { cellWidth: 25 },
+          6: { cellWidth: 35 },
+          7: { cellWidth: 35 },
+          8: { cellWidth: 25 },
+        },
       });
   
       // Guardar el PDF
@@ -289,6 +305,8 @@ export class UsuariosComponent {
     };
     logoImg.src = '/assets/dist/img/pym.png'; // Ruta del logo
   }
+  
+  
   
   getCurrentDate(): string {
     const currentDate = new Date();

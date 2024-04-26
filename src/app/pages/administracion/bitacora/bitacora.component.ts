@@ -37,6 +37,7 @@ export class BitacoraComponent implements OnInit{
 
   ngOnInit(): void {
     this.getBitacora();
+    this.getBitacoraDescendente();
   }
   getBitacora(){
     this.dtOptions = {
@@ -62,6 +63,10 @@ export class BitacoraComponent implements OnInit{
    });
  }
  
+ getBitacoraDescendente(): void {
+  this._bitacoraService.getBitacoraDescendente()
+    .subscribe(bitacora => this.bitacora = bitacora);
+}
  
  deleteBitacora() {
   this._bitacoraService.DeleteBitacora().subscribe(
@@ -118,12 +123,12 @@ generateExcel() {
   const data: any[][] = [];
 
   // Recorrer los registros de la bitácora y agregarlos a la matriz 'data'
-  this.bitacora.forEach((registro) => {
+  this.bitacoraFilter.forEach((registro) => {
     const row = [
       registro.Id_bitacora,
       registro.fecha,
-      registro.usuario,
-      registro.objeto,
+      registro.usuario.usuario,
+      registro.objeto.objeto,
       registro.campo_original,
       registro.nuevo_campo,
       registro.accion,
@@ -163,7 +168,8 @@ generateExcel() {
 
 generatePDF() {
   const { jsPDF } = require("jspdf");
-  const doc = new jsPDF();
+  const doc = new jsPDF({ orientation: 'landscape' });
+
   const data: any[][] = [];
   const headers = ['ID','Fecha', 'Usuario', 'Tabla', 'Campo Original', 'Nuevo Campo', 'Operación'];
 
@@ -184,8 +190,6 @@ generatePDF() {
       "Utilidad Mi Pyme",
       "Reporte de Bitácora",
       "Fecha: " + this.getCurrentDate()
-      
-      
     ];
 
     // Agregar los comentarios al PDF centrados horizontalmente
@@ -198,12 +202,12 @@ generatePDF() {
     const startY = 40;
 
     // Recorrer los registros y agregarlos a la tabla de datos
-    this.bitacora.forEach((bitacora, index) => {
+    this.bitacoraFilter.forEach((bitacora, index) => {
       const row = [
         bitacora.Id_bitacora,
         bitacora.fecha,
-        bitacora.usuario,
-        bitacora.objeto,
+        bitacora.usuario.usuario,
+        bitacora.objeto.objeto,
         bitacora.campo_original,
         bitacora.nuevo_campo,
         bitacora.accion,
@@ -216,6 +220,9 @@ generatePDF() {
       head: [headers],
       body: data,
       startY: startY,
+      styles: {
+        fontSize: 8, // Tamaño de fuente para la tabla
+      }
     });
 
     // Guardar el PDF
@@ -223,6 +230,7 @@ generatePDF() {
   };
   logoImg.src = '/assets/dist/img/pym.png'; // Ruta del logo
 }
+
 
 getCurrentDate(): string {
   const currentDate = new Date();

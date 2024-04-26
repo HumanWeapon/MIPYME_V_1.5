@@ -248,9 +248,10 @@ generateExcel() {
 
 generatePDF() {
   const { jsPDF } = require("jspdf");
-  const doc = new jsPDF();
+  const doc = new jsPDF({ orientation: 'landscape' });
+
   const data: any[][] = [];
-  const headers = ['Id', 'Requisitos', 'Descripción', 'Pais', 'Creado por', 'Fecha creación', 'Modificado', 'Fecha modificación', 'Estado'];
+  const headers = ['ID', 'Requisitos', 'Descripción', 'País', 'Creado por', 'Fecha creación', 'Modificado', 'Estado'];
 
   // Agregar el logo al PDF
   const logoImg = new Image();
@@ -276,7 +277,6 @@ generatePDF() {
         TipoR.creado_por,
         TipoR.fecha_creacion,
         TipoR.modificado_por,
-        TipoR.fecha_modificacion,
         this.getEstadoText(TipoR.estado) // Función para obtener el texto del estado
       ];
       data.push(row);
@@ -287,7 +287,20 @@ generatePDF() {
     doc.autoTable({
       head: [headers],
       body: data,
-      startY: 70 // Ajusta la posición inicial de la tabla según tu diseño
+      startY: 70, // Ajusta la posición inicial de la tabla según tu diseño
+      columnStyles: {
+        0: { cellWidth: 10 }, // Ancho de la columna ID ajustado
+        1: { cellWidth: 40 }, // Ancho de la columna Requisitos ajustado
+        2: { cellWidth: 60 }, // Ancho de la columna Descripción ajustado
+        3: { cellWidth: 40 }, // Ancho de la columna País ajustado
+        4: { cellWidth: 30 }, // Ancho de la columna Creado por ajustado
+        5: { cellWidth: 40 }, // Ancho de la columna Fecha creación ajustado
+        6: { cellWidth: 30 }, // Ancho de la columna Modificado ajustado
+        7: { cellWidth: 20 }  // Ancho de la columna Estado ajustado
+      },
+      styles: {
+        fontSize: 8, // Tamaño de fuente para la tabla
+      }
     });
 
     // Guardar el PDF

@@ -17,6 +17,13 @@ export class BitacoraService {
     this.myApiUrl = 'api/bitacora'
    }
 
+
+ 
+   // Método para obtener los registros de bitácora de forma descendente por fecha
+   getBitacoraDescendente(): Observable<Bitacora[]> {
+     return this.http.get<Bitacora[]>(`${this.myApiUrl}?orderBy=fecha_desc`);
+   }
+
    getBitacora(): Observable<Bitacora[]> {
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)

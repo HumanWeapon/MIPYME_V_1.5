@@ -243,51 +243,68 @@ toggleFunction(contac: any, i: number) {
 
 generatePDF() {
   const { jsPDF } = require("jspdf");
-  const doc = new jsPDF();
+  const doc = new jsPDF({ orientation: 'landscape' });
   const data: any[][] = [];
-  const headers = ['ID','NOMBRE COMPLETO', 'TIPO DE PERSONA', 'EMPRESA', 'DESCRIPCION', 'CREADO POR', 'FECHA DE CREACION','MODIFICADO POR', 'FECHA DE MODIFICACION', 'ESTADO'];
+const headers = ['ID', 'NOMBRE COMPLETO', 'TIPO DE PERSONA', 'EMPRESA', 'DESCRIPCION', 'CREADO POR', 'FECHA DE CREACION', 'MODIFICADO POR', 'FECHA DE MODIFICACION', 'ESTADO'];
 
-  // Agregar el logo al PDF
-  const logoImg = new Image();
-  logoImg.onload = () => {
-    // Dibujar el logo en el PDF
-    doc.addImage(logoImg, 'PNG', 10, 10, 50, 20); // Ajusta las coordenadas y dimensiones según tu diseño
+// Agregar el logo al PDF
+const logoImg = new Image();
+logoImg.onload = () => {
+  // Dibujar el logo en el PDF
+  doc.addImage(logoImg, 'PNG', 10, 10, 50, 20); // Ajusta las coordenadas y dimensiones según tu diseño
 
-    // Agregar los comentarios al PDF centrados horizontalmente
-    const centerX = doc.internal.pageSize.getWidth() / 2;
-    doc.setFontSize(12);
-    doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
-    doc.text("Reporte de Contactos", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
-    doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+  // Agregar los comentarios al PDF centrados horizontalmente
+  const centerX = doc.internal.pageSize.getWidth() / 2;
+  doc.setFontSize(12);
+  doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+  doc.text("Reporte de Contactos", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+  doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
 
-    // Recorre los datos de usuarios y agrégalo a la matriz 'data'
-    this.listContacto.forEach((contac, index) => {
-      const row = [
-        contac.id_contacto,
-        contac.nombre_completo,
-        contac.tipo_contacto,
-        contac.nombre_empresa,
-        contac.descripcion,
-        contac.creado_por,
-        contac.fecha_creacion,
-        contac.modificado_por,
-        contac.fecha_modificacion,
-        this.getEstadoText(contac.estado)
-      ];
-      data.push(row);
-    });
+  // Recorre los datos de usuarios y agrégalo a la matriz 'data'
+  this.listContacto.forEach((contac, index) => {
+    const row = [
+      contac.id_contacto,
+      contac.nombre_completo,
+      contac.tipo_contacto,
+      contac.nombre_empresa,
+      contac.descripcion,
+      contac.creado_por,
+      contac.fecha_creacion,
+      contac.modificado_por,
+      contac.fecha_modificacion,
+      this.getEstadoText(contac.estado)
+    ];
+    data.push(row);
+  });
 
-    // Agregar la tabla al PDF
-    doc.autoTable({
-      head: [headers],
-      body: data,
-      startY: 70 // Ajusta la posición inicial de la tabla según tu diseño
-    });
+  // Agregar la tabla al PDF
+  doc.autoTable({
+    head: [headers],
+    body: data,
+    startY: 70, // Ajusta la posición inicial de la tabla según tu diseño
+    styles: {
+      fontSize: 8 // Tamaño de fuente para la tabla
+    },
+    columnStyles: {
+      0: { cellWidth: 10 }, // Ancho de la columna ID
+      1: { cellWidth: 50 }, // Ancho de la columna NOMBRE COMPLETO
+      2: { cellWidth: 20 }, // Ancho de la columna TIPO DE PERSONA
+      3: { cellWidth: 25 }, // Ancho de la columna EMPRESA
+      4: { cellWidth: 60 }, // Ancho de la columna DESCRIPCION
+      5: { cellWidth: 20 }, // Ancho de la columna CREADO POR
+      6: { cellWidth: 20 }, // Ancho de la columna FECHA DE CREACION
+      7: { cellWidth: 20 }, // Ancho de la columna MODIFICADO POR
+      8: { cellWidth: 20 }, // Ancho de la columna FECHA DE MODIFICACION
+      9: { cellWidth: 15 }, // Ancho de la columna ESTADO
+    }
+  });
 
-    // Guardar el PDF
-    doc.save('My Pyme-Reporte Contactos.pdf');
-  };
-  logoImg.src = '/assets/dist/img/pym.png'; // Ruta del logo
+  // Guardar el PDF
+  doc.save('My Pyme-Reporte Contactos.pdf');
+};
+logoImg.src = '/assets/dist/img/pym.png'; // Ruta del logo
+
+  
 }
 
 getCurrentDate(): string {

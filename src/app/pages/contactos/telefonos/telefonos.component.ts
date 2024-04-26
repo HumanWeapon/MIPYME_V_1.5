@@ -265,11 +265,12 @@ export class TelefonosComponent implements OnInit{
 
 /*****************************************************************************************************/
 
-  generatePDF() {
+generatePDF() {
   const { jsPDF } = require("jspdf");
-  const doc = new jsPDF();
+  const doc = new jsPDF({ orientation: 'landscape' });
+
   const data: any[][] = [];
-  const headers = ['Telefono', 'Cod_area', 'Descripción', 'Creado por', 'Fecha de Creación', 'Modificado por', 'Fecha de modificación', 'Estado'];
+  const headers = ['ID', 'Teléfono', 'Cód. Área', 'Descripción', 'Creado por', 'Fecha de Creación', 'Modificado por', 'Fecha de Modificación', 'Estado'];
 
   // Agregar el logo al PDF
   const logoImg = new Image();
@@ -281,12 +282,14 @@ export class TelefonosComponent implements OnInit{
     const centerX = doc.internal.pageSize.getWidth() / 2;
     doc.setFontSize(12);
     doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
-    doc.text("Reporte de Telefonos", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+    doc.text("Reporte de Teléfonos", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
     doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+    doc.text("Usuario: " + this.getUser.usuario, centerX, 50, { align: 'center' });
 
     // Recorre los datos y agrégalos a la matriz 'data'
     this.telefonosAllContactos.forEach((conT, index) => {
       const row = [
+        conT.id_telefono, // Agregando el campo ID
         conT.telefono,
         conT.cod_area,
         conT.descripcion,
@@ -303,7 +306,21 @@ export class TelefonosComponent implements OnInit{
     doc.autoTable({
       head: [headers],
       body: data,
-      startY: 70 // Ajusta la posición inicial de la tabla según tu diseño
+      startY: 70, // Ajusta la posición inicial de la tabla según tu diseño
+      styles: {
+        fontSize: 8 // Tamaño de fuente para la tabla
+      },
+      columnStyles: {
+        0: { cellWidth: 15 }, // Ancho de la columna ID
+        1: { cellWidth: 30 }, // Ancho de la columna Teléfono
+        2: { cellWidth: 25 }, // Ancho de la columna Cód. Área
+        3: { cellWidth: 40 }, // Ancho de la columna Descripción
+        4: { cellWidth: 30 }, // Ancho de la columna Creado por
+        5: { cellWidth: 40 }, // Ancho de la columna Fecha de Creación
+        6: { cellWidth: 30 }, // Ancho de la columna Modificado por
+        7: { cellWidth: 40 }, // Ancho de la columna Fecha de Modificación
+        8: { cellWidth: 20 } // Ancho de la columna Estado
+      }
     });
 
     // Guardar el PDF

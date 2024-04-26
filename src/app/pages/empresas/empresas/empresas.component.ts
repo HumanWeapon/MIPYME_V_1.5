@@ -284,7 +284,7 @@ generatePDF() {
   const { jsPDF } = require("jspdf");
   const doc = new jsPDF();
   const data: any[][] = [];
-  const headers = ['Nombre Empresa', 'Descripción', 'Creador', 'Fecha de Creación', 'Estado'];
+  const headers = ['ID', 'Nombre Empresa', 'Descripción', 'Creador', 'Fecha de Creación', 'Estado']; // Se agregó el encabezado ID
 
   // Agregar el logo al PDF
   const logoImg = new Image();
@@ -298,10 +298,11 @@ generatePDF() {
       doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
       doc.text("Reporte de Empresas", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
       doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
-
+      doc.text("Usuario: " + this.getUser.usuario, centerX, 50, { align: 'center' });
       // Recorre los datos de tu lista y agrégalo a la matriz 'data'
       this.listEmpresa.forEach((empresa, index) => {
           const row = [
+              empresa.id_empresa, // Se agregó el campo ID
               empresa.nombre_empresa,
               empresa.descripcion,
               empresa.creado_por,
@@ -315,7 +316,18 @@ generatePDF() {
       doc.autoTable({
           head: [headers],
           body: data,
-          startY: 70 // Ajusta la posición inicial de la tabla según tu diseño
+          startY: 70, // Ajusta la posición inicial de la tabla según tu diseño
+          styles: {
+            fontSize: 8 // Tamaño de fuente para la tabla
+          },
+          columnStyles: {
+            0: { cellWidth: 10 }, // Ancho de la columna ID
+            1: { cellWidth: 40 }, // Ancho de la columna Nombre Empresa
+            2: { cellWidth: 50 }, // Ancho de la columna Descripción
+            3: { cellWidth: 30 }, // Ancho de la columna Creador
+            4: { cellWidth: 40 }, // Ancho de la columna Fecha de Creación
+            5: { cellWidth: 20 } // Ancho de la columna Estado
+          }
       });
 
       // Guardar el PDF
@@ -323,6 +335,7 @@ generatePDF() {
   };
   logoImg.src = '/assets/dist/img/pym.png'; // Ruta del logo
 }
+
 
 getCurrentDate(): string {
   const currentDate = new Date();
