@@ -104,6 +104,8 @@ export class PasswordEmailComponent implements OnInit {
           response => {
             // Aquí puedes navegar a la siguiente página o mostrar otro mensaje según la respuesta del servicio
             this.toastr.success('Correo Enviado Exitosamente');
+            // Mostrar el modal después de enviar el correo electrónico
+            this.mostrarModal();
           },
           error => {
             console.error('Error al enviar el correo electrónico:', error);
@@ -118,6 +120,12 @@ export class PasswordEmailComponent implements OnInit {
     );
   }
   
+  mostrarModal() {
+    // Mostrar el modal solo si el valor del parámetro es 465
+    if (this.parametroCorreo === '465') {
+      this.correoEnviadoModal.show();
+    }
+  }
 
   validarCorreoElectronico(correoElectronico: string): boolean {
     const expresionRegularCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
