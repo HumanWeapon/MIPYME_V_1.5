@@ -79,6 +79,7 @@ export class PasswordEmailComponent implements OnInit {
     this.usuarioService.forgotPassword(this.correoElectronico).subscribe(
       response => {
         // Aquí puedes navegar a la siguiente página o mostrar otro mensaje según la respuesta del servicio
+        this.toastr.success('Correo Enviado Exitosamente');
       },
       error => {
         console.error('Error al enviar el correo electrónico:', error);
