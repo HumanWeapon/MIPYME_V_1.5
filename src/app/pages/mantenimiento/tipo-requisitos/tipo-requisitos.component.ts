@@ -15,6 +15,7 @@ import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 import { DatePipe } from '@angular/common';
 import { Paises } from 'src/app/interfaces/empresa/paises';
 import { PaisesService } from 'src/app/services/empresa/paises.service';
+import { PermisosService } from 'src/app/services/seguridad/permisos.service';
 
 
 @Component({
@@ -23,6 +24,11 @@ import { PaisesService } from 'src/app/services/empresa/paises.service';
   styleUrls: ['./tipo-requisitos.component.css']
 })
 export class TipoRequisitosComponent implements OnInit {
+
+  consultar: boolean = false;
+  insertar: boolean = false;
+  actualizar: boolean = false;
+  eliminar: boolean = false;
 
     trAnterior: any;
     listPaises: Paises [] = [];
@@ -69,10 +75,12 @@ export class TipoRequisitosComponent implements OnInit {
     private _userService: UsuariosService,
     private ngZone: NgZone,
     private _datePipe: DatePipe,
-    private _paisService: PaisesService
+    private _paisService: PaisesService,
+    private _permisosService: PermisosService
     ) {}
 
   ngOnInit(): void {
+    this.getPermnisosObjetos();
     this.getAllPaises();
     this.getUsuario()
       this.dtOptions = {
@@ -92,6 +100,23 @@ export class TipoRequisitosComponent implements OnInit {
   ngOnDestroy(): void {
     // Do not forget to unsubscribe the event
     this.dtTrigger.unsubscribe();
+  }
+  getPermnisosObjetos(){
+    const idObjeto = localStorage.getItem('id_objeto');
+    const idRol = localStorage.getItem('id_rol');
+    if(idObjeto && idRol){
+      this._permisosService.getPermnisosObjetos(idRol, idObjeto).subscribe({
+        next: (data: any) => {
+          this.consultar = data.permiso_consultar;
+          this.insertar = data.permiso_insercion;
+          this.actualizar = data.permiso_actualizacion;
+          this.eliminar = data.permiso_eliminacion;
+        },
+        error: (e: HttpErrorResponse) => {
+          this._errorService.msjError(e);
+        }
+      });
+    }
   }
       
   // Variable de estado para alternar funciones

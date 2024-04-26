@@ -5,15 +5,15 @@
             <div class="col-12">
               <div class="card">
                 <div class="card-header">
-                  <button type="button"  data-toggle="modal" data-target="#agregarRequisito" class="btn btn_color_blue btn-sm" >
+                  <button *ngIf="insertar" type="button"  data-toggle="modal" data-target="#agregarRequisito" class="btn btn_color_blue btn-sm" >
                     <i class="fas fa-plus"></i> NUEVO
                   </button>
-                  <button type="button" class="btn btn-primary custom-print-button btn-primary" title="Generar el Reporte" data-toggle="modal" data-target="#PDFReQ">
+                  <button *ngIf="consultar" type="button" class="btn btn-primary custom-print-button btn-primary" title="Generar el Reporte" data-toggle="modal" data-target="#PDFReQ">
                     <i class="fas fa-print"></i> Generar Reporte</button>
                 </div>
             <!-- /.card-header -->
             <div class="card-body">
-                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover">
+                <table *ngIf="consultar" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover">
                     <thead>
                         <tr>
                           <th>Id</th>
@@ -25,7 +25,7 @@
                           <th>Modificado</th>
                           <th>Fecha Modificación</th>
                           <th>Estado</th>
-                          <th>Acciones</th>
+                          <th *ngIf="actualizar">Acciones</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -43,7 +43,7 @@
                             <ng-container *ngIf="TRequi.estado === 2">INACTIVO</ng-container>
                             
                           </td>
-                          <td class="text-center">
+                          <td *ngIf="actualizar" class="text-center">
                             <div class="btn-group">
                               <div class="form-check form-switch ml-4">
                                 <input class="form-check-input" (click)="toggleFunctionRequi(TRequi, i)" [title]="TRequi.estado == 1 ? 'Desactivar' : 'Activar'" type="checkbox" 
