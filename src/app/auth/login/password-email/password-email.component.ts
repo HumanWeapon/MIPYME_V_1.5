@@ -104,6 +104,7 @@ export class PasswordEmailComponent implements OnInit {
             this.toastr.success('Correo Enviado Exitosamente');
             // Establecer parametroCorreo en '465' para mostrar el modal
               this.parametroCorreo = '465';
+              this.router.navigate(['/mensaje-correoenviado']);
           },
           error => {
             console.error('Error al enviar el correo electrónico:', error);
