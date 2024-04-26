@@ -13,6 +13,7 @@ import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
   styleUrls: ['./password-email.component.css']
 })
 export class PasswordEmailComponent implements OnInit {
+  @ViewChild('correoEnviadoModal') correoEnviadoModal: any;
 
   usuario: Usuario = {
     id_usuario: 0,
@@ -40,9 +41,6 @@ export class PasswordEmailComponent implements OnInit {
     private _parametrosService: ParametrosService,
     private _errorService: ErrorService,
      ) { }
-
-      // Referencia al modal
-  @ViewChild('correoEnviadoModal') correoEnviadoModal: any;
 
   ngOnInit() {
     this.getParametros();
@@ -104,8 +102,8 @@ export class PasswordEmailComponent implements OnInit {
           response => {
             // Aquí puedes navegar a la siguiente página o mostrar otro mensaje según la respuesta del servicio
             this.toastr.success('Correo Enviado Exitosamente');
-            // Mostrar el modal después de enviar el correo electrónico
-            this.mostrarModal();
+            // Establecer parametroCorreo en '465' para mostrar el modal
+              this.parametroCorreo = '465';
           },
           error => {
             console.error('Error al enviar el correo electrónico:', error);
@@ -118,18 +116,6 @@ export class PasswordEmailComponent implements OnInit {
         this.toastr.error('El usuario no existe.');
       }
     );
-  }
-  
-  mostrarModal() {
-    // Verificar si correoEnviadoModal está definido
-    if (this.correoEnviadoModal) {
-      // Mostrar el modal solo si el valor del parámetro es 465
-      if (this.parametroCorreo === '465') {
-        this.correoEnviadoModal.show();
-      }
-    } else {
-      console.error('Error: correoEnviadoModal no está definido.');
-    }
   }
 
   validarCorreoElectronico(correoElectronico: string): boolean {
