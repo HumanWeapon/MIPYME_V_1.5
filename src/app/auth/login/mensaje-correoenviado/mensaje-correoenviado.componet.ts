@@ -14,10 +14,17 @@ import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 })
 export class MensajeCorreoEnviadoComponent implements OnInit {
   
+  constructor(private router: Router, 
+
+     ) { }
   
   ngOnInit(): void {
 
   }
+
+  cerrarModal() {
+    this.router.navigate(['/login']);
+  }  
  
 }
 
