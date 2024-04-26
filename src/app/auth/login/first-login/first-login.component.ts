@@ -63,7 +63,7 @@ export class FirstLoginComponent {
   parametroEditando: Parametros = {
     id_parametro: 0,
     parametro: '',
-    valor: 0,
+    valor: '',
     id_usuario: 0,
     creado_por: '',
     fecha_creacion: new Date(),

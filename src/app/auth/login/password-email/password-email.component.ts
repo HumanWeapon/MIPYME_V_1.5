@@ -1,7 +1,10 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Usuario } from 'src/app/interfaces/seguridad/usuario';
+import { ErrorService } from 'src/app/services/error.service';
+import { ParametrosService } from 'src/app/services/seguridad/parametros.service';
 import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 
 @Component({
@@ -29,18 +32,36 @@ export class PasswordEmailComponent implements OnInit {
   };
 
   correoElectronico: string = '';
+  parametroCorreo: any;
 
-  constructor(private router: Router, private usuarioService: UsuariosService,
-    private toastr: ToastrService) { }
+  constructor(private router: Router, 
+    private usuarioService: UsuariosService,
+    private toastr: ToastrService,
+    private _parametrosService: ParametrosService,
+    private _errorService: ErrorService,
+     ) { }
 
       // Referencia al modal
   @ViewChild('correoEnviadoModal') correoEnviadoModal: any;
 
   ngOnInit() {
+    this.getParametros();
     const usuario: Usuario = history.state.usuario;
     if (usuario) {
       this.getUsuario(usuario);
     }
+  }
+
+  getParametros(){
+    this._parametrosService.getParametroPreguntasdeSeguridad().subscribe({
+      next: (data) => {
+        this.parametroCorreo = data.valor;
+        console.log('El valor del parametro es: '+ data.valor)
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
   }
   
   getUsuario(usuario: Usuario) {
