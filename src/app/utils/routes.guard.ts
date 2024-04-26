@@ -25,14 +25,6 @@ export class PermisosGuard implements CanActivate{
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    //console.log(id_rol);
-    //console.log(id_objeto);
-    //console.log(id_usuario);
-    // Verificar si todos los identificadores están disponibles
-
-    //console.log(this.id_rol);
-    //console.log(this.id_objeto);
-    //console.log(this.id_usuario);
 
     if(this.id_rol && this.id_objeto && this.id_usuario) {
 
@@ -54,7 +46,8 @@ export class PermisosGuard implements CanActivate{
       );
     } else {
       // Si falta algún identificador, redirige a una página de error
-      return this.router.createUrlTree(['/dashboard/not-found']);
+      return true;
+      //return this.router.createUrlTree(['/dashboard/not-found']);
     }
   }
 };
