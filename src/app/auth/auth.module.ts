@@ -13,6 +13,7 @@ import { LoginPymeComponent } from './login-pyme/login-pyme.component';
 import { RegisterPymeComponent } from './register-pyme/register-pyme.component';
 import { PasswordEmailComponent } from './login/password-email/password-email.component';
 import { ResetPasswordComponent } from './login/reset-password/reset-password.component';
+import { MensajeCorreoEnviadoComponent } from './login/mensaje-correoenviado/mensaje-correoenviado.componet';
 
 
 
@@ -30,7 +31,8 @@ import { ResetPasswordComponent } from './login/reset-password/reset-password.co
     LoginPymeComponent,
     RegisterPymeComponent,
     PasswordEmailComponent,
-    ResetPasswordComponent
+    ResetPasswordComponent,
+    MensajeCorreoEnviadoComponent
   ],
   imports: [
     CommonModule,

@@ -15,6 +15,7 @@ import { DashboardComponent } from '../pages/dashboard/dashboard.component';
 import { PymeComponent } from '../pages/pyme/pyme.component';
 import { BackupComponent } from '../pages/administracion/backup/backup.component';
 import { RestoreComponent } from '../pages/administracion/restore/restore.component';
+import { MensajeCorreoEnviadoComponent } from './login/mensaje-correoenviado/mensaje-correoenviado.componet';
 
 
 
@@ -27,6 +28,7 @@ const routes: Routes =[
   {path: 'firstlogin', component: FirstLoginComponent},
   {path: 'login-pyme', component: LoginPymeComponent},
   {path: 'password-email', component: PasswordEmailComponent},
+  {path: 'mensaje-correoenviado', component: MensajeCorreoEnviadoComponent},
   {path: 'reset-password/:token', component: ResetPasswordComponent },
   {path: 'search', component: SearchComponent },
   {path: 'dashboard', component: DashboardComponent },

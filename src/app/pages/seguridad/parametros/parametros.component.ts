@@ -39,7 +39,7 @@ export class ParametrosComponent implements OnInit{
   parametroEditando: Parametros = {
     id_parametro: 0,
     parametro: '',
-    valor: 0,
+    valor: '',
     id_usuario: 0,
     creado_por: '',
     fecha_creacion: new Date(),
@@ -52,7 +52,7 @@ export class ParametrosComponent implements OnInit{
   nuevoParametro: Parametros = {
     id_parametro: 0,
     parametro: '',
-    valor: 0,
+    valor: '',
     id_usuario: 0,
     creado_por: '',
     fecha_creacion: new Date(),
@@ -110,7 +110,7 @@ export class ParametrosComponent implements OnInit{
 
   cancelarInput(){;
     this.nuevoParametro.parametro ='';
-    this.nuevoParametro.valor = 0;
+    this.nuevoParametro.valor = '';
   }
 
   eliminarCaracteresEspeciales(event: any, field: string) {
@@ -349,7 +349,7 @@ generateExcel() {
       id_parametro: 0,
       parametro: this.nuevoParametro.parametro.trim(),
       estado_parametro: 1,
-      valor: this.nuevoParametro.valor,
+      valor: this.nuevoParametro.valor.trim(),
       id_usuario: 0,
       creado_por: LocalUser,
       fecha_creacion: fechaFormateada as unknown as Date,
@@ -360,7 +360,7 @@ generateExcel() {
     if (!this.nuevoParametro.parametro || !this.nuevoParametro.valor) {
       this.toastr.warning('Debes completar los campos vacíos');
       this.nuevoParametro.parametro = '';
-      this.nuevoParametro.valor = 0;
+      this.nuevoParametro.valor = '';
     }else{
     this._parametroService.addParametro(nuevoParametro).subscribe({
       next: (data) => {
@@ -401,6 +401,7 @@ generateExcel() {
       return;
   }
     this.parametroEditando.parametro = this.parametroEditando.parametro.toUpperCase();
+    this.parametroEditando.valor = this.parametroEditando.valor.toUpperCase();
     this.parametroEditando.creado_por = this.parametroEditando.creado_por.toUpperCase();
     this.parametroEditando.modificado_por = this.parametroEditando.modificado_por.toUpperCase();
 
@@ -424,7 +425,7 @@ generateExcel() {
       }
     });
     this.listParametros[this.indice].parametro = this.parametroEditando.parametro.toUpperCase();
-    this.listParametros[this.indice].valor = this.parametroEditando.valor
+    this.listParametros[this.indice].valor = this.parametroEditando.valor.toUpperCase();
   
   }
 
