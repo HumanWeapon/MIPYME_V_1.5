@@ -112,7 +112,24 @@
                     <label for="parametroEditando">Parametro:</label>
                     <input type="text" [(ngModel)]="parametroEditando.parametro" (input)="eliminarCaracteresEspeciales($event, 'parametro')" (input)="convertirAMayusculas($event, 'parametro')"  name="parametroEditando.parametro"  class="form-control" id="editarParametro" placeholder="Parametro">
                 </div>
-                <div class="form-group">
+                <!-- Reemplazar input por select cuando parametroEditando.parametro sea 'PUERTO_CORREO' -->
+                <div class="form-group" *ngIf="parametroEditando.parametro === 'PUERTO_CORREO'">
+                    <label for="parametroEditando">Valor:</label>
+                    <select [(ngModel)]="parametroEditando.valor" name="parametroEditando.valor" class="form-control" id="editarValor">
+                      <option value="587">587</option>
+                      <option value="465">465</option>
+                    </select>
+                </div>
+                <!-- Reemplazar input por select cuando parametroEditando.parametro sea 'CORREO_SERVIDOR' -->
+                <div class="form-group" *ngIf="parametroEditando.parametro === 'CORREO_SERVIDOR'">
+                    <label for="parametroEditando">Valor:</label>
+                    <select [(ngModel)]="parametroEditando.valor" name="parametroEditando.valor" class="form-control" id="editarValor">
+                      <option value="ISMAELMIDENCE07@GMAIL.COM">ISMAELMIDENCE07@GMAIL.COM</option>
+                      <option value="ISMAEL.MIDENCE@UNAH.HN">ISMAEL.MIDENCE@UNAH.HN</option>
+                    </select>
+                </div>
+                <!-- Si no es 'PUERTO_CORREO' o 'CORREO_SERVIDOR', mostrar el input normal -->
+                <div class="form-group" *ngIf="parametroEditando.parametro !== 'PUERTO_CORREO' && parametroEditando.parametro !== 'CORREO_SERVIDOR'">
                     <label for="parametroEditando">Valor:</label>
                     <input type="text" [(ngModel)]="parametroEditando.valor" (input)="eliminarCaracteresEspeciales($event, 'valor')" name="parametroEditando.valor" class="form-control" id="editarValor" placeholder="Valor">
                 </div>
@@ -125,6 +142,7 @@
       </div>
   </div>
 </div>
+
 <!-- /Actualizar Parametro Form -->
 
 <!-- Form Ver PDF para Requisitos -->
