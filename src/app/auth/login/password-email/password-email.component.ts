@@ -91,7 +91,7 @@ if (this.parametroCorreo === '587' && this.parametroCorreoServidor !== 'ISMAEL.M
 }
 
 // Verificar si el parámetroCorreo coincide con el parámetroCorreoServidor para el puerto 465
-if (this.parametroCorreo === '465' && this.parametroCorreoServidor !== 'ISMAELMIDENCE07@UNAH.HN') {
+if (this.parametroCorreo === '465' && this.parametroCorreoServidor !== 'ISMAELMIDENCE07@GMAIL.COM') {
   this.toastr.error('Los parámetros no tienen los valores correctos para el puerto 465');
   return;
 }

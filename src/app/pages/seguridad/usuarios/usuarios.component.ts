@@ -559,16 +559,17 @@ export class UsuariosComponent {
     console.log('Correo Obtenido: ' + correoUsuario);
   
     // Verificar si el parámetroCorreo coincide con el parámetroCorreoServidor para el puerto 587
-if (this.parametroCorreo === '587' && this.parametroCorreoServidor !== 'ISMAEL.MIDENCE@UNAH.HN') {
-  this._toastr.error('Los parámetros no tienen los valores correctos para el puerto 587');
-  return;
-}
-
-// Verificar si el parámetroCorreo coincide con el parámetroCorreoServidor para el puerto 465
-if (this.parametroCorreo === '465' && this.parametroCorreoServidor !== 'ISMAELMIDENCE07@UNAH.HN') {
-  this._toastr.error('Los parámetros no tienen los valores correctos para el puerto 465');
-  return;
-}
+    if (this.parametroCorreo === '587' && this.parametroCorreoServidor !== 'ISMAEL.MIDENCE@UNAH.HN') {
+      this._toastr.error('Los parámetros no tienen los valores correctos para el puerto 587');
+      return;
+    }
+  
+    // Verificar si el parámetroCorreo coincide con el parámetroCorreoServidor para el puerto 465
+    if (this.parametroCorreo === '465' && this.parametroCorreoServidor !== 'ISMAELMIDENCE07@GMAIL.COM') {
+      this._toastr.error('Los parámetros no tienen los valores correctos para el puerto 465');
+      return;
+    }
+  
     // Llama al servicio para enviar el correo electrónico de restablecimiento
     this._userService.reestablecer(correoUsuario).subscribe(
       response => {
@@ -590,11 +591,7 @@ if (this.parametroCorreo === '465' && this.parametroCorreoServidor !== 'ISMAELMI
       }
     );
   }
-  
-  
-  
-  
-  
+   
   /******************************************************************************************************************************************/
   /*************************************************************** Métodos de Bitácora ***************************************************************************/
   /******************************************************************************************************************************************/
