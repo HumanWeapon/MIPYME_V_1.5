@@ -97,6 +97,8 @@ export class UsuariosComponent {
     this.getAllRoles();
     this.getUsuario();
     this.getAllUsuarios();
+    this.getParametros();
+    this.getParametrosCorreoServidor();
   }
 
   getAllRoles(){
@@ -568,7 +570,7 @@ if (this.parametroCorreo === '465' && this.parametroCorreoServidor !== 'ISMAELMI
   return;
 }
     // Llama al servicio para enviar el correo electrónico de restablecimiento
-    this._userService.reestablecerOutlook(correoUsuario).subscribe(
+    this._userService.reestablecer(correoUsuario).subscribe(
       response => {
         // Aquí puedes manejar la respuesta del servicio
         this._toastr.success('Nueva Contraseña enviada con Exito.');
