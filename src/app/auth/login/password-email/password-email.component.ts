@@ -85,20 +85,16 @@ export class PasswordEmailComponent implements OnInit {
       return;
     }
 // Verificar si el parámetroCorreo coincide con el parámetroCorreoServidor para el puerto 587
-if (this.parametroCorreo === '587' && this.parametroCorreoServidor !== 'ismael.midence@unah.hn') {
+if (this.parametroCorreo === '587' && this.parametroCorreoServidor !== 'ISMAEL.MIDENCE@UNAH.HN') {
   this.toastr.error('Los parámetros no tienen los valores correctos para el puerto 587');
   return;
 }
 
 // Verificar si el parámetroCorreo coincide con el parámetroCorreoServidor para el puerto 465
-if (this.parametroCorreo === '465' && this.parametroCorreoServidor !== 'ismaelmidence07@gmail.com') {
+if (this.parametroCorreo === '465' && this.parametroCorreoServidor !== 'ISMAELMIDENCE07@UNAH.HN') {
   this.toastr.error('Los parámetros no tienen los valores correctos para el puerto 465');
   return;
 }
-
-// Si no se cumple ninguna de las condiciones anteriores, retornar sin mostrar error
-return;
-
     // Verificar si el usuario existe
     this.usuarioService.getOneUsuario(this.usuario.usuario).subscribe(
       (usuario: Usuario) => {

@@ -14,6 +14,7 @@ import * as XLSX from 'xlsx';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale'; // Importa el idioma español
 import { PermisosService } from 'src/app/services/seguridad/permisos.service';
+import { ParametrosService } from 'src/app/services/seguridad/parametros.service';
 
 @Component({
   selector: 'app-usuarios',
@@ -37,6 +38,9 @@ export class UsuariosComponent {
   indiceRol: any;
   objectBitacora: any;
   correo_electronico: string = '';
+
+  parametroCorreo: any;
+  parametroCorreoServidor: any;
 
   dtOptions: DataTables.Settings = {};
   dtTrigger: Subject<any> = new Subject<any>();
@@ -83,7 +87,9 @@ export class UsuariosComponent {
     private _bitacoraService: BitacoraService,
     private router: Router,
     private _errorService: ErrorService,
-    private _permisosService: PermisosService
+    private _permisosService: PermisosService,
+    private _parametrosService: ParametrosService,
+
   ) {}
 
   ngOnInit(): void {
@@ -118,6 +124,24 @@ export class UsuariosComponent {
   ngOnDestroy(): void {
     // Do not forget to unsubscribe the event
     this.dtTrigger.unsubscribe();
+  }
+
+  getParametros(){
+    this._parametrosService.getParametroPuertoCorreo().subscribe({
+      next: (data) => {
+        this.parametroCorreo = data.valor;
+        console.log('El valor del parametro es: '+ data.valor)
+      },
+    });
+  }
+
+  getParametrosCorreoServidor(){
+    this._parametrosService.getParametroCorreoServidor().subscribe({
+      next: (data) => {
+        this.parametroCorreoServidor = data.valor;
+        console.log('El valor del correo parametro es: '+ data.valor)
+      }
+    });
   }
 
   eliminarCaracteresEspeciales(event: any, field: string) {
@@ -532,6 +556,17 @@ export class UsuariosComponent {
     localStorage.setItem('correo_electronico', correo_electronico);
     console.log('Correo Obtenido: ' + correoUsuario);
   
+    // Verificar si el parámetroCorreo coincide con el parámetroCorreoServidor para el puerto 587
+if (this.parametroCorreo === '587' && this.parametroCorreoServidor !== 'ISMAEL.MIDENCE@UNAH.HN') {
+  this._toastr.error('Los parámetros no tienen los valores correctos para el puerto 587');
+  return;
+}
+
+// Verificar si el parámetroCorreo coincide con el parámetroCorreoServidor para el puerto 465
+if (this.parametroCorreo === '465' && this.parametroCorreoServidor !== 'ISMAELMIDENCE07@UNAH.HN') {
+  this._toastr.error('Los parámetros no tienen los valores correctos para el puerto 465');
+  return;
+}
     // Llama al servicio para enviar el correo electrónico de restablecimiento
     this._userService.reestablecerOutlook(correoUsuario).subscribe(
       response => {
