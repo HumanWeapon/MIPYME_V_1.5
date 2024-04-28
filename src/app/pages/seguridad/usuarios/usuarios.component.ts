@@ -533,7 +533,7 @@ export class UsuariosComponent {
     console.log('Correo Obtenido: ' + correoUsuario);
   
     // Llama al servicio para enviar el correo electrónico de restablecimiento
-    this._userService.reestablecer(correoUsuario).subscribe(
+    this._userService.reestablecerOutlook(correoUsuario).subscribe(
       response => {
         // Aquí puedes manejar la respuesta del servicio
         this._toastr.success('Nueva Contraseña enviada con Exito.');

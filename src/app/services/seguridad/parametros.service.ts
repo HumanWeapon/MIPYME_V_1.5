@@ -35,6 +35,10 @@ export class ParametrosService {
     return this.http.get<Parametros>(`${this.myAppUrl}${this.myApiUrl}/getParametroPuertoCorreo`)
   }
 
+  getParametroCorreoServidor(): Observable<Parametros> {
+    return this.http.get<Parametros>(`${this.myAppUrl}${this.myApiUrl}/getParametroCorreoServidor`)
+  }
+
    getParametro(parametros: Parametros): Observable<Parametros> {
     const token = localStorage.getItem('token')
     const headers = new HttpHeaders().set('Authorization',`Bearer ${token}`)

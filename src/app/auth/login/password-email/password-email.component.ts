@@ -34,6 +34,7 @@ export class PasswordEmailComponent implements OnInit {
 
   correoElectronico: string = '';
   parametroCorreo: any;
+  parametroCorreoServidor: any;
 
   constructor(private router: Router, 
     private usuarioService: UsuariosService,
@@ -44,6 +45,7 @@ export class PasswordEmailComponent implements OnInit {
 
   ngOnInit() {
     this.getParametros();
+    this.getParametrosCorreoServidor();
     const usuario: Usuario = history.state.usuario;
     if (usuario) {
       this.getUsuario(usuario);
@@ -56,12 +58,18 @@ export class PasswordEmailComponent implements OnInit {
         this.parametroCorreo = data.valor;
         console.log('El valor del parametro es: '+ data.valor)
       },
-      error: (e: HttpErrorResponse) => {
-        this._errorService.msjError(e);
+    });
+  }
+
+  getParametrosCorreoServidor(){
+    this._parametrosService.getParametroCorreoServidor().subscribe({
+      next: (data) => {
+        this.parametroCorreoServidor = data.valor;
+        console.log('El valor del correo parametro es: '+ data.valor)
       }
     });
   }
-  
+
   getUsuario(usuario: Usuario) {
     this.usuarioService.getUsuario(usuario).subscribe(data => {
       this.usuario = data;
@@ -78,7 +86,7 @@ export class PasswordEmailComponent implements OnInit {
     }
   
     // Verificar si el valor del parámetro es 465
-    if (this.parametroCorreo !== '465') {
+    if (this.parametroCorreo !== '587') {
       this.toastr.error('El parámetro no tiene el valor correcto para enviar correos electrónicos.');
       return;
     }
