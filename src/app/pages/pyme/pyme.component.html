@@ -5,12 +5,12 @@
         <div class="card">
           <div class="card-header">
             
-            <button type="button" class="btn btn-primary custom-print-button btn-primary" title="Generar el Reporte" data-toggle="modal" data-target="#PDFpyme">
+            <button *ngIf="consultar" type="button" class="btn btn-primary custom-print-button btn-primary" title="Generar el Reporte" data-toggle="modal" data-target="#PDFpyme">
               <i class="fas fa-print"></i> Generar Reporte</button>
           </div>
           <!-- /.card-header -->
             <div class="card-body table-responsive p-0" style="font-size:medium;">
-              <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped">
+              <table *ngIf="consultar" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped">
                 <thead>
                   <tr>
                     <th>ID</th>
@@ -20,7 +20,7 @@
                     <th>CORREO</th>
                     <th>TELEFONO</th>
                     <th>ESTADO</th>
-                    <th>ACCIONES</th>
+                    <th *ngIf="actualizar" >ACCIONES</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -36,7 +36,7 @@
                       <ng-container *ngIf="pyme.estado === 1">ACTIVO</ng-container>
                       <ng-container *ngIf="pyme.estado === 2">INACTIVO</ng-container>
                     </td>
-                    <td class="text-center">
+                    <td *ngIf="actualizar" class="text-center">
                       <div class="btn-group">
                         <!-- Colocar el botón del ojo antes del switch -->
                         <button type="button" (click)="obtenerPyme(pyme, i)" title="Ver Usuario" class="btna" data-toggle="modal" data-target="#VistaPyme">

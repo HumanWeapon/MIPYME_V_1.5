@@ -8,7 +8,7 @@
                     </div>
                     <!-- /.card-header -->
                         <div class="card-body table-responsive p-0" style="font-size: medium;">
-                            <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"  class="table table-bordered table-striped row-border hover">
+                            <table *ngIf="consultar" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger"  class="table table-bordered table-striped row-border hover">
                                 <thead>
                                     <tr>
                                         <th>FECHA</th>

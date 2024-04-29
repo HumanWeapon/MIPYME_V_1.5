@@ -26,6 +26,11 @@ import { ChangeDetectorRef } from '@angular/core';
 })
 export class PermisosComponent implements OnInit, OnDestroy {
 
+  consultar: boolean = false;
+  insertar: boolean = false;
+  actualizar: boolean = false;
+  eliminar: boolean = false;
+  
   permisos: any; 
   submenusData: SubmenuData[] = [];
   objetosPrincipales: any[] | undefined;

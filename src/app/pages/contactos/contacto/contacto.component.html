@@ -5,14 +5,14 @@
             <div class="col-12">
               <div class="card">
                 <div class="card-header">
-                  <!-- Main content <button type="button" class="btn btn_color_blue btn-sm" data-toggle="modal" data-target="#agregarContacto">
+                  <!-- Main content <button *ngIf="insertar" type="button" class="btn btn_color_blue btn-sm" data-toggle="modal" data-target="#agregarContacto">
                     <i class="fas fa-plus"></i> Nuevo</button>-->
-                    <button type="button" class="btn btn_color_blue btn-sm custom-print-button" title="Generar el Reporte" data-toggle="modal" data-target="#PDFReQ">
+                    <button *ngIf="consultar" type="button" class="btn btn_color_blue btn-sm custom-print-button" title="Generar el Reporte" data-toggle="modal" data-target="#PDFReQ">
                       <i class="fas fa-print"></i> Generar Reporte</button>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body table-responsive p-0" style="font-size:medium;">
-                    <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover"> 
+                    <table *ngIf="consultar" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover"> 
                         <thead>
                           <tr>
                             <th>Id</th>
@@ -25,7 +25,7 @@
                             <th>Modificado por</th>
                             <th>Fecha Modificación</th>
                             <th>Estado</th>
-                            <th>Acciones</th>
+                            <th *ngIf="actualizar">Acciones</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -43,7 +43,7 @@
                               <ng-container *ngIf="contac.estado === 1">ACTIVO</ng-container>
                               <ng-container *ngIf="contac.estado === 2">INACTIVO</ng-container>
                             </td>
-                            <td class="text-center">
+                            <td *ngIf="actualizar" class="text-center">
                               <div class="btn-group">
                                 <div class="form-check form-switch ml-4">
                                   <input class="form-check-input" (click)="toggleFunction(contac, i)" [title]="contac.estado == 1 ? 'Desactivar' : 'Activar'" type="checkbox" 

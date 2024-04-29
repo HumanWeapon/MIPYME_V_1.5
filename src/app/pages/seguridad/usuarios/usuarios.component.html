@@ -5,16 +5,16 @@
       <div class="col-12">
         <div class="card">
           <div class="card-header">
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarUsuario">
+            <button *ngIf="insertar" type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarUsuario">
                 <i class="fas fa-plus"></i> Nuevo
             </button>
-            <button type="button" class="btn btn-primary custom-print-button btn-primary" title="Generar el Reporte" data-toggle="modal" data-target="#PDFReQ">
+            <button *ngIf="consultar" type="button" class="btn btn-primary custom-print-button btn-primary" title="Generar el Reporte" data-toggle="modal" data-target="#PDFReQ">
               <i class="fas fa-print"></i> Generar Reporte</button>
         </div>
         
           <!-- /.card-header -->
           <div class="card-body table-responsive p-0" style="font-size:medium;">
-              <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover">
+              <table *ngIf="consultar" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-bordered table-striped row-border hover">
                 <thead>
                   <tr>
                     <th>ID</th>
@@ -23,7 +23,7 @@
                     <th>CORREO</th>
                     <th>ROL</th>
                     <th>ESTADO</th>
-                    <th>ACCIONES</th>
+                    <th *ngIf="actualizar">ACCIONES</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -39,7 +39,7 @@
                         <ng-container *ngIf="user.estado_usuario === 3">BLOQUEADO</ng-container>
                         <ng-container *ngIf="user.estado_usuario === 4">VENCIDO</ng-container>
                     </td>
-                    <td class="text-center">
+                    <td *ngIf="actualizar" class="text-center">
                       <div class="btn-group">
 
                         <button type="button" (click)="obtenerUsuario(user, i)" title="Ver Usuario" class="btna" data-toggle="modal" data-target="#VistaUser">
