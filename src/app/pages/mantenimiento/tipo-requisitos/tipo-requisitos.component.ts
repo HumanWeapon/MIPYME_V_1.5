@@ -107,6 +107,7 @@ export class TipoRequisitosComponent implements OnInit {
     if(idObjeto && idRol){
       this._permisosService.getPermnisosObjetos(idRol, idObjeto).subscribe({
         next: (data: any) => {
+          console.log(data)
           this.consultar = data.permiso_consultar;
           this.insertar = data.permiso_insercion;
           this.actualizar = data.permiso_actualizacion;

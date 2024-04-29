@@ -65,9 +65,8 @@ export class MantenimientoComponent implements OnInit {
     })
   }
 
-  navegar(url: string) {
+  navegar(objeto: any) {
     this.mostrar = false;
-    this._router.navigate(['/dashboard/'+url])
+    this._router.navigate(['/dashboard/'+ objeto.url])
   }
-
 }
