@@ -109,7 +109,8 @@ export class PermisosComponent implements OnInit, OnDestroy {
     private _bitacoraService: BitacoraService,
     private _errorService: ErrorService,
     private _userService: UsuariosService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private _permisosService: PermisosService 
   ) {}
 
   ngOnInit(): void {
@@ -150,8 +151,9 @@ export class PermisosComponent implements OnInit, OnDestroy {
     const idObjeto = localStorage.getItem('id_objeto');
     const idRol = localStorage.getItem('id_rol');
     if(idObjeto && idRol){
-      this._permService.getPermnisosObjetos(idRol, idObjeto).subscribe({
+      this._permisosService.getPermnisosObjetos(idRol, idObjeto).subscribe({
         next: (data: any) => {
+          console.log('esta es la info: ' + data)
           this.consultar = data.permiso_consultar;
           this.insertar = data.permiso_insercion;
           this.actualizar = data.permiso_actualizacion;
