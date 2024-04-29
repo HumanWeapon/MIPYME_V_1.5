@@ -31,7 +31,8 @@ export class PermisosComponent implements OnInit, OnDestroy {
   actualizar: boolean = false;
   eliminar: boolean = false;
   
-  permisos: any; 
+  permisos: any;
+
   submenusData: SubmenuData[] = [];
   objetosPrincipales: any[] | undefined;
   submenuSeleccionado: string | undefined;
