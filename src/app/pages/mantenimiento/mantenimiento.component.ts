@@ -68,6 +68,7 @@ export class MantenimientoComponent implements OnInit {
 
   navegar(objeto: any) {
     localStorage.setItem('id_objeto',objeto.id_objeto)
+    console.log(objeto)
     this.mostrar = false;
     this._router.navigate(['/dashboard/'+ objeto.url])
   }

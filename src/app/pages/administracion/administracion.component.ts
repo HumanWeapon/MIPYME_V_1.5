@@ -41,9 +41,10 @@ export class AdministracionComponent implements OnInit {
     })
   }
 
-  navegar(url: string) {
-    this.mostrar = false;
-    this._router.navigate(['/dashboard/'+url])
+  navegar(objeto: any) {
+    localStorage.setItem('id_objeto',objeto.id_objeto)
+    //this.mostrar = false;
+    this._router.navigate(['/dashboard/' + objeto.url])
   }
 
 }

@@ -41,9 +41,10 @@ export class SeguridadComponent implements OnInit {
     })
   }
 
-  navegar(url: string) {
+  navegar(objeto: any) {
+    localStorage.setItem('id_objeto',objeto.id_objeto)
     //this.mostrar = false;
-    this._router.navigate(['/dashboard/'+url])
+    this._router.navigate(['/dashboard/' + objeto.url])
   }
 
 }
