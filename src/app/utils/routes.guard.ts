@@ -20,13 +20,14 @@ export class PermisosGuard implements CanActivate{
     this.id_objeto = localStorage.getItem('id_objeto');
     this.id_objeto2 = this.id_objeto;
     this.id_usuario = localStorage.getItem('id_usuario');
-    console.log(this.id_rol + " " + this.id_objeto)
+    
   }
    
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-
+    console.log(this.id_rol);
+    console.log(this.id_objeto);
     if(this.id_rol && this.id_objeto && this.id_usuario) {
 
       return this._permisosService.permisosdeRoutes(this.id_rol, this.id_objeto2, this.id_usuario).pipe(

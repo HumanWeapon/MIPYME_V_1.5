@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { da } from 'date-fns/locale';
 import { Pyme } from 'src/app/interfaces/pyme/pyme';
 import { Objetos } from 'src/app/interfaces/seguridad/objetos';
 import { Usuario } from 'src/app/interfaces/seguridad/usuario';
@@ -117,6 +118,7 @@ export class SidebarComponent implements OnInit{
         if (data) {
           // Asigna la lista ordenada a this.listMenu
           this.listMenu = data;
+          console.log(this.listMenu)
         }
       },
       error: (e: HttpErrorResponse) => {

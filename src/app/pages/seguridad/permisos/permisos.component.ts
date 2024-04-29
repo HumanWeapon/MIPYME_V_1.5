@@ -495,7 +495,6 @@ cancelarInput(){
   get_objeto(id_permisos: any) {
     this._permService.objetosSinRolV2(id_permisos).subscribe({
       next: (data) => {
-        console.log(data);
         // Convierte el objeto en una matriz y asígnalo a nombreObjeto
         this.nombreObjeto = Object.values(data);
       },
@@ -523,16 +522,26 @@ cancelarInput(){
     this.get_objeto(permisos.id_permisos);
     this.indice = i;
     this.permisoAnterior = permisos;
+    
   }
 
 
 
   editarPermiso() {
-    this._permService.editarPermiso(this.permisoeditando).subscribe(() => {
-      this.updateBitacora(this.data);
-      this.toastr.success('Permiso editado con éxito');
-      this.listPermisos[this.indice] = { ...this.permisoeditando };
-  
+    
+    this._permService.editarPermiso(this.permisoeditando).subscribe({
+      next: (data) => {
+
+        
+          this.updateBitacora(data);
+          this.toastr.success('Permiso editado con éxito');
+          this.listPermisos[this.indice].permiso_consultar = this.permisoeditando.permiso_consultar;
+          this.listPermisos[this.indice].permiso_insercion = this.permisoeditando.permiso_insercion;
+          this.listPermisos[this.indice].permiso_actualizacion = this.permisoeditando.permiso_actualizacion;
+          this.listPermisos[this.indice].permiso_eliminacion = this.permisoeditando.permiso_eliminacion;
+
+      },
+      error: (e) => {}
     });
   }
   getRolNombre(idRol: number): string {
