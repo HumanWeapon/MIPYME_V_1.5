@@ -10,6 +10,7 @@ import { Pyme } from 'src/app/interfaces/pyme/pyme';
 import { HistoriaBusquedaService } from 'src/app/services/pyme/historia-busqueda.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ErrorService } from 'src/app/services/error.service';
+import { PermisosService } from 'src/app/services/seguridad/permisos.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -26,7 +27,11 @@ export class DashboardComponent implements OnInit {
   productos: Productos[] = [];
   pymes: Pyme[] = [];
   empresas: Empresa[] = [];
-  
+
+  consultar: boolean = false;
+  insertar: boolean = false;
+  actualizar: boolean = false;
+  eliminar: boolean = false;
 
   constructor(
     private empresaService: EmpresaService,
@@ -34,12 +39,15 @@ export class DashboardComponent implements OnInit {
     private productosService: ProductosService,
     private pymesService: PymeService,
     private _historialService: HistoriaBusquedaService,
-    private _errorService: ErrorService
+    private _errorService: ErrorService,
+    private _permisosService: PermisosService
+
   ) {
 
   }
 
   ngOnInit() {
+    this.getPermnisosObjetos();
     this.actualizarConteousuarios();
     this.actualizarConteoProductos();
     this.actualizarConteoEmpresas();
@@ -64,6 +72,24 @@ getTop10Busquedas(){
 }
 /******************************************************************/
 
+getPermnisosObjetos(){
+  const idObjeto = localStorage.getItem('id_objeto');
+  const idRol = localStorage.getItem('id_rol');
+  if(idObjeto && idRol){
+    this._permisosService.getPermnisosObjetos(idRol, idObjeto).subscribe({
+      next: (data: any) => {
+        console.log(data)
+        this.consultar = data.permiso_consultar;
+        this.insertar = data.permiso_insercion;
+        this.actualizar = data.permiso_actualizacion;
+        this.eliminar = data.permiso_eliminacion;
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
+  }
+}
 
 /***********************CONTEO EMPRESAS***************************/
   private actualizarConteoEmpresas() {

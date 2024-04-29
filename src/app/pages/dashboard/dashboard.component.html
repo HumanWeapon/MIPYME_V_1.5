@@ -15,7 +15,7 @@
             </div >
 
             <div class="d-grid gap-2 small-box bg-info">
-                <button class="small-box-footer b" style="border: none;" type="button" routerLink="/dashboard/empresas">mas información <i class="fas fa-arrow-circle-right"></i></button>
+                <button *ngIf="consultar" class="small-box-footer b" style="border: none;" type="button" routerLink="/dashboard/empresas">mas información <i class="fas fa-arrow-circle-right"></i></button>
             </div>
           </div>
         </div>
@@ -33,7 +33,7 @@
               <i class="fas fa-store-alt"></i>
             </div>
             <div class="d-grid gap-2 small-box bg-success">
-                <button class="small-box-footer" style="border: none;" type="button" routerLink="/dashboard/pymes">mas información <i class="fas fa-arrow-circle-right"></i></button>
+                <button *ngIf="consultar" class="small-box-footer" style="border: none;" type="button" routerLink="/dashboard/pymes">mas información <i class="fas fa-arrow-circle-right"></i></button>
             </div>
           </div>
         </div>
@@ -49,8 +49,8 @@
             <div class="icon">
               <i class="fas fa-users"></i>
             </div>
-            <div class="d-grid gap-2 small-box bg-warning">
-                <button class="small-box-footer" style="border: none; color: black;" type="button" routerLink="/dashboard/usuarios">mas información <i class="fas fa-arrow-circle-right"></i></button>
+            <div *ngIf="consultar" class="d-grid gap-2 small-box bg-warning">
+                <button *ngIf="consultar" class="small-box-footer" style="border: none; color: black;" type="button" routerLink="/dashboard/usuarios">mas información <i class="fas fa-arrow-circle-right"></i></button>
             </div>
           </div>
         </div>
@@ -61,13 +61,13 @@
             <div class="inner">
               <h3>{{ totalProductos }}</h3>
 
-              <p>Productos Registrados 1</p>
+              <p>Productos Registrados </p>
             </div>
             <div class="icon">
               <i class="fas fa-search"></i>
             </div>
             <div class="d-grid gap-2 small-box bg-danger">
-                <button class="small-box-footer" style="border: none;" type="button" routerLink="/dashboard/search">mas información <i class="fas fa-arrow-circle-right"></i></button>
+                <button *ngIf="consultar" class="small-box-footer" style="border: none;" type="button" routerLink="/dashboard/search">mas información <i class="fas fa-arrow-circle-right"></i></button>
             </div>
           </div>
         </div>
