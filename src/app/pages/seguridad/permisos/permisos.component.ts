@@ -41,6 +41,7 @@ export class PermisosComponent implements OnInit, OnDestroy {
   permisoSeleccionado: any;
   permisoAnterior: any;
 
+  nombreObjeto: any[] = [];
   id_rol: number = 0;
   id_objeto: number = 0;
   objetosSinRol: any[] = [];
@@ -432,7 +433,6 @@ cancelarInput(){
         fecha_modificacion: new Date(),
         estado_permiso: 1,
       };
-      console.log(permisoEnviado);
       if (!this.id_rol || !this.id_objeto) {
         this.toastr.warning('Debes completar los campos vacíos');
       }else{
@@ -472,6 +472,7 @@ cancelarInput(){
 
   
   obtenerPermiso(permisos: Permisos, i: any) {
+
     this.permisoSeleccionado = {
       id_permisos: permisos.id_permisos,
       id_rol: permisos.id_rol,
@@ -487,10 +488,20 @@ cancelarInput(){
       fecha_modificacion: permisos.fecha_modificacion,
 
     };
-    
     this.indice = i;
   }
-
+  get_objeto(id_permisos: any) {
+    this._permService.objetosSinRolV2(id_permisos).subscribe({
+      next: (data) => {
+        console.log(data);
+        // Convierte el objeto en una matriz y asígnalo a nombreObjeto
+        this.nombreObjeto = Object.values(data);
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
+  }
 
   obtenerIdPermiso(permisos: Permisos, i: any) {
     this.permisoeditando = {
@@ -507,9 +518,9 @@ cancelarInput(){
       modificado_por: permisos.modificado_por,
       fecha_modificacion: permisos.fecha_modificacion,
     };
+    this.get_objeto(permisos.id_permisos);
     this.indice = i;
     this.permisoAnterior = permisos;
-    console.log(this.permisoeditando);
   }
 
 

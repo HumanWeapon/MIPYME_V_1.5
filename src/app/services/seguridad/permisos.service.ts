@@ -63,6 +63,12 @@ export class PermisosService {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     return this.http.get<any[]>(`${this.myAppUrl}${this.myApiUrl}/objetosSinRol/${id}`, { headers: headers });
   }
+  //Obtiene el objeto mediante el ID
+  objetosSinRolV2(id: number): Observable<any[]> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get<any[]>(`${this.myAppUrl}${this.myApiUrl}/objetosSinRolV2/${id}`, { headers: headers });
+  }
   //consulta los permisos de los roles para poder acceder a las rutas.
   permisosdeRoutes(id_rol: string, id_objeto: string, id_usuario: string ): Observable<any[]> {
     const token = localStorage.getItem('token');
