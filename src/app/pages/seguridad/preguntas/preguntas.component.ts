@@ -258,12 +258,12 @@ inactivarPregunta(pregunta: any, i: number){
         },
         columnStyles: {
           0: { cellWidth: 15 },
-          1: { cellWidth: 70 }, // Ancho de la columna aumentado
+          1: { cellWidth: 90 }, // Ancho de la columna aumentado
           2: { cellWidth: 40 }, // Ancho de la columna de Estado aumentado
           3: { cellWidth: 40 },
-          4: { cellWidth: 40 },
-          5: { cellWidth: 40 },
-          6: { cellWidth: 40 },
+          4: { cellWidth: 30 },
+          5: { cellWidth: 30 },
+          6: { cellWidth: 30 },
         },
       });
   

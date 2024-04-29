@@ -373,8 +373,7 @@ generatePDF() {
     doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
     doc.text("Reporte de Direcciones", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
     doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
-
-    // Recorre los datos de direcciones y agrégalo a la matriz 'data'
+    doc.text("Usuario: " + this.getUser.usuario, centerX, 50, { align: 'center' });     // Recorre los datos de direcciones y agrégalo a la matriz 'data'
     this.listDirecciones.forEach((obj, index) => {
       const row = [
         obj.direccion,

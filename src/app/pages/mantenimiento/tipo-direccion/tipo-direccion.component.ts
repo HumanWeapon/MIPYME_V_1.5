@@ -286,12 +286,12 @@ logoImg.onload = () => {
             cellWidth: 'auto' // Ancho de la celda ajustado automáticamente
         },
         columnStyles: {
-            0: { cellWidth: 30 }, // Ancho de la columna de ID ajustado
-            1: { cellWidth: 40 }, // Ancho de la columna de Tipo Requisito ajustado
-            2: { cellWidth: 60 }, // Ancho de la columna de Descripción aumentado
+            0: { cellWidth: 20 }, // Ancho de la columna de ID ajustado
+            1: { cellWidth: 50 }, // Ancho de la columna de Tipo Requisito ajustado
+            2: { cellWidth: 100 }, // Ancho de la columna de Descripción aumentado
             3: { cellWidth: 30 }, // Ancho de la columna de Creador ajustado
-            4: { cellWidth: 40 }, // Ancho de la columna de Fecha Creación aumentado
-            5: { cellWidth: 20 } // Ancho de la columna de Estado ajustado
+            4: { cellWidth: 45 }, // Ancho de la columna de Fecha Creación aumentado
+            5: { cellWidth: 30 } // Ancho de la columna de Estado ajustado
         },
     });
 
