@@ -303,11 +303,11 @@ logoImg.onload = () => {
         },
         columnStyles: {
             0: { cellWidth: 15 }, // Ancho de la columna de ID Pyme ajustado
-            1: { cellWidth: 40 }, // Ancho de la columna de Nombre Pyme aumentado
-            2: { cellWidth: 35 }, // Ancho de la columna de RTN ajustado
+            1: { cellWidth: 50 }, // Ancho de la columna de Nombre Pyme aumentado
+            2: { cellWidth: 40 }, // Ancho de la columna de RTN ajustado
             3: { cellWidth: 40 }, // Ancho de la columna de Contacto aumentado
-            4: { cellWidth: 50 }, // Ancho de la columna de Correo aumentado
-            5: { cellWidth: 30 }, // Ancho de la columna de Teléfono aumentado
+            4: { cellWidth: 70 }, // Ancho de la columna de Correo aumentado
+            5: { cellWidth: 40 }, // Ancho de la columna de Teléfono aumentado
             6: { cellWidth: 25 } // Ancho de la columna de Estado ajustado
         },
     });

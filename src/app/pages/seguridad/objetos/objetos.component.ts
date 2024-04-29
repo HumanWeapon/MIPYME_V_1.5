@@ -267,7 +267,7 @@ filtrarObjetosUnicos() {
 
         // Agregar los comentarios al PDF centrados horizontalmente
         const centerX = doc.internal.pageSize.getWidth() / 2;
-        doc.setFontSize(12);
+        doc.setFontSize(10); // Tamaño de letra más pequeño
         doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
         doc.text("Reporte de Objetos", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
         doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
@@ -295,7 +295,7 @@ filtrarObjetosUnicos() {
             theme: 'grid',
             margin: { top: 60, bottom: 30, left: 10, right: 10 }, // Ajuste de los márgenes
             styles: {
-                fontSize: 10, // Tamaño de fuente para la tabla
+                fontSize: 8, // Tamaño de fuente para la tabla (aún más pequeño)
                 cellPadding: 3,
                 fillColor: [255, 255, 255],
                 cellWidth: 'auto' // Ancho de la celda ajustado automáticamente
@@ -306,9 +306,9 @@ filtrarObjetosUnicos() {
                 2: { cellWidth: 40 }, // Ancho de la columna de Descripción aumentado
                 3: { cellWidth: 30 }, // Ancho de la columna de Tipo aumentado
                 4: { cellWidth: 30 }, // Ancho de la columna de Creador aumentado
-                5: { cellWidth: 40 }, // Ancho de la columna de Fecha de Creación aumentado
+                5: { cellWidth: 30 }, // Ancho de la columna de Fecha de Creación aumentado
                 6: { cellWidth: 30 }, // Ancho de la columna de Modificado por aumentado
-                7: { cellWidth: 40 }, // Ancho de la columna de Fecha de Modificación aumentado
+                7: { cellWidth: 30 }, // Ancho de la columna de Fecha de Modificación aumentado
                 8: { cellWidth: 25 } // Ancho de la columna de Estado aumentado
             },
         });
@@ -318,6 +318,7 @@ filtrarObjetosUnicos() {
     };
     logoImg.src = '/assets/dist/img/pym.png'; // Ruta del logo
 }
+
 
 getCurrentDate(): string {
     const currentDate = new Date();

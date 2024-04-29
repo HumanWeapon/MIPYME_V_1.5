@@ -90,6 +90,7 @@ export class CiudadesComponent implements OnInit{
 
   
   ngOnInit(): void {
+    this.getUsuario();
     this.getAllPaises();
     this.getPermnisosObjetos();
     this.dtOptions = {
@@ -279,68 +280,68 @@ getDate(): string {
 
   generatePDF() {
     const { jsPDF } = require("jspdf");
-const doc = new jsPDF();
+    const doc = new jsPDF();
 
-const data: any[][] = [];
-const headers = ['ID' ,'Ciudad', 'Descripción', 'Creador', 'Fecha de Creación', 'Estado'];
+    const data: any[][] = [];
+    const headers = ['ID', 'Ciudad', 'Descripción', 'Creador', 'Fecha de Creación', 'Estado'];
 
-// Agregar el logo al PDF
-const logoImg = new Image();
-logoImg.onload = () => {
-    // Dibujar el logo en el PDF
-    doc.addImage(logoImg, 'PNG', 10, 10, 50, 20); // Ajusta las coordenadas y dimensiones según tu diseño
+    // Agregar el logo al PDF
+    const logoImg = new Image();
+    logoImg.onload = () => {
+        // Dibujar el logo en el PDF
+        doc.addImage(logoImg, 'PNG', 10, 10, 50, 20); // Ajusta las coordenadas y dimensiones según tu diseño
 
-    // Agregar los comentarios al PDF centrados horizontalmente
-    const centerX = doc.internal.pageSize.getWidth() / 2;
-    doc.setFontSize(12);
-    doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
-    doc.text("Reporte de Ciudades", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
-    doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
-    doc.text("Usuario: " + this.getUser.usuario, centerX, 50, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+        // Agregar los comentarios al PDF centrados horizontalmente
+        const centerX = doc.internal.pageSize.getWidth() / 2;
+        doc.setFontSize(10); // Tamaño de letra más pequeño
+        doc.text("Utilidad Mi Pyme", centerX, 20, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+        doc.text("Reporte de Ciudades", centerX, 30, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+        doc.text("Fecha: " + this.getCurrentDate(), centerX, 40, { align: 'center' }); // Ajusta las coordenadas vertical y horizontalmente
+        doc.text("Usuario: " + this.getUser.usuario, centerX, 50, { align: 'center' });
 
-    // Recorre los datos de tu lista de ciudades y agrégalo a la matriz 'data'
-    this.ciudadesAllPaises.forEach((ciu, index) => {
-        const row = [
-          ciu.id_ciudad,
-            ciu.ciudad,
-            ciu.descripcion,
-            ciu.creado_por,
-            ciu.fecha_creacion,
-            this.getEstadoText(ciu.estado) // Función para obtener el texto del estado
-        ];
-        data.push(row);
-    });
+        // Recorre los datos de tu lista de ciudades y agrégalo a la matriz 'data'
+        this.ciudadesAllPaises.forEach(ciu => {
+            const row = [
+                ciu.id_ciudad,
+                ciu.ciudad,
+                ciu.descripcion,
+                ciu.creado_por,
+                ciu.fecha_creacion,
+                this.getEstadoText(ciu.estado) // Función para obtener el texto del estado
+            ];
+            data.push(row);
+        });
 
-    // Agregar la tabla al PDF
-    doc.autoTable({
-        headStyles: { fillColor: [0, 102, 204], textColor: [255, 255, 255] },
-        head: [headers],
-        body: data,
-        startY: 70, // Ajusta la posición inicial de la tabla según tu diseño
-        theme: 'grid',
-        margin: { top: 60, bottom: 30, left: 10, right: 10 }, // Ajuste de los márgenes
-        styles: {
-            fontSize: 10, // Tamaño de fuente para la tabla
-            cellPadding: 3,
-            fillColor: [255, 255, 255],
-            cellWidth: 'auto' // Ancho de la celda ajustado automáticamente
-        },
-        columnStyles: {
-            0: { cellWidth: 30 }, // Ancho de la columna de Ciudad ajustado
-            1: { cellWidth: 60 }, // Ancho de la columna de Descripción aumentado
-            2: { cellWidth: 30 }, // Ancho de la columna de Creador ajustado
-            3: { cellWidth: 40 }, // Ancho de la columna de Fecha de Creación aumentado
-            4: { cellWidth: 20 } // Ancho de la columna de Estado ajustado
-        },
-    });
+        // Agregar la tabla al PDF
+        doc.autoTable({
+            headStyles: { fillColor: [0, 102, 204], textColor: [255, 255, 255] },
+            head: [headers],
+            body: data,
+            startY: 70, // Ajusta la posición inicial de la tabla según tu diseño
+            theme: 'grid',
+            margin: { top: 60, bottom: 30, left: 10, right: 10 }, // Ajuste de los márgenes
+            styles: {
+                fontSize: 8, // Tamaño de fuente para la tabla (aún más pequeño)
+                cellPadding: 3,
+                fillColor: [255, 255, 255],
+                cellWidth: 'auto' // Ancho de la celda ajustado automáticamente
+            },
+            columnStyles: {
+                0: { cellWidth: 15 }, // Ancho de la columna de Ciudad ajustado
+                1: { cellWidth: 60 }, // Ancho de la columna de Descripción aumentado
+                2: { cellWidth: 25 }, // Ancho de la columna de Creador ajustado
+                3: { cellWidth: 25 }, // Ancho de la columna de Fecha de Creación aumentado
+                4: { cellWidth: 25 } // Ancho de la columna de Estado ajustado
+            },
+        });
 
-    // Guardar el PDF
-    doc.save('My Pyme-Reporte Ciudades.pdf');
-};
-logoImg.src = '/assets/dist/img/pym.png'; // Ruta del logo
- // Ruta del logo
-  }
-  
+        // Guardar el PDF
+        doc.save('My Pyme-Reporte Ciudades.pdf');
+    };
+
+    logoImg.src = '/assets/dist/img/pym.png'; // Ruta del logo
+}
+
   getCurrentDate(): string {
     const currentDate = new Date();
     return currentDate.toLocaleDateString(); // Retorna la fecha actual en formato local
