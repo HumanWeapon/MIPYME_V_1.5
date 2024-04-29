@@ -26,6 +26,11 @@ import { ChangeDetectorRef } from '@angular/core';
 })
 export class PermisosComponent implements OnInit, OnDestroy {
 
+  consultar: boolean = false;
+  insertar: boolean = false;
+  actualizar: boolean = false;
+  eliminar: boolean = false;
+  
   permisos: any; 
   submenusData: SubmenuData[] = [];
   objetosPrincipales: any[] | undefined;
@@ -111,6 +116,7 @@ export class PermisosComponent implements OnInit, OnDestroy {
     this.filtrarObjetosPorTipo();
     this.getAllObjetos();
     this.getAllRoles();
+    this.getPermnisosObjetos();
 
     this.dtOptions = {
       pagingType: 'full_numbers',
@@ -137,6 +143,25 @@ export class PermisosComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.dtTrigger.unsubscribe();
+  }
+
+  //función en el cuerpo del código
+  getPermnisosObjetos(){
+    const idObjeto = localStorage.getItem('id_objeto');
+    const idRol = localStorage.getItem('id_rol');
+    if(idObjeto && idRol){
+      this._permService.getPermnisosObjetos(idRol, idObjeto).subscribe({
+        next: (data: any) => {
+          this.consultar = data.permiso_consultar;
+          this.insertar = data.permiso_insercion;
+          this.actualizar = data.permiso_actualizacion;
+          this.eliminar = data.permiso_eliminacion;
+        },
+        error: (e: HttpErrorResponse) => {
+          this._errorService.msjError(e);
+        }
+      });
+    }
   }
 
   idRol(event: Event): void {
