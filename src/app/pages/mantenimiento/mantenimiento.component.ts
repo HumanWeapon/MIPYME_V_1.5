@@ -57,7 +57,8 @@ export class MantenimientoComponent implements OnInit {
   getAllObjetosMenuJSON(){
     this._seguridadService.objetosJSON(this.id_rol, this.submenu).subscribe({
       next: (data: any) => {
-        this.listObjetos2 = data;
+      this.listObjetos2 = data;
+
       },
       error: (e: HttpErrorResponse) => {
         this._errorService.msjError(e);
@@ -66,6 +67,7 @@ export class MantenimientoComponent implements OnInit {
   }
 
   navegar(objeto: any) {
+    localStorage.setItem('id_objeto',objeto.id_objeto)
     this.mostrar = false;
     this._router.navigate(['/dashboard/'+ objeto.url])
   }

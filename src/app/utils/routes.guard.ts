@@ -26,8 +26,8 @@ export class PermisosGuard implements CanActivate{
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    console.log(this.id_rol);
-    console.log(this.id_objeto);
+    console.log('este es el rol' + this.id_rol);
+    console.log('objeto secundario'  + this.id_objeto);
     if(this.id_rol && this.id_objeto && this.id_usuario) {
 
       return this._permisosService.permisosdeRoutes(this.id_rol, this.id_objeto2, this.id_usuario).pipe(
