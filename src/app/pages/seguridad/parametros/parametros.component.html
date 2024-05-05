@@ -115,7 +115,7 @@
                 <!-- Reemplazar input por select cuando parametroEditando.parametro sea 'PUERTO_CORREO' -->
                 <div class="form-group">
                     <label for="parametroEditando">Valor:</label>
-                    <input type="text" [(ngModel)]="parametroEditando.valor" (input)="eliminarCaracteresEspeciales($event, 'valor')" name="parametroEditando.valor" class="form-control" id="editarValor" placeholder="Valor">
+                    <input type="text" [(ngModel)]="parametroEditando.valor" (input)="convertirAMayusculas($event, 'valor')" (input)="eliminarCaracteresEspeciales($event, 'valor')" name="parametroEditando.valor" class="form-control" id="editarValor" placeholder="Valor">
                 </div>
               </form>
           </div>
