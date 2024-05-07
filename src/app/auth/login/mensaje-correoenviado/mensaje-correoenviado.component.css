@@ -2,6 +2,12 @@ body.login-page {
     background: rgb(255,255,255);
     background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(254,254,254,1) 0%, rgba(233,233,233,1) 0%);
     }
+
+    .email,
+    .username {
+    color: black;
+    font-weight: bold;
+}
     
     .h1 {
       text-align: center;
