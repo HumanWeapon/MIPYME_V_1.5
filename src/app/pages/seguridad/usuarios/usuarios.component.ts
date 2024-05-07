@@ -93,10 +93,10 @@ export class UsuariosComponent {
   ) {}
 
   ngOnInit(): void {
+    this.getAllUsuarios();
     this.getPermnisosObjetos();
     this.getAllRoles();
     this.getUsuario();
-    this.getAllUsuarios();
     this.getParametros();
     this.getParametrosCorreoServidor();
   }
