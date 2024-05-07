@@ -110,7 +110,7 @@ if (this.parametroCorreo === '465' && this.parametroCorreoServidor !== 'ISMAELMI
         }
   
         // Llamar al servicio para enviar el correo electrónico
-        this.usuarioService.forgotPassword(this.correoElectronico).subscribe(
+        this.usuarioService.reestablecer(this.correoElectronico).subscribe(
           response => {
             // Aquí puedes navegar a la siguiente página o mostrar otro mensaje según la respuesta del servicio
             this.toastr.success('Correo Enviado Exitosamente');
