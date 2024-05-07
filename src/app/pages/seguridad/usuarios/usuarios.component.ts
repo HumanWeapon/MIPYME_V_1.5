@@ -398,7 +398,7 @@ export class UsuariosComponent {
         nombre_usuario: this.newUser.nombre_usuario,
         correo_electronico: this.newUser.correo_electronico,
         estado_usuario: 1,
-        contrasena: this.newUser.usuario,
+        contrasena: this.newUser.usuario.toUpperCase(),
         id_rol: this.newUser.id_rol,
         fecha_ultima_conexion: new Date(),
         fecha_vencimiento: this.editUser.fecha_vencimiento,

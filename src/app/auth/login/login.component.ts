@@ -110,6 +110,7 @@ export class LoginComponent {
     }
     
     this.loading = true;
+    console.log(usuario)
     this._userService.login(usuario).subscribe({
       next: (token) => {
         localStorage.setItem('token', token);
