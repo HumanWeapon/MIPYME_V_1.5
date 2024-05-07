@@ -16,12 +16,15 @@
               </div>
             <!-- Cuerpo del modal -->
             <div class="modal-body">
-              Se envió un correo de recuperación de contraseña a su Correo Electronico {{usuario.correo_electronico | uppercase}}
-              Usuario Identificado: {{ usuario.nombre_usuario | uppercase }}
+              <p style="font-weight: bold;">Se envió un correo de recuperación de contraseña a su Correo Electronico {{usuario.correo_electronico | uppercase}}</p>
+              <p style="font-weight: bold;">Usuario Identificado: {{ usuario.nombre_usuario | uppercase }}</p> 
+              <hr style="border-top: 1px solid #ccc; margin: 10px 0;">
             </div>
             <div class="modal-body">
+              <hr style="border-top: 1px solid #ccc; margin: 10px 0;">
              <p> Revisa tu correo Electronico, encontraras un enlace para poder restablecer tu contraseña. </p>
              <p>*Se Recomienda cambiar tu contraseña en la seccion de perfil luego de haber ingresado.</p>
+             <hr style="border-top: 1px solid #ccc; margin: 10px 0;">
              <p>Puede cerrar la página. Será redirigido al inicio de sesión.</p>
             </div>
             <!-- Pie del modal -->
