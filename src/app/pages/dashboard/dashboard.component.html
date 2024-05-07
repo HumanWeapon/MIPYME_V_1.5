@@ -1,12 +1,12 @@
-<section class="content">
+<section *ngIf="consultar" class="content">
     <div class="container-fluid">
       <!-- Small boxes (Stat box) -->
       <div class="row">
         <div class="col-lg-3 col-6">
           <!-- small box -->
-          <div class="small-box bg-info">
+          <div *ngIf="consultar"class="small-box bg-info">
             <div class="inner">
-              <h3>{{ totalEmpresas }}</h3>
+              <h3 *ngIf="consultar">{{ totalEmpresas }}</h3>
 
               <p>Empresas</p>
             </div>
@@ -23,9 +23,9 @@
         <!-- ./col -->
         <div class="col-lg-3 col-6">
           <!-- small box -->
-          <div class="small-box bg-success">
+          <div *ngIf="consultar"class="small-box bg-success">
             <div class="inner">
-              <h3>{{ totalPymes }}</h3>
+              <h3 *ngIf="consultar">{{ totalPymes }}</h3>
 
               <p>Pymes registradas</p>
             </div>
@@ -40,9 +40,9 @@
         <!-- ./col -->
         <div class="col-lg-3 col-6">
           <!-- small box -->
-          <div class="small-box bg-warning">
+          <div *ngIf="consultar" class="small-box bg-warning">
             <div class="inner">
-              <h3>{{ totalUsuarios }}</h3>
+              <h3 *ngIf="consultar">{{ totalUsuarios }}</h3>
 
               <p>Usuarios registrados</p>
             </div>
@@ -57,9 +57,9 @@
         <!-- ./col -->
         <div class="col-lg-3 col-6">
           <!-- small box -->
-          <div class="small-box bg-danger">
+          <div *ngIf="consultar" class="small-box bg-danger">
             <div class="inner">
-              <h3>{{ totalProductos }}</h3>
+              <h3 *ngIf="consultar">{{ totalProductos }}</h3>
 
               <p>Productos Registrados </p>
             </div>
@@ -80,7 +80,7 @@
         <section >
           <!-- Custom tabs (Charts with tabs)-->
           <div class="card">
-            <div class="card-header ui-sortable-handle" style="cursor: move;">
+            <div *ngIf="consultar" class="card-header ui-sortable-handle" style="cursor: move;">
               <h3 class="card-title">
                 <i class="fas fa-chart-pie mr-1"></i>
                 Búsquedas
