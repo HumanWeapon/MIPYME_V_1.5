@@ -15,6 +15,7 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale'; // Importa el idioma español
 import { PermisosService } from 'src/app/services/seguridad/permisos.service';
 import { ParametrosService } from 'src/app/services/seguridad/parametros.service';
+import { data } from 'jquery';
 
 @Component({
   selector: 'app-usuarios',
@@ -556,7 +557,7 @@ export class UsuariosComponent {
   reestablecer(correo_electronico: string) {
     const correoUsuario = this.editUser.correo_electronico;
     localStorage.setItem('correo_electronico', correo_electronico);
-    console.log('Correo Obtenido: ' + correoUsuario);
+  
   
     // Verificar si el parámetroCorreo coincide con el parámetroCorreoServidor para el puerto 587
     if (this.parametroCorreo === '587' && this.parametroCorreoServidor !== 'ISMAEL.MIDENCE@UNAH.HN') {
@@ -571,25 +572,24 @@ export class UsuariosComponent {
     }
   
     // Llama al servicio para enviar el correo electrónico de restablecimiento
-    this._userService.reestablecer(correoUsuario).subscribe(
-      response => {
+    this._userService.reestablecer(correoUsuario).subscribe({
+      next: (data) => {
         // Aquí puedes manejar la respuesta del servicio
         this._toastr.success('Nueva Contraseña enviada con Exito.');
-        console.log('contraseña nueva: ' + this.editUser.contrasena);
-  
+
         // Compara el correo electrónico restablecido con el correo del usuario actual
         if (correoUsuario === correo_electronico) {
           // Redirige al usuario al login si la contraseña se restableció con éxito
           this.router.navigate(['/login']);
         }
       },
-      error => {
-        console.error('Error al enviar el correo electrónico:', error);
+      error: (e: HttpErrorResponse) => {
         this._toastr.error('Error al enviar el correo electrónico.');
-  
         // Continúa con el flujo normal del programa en caso de error
       }
-    );
+    });
+
+
   }
    
   /******************************************************************************************************************************************/
