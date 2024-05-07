@@ -15,7 +15,6 @@ import { UsuariosService } from 'src/app/services/seguridad/usuarios.service';
 export class LoginComponent {
   usuario: string = '';
   contrasena: string = '';
-  id_rol: number = 0;
   loading: boolean = false;
   ultimaConexion: string = '';
 
@@ -57,7 +56,6 @@ export class LoginComponent {
 
 
   //Función que permite navegar al primer formulario del login, ocultando las otras ventanas
-
   //Muestra el segundo formulario del Login
   navegateToMetodo(){
     this._router.navigate(['/metodo'])
@@ -93,7 +91,6 @@ export class LoginComponent {
       this._toastr.error('Todos los campos son obligatorios', 'Error');
       return
     }
-
     // Creamos el body
     const usuario: Usuario = {
       usuario: this.usuario,
@@ -113,7 +110,6 @@ export class LoginComponent {
     }
     
     this.loading = true;
-
     this._userService.login(usuario).subscribe({
       next: (token) => {
         localStorage.setItem('token', token);
@@ -121,7 +117,13 @@ export class LoginComponent {
 
         this.getUsuario();
         
-        if(this.ultimaConexion == null){
+        if(!this.ultimaConexion){
+          this._userService.getOneUsuario(this.usuario).subscribe(
+            (usuario:Usuario) => {
+              usuario = usuario;
+              localStorage.setItem('usuario', usuario.usuario);
+            }
+          )
           localStorage.setItem('firstLogin', this.usuario);
           this._router.navigate(['/firstlogin'])
         }
@@ -158,8 +160,9 @@ export class LoginComponent {
     this._userService.getUsuario(this.getUser).subscribe({
       next: (data) => {
         this.getUser = data;
-        this.id_rol = data.id_rol;
-        localStorage.setItem('id_rol', this.id_rol.toString());
+        localStorage.setItem('id_rol', data.id_rol.toString());
+        localStorage.setItem('id_usuario', data.id_usuario.toString());
+        console.log(data);
         this.updateUltimaConexionUsuario()
       },
       error: (e: HttpErrorResponse) => {
