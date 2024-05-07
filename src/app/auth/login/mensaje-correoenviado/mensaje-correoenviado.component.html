@@ -16,10 +16,12 @@
               </div>
             <!-- Cuerpo del modal -->
             <div class="modal-body">
-              Se envió un correo de recuperación de contraseña a su Correo Electronico
+              Se envió un correo de recuperación de contraseña a su Correo Electronico {{usuario.correo_electronico | uppercase}}
+              Usuario Identificado: {{ usuario.nombre_usuario | uppercase }}
             </div>
             <div class="modal-body">
-             <p> Revisa tu correo Electronico, encontraras un enlace para poder recuperar tu contraseña</p>
+             <p> Revisa tu correo Electronico, encontraras un enlace para poder restablecer tu contraseña. </p>
+             <p>*Se Recomienda cambiar tu contraseña en la seccion de perfil luego de haber ingresado.</p>
              <p>Puede cerrar la página. Será redirigido al inicio de sesión.</p>
             </div>
             <!-- Pie del modal -->
