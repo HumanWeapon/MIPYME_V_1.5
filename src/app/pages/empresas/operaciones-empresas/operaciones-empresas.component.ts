@@ -222,6 +222,7 @@ export class OperacionesEmpresasComponent {
     modificado_por: '', 
     fecha_modificacion: new Date(),
     estado: 0,
+    id_producto: 0
   };
   nuevoTipoRequisito: TipoRequisito = {
       id_tipo_requisito: 0, 
@@ -233,7 +234,7 @@ export class OperacionesEmpresasComponent {
       modificado_por: '', 
       fecha_modificacion: new Date(),
       estado: 0,
-  
+      id_producto: 0
     };
 
 
@@ -449,6 +450,7 @@ export class OperacionesEmpresasComponent {
             modificado_por: userLocal,
             fecha_modificacion: fechaFormateada as unknown as Date,
             estado: 1,
+            id_producto: this.nuevoTipoRequisito.id_producto
           };
 
           console.log('Valores que se enviarán:', this.nuevoTipoRequisito);
@@ -1253,7 +1255,7 @@ obtenerIdTipoRequisito(tipoR: TipoRequisito, i: any){
   modificado_por: tipoR.modificado_por, 
   fecha_modificacion: tipoR.fecha_modificacion,
   estado: tipoR.estado,
-
+  id_producto: tipoR.id_producto
   };
   this.indice = i;
 }

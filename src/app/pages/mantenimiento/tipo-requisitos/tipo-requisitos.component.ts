@@ -16,6 +16,7 @@ import { DatePipe } from '@angular/common';
 import { Paises } from 'src/app/interfaces/empresa/paises';
 import { PaisesService } from 'src/app/services/empresa/paises.service';
 import { PermisosService } from 'src/app/services/seguridad/permisos.service';
+import { ProductosService } from 'src/app/services/mantenimiento/producto.service';
 
 
 @Component({
@@ -30,10 +31,23 @@ export class TipoRequisitosComponent implements OnInit {
   actualizar: boolean = false;
   eliminar: boolean = false;
 
-    trAnterior: any;
-    listPaises: Paises [] = [];
+  trAnterior: any;
+  listPaises: Paises [] = [];
+  listProductos: any [] = [];
 
-    tipoRequisitoEditando: TipoRequisito = {
+  tipoRequisitoEditando: TipoRequisito = {
+    id_tipo_requisito: 0, 
+    id_pais: 0,
+    tipo_requisito: '', 
+    descripcion:'',
+    creado_por: '', 
+    fecha_creacion: new Date(), 
+    modificado_por: '', 
+    fecha_modificacion: new Date(),
+    estado: 0,
+    id_producto: 0
+  };
+  nuevoTipoRequisito: TipoRequisito = {
       id_tipo_requisito: 0, 
       id_pais: 0,
       tipo_requisito: '', 
@@ -43,20 +57,9 @@ export class TipoRequisitosComponent implements OnInit {
       modificado_por: '', 
       fecha_modificacion: new Date(),
       estado: 0,
+      id_producto: 0
     };
-    nuevoTipoRequisito: TipoRequisito = {
-        id_tipo_requisito: 0, 
-        id_pais: 0,
-        tipo_requisito: '', 
-        descripcion:'',
-        creado_por: '', 
-        fecha_creacion: new Date(), 
-        modificado_por: '', 
-        fecha_modificacion: new Date(),
-        estado: 0,
-    
-      };
-      indice: any;
+    indice: any;
 
   dtOptions: DataTables.Settings = {};
   listTipoR: TipoRequisito[] = [];
@@ -76,10 +79,12 @@ export class TipoRequisitosComponent implements OnInit {
     private ngZone: NgZone,
     private _datePipe: DatePipe,
     private _paisService: PaisesService,
-    private _permisosService: PermisosService
+    private _permisosService: PermisosService,
+    private _productosService: ProductosService
     ) {}
 
   ngOnInit(): void {
+    this.getAllProductos();
     this.getPermnisosObjetos();
     this.getAllPaises();
     this.getUsuario()
@@ -91,6 +96,7 @@ export class TipoRequisitosComponent implements OnInit {
       };
       this._tipoRequisitoService.requisitosAllPaisesEmpresas().subscribe({
         next: (data) =>{
+          console.log(data)
           this.requisitosAllPaisesEmpresas = data;
           this.dtTrigger.next(0);
         }
@@ -140,11 +146,29 @@ export class TipoRequisitosComponent implements OnInit {
       }
     });
   }
+  //Obtiene los productos activos de la DBA
+  getAllProductos(){
+    this._productosService.getAllProductosActivos().subscribe({
+      next: (data) =>{
+        this.listProductos = data;
+        console.log(data);
+      },
+      error: (e: HttpErrorResponse) => {
+        this._errorService.msjError(e);
+      }
+    });
+  }
   paisSeleccionado(event: Event): void {
     const idPais = (event.target as HTMLSelectElement).value;
     this.nuevoTipoRequisito.id_pais = Number(idPais);
     this.tipoRequisitoEditando.id_pais = Number(idPais);
     console.log("ID_PAIS: "+idPais);
+  }
+  productoSeleccionado(event: Event): void {
+    const idProducto = (event.target as HTMLSelectElement).value;
+    this.nuevoTipoRequisito.id_producto = Number(idProducto);
+    this.tipoRequisitoEditando.id_producto = Number(idProducto);
+    console.log("ID_PRODUCTO: "+ idProducto);
   }
 
   getDate(): string {
@@ -223,7 +247,7 @@ cancelarInput(){
 
 /*****************************************************************************************************/
 generateExcel() {
-  const headers = ['Id', 'Requisitos', 'Descripción', 'Pais', 'Creado por', 'Fecha creación', 'Modificado', 'Fecha modificación', 'Estado'];
+  const headers = ['Id', 'Requisitos', 'Descripción', 'Pais', 'Producto', 'Creado por', 'Fecha creación', 'Modificado', 'Fecha modificación', 'Estado'];
   const data: any[][] = [];
 
   // Recorre los datos de tipoRequisitoAll y agrégalo a la matriz 'data'
@@ -233,6 +257,7 @@ generateExcel() {
       TipoR.tipo_requisito,
       TipoR.descripcion,
       TipoR.paises.pais,
+      TipoR.productos.producto,
       TipoR.creado_por,
       TipoR.fecha_creacion,
       TipoR.modificado_por,
@@ -277,7 +302,7 @@ generatePDF() {
   const doc = new jsPDF({ orientation: 'landscape' });
 
   const data: any[][] = [];
-  const headers = ['ID', 'Requisitos', 'Descripción', 'País', 'Creado por', 'Fecha creación', 'Modificado', 'Estado'];
+  const headers = ['ID', 'Requisitos', 'Descripción', 'País', 'Producto','Creado por', 'Fecha creación', 'Modificado', 'Estado'];
 
   // Agregar el logo al PDF
   const logoImg = new Image();
@@ -300,6 +325,7 @@ generatePDF() {
         TipoR.tipo_requisito,
         TipoR.descripcion,
         TipoR.paises.pais,
+        TipoR.productos.producto,
         TipoR.creado_por,
         TipoR.fecha_creacion,
         TipoR.modificado_por,
@@ -378,7 +404,7 @@ getEstadoText(estado: number): string {
         modificado_por: userLocal, 
         fecha_modificacion: fechaFormateada as unknown as Date, 
         estado: 1,
-
+        id_producto: this.nuevoTipoRequisito.id_producto
       };
       console.log(this.nuevoTipoRequisito)
       if (!this.nuevoTipoRequisito.tipo_requisito || !this.nuevoTipoRequisito.descripcion) {
@@ -415,6 +441,7 @@ getEstadoText(estado: number): string {
       modificado_por: tipoR.modificado_por, 
       fecha_modificacion: tipoR.fecha_modificacion,
       estado: tipoR.estado,
+      id_producto: tipoR.id_producto
     };
     this.indice = i;
     this.trAnterior = this.requisitosAllPaisesEmpresas;

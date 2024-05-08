@@ -8,4 +8,5 @@ export interface TipoRequisito {
     modificado_por: string,
     fecha_modificacion: Date,
     estado: number,
+    id_producto: number
 }
