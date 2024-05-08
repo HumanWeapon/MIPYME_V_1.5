@@ -20,7 +20,6 @@ export class HistorialPymeComponent {
   actualizar: boolean = false;
   eliminar: boolean = false;
 
-
   id_pyme: any;
 
   dtOptions: DataTables.Settings = {};
@@ -43,8 +42,8 @@ export class HistorialPymeComponent {
 
   
   ngOnInit(): void {
-    this.getIdPyme();
     this.getPermnisosObjetos();
+    this.getIdPyme();
   }
 
 
@@ -57,7 +56,6 @@ export class HistorialPymeComponent {
     if(idPYME){
       this._pymeService.getOnePyme(idPYME).subscribe({
         next: (data) => {
-          console.log(data);
           this.id_pyme = data.id_pyme;
           this.dataTable();
         },
@@ -86,6 +84,7 @@ export class HistorialPymeComponent {
   getPermnisosObjetos(){
     const idObjeto = localStorage.getItem('id_objeto');
     const idRol = localStorage.getItem('id_rol');
+
     if(idObjeto && idRol){
       this._permisosService.getPermnisosObjetos(idRol, idObjeto).subscribe({
         next: (data: any) => {

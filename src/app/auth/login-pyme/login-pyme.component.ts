@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
@@ -12,7 +12,7 @@ import { ErrorService } from 'src/app/services/error.service';
   templateUrl: './login-pyme.component.html',
   styleUrls: ['./login-pyme.component.css']
 })
-export class LoginPymeComponent implements OnDestroy {
+export class LoginPymeComponent implements OnDestroy, OnInit {
 
   nombre_pyme: string = '';
   rtn: string = '';
@@ -43,6 +43,10 @@ export class LoginPymeComponent implements OnDestroy {
     private _errorService: ErrorService,
     private router: Router
   ) {}
+
+  ngOnInit(){
+    
+  }
 
   ngOnDestroy(): void {
     // Desuscribirse de todas las suscripciones para evitar fugas de memoria
@@ -107,13 +111,14 @@ export class LoginPymeComponent implements OnDestroy {
       next: (token) => {
         localStorage.setItem('token', token);
         this.fecha_ultima_conexion = token;
-
-        this.getPymes();
+        
         
         if (!this.fecha_ultima_conexion) {
           localStorage.setItem('firstLogin', this.nombre_pyme);
           this.router.navigate(['/firstlogin']);
         } else {
+          
+          this.getPymes();
           localStorage.setItem('nombre_pyme', this.nombre_pyme);
           localStorage.setItem('CCP', this.rtn);
           this.router.navigate(['dashboard', 'search']);
@@ -144,8 +149,8 @@ export class LoginPymeComponent implements OnDestroy {
       correo_contacto: '',
       telefono_contacto: '',
     };
-
-    const getPymeSubscription = this._pymeService.getPyme(this.getPyme).subscribe({
+    
+    this._pymeService.getPyme(this.getPyme).subscribe({
       next: (data) => {
         this.getPyme = data;
         localStorage.setItem('id_rol', data.id_rol.toString());
@@ -156,7 +161,6 @@ export class LoginPymeComponent implements OnDestroy {
         this.loading = false;
       }
     });
-
-    this.subscriptions.push(getPymeSubscription);
+    //this.subscriptions.push(getPymeSubscription);
   }
 }

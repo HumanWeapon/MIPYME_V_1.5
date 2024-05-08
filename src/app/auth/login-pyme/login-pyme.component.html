@@ -12,7 +12,7 @@
           <div class="form-group">
             <label for="nombre_pyme" style="color: #3370e2; font-size: smaller;">Nombre de la Pyme:</label>
             <div class="input-group">
-              <input type="text" class="form-control" [(ngModel)]="nombre_pyme" name="nombre_pyme" (input)="eliminarEspaciosBlanco()" (input)="eliminarCaracteresEspeciales($event, 'nombre_pyme')" placeholder="Pyme" maxlength="50" autocomplete="false">
+              <input type="text" class="form-control" [(ngModel)]="nombre_pyme" name="nombre_pyme" (input)="eliminarEspaciosBlanco()" placeholder="Pyme" maxlength="50" autocomplete="false">
               <div class="input-group-append">
                 <div class="input-group-text">
                   <span class="fas fa-user"></span>
